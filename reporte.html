@@ -1,1 +1,653 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tv Digital - Reportes</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.min.js"></script>
+    <script>tailwind.config = { darkMode: 'class' }</script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        html.light-mode { color-scheme: light; }
+        
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .header-modern {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #0c4a6e 100%);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+        }
+        
+        html.light-mode .header-modern {
+            background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 50%, #f0f4ff 100%);
+            border-bottom: 1px solid rgba(59, 130, 246, 0.3);
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(99, 102, 241, 0.1) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            transition: all 0.3s ease;
+            animation: slideIn 0.4s ease-out;
+        }
+        .stat-card:hover {
+            border-color: rgba(59, 130, 246, 0.5);
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(99, 102, 241, 0.2) 100%);
+            transform: translateY(-2px);
+        }
+        
+        html.light-mode .stat-card {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(99, 102, 241, 0.05) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.3);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            box-shadow: 0 15px 35px -5px rgba(59, 130, 246, 0.4);
+            transform: translateY(-2px);
+        }
+        .btn-primary:active { transform: scale(0.98); }
+        
+        .input-modern {
+            background: rgba(31, 41, 55, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(107, 114, 128, 0.3);
+            transition: all 0.3s ease;
+        }
+        .input-modern:focus {
+            border-color: rgba(59, 130, 246, 0.6);
+            background: rgba(31, 41, 55, 0.8);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
+        }
+        
+        html.light-mode .input-modern {
+            background: rgba(249, 250, 251, 0.8);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            color: #1f2937;
+        }
+        
+        html.light-mode .input-modern:focus {
+            border-color: rgba(59, 130, 246, 0.6);
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
+        .theme-toggle {
+            cursor: pointer;
+            width: 50px;
+            height: 28px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            padding: 2px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .theme-toggle.active {
+            background: rgba(59, 130, 246, 0.3);
+            border-color: rgba(59, 130, 246, 0.5);
+        }
+        
+        .theme-toggle span {
+            width: 24px;
+            height: 24px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        
+        .theme-toggle .dark-icon {
+            position: absolute;
+            left: 2px;
+        }
+        
+        .theme-toggle .light-icon {
+            position: absolute;
+            right: 2px;
+        }
+        
+        .theme-toggle.active .dark-icon {
+            opacity: 0.3;
+        }
+        
+        .theme-toggle.active .light-icon {
+            opacity: 1;
+        }
+        
+        .theme-toggle:not(.active) .dark-icon {
+            opacity: 1;
+        }
+        
+        .theme-toggle:not(.active) .light-icon {
+            opacity: 0.3;
+        }
 
+        html.light-mode {
+            background-color: #f3f4f6;
+            color: #1f2937;
+        }
+        
+        html.light-mode body {
+            background-color: #f3f4f6 !important;
+            color: #1f2937 !important;
+        }
+        
+        html.light-mode .bg-gray-950 {
+            background-color: #f3f4f6 !important;
+        }
+        
+        html.light-mode .bg-gray-900 {
+            background-color: #ffffff !important;
+        }
+        
+        html.light-mode .bg-gray-800 {
+            background-color: #f9fafb !important;
+        }
+        
+        html.light-mode .border-gray-700 {
+            border-color: rgba(59, 130, 246, 0.1) !important;
+        }
+        
+        html.light-mode .text-white {
+            color: #1f2937 !important;
+        }
+        
+        html.light-mode .text-gray-300 {
+            color: #4b5563 !important;
+        }
+        
+        html.light-mode .text-gray-400 {
+            color: #6b7280 !important;
+        }
+        
+        html.light-mode .text-gray-500 {
+            color: #9ca3af !important;
+        }
+        
+        html.light-mode .text-blue-400 {
+            color: #2563eb !important;
+        }
+
+        .reporte-card {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.1) 100%);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            transition: all 0.3s ease;
+            animation: slideIn 0.4s ease-out;
+        }
+
+        .reporte-card:hover {
+            border-color: rgba(16, 185, 129, 0.6);
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(5, 150, 105, 0.2) 100%);
+        }
+
+        .reporte-total {
+            font-size: 32px;
+            font-weight: 900;
+            color: #10b981;
+        }
+
+        .reporte-label {
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #6b7280;
+            letter-spacing: 1px;
+        }
+
+        .periodo-btn {
+            background: rgba(59, 130, 246, 0.1);
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            color: #60a5fa;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 12px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .periodo-btn.active {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            border-color: #3b82f6;
+            color: white;
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .periodo-btn:hover:not(.active) {
+            border-color: rgba(59, 130, 246, 0.6);
+            background: rgba(59, 130, 246, 0.2);
+        }
+
+        .export-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            transition: all 0.3s ease;
+        }
+        .export-btn:hover {
+            box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .tabla-reporte {
+            animation: fadeIn 0.5s ease-out;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .tabla-reporte thead {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(37, 99, 235, 0.1) 100%);
+        }
+
+        .tabla-reporte th {
+            padding: 15px;
+            text-align: left;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 11px;
+            color: #60a5fa;
+            border-bottom: 2px solid rgba(59, 130, 246, 0.3);
+            letter-spacing: 0.5px;
+        }
+
+        .tabla-reporte td {
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(107, 114, 128, 0.2);
+        }
+
+        .tabla-reporte tbody tr:hover {
+            background-color: rgba(59, 130, 246, 0.05);
+        }
+
+        .tabla-reporte tbody tr:last-child td {
+            border-bottom: 2px solid rgba(59, 130, 246, 0.3);
+            font-weight: bold;
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #9ca3af;
+        }
+
+        .overflow-x-auto {
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body id="body-app" class="bg-gray-950 text-white font-sans min-h-screen pb-20 transition-all duration-300">
+
+    <!-- NAVBAR -->
+    <nav class="header-modern sticky top-0 z-40 backdrop-blur-xl bg-opacity-90">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex gap-8">
+                <a href="index.html" class="py-4 font-bold uppercase text-sm hover:text-blue-400 transition">Mis Clientes</a>
+                <a href="equipo.html" id="link-equipos" class="py-4 font-bold uppercase text-sm hidden hover:text-blue-400 transition">Gestionar Equipo</a>
+                <a href="reporte.html" class="py-4 font-bold uppercase text-sm border-b-2 border-blue-500 text-blue-500 hover:text-blue-400 transition">Reportes</a>
+            </div>
+            <div class="flex items-center gap-4">
+                <span id="info-sesion" class="text-xs text-gray-400 font-semibold"></span>
+                
+                <!-- THEME TOGGLE -->
+                <button onclick="toggleTheme()" class="theme-toggle" title="Cambiar tema">
+                    <span class="dark-icon">🌙</span>
+                    <span class="light-icon">☀️</span>
+                </button>
+                
+                <button onclick="logout()" class="text-red-400 font-bold text-xs uppercase border border-red-500/50 px-4 py-2 rounded-xl hover:bg-red-500/10 transition">Salir</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-4 py-8">
+        <!-- HEADER -->
+        <header class="mb-10">
+            <h1 class="text-4xl font-black text-blue-400 uppercase tracking-tight">Reportes de Ingresos</h1>
+            <p class="text-sm text-gray-500 mt-2">Analiza lo facturado por período</p>
+        </header>
+
+        <!-- SELECTOR DE PERÍODO -->
+        <div class="bg-gray-800 border border-gray-700 p-8 rounded-3xl mb-8 shadow-lg">
+            <h2 class="text-2xl font-black text-blue-400 uppercase mb-6 tracking-tight">📊 Selecciona un Período</h2>
+            
+            <div class="flex gap-3 flex-wrap">
+                <button onclick="cambiarPeriodoReporte('semana')" class="periodo-btn active" id="btn-semana">📅 Esta Semana</button>
+                <button onclick="cambiarPeriodoReporte('mes')" class="periodo-btn" id="btn-mes">📆 Este Mes</button>
+                <button onclick="cambiarPeriodoReporte('año')" class="periodo-btn" id="btn-año">📈 Este Año</button>
+                <button onclick="cambiarPeriodoReporte('personalizado')" class="periodo-btn" id="btn-personalizado">🗓️ Personalizado</button>
+            </div>
+
+            <!-- RANGO PERSONALIZADO -->
+            <div id="rango-personalizado" class="hidden mt-6 p-4 bg-gray-900 rounded-2xl border border-gray-700">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-xs font-bold text-blue-400 uppercase block mb-2">Desde</label>
+                        <input type="date" id="fecha-desde" class="input-modern w-full p-3 rounded-xl outline-none text-sm">
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-blue-400 uppercase block mb-2">Hasta</label>
+                        <input type="date" id="fecha-hasta" class="input-modern w-full p-3 rounded-xl outline-none text-sm">
+                    </div>
+                </div>
+                <button onclick="aplicarRangoPersonalizado()" class="btn-primary px-6 py-2 rounded-xl font-bold text-sm uppercase mt-4">Aplicar</button>
+            </div>
+        </div>
+
+        <!-- ESTADÍSTICAS -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <div class="reporte-card p-6 rounded-2xl">
+                <p class="reporte-label mb-2">Total Facturado</p>
+                <p class="reporte-total">$<span id="reporte-total">0.00</span></p>
+            </div>
+            <div class="reporte-card p-6 rounded-2xl">
+                <p class="reporte-label mb-2">Clientes Facturados</p>
+                <p class="reporte-total"><span id="reporte-clientes">0</span></p>
+            </div>
+            <div class="reporte-card p-6 rounded-2xl">
+                <p class="reporte-label mb-2">Promedio por Cliente</p>
+                <p class="reporte-total">$<span id="reporte-promedio">0.00</span></p>
+            </div>
+        </div>
+
+        <!-- BOTÓN DESCARGAR -->
+        <div class="mb-8 flex gap-4 flex-wrap">
+            <button onclick="descargarExcel()" class="export-btn px-8 py-4 rounded-2xl font-bold text-white text-sm uppercase flex items-center gap-2 shadow-lg">
+                📥 Descargar en Excel
+            </button>
+            <button onclick="imprimirReporte()" class="btn-primary px-8 py-4 rounded-2xl font-bold text-white text-sm uppercase flex items-center gap-2 shadow-lg">
+                🖨️ Imprimir
+            </button>
+        </div>
+
+        <!-- TABLA DE DATOS -->
+        <div class="bg-gray-800 border border-gray-700 rounded-3xl p-8 shadow-lg overflow-x-auto">
+            <h2 class="text-2xl font-black text-blue-400 uppercase mb-6 tracking-tight">Detalle de Facturación</h2>
+            <div id="tabla-contenedor">
+                <div class="empty-state">
+                    <p class="text-xl font-bold mb-2">Cargando datos...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://vjbdhbbxbvoigbidquya.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_4ogrbtxBrBWBFj-NRJOrbg_XnpmO4pS';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        let todosLosClientes = [];
+        let periodoReporte = 'semana';
+        let currentUser = JSON.parse(localStorage.getItem('session_tvdigital'));
+        let fechaDesdePersonalizado = null;
+        let fechaHastaPersonalizado = null;
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const isLightMode = html.classList.contains('light-mode');
+            if (isLightMode) {
+                html.classList.remove('light-mode');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                html.classList.add('light-mode');
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        function checkSession() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            if (savedTheme === 'light') {
+                document.documentElement.classList.add('light-mode');
+            }
+            
+            if (!currentUser) { window.location.href = 'logueo.html'; return; }
+            if (currentUser.rol === 'admin' || currentUser.rol === 'revendedor') document.getElementById('link-equipos').classList.remove('hidden');
+            
+            let infoText = `${currentUser.rol.toUpperCase()} • ${currentUser.username}`;
+            if (currentUser.vencimiento_acceso) {
+                const venciDate = new Date(currentUser.vencimiento_acceso);
+                const hoy = new Date();
+                const diasRestantes = Math.ceil((venciDate - hoy) / (1000 * 60 * 60 * 24));
+                infoText += ` | 📅 ${diasRestantes > 0 ? diasRestantes + ' días' : 'Vencido'}`;
+            }
+            document.getElementById('info-sesion').innerText = infoText;
+            
+            cargarClientes();
+        }
+
+        async function cargarClientes() {
+            const { data } = await supabaseClient.from('clientes').select('*').eq('creado_por', currentUser.id).order('fecha_vencimiento', { ascending: true });
+            todosLosClientes = data || [];
+            actualizarReporte();
+        }
+
+        function cambiarPeriodoReporte(periodo) {
+            periodoReporte = periodo;
+            document.querySelectorAll('.periodo-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('btn-' + periodo).classList.add('active');
+            
+            const rangoDiv = document.getElementById('rango-personalizado');
+            if (periodo === 'personalizado') {
+                rangoDiv.classList.remove('hidden');
+            } else {
+                rangoDiv.classList.add('hidden');
+            }
+            
+            actualizarReporte();
+        }
+
+        function aplicarRangoPersonalizado() {
+            fechaDesdePersonalizado = document.getElementById('fecha-desde').value;
+            fechaHastaPersonalizado = document.getElementById('fecha-hasta').value;
+            
+            if (!fechaDesdePersonalizado || !fechaHastaPersonalizado) {
+                alert('Por favor selecciona ambas fechas');
+                return;
+            }
+            
+            actualizarReporte();
+        }
+
+        function obtenerFechasReporte() {
+            const hoy = new Date();
+            let fechaInicio;
+            let fechaFin = hoy;
+
+            if (periodoReporte === 'semana') {
+                fechaInicio = new Date(hoy);
+                fechaInicio.setDate(hoy.getDate() - hoy.getDay());
+            } else if (periodoReporte === 'mes') {
+                fechaInicio = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+            } else if (periodoReporte === 'año') {
+                fechaInicio = new Date(hoy.getFullYear(), 0, 1);
+            } else if (periodoReporte === 'personalizado') {
+                fechaInicio = new Date(fechaDesdePersonalizado);
+                fechaFin = new Date(fechaHastaPersonalizado);
+            }
+
+            return { fechaInicio, fechaFin };
+        }
+
+        function actualizarReporte() {
+            const { fechaInicio, fechaFin } = obtenerFechasReporte();
+            
+            let datosReporte = [];
+            let totalFacturado = 0;
+            let clientesFacturados = new Set();
+
+            todosLosClientes.forEach(c => {
+                const fechaVencimiento = new Date(c.fecha_vencimiento);
+                if (fechaVencimiento >= fechaInicio && fechaVencimiento <= fechaFin) {
+                    const precio = parseFloat(c.precio) || 0;
+                    totalFacturado += precio;
+                    clientesFacturados.add(c.id);
+                    
+                    datosReporte.push({
+                        nombre: c.nombre_apellido,
+                        app: c.app_instalada,
+                        usuario: c.usuario,
+                        ciudad: c.ciudad,
+                        telefono: c.celular,
+                        precio: precio,
+                        fecha: c.fecha_vencimiento
+                    });
+                }
+            });
+
+            // Ordenar por fecha descendente
+            datosReporte.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+
+            const cantidadClientes = clientesFacturados.size;
+            const promedio = cantidadClientes > 0 ? (totalFacturado / cantidadClientes).toFixed(2) : 0;
+
+            // Actualizar estadísticas
+            document.getElementById('reporte-total').innerText = totalFacturado.toFixed(2);
+            document.getElementById('reporte-clientes').innerText = cantidadClientes;
+            document.getElementById('reporte-promedio').innerText = promedio;
+
+            // Generar tabla
+            generarTabla(datosReporte, totalFacturado);
+        }
+
+        function generarTabla(datos, total) {
+            const contenedor = document.getElementById('tabla-contenedor');
+
+            if (datos.length === 0) {
+                contenedor.innerHTML = `
+                    <div class="empty-state">
+                        <p class="text-xl font-bold mb-2">No hay datos para mostrar</p>
+                        <p class="text-sm">No hay clientes facturados en este período</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = `
+                <div class="overflow-x-auto">
+                    <table class="tabla-reporte">
+                        <thead>
+                            <tr>
+                                <th>Cliente</th>
+                                <th>Aplicación</th>
+                                <th>Usuario</th>
+                                <th>Ciudad</th>
+                                <th>Teléfono</th>
+                                <th>Precio ($)</th>
+                                <th>Fecha Vencimiento</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            datos.forEach(d => {
+                html += `
+                    <tr>
+                        <td>${d.nombre}</td>
+                        <td>${d.app}</td>
+                        <td>${d.usuario}</td>
+                        <td>${d.ciudad}</td>
+                        <td>${d.telefono}</td>
+                        <td>$${d.precio.toFixed(2)}</td>
+                        <td>${d.fecha}</td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                            <tr>
+                                <td colspan="5" style="text-align: right;">TOTAL</td>
+                                <td>$${total.toFixed(2)}</td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
+            contenedor.innerHTML = html;
+        }
+
+        function descargarExcel() {
+            const { fechaInicio, fechaFin } = obtenerFechasReporte();
+            
+            let datosExcel = [];
+            let totalFacturado = 0;
+
+            todosLosClientes.forEach(c => {
+                const fechaVencimiento = new Date(c.fecha_vencimiento);
+                if (fechaVencimiento >= fechaInicio && fechaVencimiento <= fechaFin) {
+                    const precio = parseFloat(c.precio) || 0;
+                    totalFacturado += precio;
+                    
+                    datosExcel.push({
+                        'Nombre Cliente': c.nombre_apellido,
+                        'Aplicación': c.app_instalada,
+                        'Usuario': c.usuario,
+                        'Ciudad': c.ciudad,
+                        'Teléfono': c.celular,
+                        'Precio ($)': precio.toFixed(2),
+                        'Fecha Vencimiento': c.fecha_vencimiento
+                    });
+                }
+            });
+
+            // Agregar fila de total
+            datosExcel.push({
+                'Nombre Cliente': '',
+                'Aplicación': '',
+                'Usuario': '',
+                'Ciudad': 'TOTAL',
+                'Teléfono': '',
+                'Precio ($)': totalFacturado.toFixed(2),
+                'Fecha Vencimiento': ''
+            });
+
+            const worksheet = XLSX.utils.json_to_sheet(datosExcel);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'Reporte');
+
+            // Estilos
+            worksheet['!cols'] = [
+                { wch: 20 },
+                { wch: 15 },
+                { wch: 15 },
+                { wch: 15 },
+                { wch: 15 },
+                { wch: 12 },
+                { wch: 18 }
+            ];
+
+            const fecha = new Date().toLocaleDateString('es-ES').replace(/\//g, '-');
+            XLSX.writeFile(workbook, `Reporte_${periodoReporte}_${fecha}.xlsx`);
+        }
+
+        function imprimirReporte() {
+            window.print();
+        }
+
+        function logout() { 
+            localStorage.removeItem('session_tvdigital'); 
+            window.location.href = 'logueo.html'; 
+        }
+        
+        window.onload = checkSession;
+    </script>
+</body>
+</html>
