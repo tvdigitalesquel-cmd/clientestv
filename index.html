@@ -1,1 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control de Clientes - TV App</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white font-sans">
 
+    <div class="container mx-auto px-4 py-8">
+        <header class="flex justify-between items-center mb-8">
+            <h1 class="text-2xl font-bold text-blue-500">Gestión de Clientes</h1>
+            <button onclick="mostrarModal()" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-sm transition">
+                + Nuevo Cliente
+            </button>
+        </header>
+
+        <div class="overflow-x-auto bg-gray-800 rounded-xl shadow-lg">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="border-b border-gray-700">
+                        <th class="p-4 text-gray-400 font-medium">Cliente</th>
+                        <th class="p-4 text-gray-400 font-medium">App</th>
+                        <th class="p-4 text-gray-400 font-medium">Usuario / Clave</th>
+                        <th class="p-4 text-gray-400 font-medium">Vencimiento</th>
+                    </tr>
+                </thead>
+                <tbody id="lista-clientes">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Configuración de Supabase
+        const SUPABASE_URL = 'https://vjbdhbbxbvoigbidquya.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_4ogrbtxBrBWBFj-NRJOrbg_XnpmO4pS';
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        async function cargarClientes() {
+            const { data, error } = await supabase
+                .from('clientes')
+                .select('*')
+                .order('fecha_vencimiento', { ascending: true });
+
+            if (error) {
+                console.error('Error:', error);
+                return;
+            }
+
+            const tbody = document.getElementById('lista-clientes');
+            tbody.innerHTML = '';
+
+            data.forEach(cliente => {
+                // Cálculo de días restantes
+                const hoy = new Date();
+                const venc = new Date(cliente.fecha_vencimiento);
+                const dias = Math.ceil((venc - hoy) / (1000 * 60 * 60 * 24));
+                const colorDias = dias <= 5 ? 'text-red-500' : 'text-green-400';
+
+                tbody.innerHTML += `
+                    <tr class="border-b border-gray-700 hover:bg-gray-750 transition">
+                        <td class="p-4">
+                            <div class="font-bold">${cliente.nombre_apellido}</div>
+                        </td>
+                        <td class="p-4">
+                            <span class="px-2 py-1 bg-gray-700 rounded text-xs">${cliente.app_instalada}</span>
+                        </td>
+                        <td class="p-4 text-sm font-mono">
+                            <div class="text-blue-300 underline">${cliente.usuario}</div>
+                            <div class="text-gray-500">${cliente.clave}</div>
+                        </td>
+                        <td class="p-4">
+                            <div class="font-bold ${colorDias}">${dias} días</div>
+                            <div class="text-xs text-gray-500">${cliente.fecha_vencimiento}</div>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        window.onload = cargarClientes;
+    </script>
+</body>
+</html>
