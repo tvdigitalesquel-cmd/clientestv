@@ -27,6 +27,7 @@
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
+            cursor: pointer;
         }
         .card-usuario::before {
             content: '';
@@ -40,6 +41,12 @@
         }
         .card-usuario:hover::before { left: 100%; }
         .card-usuario:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(59, 130, 246, 0.2); }
+        
+        .card-cliente {
+            animation: slideIn 0.4s ease-out;
+            transition: all 0.3s ease;
+        }
+        .card-cliente:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(59, 130, 246, 0.15); }
         
         .modal-backdrop {
             animation: fadeIn 0.3s ease-out;
@@ -310,6 +317,34 @@
         input:checked + .slider:before {
             transform: translateX(26px);
         }
+
+        .estado-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 16px;
+            font-size: 9px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .estado-activo { background-color: rgba(34, 197, 94, 0.2); color: #22c55e; }
+        .estado-vencido { background-color: rgba(239, 68, 68, 0.2); color: #ef4444; }
+        .estado-pronto { background-color: rgba(234, 179, 8, 0.2); color: #eab308; }
+
+        .back-btn {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            transition: all 0.3s ease;
+            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+        }
     </style>
 </head>
 <body id="body-app" class="bg-gray-950 text-white font-sans min-h-screen pb-20 transition-all duration-300">
@@ -337,13 +372,20 @@
 
     <div class="container mx-auto px-4 py-8">
         <!-- HEADER -->
-        <header class="mb-10">
+        <header class="mb-10" id="header-principal">
             <h1 id="titulo-gestion" class="text-4xl font-black text-blue-400 uppercase tracking-tight">Gestionar Equipo</h1>
             <p class="text-sm text-gray-500 mt-2">Administra los usuarios y vendedores de tu equipo</p>
         </header>
 
+        <!-- HEADER CLIENTES DEL VENDEDOR -->
+        <header id="header-clientes" class="mb-10 hidden">
+            <button onclick="volverAEquipo()" class="back-btn mb-4">← VOLVER</button>
+            <h1 id="titulo-clientes-vendedor" class="text-4xl font-black text-blue-400 uppercase tracking-tight">Clientes de Usuario</h1>
+            <p id="info-clientes-vendedor" class="text-sm text-gray-500 mt-2"></p>
+        </header>
+
         <!-- ESTADÍSTICAS -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8" id="estadisticas">
             <div class="stat-card p-6 rounded-2xl text-center">
                 <p class="text-xs uppercase font-bold text-blue-400 opacity-80 mb-2">Total de Usuarios</p>
                 <h2 id="count-total" class="text-4xl font-black text-blue-400">0</h2>
@@ -359,7 +401,7 @@
         </div>
 
         <!-- FORMULARIO NUEVO USUARIO -->
-        <div class="bg-gray-800 border border-gray-700 p-8 rounded-3xl mb-8 shadow-lg">
+        <div class="bg-gray-800 border border-gray-700 p-8 rounded-3xl mb-8 shadow-lg" id="seccion-form">
             <h2 class="text-2xl font-black text-blue-400 uppercase mb-6 tracking-tight">➕ Crear Nuevo Acceso</h2>
             
             <form id="formNuevoUsuario" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
@@ -386,9 +428,16 @@
         </div>
 
         <!-- LISTA DE USUARIOS -->
-        <div>
+        <div id="seccion-usuarios">
             <h2 class="text-2xl font-black text-blue-400 uppercase mb-6 tracking-tight">Equipo de Usuarios</h2>
             <div id="lista-usuarios-sistema" class="grid gap-4"></div>
+        </div>
+
+        <!-- LISTA DE CLIENTES DEL VENDEDOR -->
+        <div id="seccion-clientes-vendedor" class="hidden">
+            <h2 class="text-2xl font-black text-blue-400 uppercase mb-6 tracking-tight">Clientes Registrados</h2>
+            <input type="text" id="buscar-cliente" placeholder="🔍 Buscar cliente..." class="w-full input-modern p-4 rounded-2xl outline-none text-sm mb-6" onkeyup="filtrarClientesVendedor()">
+            <div id="lista-clientes-vendedor" class="grid gap-4"></div>
         </div>
     </div>
 
@@ -461,11 +510,24 @@
         let currentUser = JSON.parse(localStorage.getItem('session_tvdigital'));
         let usuarioAEliminar = null;
         let usuarioEnEdicion = null;
+        let vendedorSeleccionado = null;
+        let todosLosClientes = [];
+        let clientesVendedorActual = [];
 
         const rolColors = {
             'admin': { bg: 'bg-red-900/30', text: 'text-red-400', border: 'border-red-500/20', icon: '👑' },
             'revendedor': { bg: 'bg-purple-900/30', text: 'text-purple-400', border: 'border-purple-500/20', icon: '🔷' },
             'vendedor': { bg: 'bg-blue-900/30', text: 'text-blue-400', border: 'border-blue-500/20', icon: '📊' }
+        };
+
+        const configApps = {
+            'LUMIX TV': { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/lumixtv.png' },
+            'FEMON TV': { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/femontv.png' },
+            'TV PLUS 2': { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/tvplus2.png' },
+            'ZYRON TV': { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/zyrontv.png' },
+            'ZYRON TUBE': { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/zyrontube.png' },
+            'POWER SIGNALS': { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/powersignals.png' },
+            'CAELUM': { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/caelum.png' }
         };
 
         function toggleTheme() {
@@ -503,6 +565,12 @@
             }
             
             cargarUsuariosSistema();
+            cargarTodosLosClientes();
+        }
+
+        async function cargarTodosLosClientes() {
+            const { data } = await supabaseClient.from('clientes').select('*');
+            todosLosClientes = data || [];
         }
 
         async function cargarUsuariosSistema() {
@@ -540,8 +608,11 @@
                 const venciEn = u.vencimiento_acceso ? Math.ceil((new Date(u.vencimiento_acceso) - new Date()) / (1000 * 60 * 60 * 24)) : null;
                 const venciColor = venciEn !== null && venciEn <= 7 && venciEn > 0 ? 'text-yellow-400' : venciEn !== null && venciEn <= 0 ? 'text-red-400' : 'text-green-400';
                 
+                // Contar clientes del usuario
+                const clientesDelUsuario = todosLosClientes.filter(c => c.creado_por === u.id);
+                
                 cont.innerHTML += `
-                    <div class="bg-gray-800 border border-gray-700 p-6 rounded-2xl card-usuario shadow-lg hover:shadow-2xl ${isDisabled ? 'user-disabled' : ''}">
+                    <div class="bg-gray-800 border border-gray-700 p-6 rounded-2xl card-usuario shadow-lg hover:shadow-2xl ${isDisabled ? 'user-disabled' : ''}" onclick="verClientesVendedor(${JSON.stringify(u).replace(/"/g, '&quot;')})">
                         <div class="flex justify-between items-start mb-4">
                             <div class="flex items-start gap-4 flex-1">
                                 <div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl bg-gray-900 border border-gray-700">
@@ -555,14 +626,15 @@
                                         </span>
                                         ${isDisabled ? '<span class="disabled-badge ml-2">🔒 Deshabilitado</span>' : ''}
                                         <p class="text-xs text-gray-400 mt-1">📅 Vence: <span class="${venciColor}">${u.vencimiento_acceso ? u.vencimiento_acceso + ' (' + venciEn + ' días)' : 'Sin fecha'}</span></p>
+                                        <p class="text-xs text-blue-400 font-bold mt-1">👥 ${clientesDelUsuario.length} cliente${clientesDelUsuario.length !== 1 ? 's' : ''}</p>
                                     </div>
                                 </div>
                             </div>
-                            <div class="flex gap-2">
-                                <button onclick="abrirModalEditar(${JSON.stringify(u).replace(/"/g, '&quot;')})" class="btn-action edit-btn text-white py-2 px-3 rounded-xl font-bold text-sm transition-all" title="Editar usuario">
+                            <div class="flex gap-2 flex-col">
+                                <button onclick="event.stopPropagation(); abrirModalEditar(${JSON.stringify(u).replace(/"/g, '&quot;')})" class="btn-action edit-btn text-white py-2 px-3 rounded-xl font-bold text-sm transition-all" title="Editar usuario">
                                     ✏️
                                 </button>
-                                <button onclick="abrirConfirmarEliminar(${JSON.stringify(u).replace(/"/g, '&quot;')})" class="btn-action delete-btn text-white py-2 px-3 rounded-xl font-bold text-sm transition-all" title="Eliminar usuario">
+                                <button onclick="event.stopPropagation(); abrirConfirmarEliminar(${JSON.stringify(u).replace(/"/g, '&quot;')})" class="btn-action delete-btn text-white py-2 px-3 rounded-xl font-bold text-sm transition-all" title="Eliminar usuario">
                                     🗑️
                                 </button>
                             </div>
@@ -571,6 +643,146 @@
             });
             
             actualizarEstadisticas(countTotal, countRevendedores, countVendedores);
+        }
+
+        function verClientesVendedor(usuario) {
+            vendedorSeleccionado = usuario;
+            clientesVendedorActual = todosLosClientes.filter(c => c.creado_por === usuario.id);
+            
+            document.getElementById('header-principal').classList.add('hidden');
+            document.getElementById('seccion-form').classList.add('hidden');
+            document.getElementById('seccion-usuarios').classList.add('hidden');
+            document.getElementById('estadisticas').classList.add('hidden');
+            
+            document.getElementById('header-clientes').classList.remove('hidden');
+            document.getElementById('seccion-clientes-vendedor').classList.remove('hidden');
+            
+            document.getElementById('titulo-clientes-vendedor').innerText = `Clientes de ${usuario.username}`;
+            document.getElementById('info-clientes-vendedor').innerText = `Total: ${clientesVendedorActual.length} cliente${clientesVendedorActual.length !== 1 ? 's' : ''}`;
+            
+            mostrarClientesVendedor();
+            window.scrollTo(0, 0);
+        }
+
+        function volverAEquipo() {
+            vendedorSeleccionado = null;
+            clientesVendedorActual = [];
+            document.getElementById('buscar-cliente').value = '';
+            
+            document.getElementById('header-principal').classList.remove('hidden');
+            document.getElementById('seccion-form').classList.remove('hidden');
+            document.getElementById('seccion-usuarios').classList.remove('hidden');
+            document.getElementById('estadisticas').classList.remove('hidden');
+            
+            document.getElementById('header-clientes').classList.add('hidden');
+            document.getElementById('seccion-clientes-vendedor').classList.add('hidden');
+        }
+
+        function mostrarClientesVendedor() {
+            const cont = document.getElementById('lista-clientes-vendedor');
+            const hoy = new Date();
+            
+            if (clientesVendedorActual.length === 0) {
+                cont.innerHTML = `
+                    <div class="empty-state col-span-full">
+                        <p class="text-xl font-bold mb-2">No hay clientes registrados</p>
+                        <p class="text-sm">Este vendedor aún no tiene clientes asignados</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            cont.innerHTML = '';
+            clientesVendedorActual.forEach(c => {
+                const d = Math.ceil((new Date(c.fecha_vencimiento) - hoy) / (1000 * 60 * 60 * 24));
+                const config = configApps[c.app_instalada];
+                let estadoBadge = 'estado-activo';
+                
+                if (d <= 0) {
+                    estadoBadge = 'estado-vencido';
+                } else if (d <= 7) {
+                    estadoBadge = 'estado-pronto';
+                }
+                
+                cont.innerHTML += `
+                    <div class="bg-gray-800 border border-gray-700 p-4 rounded-2xl card-cliente shadow-lg">
+                        <div class="flex justify-between items-start">
+                            <div class="flex items-start gap-3 flex-1">
+                                <div class="w-10 h-10 bg-gray-900 rounded-lg flex items-center justify-center border border-gray-700 flex-shrink-0">
+                                    <img src="${config ? config.logo : ''}" class="w-5 h-5 object-contain">
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="font-bold text-sm uppercase">${c.nombre_apellido}</h3>
+                                    <p class="text-[9px] text-gray-400 mt-1">📱 ${c.usuario} • 📍 ${c.ciudad}</p>
+                                    <p class="text-[9px] text-gray-500 mt-1">📺 ${c.app_instalada} • 💰 $${parseFloat(c.precio).toFixed(2)}</p>
+                                </div>
+                            </div>
+                            <div class="text-right flex-shrink-0">
+                                <div class="text-xl font-black ${d <= 0 ? 'text-red-500' : d <= 7 ? 'text-yellow-400' : 'text-green-400'}">
+                                    ${d}
+                                </div>
+                                <span class="estado-badge ${estadoBadge}">${d <= 0 ? 'Vencido' : d + ' días'}</span>
+                            </div>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        function filtrarClientesVendedor() {
+            const bus = document.getElementById('buscar-cliente').value.toLowerCase();
+            const filtrados = clientesVendedorActual.filter(c => 
+                c.nombre_apellido.toLowerCase().includes(bus) || 
+                c.usuario.toLowerCase().includes(bus) ||
+                c.ciudad.toLowerCase().includes(bus)
+            );
+            
+            const cont = document.getElementById('lista-clientes-vendedor');
+            const hoy = new Date();
+            
+            if (filtrados.length === 0) {
+                cont.innerHTML = `
+                    <div class="empty-state col-span-full">
+                        <p class="text-xl font-bold mb-2">No hay resultados</p>
+                        <p class="text-sm">No se encontraron clientes con esos criterios</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            cont.innerHTML = '';
+            filtrados.forEach(c => {
+                const d = Math.ceil((new Date(c.fecha_vencimiento) - hoy) / (1000 * 60 * 60 * 24));
+                const config = configApps[c.app_instalada];
+                let estadoBadge = 'estado-activo';
+                
+                if (d <= 0) {
+                    estadoBadge = 'estado-vencido';
+                } else if (d <= 7) {
+                    estadoBadge = 'estado-pronto';
+                }
+                
+                cont.innerHTML += `
+                    <div class="bg-gray-800 border border-gray-700 p-4 rounded-2xl card-cliente shadow-lg">
+                        <div class="flex justify-between items-start">
+                            <div class="flex items-start gap-3 flex-1">
+                                <div class="w-10 h-10 bg-gray-900 rounded-lg flex items-center justify-center border border-gray-700 flex-shrink-0">
+                                    <img src="${config ? config.logo : ''}" class="w-5 h-5 object-contain">
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="font-bold text-sm uppercase">${c.nombre_apellido}</h3>
+                                    <p class="text-[9px] text-gray-400 mt-1">📱 ${c.usuario} • 📍 ${c.ciudad}</p>
+                                    <p class="text-[9px] text-gray-500 mt-1">📺 ${c.app_instalada} • 💰 $${parseFloat(c.precio).toFixed(2)}</p>
+                                </div>
+                            </div>
+                            <div class="text-right flex-shrink-0">
+                                <div class="text-xl font-black ${d <= 0 ? 'text-red-500' : d <= 7 ? 'text-yellow-400' : 'text-green-400'}">
+                                    ${d}
+                                </div>
+                                <span class="estado-badge ${estadoBadge}">${d <= 0 ? 'Vencido' : d + ' días'}</span>
+                            </div>
+                        </div>
+                    </div>`;
+            });
         }
 
         function actualizarEstadisticas(total, revendedores, vendedores) {
