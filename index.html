@@ -14,6 +14,9 @@
         }
         .alerta-vencimiento { animation: pulse-red 2s infinite; border-width: 2px; }
         .filtro-activo { border-color: white !important; font-weight: 800; transform: scale(1.05); }
+        .dashboard-card { cursor: pointer; transition: transform 0.2s; }
+        .dashboard-card:active { transform: scale(0.95); }
+        .card-seleccionada { ring: 4px solid white; ring-offset: 2px; ring-offset-color: #111827; }
     </style>
 </head>
 <body class="bg-gray-900 text-white font-sans min-h-screen pb-20">
@@ -30,34 +33,40 @@
         </header>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <div class="bg-green-700 p-4 rounded-xl shadow-lg border-b-4 border-green-900">
-                <p class="text-xs uppercase font-bold opacity-80">Activos</p>
+            <div id="btn-filtro-activos" onclick="cambiarFiltroEstado('ACTIVOS')" class="dashboard-card bg-green-700 p-4 rounded-xl shadow-lg border-b-4 border-green-900">
+                <p class="text-xs uppercase font-bold opacity-80">Usuarios Activos</p>
                 <h2 id="count-activos" class="text-4xl font-black my-2">0</h2>
+                <p class="text-[10px]">Toca para ver activos.</p>
             </div>
-            <div class="bg-red-600 p-4 rounded-xl shadow-lg border-b-4 border-red-800">
-                <p class="text-xs uppercase font-bold opacity-80">Vencidos</p>
+            <div id="btn-filtro-vencidos" onclick="cambiarFiltroEstado('VENCIDOS')" class="dashboard-card bg-red-600 p-4 rounded-xl shadow-lg border-b-4 border-red-800">
+                <p class="text-xs uppercase font-bold opacity-80">Usuarios Vencidos</p>
                 <h2 id="count-vencidos" class="text-4xl font-black my-2">0</h2>
+                <p class="text-[10px]">Toca para ver vencidos.</p>
             </div>
-            <div class="bg-yellow-500 p-4 rounded-xl shadow-lg border-b-4 border-yellow-700 text-gray-900">
+            <div id="btn-filtro-pronto" onclick="cambiarFiltroEstado('PRONTO')" class="dashboard-card bg-yellow-500 p-4 rounded-xl shadow-lg border-b-4 border-yellow-700 text-gray-900">
                 <p class="text-xs uppercase font-bold opacity-80">Vencen pronto (7d)</p>
-                <h2 id="count-pronto" class="text-4xl font-black my-2">0</h2>
+                <h2 id="count-pronto" class="text-4xl font-black my-2 text-gray-900">0</h2>
+                <p class="text-[10px]">Atención requerida.</p>
             </div>
         </div>
 
         <div class="space-y-4 mb-8">
-            <input type="text" id="inputBusqueda" onkeyup="filtrarClientes()" placeholder="🔍 Buscar por nombre, usuario o ciudad..." 
+            <div class="relative">
+                <input type="text" id="inputBusqueda" onkeyup="filtrarClientes()" placeholder="🔍 Buscar por nombre, usuario o ciudad..." 
                    class="w-full bg-gray-800 border border-gray-700 rounded-xl p-4 text-white outline-none focus:border-blue-500 transition">
+                <button onclick="limpiarFiltros()" class="absolute right-4 top-4 text-xs text-gray-500 underline uppercase font-bold">Limpiar</button>
+            </div>
             
             <div class="flex flex-wrap gap-2">
-                <button onclick="cambiarFiltro('TODOS', this)" class="btn-filtro filtro-activo flex-1 bg-gray-700 border-2 border-transparent py-2 rounded-lg text-xs font-bold uppercase">Todos</button>
-                <button onclick="cambiarFiltro('LUMIX', this)" class="btn-filtro flex-1 bg-blue-600 border-2 border-transparent py-2 rounded-lg text-xs font-bold uppercase">Lumix</button>
-                <button onclick="cambiarFiltro('TV PLUS 2', this)" class="btn-filtro flex-1 bg-green-600 border-2 border-transparent py-2 rounded-lg text-xs font-bold uppercase">TV Plus 2</button>
-                <button onclick="cambiarFiltro('FEMON', this)" class="btn-filtro flex-1 bg-purple-600 border-2 border-transparent py-2 rounded-lg text-xs font-bold uppercase">Femon</button>
+                <button onclick="cambiarFiltroApp('TODOS', this)" class="btn-app filtro-activo flex-1 bg-gray-700 border-2 border-transparent py-2 rounded-lg text-xs font-bold uppercase">Todas las Apps</button>
+                <button onclick="cambiarFiltroApp('LUMIX', this)" class="btn-app flex-1 bg-blue-600 border-2 border-transparent py-2 rounded-lg text-xs font-bold uppercase">Lumix</button>
+                <button onclick="cambiarFiltroApp('TV PLUS 2', this)" class="btn-app flex-1 bg-green-600 border-2 border-transparent py-2 rounded-lg text-xs font-bold uppercase">TV Plus 2</button>
+                <button onclick="cambiarFiltroApp('FEMON', this)" class="btn-app flex-1 bg-purple-600 border-2 border-transparent py-2 rounded-lg text-xs font-bold uppercase">Femon</button>
             </div>
         </div>
 
         <div id="contenedor-clientes" class="grid gap-4">
-            <div class="text-center py-10 text-gray-500">Cargando datos...</div>
+            <div class="text-center py-10 text-gray-500">Cargando base de datos...</div>
         </div>
     </div>
 
@@ -69,10 +78,7 @@
             </div>
             <form id="formCliente" class="space-y-4">
                 <input type="hidden" id="clienteId">
-                <div>
-                    <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Nombre Completo</label>
-                    <input type="text" id="nombre" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none focus:border-blue-500" required>
-                </div>
+                <input type="text" id="nombre" placeholder="Nombre Completo" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none focus:border-blue-500" required>
                 <div class="grid grid-cols-2 gap-4">
                     <input type="tel" id="celular" placeholder="Celular" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none">
                     <input type="text" id="ciudad" placeholder="Ciudad" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none">
@@ -101,6 +107,7 @@
 
         let todosLosClientes = [];
         let filtroAppActual = 'TODOS';
+        let filtroEstadoActual = 'TODOS'; // TODOS, ACTIVOS, VENCIDOS, PRONTO
 
         function abrirModal(editData = null) {
             const modal = document.getElementById('modalCliente');
@@ -147,42 +154,87 @@
             document.getElementById('count-pronto').innerText = pronto;
         }
 
-        function cambiarFiltro(app, el) {
+        function cambiarFiltroApp(app, el) {
             filtroAppActual = app;
-            document.querySelectorAll('.btn-filtro').forEach(b => b.classList.remove('filtro-activo'));
+            document.querySelectorAll('.btn-app').forEach(b => b.classList.remove('filtro-activo'));
             el.classList.add('filtro-activo');
+            filtrarClientes();
+        }
+
+        function cambiarFiltroEstado(estado) {
+            // Si tocamos el mismo que ya está activo, limpiamos el filtro de estado
+            if (filtroEstadoActual === estado) {
+                filtroEstadoActual = 'TODOS';
+            } else {
+                filtroEstadoActual = estado;
+            }
+            
+            // Visual de la tarjeta seleccionada
+            document.querySelectorAll('.dashboard-card').forEach(c => c.classList.remove('card-seleccionada'));
+            if (filtroEstadoActual !== 'TODOS') {
+                const idBtn = estado === 'ACTIVOS' ? 'btn-filtro-activos' : estado === 'VENCIDOS' ? 'btn-filtro-vencidos' : 'btn-filtro-pronto';
+                document.getElementById(idBtn).classList.add('card-seleccionada');
+            }
+            
+            filtrarClientes();
+        }
+
+        function limpiarFiltros() {
+            filtroAppActual = 'TODOS';
+            filtroEstadoActual = 'TODOS';
+            document.getElementById('inputBusqueda').value = '';
+            document.querySelectorAll('.dashboard-card').forEach(c => c.classList.remove('card-seleccionada'));
+            document.querySelectorAll('.btn-app').forEach(b => b.classList.remove('filtro-activo'));
+            document.querySelector('.btn-app').classList.add('filtro-activo');
             filtrarClientes();
         }
 
         function filtrarClientes() {
             const busqueda = document.getElementById('inputBusqueda').value.toLowerCase();
             const contenedor = document.getElementById('contenedor-clientes');
+            const hoy = new Date();
             
             const clientesFiltrados = todosLosClientes.filter(c => {
+                const dias = Math.ceil((new Date(c.fecha_vencimiento) - hoy) / (1000 * 60 * 60 * 24));
+                
+                // Filtro de Búsqueda
                 const coincideBusqueda = c.nombre_apellido.toLowerCase().includes(busqueda) || 
                                         c.usuario.toLowerCase().includes(busqueda) || 
                                         (c.ciudad && c.ciudad.toLowerCase().includes(busqueda));
+                
+                // Filtro de App
                 const coincideApp = filtroAppActual === 'TODOS' || c.app_instalada === filtroAppActual;
-                return coincideBusqueda && coincideApp;
+                
+                // Filtro de Estado (Dashboard)
+                let coincideEstado = true;
+                if (filtroEstadoActual === 'ACTIVOS') coincideEstado = dias > 0;
+                if (filtroEstadoActual === 'VENCIDOS') coincideEstado = dias <= 0;
+                if (filtroEstadoActual === 'PRONTO') coincideEstado = (dias > 0 && dias <= 7);
+
+                return coincideBusqueda && coincideApp && coincideEstado;
             });
 
             contenedor.innerHTML = '';
+            if (clientesFiltrados.length === 0) {
+                contenedor.innerHTML = '<div class="text-center py-10 text-gray-600">No hay clientes con estos filtros.</div>';
+                return;
+            }
+
             clientesFiltrados.forEach(c => {
-                const hoy = new Date();
-                const venc = new Date(c.fecha_vencimiento);
-                const dias = Math.ceil((venc - hoy) / (1000 * 60 * 60 * 24));
+                const dias = Math.ceil((new Date(c.fecha_vencimiento) - hoy) / (1000 * 60 * 60 * 24));
                 const esAlerta = dias <= 2;
                 const colorDias = dias <= 0 ? 'text-red-500 font-black' : dias <= 2 ? 'text-red-400 font-bold' : 'text-green-400';
-                
                 let colorApp = c.app_instalada === 'LUMIX' ? 'bg-blue-600' : c.app_instalada === 'FEMON' ? 'bg-purple-600' : 'bg-green-600';
 
                 contenedor.innerHTML += `
                     <div class="bg-gray-800 border border-gray-700 p-4 rounded-2xl flex justify-between items-center transition-all ${esAlerta ? 'alerta-vencimiento' : ''}">
                         <div class="flex-1">
-                            <h3 class="font-bold text-lg leading-tight">${c.nombre_apellido}</h3>
-                            <div class="text-[10px] text-gray-500 uppercase font-bold">${c.ciudad || ''} ${c.celular ? ' | ' + c.celular : ''}</div>
+                            <h3 class="font-bold text-lg leading-tight text-gray-100">${c.nombre_apellido}</h3>
+                            <div class="text-[10px] text-gray-500 uppercase font-bold tracking-tight">
+                                ${c.ciudad ? '📍 ' + c.ciudad : ''} ${c.celular ? ' | 📱 ' + c.celular : ''}
+                            </div>
                             <div class="flex items-center gap-2 mt-1">
-                                <span class="text-[9px] ${colorApp} text-white px-2 py-0.5 rounded font-black uppercase italic">${c.app_instalada}</span>
+                                <span class="text-[9px] ${colorApp} text-white px-2 py-0.5 rounded font-black uppercase italic tracking-tighter">${c.app_instalada}</span>
                                 <span class="text-sm text-gray-400 font-mono">${c.usuario}</span>
                             </div>
                         </div>
@@ -191,8 +243,8 @@
                             <div class="text-[9px] text-gray-500 font-bold">${c.fecha_vencimiento}</div>
                         </div>
                         <div class="flex gap-2">
-                            <button onclick='abrirModal(${JSON.stringify(c)})' class="bg-gray-700 p-2 rounded-lg text-blue-400">✏️</button>
-                            <button onclick="eliminarCliente(${c.id})" class="bg-gray-700 p-2 rounded-lg text-red-500">🗑️</button>
+                            <button onclick='abrirModal(${JSON.stringify(c)})' class="bg-gray-700 p-2 rounded-lg text-blue-400 active:bg-gray-600 transition">✏️</button>
+                            <button onclick="eliminarCliente(${c.id})" class="bg-gray-700 p-2 rounded-lg text-red-500 active:bg-gray-600 transition">🗑️</button>
                         </div>
                     </div>
                 `;
