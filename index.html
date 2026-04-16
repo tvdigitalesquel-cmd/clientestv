@@ -6,7 +6,6 @@
     <title>Tv Digital - Clientes</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.min.js"></script>
     <script>tailwind.config = { darkMode: 'class' }</script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -141,15 +140,6 @@
         .whatsapp-btn:hover {
             box-shadow: 0 10px 25px -5px rgba(37, 211, 102, 0.4);
             transform: scale(1.05);
-        }
-
-        .export-btn {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            transition: all 0.3s ease;
-        }
-        .export-btn:hover {
-            box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4);
-            transform: translateY(-2px);
         }
         
         .btn-action {
@@ -511,55 +501,13 @@
             background: rgba(255, 255, 255, 0.3);
         }
 
-        /* REPORTE */
-        .reporte-card {
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.1) 100%);
-            border: 1px solid rgba(16, 185, 129, 0.3);
+        .btn-reporte {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
             transition: all 0.3s ease;
         }
-
-        .reporte-card:hover {
-            border-color: rgba(16, 185, 129, 0.6);
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(5, 150, 105, 0.2) 100%);
-        }
-
-        .reporte-total {
-            font-size: 32px;
-            font-weight: 900;
-            color: #10b981;
-        }
-
-        .reporte-label {
-            font-size: 12px;
-            font-weight: bold;
-            text-transform: uppercase;
-            color: #6b7280;
-            letter-spacing: 1px;
-        }
-
-        .periodo-btn {
-            background: rgba(59, 130, 246, 0.1);
-            border: 2px solid rgba(59, 130, 246, 0.3);
-            color: #60a5fa;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 12px;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .periodo-btn.active {
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-            border-color: #3b82f6;
-            color: white;
-            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
-        }
-
-        .periodo-btn:hover:not(.active) {
-            border-color: rgba(59, 130, 246, 0.6);
-            background: rgba(59, 130, 246, 0.2);
+        .btn-reporte:hover {
+            box-shadow: 0 15px 35px -5px rgba(245, 158, 11, 0.4);
+            transform: translateY(-2px);
         }
     </style>
 </head>
@@ -571,6 +519,7 @@
             <div class="flex gap-8">
                 <a href="index.html" class="py-4 font-bold uppercase text-sm border-b-2 border-blue-500 text-blue-500 hover:text-blue-400 transition">Mis Clientes</a>
                 <a href="equipo.html" id="link-equipos" class="py-4 font-bold uppercase text-sm hidden hover:text-blue-400 transition">Gestionar Equipo</a>
+                <a href="reporte.html" class="py-4 font-bold uppercase text-sm hover:text-blue-400 transition">Reportes</a>
             </div>
             <div class="flex items-center gap-4">
                 <span id="info-sesion" class="text-xs text-gray-400 font-semibold"></span>
@@ -593,9 +542,14 @@
                 <h1 class="text-4xl font-black text-blue-400 uppercase tracking-tight">Gestor de Clientes</h1>
                 <p class="text-sm text-gray-500 mt-2">Administra todos tus clientes en un solo lugar</p>
             </div>
-            <button onclick="abrirModalNuevo()" id="btn-nuevo-cliente" class="btn-primary px-8 py-4 rounded-2xl font-bold shadow-lg text-sm active:scale-95 transition-transform">
-                ✨ NUEVO CLIENTE
-            </button>
+            <div class="flex gap-4">
+                <a href="reporte.html" class="btn-reporte px-8 py-4 rounded-2xl font-bold shadow-lg text-sm active:scale-95 transition-transform text-white">
+                    📊 Ver Reportes
+                </a>
+                <button onclick="abrirModalNuevo()" id="btn-nuevo-cliente" class="btn-primary px-8 py-4 rounded-2xl font-bold shadow-lg text-sm active:scale-95 transition-transform">
+                    ✨ NUEVO CLIENTE
+                </button>
+            </div>
         </header>
 
         <!-- ESTADÍSTICAS -->
@@ -612,41 +566,6 @@
                 <p class="text-xs uppercase font-bold text-yellow-400 opacity-80 mb-2">Próximos a Vencer</p>
                 <h2 id="count-pronto" class="text-4xl font-black text-yellow-400">0</h2>
             </div>
-        </div>
-
-        <!-- SECCIÓN DE REPORTES -->
-        <div class="bg-gray-800 border border-gray-700 p-8 rounded-3xl mb-8 shadow-lg">
-            <div class="flex justify-between items-center mb-6">
-                <div>
-                    <h2 class="text-2xl font-black text-blue-400 uppercase tracking-tight">📊 Reporte de Ingresos</h2>
-                    <p class="text-sm text-gray-500 mt-1">Consulta lo facturado por período</p>
-                </div>
-            </div>
-
-            <div class="flex gap-3 mb-6 flex-wrap">
-                <button onclick="cambiarPeriodoReporte('semana')" class="periodo-btn active" id="btn-semana">📅 Esta Semana</button>
-                <button onclick="cambiarPeriodoReporte('mes')" class="periodo-btn" id="btn-mes">📆 Este Mes</button>
-                <button onclick="cambiarPeriodoReporte('año')" class="periodo-btn" id="btn-año">📈 Este Año</button>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                <div class="reporte-card p-6 rounded-2xl">
-                    <p class="reporte-label mb-2">Total Facturado</p>
-                    <p class="reporte-total">$<span id="reporte-total">0</span></p>
-                </div>
-                <div class="reporte-card p-6 rounded-2xl">
-                    <p class="reporte-label mb-2">Clientes Facturados</p>
-                    <p class="reporte-total"><span id="reporte-clientes">0</span></p>
-                </div>
-                <div class="reporte-card p-6 rounded-2xl">
-                    <p class="reporte-label mb-2">Promedio por Cliente</p>
-                    <p class="reporte-total">$<span id="reporte-promedio">0</span></p>
-                </div>
-            </div>
-
-            <button onclick="descargarExcel()" class="export-btn px-6 py-3 rounded-2xl font-bold text-white text-sm uppercase flex items-center gap-2">
-                📥 Descargar en Excel
-            </button>
         </div>
 
         <!-- BÚSQUEDA Y FILTROS -->
@@ -763,7 +682,6 @@
         let todosLosClientes = [];
         let filtroAppActual = 'TODOS';
         let filtroEstadoActual = 'TODOS';
-        let periodoReporte = 'semana';
         let currentUser = JSON.parse(localStorage.getItem('session_tvdigital'));
         let clienteEnEdicion = null;
         let clienteAEliminar = null;
@@ -812,7 +730,6 @@
             
             cargarClientes();
             generarSelectorAppsModal();
-            actualizarReporte();
         }
 
         async function cargarClientes() {
@@ -822,112 +739,6 @@
             actualizarDashboard(todosLosClientes);
             filtrarClientes();
             verificarClientesProximos();
-            actualizarReporte();
-        }
-
-        function cambiarPeriodoReporte(periodo) {
-            periodoReporte = periodo;
-            document.querySelectorAll('.periodo-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById('btn-' + periodo).classList.add('active');
-            actualizarReporte();
-        }
-
-        function actualizarReporte() {
-            const hoy = new Date();
-            let fechaInicio;
-
-            if (periodoReporte === 'semana') {
-                fechaInicio = new Date(hoy);
-                fechaInicio.setDate(hoy.getDate() - hoy.getDay());
-            } else if (periodoReporte === 'mes') {
-                fechaInicio = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
-            } else {
-                fechaInicio = new Date(hoy.getFullYear(), 0, 1);
-            }
-
-            let totalFacturado = 0;
-            let clientesFacturados = new Set();
-
-            todosLosClientes.forEach(c => {
-                const fechaVencimiento = new Date(c.fecha_vencimiento);
-                if (fechaVencimiento >= fechaInicio && fechaVencimiento <= hoy) {
-                    totalFacturado += parseFloat(c.precio) || 0;
-                    clientesFacturados.add(c.id);
-                }
-            });
-
-            const cantidadClientes = clientesFacturados.size;
-            const promedio = cantidadClientes > 0 ? (totalFacturado / cantidadClientes).toFixed(2) : 0;
-
-            document.getElementById('reporte-total').innerText = totalFacturado.toFixed(2);
-            document.getElementById('reporte-clientes').innerText = cantidadClientes;
-            document.getElementById('reporte-promedio').innerText = promedio;
-        }
-
-        function descargarExcel() {
-            const hoy = new Date();
-            let fechaInicio;
-            let nombreHoja;
-
-            if (periodoReporte === 'semana') {
-                fechaInicio = new Date(hoy);
-                fechaInicio.setDate(hoy.getDate() - hoy.getDay());
-                nombreHoja = 'Reporte Semanal';
-            } else if (periodoReporte === 'mes') {
-                fechaInicio = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
-                nombreHoja = 'Reporte Mensual';
-            } else {
-                fechaInicio = new Date(hoy.getFullYear(), 0, 1);
-                nombreHoja = 'Reporte Anual';
-            }
-
-            let datosExcel = [];
-            let totalFacturado = 0;
-
-            todosLosClientes.forEach(c => {
-                const fechaVencimiento = new Date(c.fecha_vencimiento);
-                if (fechaVencimiento >= fechaInicio && fechaVencimiento <= hoy) {
-                    totalFacturado += parseFloat(c.precio) || 0;
-                    datosExcel.push({
-                        'Nombre Cliente': c.nombre_apellido,
-                        'Aplicación': c.app_instalada,
-                        'Usuario': c.usuario,
-                        'Ciudad': c.ciudad,
-                        'Teléfono': c.celular,
-                        'Precio ($)': parseFloat(c.precio).toFixed(2),
-                        'Fecha Vencimiento': c.fecha_vencimiento
-                    });
-                }
-            });
-
-            // Agregar fila de total
-            datosExcel.push({
-                'Nombre Cliente': '',
-                'Aplicación': '',
-                'Usuario': '',
-                'Ciudad': 'TOTAL',
-                'Teléfono': '',
-                'Precio ($)': totalFacturado.toFixed(2),
-                'Fecha Vencimiento': ''
-            });
-
-            const worksheet = XLSX.utils.json_to_sheet(datosExcel);
-            const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, nombreHoja);
-
-            // Estilos
-            worksheet['!cols'] = [
-                { wch: 20 },
-                { wch: 15 },
-                { wch: 15 },
-                { wch: 15 },
-                { wch: 15 },
-                { wch: 12 },
-                { wch: 18 }
-            ];
-
-            const fecha = new Date().toLocaleDateString('es-ES').replace(/\//g, '-');
-            XLSX.writeFile(workbook, `Reporte_${periodoReporte}_${fecha}.xlsx`);
         }
 
         function verificarClientesProximos() {
