@@ -23,15 +23,33 @@
 <body class="bg-gray-900 text-white font-sans min-h-screen pb-20">
 
     <div class="container mx-auto px-4 py-6">
-        <header class="flex justify-between items-center mb-8">
+        <header class="flex justify-between items-center mb-6">
             <div>
                 <h1 class="text-2xl font-bold text-blue-500 uppercase tracking-wider">Panel Clientes</h1>
-                <p class="text-gray-400 text-xs">Tecno Store Patagonia</p>
+                <p class="text-gray-400 text-xs italic">Tecno Store Patagonia</p>
             </div>
             <button onclick="abrirModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-xl font-bold shadow-lg transition transform active:scale-95">
                 + Nuevo
             </button>
         </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <div class="bg-green-700 p-4 rounded-xl shadow-lg border-b-4 border-green-900">
+                <p class="text-xs uppercase font-bold opacity-80">Usuarios Activos</p>
+                <h2 id="count-activos" class="text-4xl font-black my-2">0</h2>
+                <p class="text-[10px]">Clientes con servicio activo.</p>
+            </div>
+            <div class="bg-red-600 p-4 rounded-xl shadow-lg border-b-4 border-red-800">
+                <p class="text-xs uppercase font-bold opacity-80">Usuarios Vencidos</p>
+                <h2 id="count-vencidos" class="text-4xl font-black my-2">0</h2>
+                <p class="text-[10px]">Clientes que requieren renovación.</p>
+            </div>
+            <div class="bg-yellow-500 p-4 rounded-xl shadow-lg border-b-4 border-yellow-700 text-gray-900">
+                <p class="text-xs uppercase font-bold opacity-80">Vencen pronto (7 días)</p>
+                <h2 id="count-pronto" class="text-4xl font-black my-2 text-gray-900">0</h2>
+                <p class="text-[10px]">Atención requerida pronto.</p>
+            </div>
+        </div>
 
         <div id="contenedor-clientes" class="grid gap-4">
             <div class="text-center py-10 text-gray-500">Cargando base de datos...</div>
@@ -50,17 +68,17 @@
                 
                 <div>
                     <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Nombre Completo</label>
-                    <input type="text" id="nombre" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white focus:ring-2 focus:ring-blue-500 outline-none" required>
+                    <input type="text" id="nombre" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none focus:border-blue-500" required>
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Celular</label>
-                        <input type="tel" id="celular" placeholder="Ej: 2945..." class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none">
+                        <input type="tel" id="celular" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none">
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Ciudad</label>
-                        <input type="text" id="ciudad" placeholder="Esquel" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none">
+                        <input type="text" id="ciudad" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none">
                     </div>
                 </div>
 
@@ -92,7 +110,7 @@
                 
                 <div class="pt-4">
                     <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-xl font-bold transition shadow-lg">
-                        Guardar Cliente
+                        Guardar Registro
                     </button>
                 </div>
             </form>
@@ -137,12 +155,21 @@
 
             if (error) return;
 
+            // Reiniciar contadores
+            let activos = 0, vencidos = 0, pronto = 0;
+
             contenedor.innerHTML = '';
             data.forEach(c => {
                 const hoy = new Date();
                 const venc = new Date(c.fecha_vencimiento);
-                const dias = Math.ceil((venc - hoy) / (1000 * 60 * 60 * 24));
+                const diferenciaMs = venc - hoy;
+                const dias = Math.ceil(diferenciaMs / (1000 * 60 * 60 * 24));
                 
+                // Actualizar lógica de contadores
+                if (dias > 0) activos++;
+                else vencidos++;
+                if (dias > 0 && dias <= 7) pronto++;
+
                 const esAlerta = dias <= 2;
                 const claseAlerta = esAlerta ? 'alerta-vencimiento' : '';
                 const colorDias = dias <= 0 ? 'text-red-500 font-black' : dias <= 2 ? 'text-red-400 font-bold' : 'text-green-400';
@@ -156,31 +183,36 @@
                     <div class="bg-gray-800 border border-gray-700 p-4 rounded-2xl shadow-sm flex justify-between items-center transition-all ${claseAlerta}">
                         <div class="flex-1">
                             <h3 class="font-bold text-lg text-white leading-tight">${c.nombre_apellido}</h3>
-                            <div class="text-[10px] text-gray-400 mb-1 uppercase font-semibold">
+                            <div class="text-[10px] text-gray-500 mb-1 uppercase font-bold tracking-tight">
                                 ${c.ciudad ? '📍 ' + c.ciudad : ''} ${c.celular ? ' | 📱 ' + c.celular : ''}
                             </div>
                             <div class="flex items-center gap-2 mt-1">
-                                <span class="text-[10px] ${colorApp} text-white px-2 py-0.5 rounded font-bold uppercase tracking-tighter">
+                                <span class="text-[9px] ${colorApp} text-white px-2 py-0.5 rounded font-black uppercase italic">
                                     ${c.app_instalada}
                                 </span>
-                                <span class="text-sm text-gray-300 font-mono">${c.usuario}</span>
+                                <span class="text-sm text-gray-400 font-mono italic">${c.usuario}</span>
                             </div>
                         </div>
-                        <div class="text-right mr-4">
+                        <div class="text-right mr-3">
                             <div class="${colorDias} text-xl">${dias <= 0 ? 'Vencido' : dias + ' d'}</div>
-                            <div class="text-[9px] text-gray-500 font-bold uppercase">${c.fecha_vencimiento}</div>
+                            <div class="text-[9px] text-gray-500 font-bold">${c.fecha_vencimiento}</div>
                         </div>
                         <div class="flex gap-2">
-                            <button onclick='abrirModal(${JSON.stringify(c)})' class="bg-gray-700 p-2 rounded-lg text-blue-400">✏️</button>
-                            <button onclick="eliminarCliente(${c.id})" class="bg-gray-700 p-2 rounded-lg text-red-500">🗑️</button>
+                            <button onclick='abrirModal(${JSON.stringify(c)})' class="bg-gray-700 p-2 rounded-lg text-blue-400 active:scale-90 transition">✏️</button>
+                            <button onclick="eliminarCliente(${c.id})" class="bg-gray-700 p-2 rounded-lg text-red-500 active:scale-90 transition">🗑️</button>
                         </div>
                     </div>
                 `;
             });
+
+            // Actualizar Dashboard en pantalla
+            document.getElementById('count-activos').innerText = activos;
+            document.getElementById('count-vencidos').innerText = vencidos;
+            document.getElementById('count-pronto').innerText = pronto;
         }
 
         async function eliminarCliente(id) {
-            if (confirm('¿Eliminar este cliente?')) {
+            if (confirm('¿Eliminar cliente permanentemente?')) {
                 const { error } = await supabaseClient.from('clientes').delete().eq('id', id);
                 if (!error) cargarClientes();
             }
@@ -199,18 +231,13 @@
                 fecha_vencimiento: document.getElementById('vencimiento').value
             };
 
-            let res;
-            if (id) {
-                res = await supabaseClient.from('clientes').update(datos).eq('id', id);
-            } else {
-                res = await supabaseClient.from('clientes').insert([datos]);
-            }
+            let res = id ? await supabaseClient.from('clientes').update(datos).eq('id', id) : await supabaseClient.from('clientes').insert([datos]);
 
             if (!res.error) {
                 cerrarModal();
                 cargarClientes();
             } else {
-                alert("Error al guardar: " + res.error.message);
+                alert("Error en la base de datos.");
             }
         });
 
