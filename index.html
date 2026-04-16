@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tv Digital - Sistema de Gestión</title>
+    <title>Tv Digital - Panel de Control</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -34,12 +34,12 @@
 
     <div id="pantalla-login" class="fixed inset-0 bg-gray-900 z-[100] flex items-center justify-center p-4">
         <div class="bg-gray-800 p-8 rounded-2xl border border-gray-700 w-full max-w-sm shadow-2xl">
-            <h1 class="text-2xl font-black text-blue-500 mb-6 text-center uppercase italic tracking-tighter">Tv Digital Login</h1>
+            <h1 class="text-2xl font-black text-blue-500 mb-6 text-center uppercase italic tracking-tighter">Tv Digital</h1>
             <form id="formLogin" class="space-y-4">
                 <input type="text" id="loginUser" placeholder="Usuario" class="w-full bg-gray-900 border border-gray-700 p-3 rounded-xl outline-none text-white" required>
                 <input type="password" id="loginPass" placeholder="Contraseña" class="w-full bg-gray-900 border border-gray-700 p-3 rounded-xl outline-none text-white" required>
-                <button type="submit" class="w-full bg-blue-600 p-3 rounded-xl font-bold uppercase hover:bg-blue-700 transition shadow-lg">Entrar</button>
-                <p id="loginError" class="text-red-500 text-xs text-center hidden italic mt-2">Acceso denegado o cuenta vencida</p>
+                <button type="submit" class="w-full bg-blue-600 p-3 rounded-xl font-bold uppercase hover:bg-blue-700 transition">Entrar</button>
+                <p id="loginError" class="text-red-500 text-[10px] text-center hidden italic mt-2 uppercase font-bold">Error de acceso o cuenta vencida</p>
             </form>
         </div>
     </div>
@@ -52,42 +52,52 @@
                     <button onclick="cambiarSeccion('usuarios')" id="tab-usuarios" class="py-4 font-bold uppercase text-[10px] hidden">Gestionar Vendedores</button>
                 </div>
                 <div class="flex items-center gap-3">
-                    <button onclick="toggleTheme()" class="bg-gray-700 p-2 rounded-full text-sm">☀️</button>
+                    <button onclick="toggleTheme()" class="bg-gray-700 p-2 rounded-full text-xs">☀️</button>
                     <button onclick="logout()" class="text-red-500 font-bold text-[10px] uppercase border border-red-500/30 px-2 py-1 rounded">Salir</button>
                 </div>
             </div>
         </nav>
 
         <div class="container mx-auto px-4">
+            
+            <div id="alerta-vencimiento-sistema" class="hidden mb-4 p-3 rounded-xl bg-blue-600/20 border border-blue-500/50 text-center">
+                <p class="text-[10px] font-bold uppercase tracking-widest text-blue-400">
+                    ⚠️ Tu acceso al sistema vence en: <span id="dias-restantes-sistema" class="text-white">0</span> días
+                </p>
+            </div>
+
+            <div id="modo-supervision" class="hidden mb-4 p-3 rounded-xl bg-purple-600 border border-purple-400 text-center flex justify-between items-center">
+                <p class="text-[10px] font-black uppercase italic">👁️ Viendo clientes de: <span id="vendedor-nombre"></span></p>
+                <button onclick="salirSupervision()" class="bg-white text-purple-700 px-3 py-1 rounded-lg font-black text-[9px] uppercase">Volver a lo mío</button>
+            </div>
+
             <section id="sec-clientes">
                 <header class="flex justify-between items-center mb-6">
                     <div>
-                        <h1 class="text-xl font-black text-blue-500 uppercase tracking-tighter italic">Panel Clientes</h1>
-                        <p id="info-sesion" class="text-[10px] text-gray-500 font-bold"></p>
+                        <h1 class="text-xl font-black text-blue-500 uppercase italic">Clientes</h1>
+                        <p id="info-sesion" class="text-[10px] text-gray-500 font-bold uppercase"></p>
                     </div>
-                    <button onclick="abrirModal()" class="bg-blue-600 hover:bg-blue-700 px-5 py-2 rounded-xl font-bold shadow-lg transition active:scale-95 text-sm">
-                        + Nuevo
-                    </button>
+                    <button onclick="abrirModal()" id="btn-nuevo-cliente" class="bg-blue-600 px-5 py-2 rounded-xl font-bold shadow-lg text-sm">+ Nuevo</button>
                 </header>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
-                    <div id="btn-filtro-activos" onclick="cambiarFiltroEstado('ACTIVOS')" class="dashboard-card bg-green-700 p-4 rounded-xl shadow-lg border-b-4 border-green-900">
+                    <div id="btn-filtro-activos" onclick="cambiarFiltroEstado('ACTIVOS')" class="dashboard-card bg-green-700 p-4 rounded-xl border-b-4 border-green-900">
                         <p class="text-[10px] uppercase font-bold opacity-70">Activos</p>
                         <h2 id="count-activos" class="text-3xl font-black">0</h2>
                     </div>
-                    <div id="btn-filtro-vencidos" onclick="cambiarFiltroEstado('VENCIDOS')" class="dashboard-card bg-red-600 p-4 rounded-xl shadow-lg border-b-4 border-red-800">
+                    <div id="btn-filtro-vencidos" onclick="cambiarFiltroEstado('VENCIDOS')" class="dashboard-card bg-red-600 p-4 rounded-xl border-b-4 border-red-800">
                         <p class="text-[10px] uppercase font-bold opacity-70">Vencidos</p>
                         <h2 id="count-vencidos" class="text-3xl font-black">0</h2>
                     </div>
-                    <div id="btn-filtro-pronto" onclick="cambiarFiltroEstado('PRONTO')" class="dashboard-card bg-yellow-500 p-4 rounded-xl shadow-lg border-b-4 border-yellow-700 text-gray-900">
+                    <div id="btn-filtro-pronto" onclick="cambiarFiltroEstado('PRONTO')" class="dashboard-card bg-yellow-500 p-4 rounded-xl border-b-4 border-yellow-700 text-gray-900">
                         <p class="text-[10px] uppercase font-bold opacity-70">Vencen pronto</p>
                         <h2 id="count-pronto" class="text-3xl font-black">0</h2>
                     </div>
                 </div>
 
                 <div class="space-y-4 mb-8">
-                    <input type="text" id="inputBusqueda" onkeyup="filtrarClientes()" placeholder="🔍 Buscar nombre, usuario o ciudad..." 
-                       class="w-full bg-gray-800 border border-gray-700 rounded-xl p-4 text-white outline-none focus:border-blue-500 shadow-inner">
+                    <input type="text" id="inputBusqueda" onkeyup="filtrarClientes()" placeholder="🔍 Buscar..." 
+                       class="w-full bg-gray-800 border border-gray-700 rounded-xl p-4 text-white outline-none focus:border-blue-500">
                     <div class="flex flex-wrap gap-2">
                         <button onclick="cambiarFiltroApp('TODOS', this)" class="btn-app filtro-activo flex-1 bg-gray-700 py-2 rounded-lg text-[10px] font-bold uppercase">Todas</button>
                         <button onclick="cambiarFiltroApp('LUMIX', this)" class="btn-app flex-1 bg-blue-600 py-2 rounded-lg text-[10px] font-bold uppercase">Lumix</button>
@@ -110,16 +120,17 @@
                             <option value="admin">Administrador</option>
                         </select>
                         <input type="date" id="newVencimiento" class="bg-gray-900 p-3 rounded-xl border border-gray-700 outline-none text-sm text-white" required>
-                        <button type="submit" class="bg-blue-600 font-bold rounded-xl uppercase text-[10px] hover:bg-blue-700 transition">Dar Acceso</button>
+                        <button type="submit" class="bg-blue-600 font-bold rounded-xl uppercase text-[10px]">Dar Acceso</button>
                     </form>
                 </div>
+                <p class="text-[10px] text-gray-500 mb-3 font-bold uppercase tracking-widest">⚠️ Haz clic en un vendedor para supervisar sus clientes</p>
                 <div id="lista-usuarios-sistema" class="grid gap-3"></div>
             </section>
         </div>
     </div>
 
-    <div id="modalCliente" class="fixed inset-0 bg-black/90 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50 overflow-y-auto">
-        <div class="bg-gray-800 rounded-2xl p-6 w-full max-w-md border border-gray-700 shadow-2xl my-auto text-white">
+    <div id="modalCliente" class="fixed inset-0 bg-black/90 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-gray-800 rounded-2xl p-6 w-full max-w-md border border-gray-700 shadow-2xl text-white">
             <h2 id="modalTitulo" class="text-xl font-bold text-blue-500 mb-6 uppercase">Datos Cliente</h2>
             <form id="formCliente" class="space-y-4">
                 <input type="hidden" id="clienteId">
@@ -158,24 +169,20 @@
         let filtroAppActual = 'TODOS';
         let filtroEstadoActual = 'TODOS';
         let currentUser = JSON.parse(localStorage.getItem('session_tvdigital'));
+        let idSupervisado = null; // Para que el admin vea a otros
 
-        // --- SISTEMA DE LOGIN Y VENCIMIENTO ---
+        // --- LOGIN Y VENCIMIENTO ---
         document.getElementById('formLogin').onsubmit = async (e) => {
             e.preventDefault();
             const u = document.getElementById('loginUser').value;
             const p = document.getElementById('loginPass').value;
 
-            const { data, error } = await supabaseClient.from('usuarios_sistema')
-                .select('*').eq('username', u).eq('password', p).single();
+            const { data } = await supabaseClient.from('usuarios_sistema').select('*').eq('username', u).eq('password', p).single();
 
             if (data) {
                 const hoy = new Date();
                 const venci = data.vencimiento_acceso ? new Date(data.vencimiento_acceso) : null;
-                
-                if (venci && venci < hoy) {
-                    alert("⚠️ ACCESO VENCIDO. Contacta al soporte.");
-                    return;
-                }
+                if (venci && venci < hoy) { alert("⚠️ TU ACCESO HA VENCIDO."); return; }
                 localStorage.setItem('session_tvdigital', JSON.stringify(data));
                 location.reload();
             } else {
@@ -187,7 +194,17 @@
             if (currentUser) {
                 document.getElementById('pantalla-login').classList.add('hidden');
                 document.getElementById('contenido-app').classList.remove('hidden');
-                document.getElementById('info-sesion').innerText = `Vendedor: ${currentUser.username}`;
+                document.getElementById('info-sesion').innerText = `Sesión: ${currentUser.username}`;
+                
+                // Mostrar días restantes al vendedor
+                if (currentUser.vencimiento_acceso) {
+                    const dias = Math.ceil((new Date(currentUser.vencimiento_acceso) - new Date()) / (1000 * 60 * 60 * 24));
+                    if (dias <= 10) {
+                        document.getElementById('alerta-vencimiento-sistema').classList.remove('hidden');
+                        document.getElementById('dias-restantes-sistema').innerText = dias;
+                    }
+                }
+
                 if (currentUser.rol === 'admin') document.getElementById('tab-usuarios').classList.remove('hidden');
                 cargarClientes();
             }
@@ -195,20 +212,63 @@
 
         function logout() { localStorage.removeItem('session_tvdigital'); location.reload(); }
 
-        // --- LÓGICA DE CLIENTES PRIVADOS ---
+        // --- CARGAR CLIENTES (MODO PRIVADO O SUPERVISIÓN) ---
         async function cargarClientes() {
-            const { data, error } = await supabaseClient.from('clientes')
+            const idABuscar = idSupervisado || currentUser.id;
+            const { data } = await supabaseClient.from('clientes')
                 .select('*')
-                .eq('creado_por', currentUser.id)
+                .eq('creado_por', idABuscar)
                 .order('fecha_vencimiento', { ascending: true });
             
-            if (!error) {
-                todosLosClientes = data;
-                actualizarDashboard(data);
-                filtrarClientes();
-            }
+            todosLosClientes = data || [];
+            actualizarDashboard(todosLosClientes);
+            filtrarClientes();
         }
 
+        // --- SUPERVISIÓN ---
+        function supervisarVendedor(id, nombre) {
+            idSupervisado = id;
+            document.getElementById('vendedor-nombre').innerText = nombre;
+            document.getElementById('modo-supervision').classList.remove('hidden');
+            document.getElementById('btn-nuevo-cliente').classList.add('hidden'); // No agregar clientes a otros
+            cambiarSeccion('clientes');
+            cargarClientes();
+        }
+
+        function salirSupervision() {
+            idSupervisado = null;
+            document.getElementById('modo-supervision').classList.add('hidden');
+            document.getElementById('btn-nuevo-cliente').classList.remove('hidden');
+            cargarClientes();
+        }
+
+        // --- ADMIN USUARIOS ---
+        async function cargarUsuariosSistema() {
+            const { data } = await supabaseClient.from('usuarios_sistema').select('*');
+            const cont = document.getElementById('lista-usuarios-sistema');
+            cont.innerHTML = '';
+            data.forEach(u => {
+                const hoy = new Date();
+                const venci = u.vencimiento_acceso ? new Date(u.vencimiento_acceso) : null;
+                const estaVencido = venci && venci < hoy;
+                const dias = venci ? Math.ceil((venci - hoy) / (1000 * 60 * 60 * 24)) : '∞';
+
+                cont.innerHTML += `
+                    <div class="bg-gray-800 p-4 border border-gray-700 rounded-xl flex justify-between items-center cursor-pointer hover:border-purple-500 transition shadow-md"
+                         onclick="supervisarVendedor(${u.id}, '${u.username}')">
+                        <div>
+                            <p class="font-black text-sm uppercase">${u.username} <span class="text-[9px] text-blue-500">[${u.rol}]</span></p>
+                            <p class="text-[10px] ${estaVencido ? 'text-red-500' : 'text-gray-400'} font-bold">
+                                Acceso vence en: ${dias} días ${estaVencido ? '(CORTADO)' : ''}
+                            </p>
+                        </div>
+                        <button onclick="event.stopPropagation(); eliminarUserSistema(${u.id})" class="text-red-500 text-[10px] font-bold border border-red-500/20 px-3 py-1 rounded">BORRAR</button>
+                    </div>
+                `;
+            });
+        }
+
+        // --- RESTO DE FUNCIONALIDAD ---
         document.getElementById('formCliente').onsubmit = async (e) => {
             e.preventDefault();
             const id = document.getElementById('clienteId').value;
@@ -235,7 +295,7 @@
             
             const filtrados = todosLosClientes.filter(c => {
                 const dias = Math.ceil((new Date(c.fecha_vencimiento) - hoy) / (1000 * 60 * 60 * 24));
-                const coincideBus = c.nombre_apellido.toLowerCase().includes(bus) || c.usuario.toLowerCase().includes(bus);
+                const coincideBus = c.nombre_apellido.toLowerCase().includes(bus) || c.usuario.toLowerCase().includes(bus) || (c.ciudad && c.ciudad.toLowerCase().includes(bus));
                 const coincideApp = filtroAppActual === 'TODOS' || c.app_instalada === filtroAppActual;
                 let coincideEst = true;
                 if (filtroEstadoActual === 'ACTIVOS') coincideEst = dias > 0;
@@ -249,53 +309,24 @@
                 const dias = Math.ceil((new Date(c.fecha_vencimiento) - hoy) / (1000 * 60 * 60 * 24));
                 const esAlerta = dias <= 2;
                 cont.innerHTML += `
-                    <div class="bg-gray-800 border border-gray-700 p-4 rounded-2xl flex justify-between items-center shadow-lg transition-all ${esAlerta ? 'alerta-vencimiento' : ''}">
+                    <div class="bg-gray-800 border border-gray-700 p-4 rounded-2xl flex justify-between items-center ${esAlerta ? 'alerta-vencimiento' : ''}">
                         <div class="flex-1">
-                            <h3 class="font-bold text-md leading-tight">${c.nombre_apellido}</h3>
-                            <div class="text-[9px] text-gray-400 uppercase font-black tracking-widest mt-1">
-                                📍 ${c.ciudad || 'S/D'} | 📱 ${c.celular || 'S/D'}
-                            </div>
-                            <div class="flex items-center gap-2 mt-2">
-                                <span class="text-[8px] bg-blue-600 px-2 py-0.5 rounded font-black italic">${c.app_instalada}</span>
-                                <span class="text-[10px] text-gray-500 font-mono">${c.usuario}</span>
-                            </div>
+                            <h3 class="font-bold text-sm">${c.nombre_apellido}</h3>
+                            <p class="text-[9px] text-gray-400 font-bold uppercase">${c.app_instalada} | ${c.usuario}</p>
+                            <p class="text-[9px] text-blue-500 font-bold">${c.celular || 'S/N'} ${c.ciudad ? ' - '+c.ciudad : ''}</p>
                         </div>
-                        <div class="text-right mr-3">
-                            <div class="text-xl font-black ${dias <= 0 ? 'text-red-500' : 'text-green-500'}">${dias <= 0 ? 'Vencido' : dias + ' d'}</div>
-                            <div class="text-[11px] font-black text-blue-500">$${c.precio}</div>
+                        <div class="text-right mr-4">
+                            <p class="text-xl font-black ${dias <= 0 ? 'text-red-500' : 'text-green-500'}">${dias <= 0 ? 'Vencido' : dias + ' d'}</p>
+                            <p class="text-[10px] font-bold text-blue-500">$${c.precio}</p>
                         </div>
                         <div class="flex flex-col gap-2">
-                            <div class="flex gap-2">
-                                <button onclick='abrirModal(${JSON.stringify(c)})' class="bg-gray-700 p-2 rounded-lg text-blue-400">✏️</button>
-                                <button onclick="eliminarCliente(${c.id})" class="bg-gray-700 p-2 rounded-lg text-red-500">🗑️</button>
+                            <div class="flex gap-1">
+                                <button onclick='abrirModal(${JSON.stringify(c)})' class="bg-gray-700 p-2 rounded-lg text-blue-400 text-xs">✏️</button>
+                                <button onclick="eliminarCliente(${c.id})" class="bg-gray-700 p-2 rounded-lg text-red-500 text-xs">🗑️</button>
                             </div>
                             <button onclick="enviarWA('${c.nombre_apellido}','${c.celular}',${dias},'${c.precio}','${c.app_instalada}')" 
-                                    class="bg-green-600 text-white p-2 rounded-lg text-[9px] font-bold uppercase shadow-md active:scale-95">Mandar Msj</button>
+                                class="bg-green-600 text-white p-2 rounded-lg text-[9px] font-bold uppercase">Msj</button>
                         </div>
-                    </div>
-                `;
-            });
-        }
-
-        // --- ADMINISTRACIÓN DE USUARIOS (SÓLO ADMIN) ---
-        async function cargarUsuariosSistema() {
-            const { data } = await supabaseClient.from('usuarios_sistema').select('*');
-            const cont = document.getElementById('lista-usuarios-sistema');
-            cont.innerHTML = '';
-            data.forEach(u => {
-                const hoy = new Date();
-                const venci = u.vencimiento_acceso ? new Date(u.vencimiento_acceso) : null;
-                const estaVencido = venci && venci < hoy;
-                
-                cont.innerHTML += `
-                    <div class="bg-gray-800 p-4 border border-gray-700 rounded-xl flex justify-between items-center shadow-md">
-                        <div>
-                            <p class="font-black text-sm">${u.username} <span class="text-[9px] text-blue-500 uppercase ml-2">[${u.rol}]</span></p>
-                            <p class="text-[10px] ${estaVencido ? 'text-red-500' : 'text-gray-500'} font-bold">
-                                Vence: ${u.vencimiento_acceso || 'Sin límite'} ${estaVencido ? '(EXPIRADO)' : ''}
-                            </p>
-                        </div>
-                        <button onclick="eliminarUserSistema(${u.id})" class="text-red-500 text-[10px] font-bold border border-red-500/20 px-3 py-1 rounded hover:bg-red-500 hover:text-white transition">BORRAR</button>
                     </div>
                 `;
             });
@@ -303,31 +334,20 @@
 
         document.getElementById('formNuevoUsuario').onsubmit = async (e) => {
             e.preventDefault();
-            const { error } = await supabaseClient.from('usuarios_sistema').insert([{
+            await supabaseClient.from('usuarios_sistema').insert([{
                 username: document.getElementById('newUsername').value,
                 password: document.getElementById('newPassword').value,
                 rol: document.getElementById('newRol').value,
                 vencimiento_acceso: document.getElementById('newVencimiento').value
             }]);
-            if (!error) { e.target.reset(); cargarUsuariosSistema(); }
-            else alert("Error al crear usuario.");
+            e.target.reset(); cargarUsuariosSistema();
         };
 
         async function eliminarUserSistema(id) {
-            if (confirm('¿Eliminar este acceso?')) {
+            if (confirm('¿Borrar este vendedor?')) {
                 await supabaseClient.from('usuarios_sistema').delete().eq('id', id);
                 cargarUsuariosSistema();
             }
-        }
-
-        // --- FUNCIONES COMUNES ---
-        function enviarWA(nom, cel, dias, pre, app) {
-            if (!cel) return alert("Número no registrado.");
-            const num = cel.replace(/\D/g,'');
-            const msj = dias <= 0 
-                ? `Hola ${nom}! Te escribo de Tv Digital Patagonia. Tu servicio ${app} venció. El costo de renovación es $${pre}. Avisanos!`
-                : `Hola ${nom}! Te escribo de Tv Digital Patagonia. Tu servicio ${app} vence en ${dias} días. El costo es $${pre}. Saludos!`;
-            window.open(`https://wa.me/${num}?text=${encodeURIComponent(msj)}`, '_blank');
         }
 
         function actualizarDashboard(data) {
@@ -368,6 +388,14 @@
             filtrarClientes();
         }
 
+        function enviarWA(nom, cel, dias, pre, app) {
+            if (!cel) return alert("Sin número");
+            const msj = dias <= 0 
+                ? `Hola ${nom}! Te aviso de Tv Digital que venció tu ${app}. Renovación: $${pre}.`
+                : `Hola ${nom}! Te aviso de Tv Digital que tu ${app} vence en ${dias} días. Precio: $${pre}.`;
+            window.open(`https://wa.me/${cel.replace(/\D/g,'')}?text=${encodeURIComponent(msj)}`, '_blank');
+        }
+
         function toggleTheme() {
             document.documentElement.classList.toggle('light');
             localStorage.setItem('theme', document.documentElement.classList.contains('light') ? 'light' : 'dark');
@@ -395,14 +423,13 @@
         function cerrarModal() { document.getElementById('modalCliente').classList.add('hidden'); }
 
         async function eliminarCliente(id) {
-            if (confirm('¿Eliminar este cliente?')) {
+            if (confirm('¿Eliminar?')) {
                 await supabaseClient.from('clientes').delete().eq('id', id);
                 cargarClientes();
             }
         }
 
         if (localStorage.getItem('theme') === 'light') document.documentElement.classList.add('light');
-
         window.onload = checkSession;
     </script>
 </body>
