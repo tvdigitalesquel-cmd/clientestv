@@ -14,36 +14,46 @@
             50% { background-color: rgba(220, 38, 38, 0.3); border-color: #f87171; }
         }
         .alerta-vencimiento { animation: pulse-red 2s infinite; border-width: 2px; }
-        .filtro-activo { border-color: #3b82f6 !important; font-weight: 800; transform: scale(1.05); }
+        .filtro-activo { border-color: currentColor !important; font-weight: 800; transform: scale(1.05); }
         .dashboard-card { cursor: pointer; transition: transform 0.2s; }
         .dashboard-card:active { transform: scale(0.95); }
-        .card-seleccionada { ring: 4px solid #3b82f6; ring-offset: 2px; }
+        .card-seleccionada { ring: 4px solid currentColor; ring-offset: 2px; }
         
+        /* Estilos Dinámicos de Color */
+        .modo-normal .accent-color { color: #3b82f6; }
+        .modo-normal .accent-bg { background-color: #2563eb; }
+        .modo-normal .tab-activa { border-bottom: 3px solid #3b82f6; color: #3b82f6; }
+
+        .modo-supervision-activo { border: 5px solid #a855f7; }
+        .modo-supervision-activo .accent-color { color: #d8b4fe; }
+        .modo-supervision-activo .accent-bg { background-color: #9333ea; }
+        .modo-supervision-activo #nav-main { background-color: #4c1d95 !important; }
+        .modo-supervision-activo .tab-activa { border-bottom: 3px solid #d8b4fe; color: #d8b4fe; }
+
         .light .bg-gray-900 { background-color: #f3f4f6; color: #1f2937; }
         .light .bg-gray-800 { background-color: #ffffff; color: #1f2937; }
         .light .border-gray-700 { border-color: #e5e7eb; }
         .light .text-white { color: #1f2937; }
         .light .text-gray-400 { color: #6b7280; }
         .light { --tw-date-invert: 0; }
-        .tab-activa { border-bottom: 3px solid #3b82f6; color: #3b82f6; }
     </style>
 </head>
-<body class="bg-gray-900 text-white font-sans min-h-screen pb-20 transition-colors duration-300">
+<body id="body-app" class="modo-normal bg-gray-900 text-white font-sans min-h-screen pb-20 transition-all duration-300">
 
     <div id="pantalla-login" class="fixed inset-0 bg-gray-900 z-[100] flex items-center justify-center p-4">
         <div class="bg-gray-800 p-8 rounded-2xl border border-gray-700 w-full max-w-sm shadow-2xl">
-            <h1 class="text-2xl font-black text-blue-500 mb-6 text-center uppercase italic tracking-tighter">Tv Digital</h1>
+            <h1 class="text-2xl font-black accent-color mb-6 text-center uppercase italic tracking-tighter transition-colors">Tv Digital</h1>
             <form id="formLogin" class="space-y-4">
                 <input type="text" id="loginUser" placeholder="Usuario" class="w-full bg-gray-900 border border-gray-700 p-3 rounded-xl outline-none text-white" required>
                 <input type="password" id="loginPass" placeholder="Contraseña" class="w-full bg-gray-900 border border-gray-700 p-3 rounded-xl outline-none text-white" required>
-                <button type="submit" class="w-full bg-blue-600 p-3 rounded-xl font-bold uppercase hover:bg-blue-700 transition">Entrar</button>
+                <button type="submit" class="w-full accent-bg p-3 rounded-xl font-bold uppercase hover:opacity-90 transition">Entrar</button>
                 <p id="loginError" class="text-red-500 text-[10px] text-center hidden italic mt-2 uppercase font-bold">Error de acceso o cuenta vencida</p>
             </form>
         </div>
     </div>
 
     <div id="contenido-app" class="hidden">
-        <nav class="bg-gray-800 border-b border-gray-700 mb-6 sticky top-0 z-40 backdrop-blur-md bg-opacity-80">
+        <nav id="nav-main" class="bg-gray-800 border-b border-gray-700 mb-6 sticky top-0 z-40 backdrop-blur-md bg-opacity-80 transition-colors duration-500">
             <div class="container mx-auto px-4 flex justify-between items-center">
                 <div class="flex gap-4">
                     <button onclick="cambiarSeccion('clientes')" id="tab-clientes" class="py-4 font-bold uppercase text-[10px] tab-activa">Mis Clientes</button>
@@ -58,24 +68,18 @@
 
         <div class="container mx-auto px-4">
             
-            <div id="alerta-vencimiento-sistema" class="hidden mb-4 p-3 rounded-xl bg-blue-600/20 border border-blue-500/50 text-center">
-                <p class="text-[10px] font-bold uppercase tracking-widest text-blue-400">
-                    ⚠️ Tu acceso al sistema vence en: <span id="dias-restantes-sistema" class="text-white">0</span> días
-                </p>
-            </div>
-
-            <div id="modo-supervision" class="hidden mb-4 p-3 rounded-xl bg-purple-600 border border-purple-400 text-center flex justify-between items-center">
-                <p class="text-[10px] font-black uppercase italic">👁️ Viendo clientes de: <span id="vendedor-nombre"></span></p>
-                <button onclick="salirSupervision()" class="bg-white text-purple-700 px-3 py-1 rounded-lg font-black text-[9px] uppercase">Volver a lo mío</button>
+            <div id="modo-supervision" class="hidden mb-4 p-4 rounded-xl bg-purple-600 border-2 border-white shadow-lg text-center flex justify-between items-center animate-pulse">
+                <p class="text-xs font-black uppercase italic text-white">⚠️ MODO SUPERVISIÓN: <span id="vendedor-nombre"></span></p>
+                <button onclick="salirSupervision()" class="bg-white text-purple-700 px-4 py-1 rounded-lg font-black text-[10px] uppercase shadow-md">Volver a mi cuenta</button>
             </div>
 
             <section id="sec-clientes">
                 <header class="flex justify-between items-center mb-6">
                     <div>
-                        <h1 class="text-xl font-black text-blue-500 uppercase italic">Clientes</h1>
+                        <h1 class="text-xl font-black accent-color uppercase italic">Clientes</h1>
                         <p id="info-sesion" class="text-[10px] text-gray-500 font-bold uppercase"></p>
                     </div>
-                    <button onclick="abrirModal()" id="btn-nuevo-cliente" class="bg-blue-600 px-5 py-2 rounded-xl font-bold shadow-lg text-sm">+ Nuevo</button>
+                    <button onclick="abrirModal()" id="btn-nuevo-cliente" class="accent-bg px-5 py-2 rounded-xl font-bold shadow-lg text-sm">+ Nuevo</button>
                 </header>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
@@ -94,13 +98,13 @@
                 </div>
 
                 <div class="space-y-4 mb-8">
-                    <input type="text" id="inputBusqueda" onkeyup="filtrarClientes()" placeholder="🔍 Buscar por nombre, usuario o ciudad..." 
-                           class="w-full bg-gray-800 border border-gray-700 rounded-xl p-4 text-white outline-none focus:border-blue-500">
+                    <input type="text" id="inputBusqueda" onkeyup="filtrarClientes()" placeholder="🔍 Buscar cliente..." 
+                           class="w-full bg-gray-800 border border-gray-700 rounded-xl p-4 text-white outline-none focus:ring-2 focus:ring-blue-500">
                     <div class="flex flex-wrap gap-2">
                         <button onclick="cambiarFiltroApp('TODOS', this)" class="btn-app filtro-activo flex-1 bg-gray-700 py-2 rounded-lg text-[10px] font-bold uppercase">Todas</button>
-                        <button onclick="cambiarFiltroApp('LUMIX', this)" class="btn-app flex-1 bg-blue-600 py-2 rounded-lg text-[10px] font-bold uppercase">Lumix</button>
-                        <button onclick="cambiarFiltroApp('TV PLUS 2', this)" class="btn-app flex-1 bg-green-600 py-2 rounded-lg text-[10px] font-bold uppercase">TV Plus 2</button>
-                        <button onclick="cambiarFiltroApp('FEMON', this)" class="btn-app flex-1 bg-purple-600 py-2 rounded-lg text-[10px] font-bold uppercase">Femon</button>
+                        <button onclick="cambiarFiltroApp('LUMIX', this)" class="btn-app flex-1 bg-blue-600 py-2 rounded-lg text-[10px] font-bold uppercase text-white">Lumix</button>
+                        <button onclick="cambiarFiltroApp('TV PLUS 2', this)" class="btn-app flex-1 bg-green-600 py-2 rounded-lg text-[10px] font-bold uppercase text-white">TV Plus 2</button>
+                        <button onclick="cambiarFiltroApp('FEMON', this)" class="btn-app flex-1 bg-purple-600 py-2 rounded-lg text-[10px] font-bold uppercase text-white">Femon</button>
                     </div>
                 </div>
 
@@ -109,17 +113,15 @@
 
             <section id="sec-usuarios" class="hidden">
                 <div class="bg-gray-800 p-6 rounded-2xl border border-gray-700 mb-6 shadow-xl">
-                    <h2 id="titulo-gestion-usuarios" class="text-lg font-bold text-blue-500 mb-4 uppercase italic">Crear Acceso</h2>
+                    <h2 id="titulo-gestion-usuarios" class="text-lg font-bold accent-color mb-4 uppercase italic">Gestionar Equipo</h2>
                     <form id="formNuevoUsuario" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3">
                         <input type="text" id="newUsername" placeholder="Usuario" class="bg-gray-900 p-3 rounded-xl border border-gray-700 outline-none text-sm" required>
                         <input type="password" id="newPassword" placeholder="Contraseña" class="bg-gray-900 p-3 rounded-xl border border-gray-700 outline-none text-sm" required>
-                        <select id="newRol" class="bg-gray-900 p-3 rounded-xl border border-gray-700 outline-none text-sm text-white">
-                            </select>
+                        <select id="newRol" class="bg-gray-900 p-3 rounded-xl border border-gray-700 outline-none text-sm text-white"></select>
                         <input type="date" id="newVencimiento" class="bg-gray-900 p-3 rounded-xl border border-gray-700 outline-none text-sm text-white" required>
-                        <button type="submit" class="bg-blue-600 font-bold rounded-xl uppercase text-[10px]">Dar Acceso</button>
+                        <button type="submit" class="accent-bg font-bold rounded-xl uppercase text-[10px] text-white">Dar Acceso</button>
                     </form>
                 </div>
-                <p class="text-[10px] text-gray-500 mb-3 font-bold uppercase tracking-widest">⚠️ Toca un usuario para ver sus clientes</p>
                 <div id="lista-usuarios-sistema" class="grid gap-3"></div>
             </section>
         </div>
@@ -127,12 +129,12 @@
 
     <div id="modalCliente" class="fixed inset-0 bg-black/90 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
         <div class="bg-gray-800 rounded-2xl p-6 w-full max-w-md border border-gray-700 shadow-2xl text-white">
-            <h2 id="modalTitulo" class="text-xl font-bold text-blue-500 mb-6 uppercase">Datos Cliente</h2>
+            <h2 id="modalTitulo" class="text-xl font-bold accent-color mb-6 uppercase">Datos Cliente</h2>
             <form id="formCliente" class="space-y-4">
                 <input type="hidden" id="clienteId">
                 <input type="text" id="nombre" placeholder="Nombre Apellido" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 outline-none focus:border-blue-500" required>
                 <div class="grid grid-cols-2 gap-4">
-                    <input type="tel" id="celular" placeholder="Celular" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 outline-none">
+                    <input type="tel" id="celular" placeholder="WhatsApp (549...)" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 outline-none">
                     <input type="text" id="ciudad" placeholder="Ciudad" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 outline-none">
                 </div>
                 <div class="grid grid-cols-2 gap-4">
@@ -150,7 +152,7 @@
                 <input type="number" id="precio" placeholder="Precio $" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 outline-none">
                 <div class="flex gap-2 pt-4">
                     <button type="button" onclick="cerrarModal()" class="flex-1 bg-gray-700 py-3 rounded-xl font-bold uppercase text-xs">Cerrar</button>
-                    <button type="submit" class="flex-1 bg-blue-600 py-3 rounded-xl font-bold uppercase text-xs">Guardar</button>
+                    <button type="submit" class="flex-1 accent-bg py-3 rounded-xl font-bold uppercase text-xs text-white">Guardar</button>
                 </div>
             </form>
         </div>
@@ -167,23 +169,17 @@
         let currentUser = JSON.parse(localStorage.getItem('session_tvdigital'));
         let idSupervisado = null;
 
-        // --- LOGIN ---
         document.getElementById('formLogin').onsubmit = async (e) => {
             e.preventDefault();
             const u = document.getElementById('loginUser').value;
             const p = document.getElementById('loginPass').value;
-
             const { data } = await supabaseClient.from('usuarios_sistema').select('*').eq('username', u).eq('password', p).single();
-
             if (data) {
-                const hoy = new Date();
                 const venci = data.vencimiento_acceso ? new Date(data.vencimiento_acceso) : null;
-                if (venci && venci < hoy) { alert("⚠️ TU ACCESO HA VENCIDO."); return; }
+                if (venci && venci < new Date()) { alert("ACCESO VENCIDO"); return; }
                 localStorage.setItem('session_tvdigital', JSON.stringify(data));
                 location.reload();
-            } else {
-                document.getElementById('loginError').classList.remove('hidden');
-            }
+            } else { document.getElementById('loginError').classList.remove('hidden'); }
         };
 
         function checkSession() {
@@ -193,8 +189,6 @@
                 document.getElementById('info-sesion').innerText = `${currentUser.rol.toUpperCase()}: ${currentUser.username}`;
                 
                 const selRol = document.getElementById('newRol');
-                
-                // Configuración por Rol
                 if (currentUser.rol === 'admin') {
                     document.getElementById('tab-usuarios').classList.remove('hidden');
                     selRol.innerHTML = '<option value="admin">Admin</option><option value="revendedor">Revendedor</option><option value="vendedor">Vendedor</option>';
@@ -203,91 +197,14 @@
                     document.getElementById('titulo-gestion-usuarios').innerText = "Mis Vendedores";
                     selRol.innerHTML = '<option value="vendedor">Vendedor</option>';
                 }
-
-                // Alerta vencimiento sistema
-                if (currentUser.vencimiento_acceso) {
-                    const dias = Math.ceil((new Date(currentUser.vencimiento_acceso) - new Date()) / (1000 * 60 * 60 * 24));
-                    if (dias <= 10) {
-                        document.getElementById('alerta-vencimiento-sistema').classList.remove('hidden');
-                        document.getElementById('dias-restantes-sistema').innerText = dias;
-                    }
-                }
-
                 cargarClientes();
             }
         }
 
-        function logout() { localStorage.removeItem('session_tvdigital'); location.reload(); }
-
-        // --- CARGAR CLIENTES (JERÁRQUICO) ---
-        async function cargarClientes() {
-            let query = supabaseClient.from('clientes').select('*');
-            
-            if (idSupervisado) {
-                query = query.eq('creado_por', idSupervisado);
-            } else if (currentUser.rol === 'vendedor') {
-                query = query.eq('creado_por', currentUser.id);
-            } else if (currentUser.rol === 'revendedor') {
-                // Ver mis clientes y los de mis vendedores
-                const { data: misVendedores } = await supabaseClient.from('usuarios_sistema').select('id').eq('padre_id', currentUser.id);
-                const ids = [currentUser.id, ...misVendedores.map(v => v.id)];
-                query = query.in('creado_por', ids);
-            }
-            // Admin no tiene filtros, ve todo.
-
-            const { data } = await query.order('fecha_vencimiento', { ascending: true });
-            todosLosClientes = data || [];
-            actualizarDashboard(todosLosClientes);
-            filtrarClientes();
-        }
-
-        // --- GESTIÓN DE USUARIOS (JERÁRQUICO) ---
-        async function cargarUsuariosSistema() {
-            let query = supabaseClient.from('usuarios_sistema').select('*');
-            
-            if (currentUser.rol === 'revendedor') {
-                query = query.eq('padre_id', currentUser.id);
-            }
-
-            const { data } = await query;
-            const cont = document.getElementById('lista-usuarios-sistema');
-            cont.innerHTML = '';
-            data.forEach(u => {
-                if (u.id === currentUser.id) return; // No mostrarse a si mismo
-
-                const hoy = new Date();
-                const venci = u.vencimiento_acceso ? new Date(u.vencimiento_acceso) : null;
-                const estaVencido = venci && venci < hoy;
-                const dias = venci ? Math.ceil((venci - hoy) / (1000 * 60 * 60 * 24)) : '∞';
-
-                cont.innerHTML += `
-                    <div class="bg-gray-800 p-4 border border-gray-700 rounded-xl flex justify-between items-center cursor-pointer hover:border-blue-500 transition shadow-md"
-                         onclick="supervisarVendedor(${u.id}, '${u.username}')">
-                        <div>
-                            <p class="font-black text-sm uppercase">${u.username} <span class="text-[9px] text-blue-500">[${u.rol}]</span></p>
-                            <p class="text-[10px] ${estaVencido ? 'text-red-500' : 'text-gray-400'} font-bold">Vence en: ${dias} d</p>
-                        </div>
-                        <button onclick="event.stopPropagation(); eliminarUserSistema(${u.id})" class="text-red-500 text-[10px] font-bold border border-red-500/20 px-3 py-1 rounded">BORRAR</button>
-                    </div>
-                `;
-            });
-        }
-
-        document.getElementById('formNuevoUsuario').onsubmit = async (e) => {
-            e.preventDefault();
-            await supabaseClient.from('usuarios_sistema').insert([{
-                username: document.getElementById('newUsername').value,
-                password: document.getElementById('newPassword').value,
-                rol: document.getElementById('newRol').value,
-                vencimiento_acceso: document.getElementById('newVencimiento').value,
-                padre_id: currentUser.id
-            }]);
-            e.target.reset(); cargarUsuariosSistema();
-        };
-
-        // --- SUPERVISIÓN ---
+        // --- SUPERVISIÓN CON CAMBIO DE COLOR ---
         function supervisarVendedor(id, nombre) {
             idSupervisado = id;
+            document.getElementById('body-app').classList.replace('modo-normal', 'modo-supervision-activo');
             document.getElementById('vendedor-nombre').innerText = nombre;
             document.getElementById('modo-supervision').classList.remove('hidden');
             document.getElementById('btn-nuevo-cliente').classList.add('hidden');
@@ -297,41 +214,54 @@
 
         function salirSupervision() {
             idSupervisado = null;
+            document.getElementById('body-app').classList.replace('modo-supervision-activo', 'modo-normal');
             document.getElementById('modo-supervision').classList.add('hidden');
             document.getElementById('btn-nuevo-cliente').classList.remove('hidden');
             cargarClientes();
         }
 
-        // --- RESTO DE FUNCIONES (WA, FILTROS, MODAL) ---
+        async function cargarClientes() {
+            let query = supabaseClient.from('clientes').select('*');
+            if (idSupervisado) query = query.eq('creado_por', idSupervisado);
+            else if (currentUser.rol === 'vendedor') query = query.eq('creado_por', currentUser.id);
+            else if (currentUser.rol === 'revendedor') {
+                const { data: vends } = await supabaseClient.from('usuarios_sistema').select('id').eq('padre_id', currentUser.id);
+                const ids = [currentUser.id, ...(vends || []).map(v => v.id)];
+                query = query.in('creado_por', ids);
+            }
+            const { data } = await query.order('fecha_vencimiento', { ascending: true });
+            todosLosClientes = data || [];
+            actualizarDashboard(todosLosClientes);
+            filtrarClientes();
+        }
+
         function filtrarClientes() {
             const bus = document.getElementById('inputBusqueda').value.toLowerCase();
             const cont = document.getElementById('contenedor-clientes');
             const hoy = new Date();
-            
             const filtrados = todosLosClientes.filter(c => {
-                const dias = Math.ceil((new Date(c.fecha_vencimiento) - hoy) / (1000 * 60 * 60 * 24));
-                const coincideBus = c.nombre_apellido.toLowerCase().includes(bus) || c.usuario.toLowerCase().includes(bus) || (c.ciudad && c.ciudad.toLowerCase().includes(bus));
-                const coincideApp = filtroAppActual === 'TODOS' || c.app_instalada === filtroAppActual;
-                let coincideEst = true;
-                if (filtroEstadoActual === 'ACTIVOS') coincideEst = dias > 0;
-                if (filtroEstadoActual === 'VENCIDOS') coincideEst = dias <= 0;
-                if (filtroEstadoActual === 'PRONTO') coincideEst = (dias > 0 && dias <= 7);
-                return coincideBus && coincideApp && coincideEst;
+                const d = Math.ceil((new Date(c.fecha_vencimiento) - hoy) / (1000 * 60 * 60 * 24));
+                const cBus = c.nombre_apellido.toLowerCase().includes(bus) || c.usuario.toLowerCase().includes(bus);
+                const cApp = filtroAppActual === 'TODOS' || c.app_instalada === filtroAppActual;
+                let cEst = true;
+                if (filtroEstadoActual === 'ACTIVOS') cEst = d > 0;
+                if (filtroEstadoActual === 'VENCIDOS') cEst = d <= 0;
+                if (filtroEstadoActual === 'PRONTO') cEst = (d > 0 && d <= 7);
+                return cBus && cApp && cEst;
             });
 
             cont.innerHTML = '';
             filtrados.forEach(c => {
-                const dias = Math.ceil((new Date(c.fecha_vencimiento) - hoy) / (1000 * 60 * 60 * 24));
-                const esAlerta = dias <= 2;
+                const d = Math.ceil((new Date(c.fecha_vencimiento) - hoy) / (1000 * 60 * 60 * 24));
                 cont.innerHTML += `
-                    <div class="bg-gray-800 border border-gray-700 p-4 rounded-2xl flex justify-between items-center ${esAlerta ? 'alerta-vencimiento' : ''}">
+                    <div class="bg-gray-800 border border-gray-700 p-4 rounded-2xl flex justify-between items-center ${d <= 2 ? 'alerta-vencimiento' : ''}">
                         <div class="flex-1">
                             <h3 class="font-bold text-sm">${c.nombre_apellido}</h3>
                             <p class="text-[9px] text-gray-400 font-bold uppercase">${c.app_instalada} | ${c.usuario}</p>
                             <p class="text-[9px] text-blue-500 font-bold">${c.celular || 'S/N'} ${c.ciudad ? ' - '+c.ciudad : ''}</p>
                         </div>
                         <div class="text-right mr-4">
-                            <p class="text-xl font-black ${dias <= 0 ? 'text-red-500' : 'text-green-500'}">${dias <= 0 ? 'Vencido' : dias + ' d'}</p>
+                            <p class="text-xl font-black ${d <= 0 ? 'text-red-500' : 'text-green-500'}">${d <= 0 ? 'Vencido' : d + ' d'}</p>
                             <p class="text-[10px] font-bold text-blue-500">$${c.precio}</p>
                         </div>
                         <div class="flex flex-col gap-2">
@@ -339,29 +269,55 @@
                                 <button onclick='abrirModal(${JSON.stringify(c)})' class="bg-gray-700 p-2 rounded-lg text-blue-400 text-xs">✏️</button>
                                 <button onclick="eliminarCliente(${c.id})" class="bg-gray-700 p-2 rounded-lg text-red-500 text-xs">🗑️</button>
                             </div>
-                            <button onclick="enviarWA('${c.nombre_apellido}','${c.celular}',${dias},'${c.precio}','${c.app_instalada}')" 
-                                class="bg-green-600 text-white p-2 rounded-lg text-[9px] font-bold uppercase">Msj</button>
+                            <button onclick="enviarWA('${c.nombre_apellido}','${c.celular}',${d},'${c.precio}','${c.app_instalada}')" 
+                                class="bg-green-600 hover:bg-green-500 text-white p-2 rounded-lg text-[10px] font-black uppercase flex items-center justify-center gap-1 shadow-md">
+                                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.72.937 3.658 1.43 5.63 1.43h.008c6.547 0 11.88-5.335 11.883-11.892a11.826 11.826 0 00-3.353-8.413"/></svg>
+                                MSJ
+                            </button>
                         </div>
                     </div>
                 `;
             });
         }
 
-        function enviarWA(nom, cel, dias, pre, app) {
+        async function cargarUsuariosSistema() {
+            let query = supabaseClient.from('usuarios_sistema').select('*');
+            if (currentUser.rol === 'revendedor') query = query.eq('padre_id', currentUser.id);
+            const { data } = await query;
+            const cont = document.getElementById('lista-usuarios-sistema');
+            cont.innerHTML = '';
+            (data || []).forEach(u => {
+                if (u.id === currentUser.id) return;
+                cont.innerHTML += `
+                    <div class="bg-gray-800 p-4 border border-gray-700 rounded-xl flex justify-between items-center cursor-pointer hover:border-purple-500 transition shadow-md"
+                         onclick="supervisarVendedor(${u.id}, '${u.username}')">
+                        <div>
+                            <p class="font-black text-sm uppercase">${u.username} <span class="text-[9px] text-blue-500">[${u.rol}]</span></p>
+                        </div>
+                        <button onclick="event.stopPropagation(); eliminarUserSistema(${u.id})" class="text-red-500 text-[10px] font-bold border border-red-500/20 px-3 py-1 rounded">BORRAR</button>
+                    </div>
+                `;
+            });
+        }
+
+        function enviarWA(nom, cel, d, pre, app) {
             if (!cel) return alert("Sin número");
-            const msj = dias <= 0 
-                ? `Hola ${nom}! Te aviso de Tv Digital que venció tu ${app}. Renovación: $${pre}.`
-                : `Hola ${nom}! Te aviso de Tv Digital que tu ${app} vence en ${dias} días. Precio: $${pre}.`;
+            const msj = d <= 0 ? `Hola ${nom}! Venció tu ${app}. Renovación: $${pre}.` : `Hola ${nom}! Tu ${app} vence en ${d} días. Precio: $${pre}.`;
             window.open(`https://wa.me/${cel.replace(/\D/g,'')}?text=${encodeURIComponent(msj)}`, '_blank');
         }
 
+        // --- COMUNES ---
+        function cambiarSeccion(sec) {
+            document.getElementById('sec-clientes').classList.toggle('hidden', sec !== 'clientes');
+            document.getElementById('sec-usuarios').classList.toggle('hidden', sec !== 'usuarios');
+            document.getElementById('tab-clientes').classList.toggle('tab-activa', sec === 'clientes');
+            document.getElementById('tab-usuarios').classList.toggle('tab-activa', sec === 'usuarios');
+            if (sec === 'usuarios') cargarUsuariosSistema();
+        }
         function abrirModal(d = null) {
-            const m = document.getElementById('modalCliente');
             document.getElementById('formCliente').reset();
-            document.getElementById('clienteId').value = '';
-            if (d) {
-                document.getElementById('modalTitulo').innerText = "Editar Cliente";
-                document.getElementById('clienteId').value = d.id;
+            document.getElementById('clienteId').value = d ? d.id : '';
+            if(d) {
                 document.getElementById('nombre').value = d.nombre_apellido;
                 document.getElementById('celular').value = d.celular || '';
                 document.getElementById('ciudad').value = d.ciudad || '';
@@ -370,34 +326,25 @@
                 document.getElementById('app').value = d.app_instalada;
                 document.getElementById('vencimiento').value = d.fecha_vencimiento;
                 document.getElementById('precio').value = d.precio;
-            } else {
-                document.getElementById('modalTitulo').innerText = "Nuevo Cliente";
             }
-            m.classList.remove('hidden');
+            document.getElementById('modalCliente').classList.remove('hidden');
         }
-
         document.getElementById('formCliente').onsubmit = async (e) => {
             e.preventDefault();
             const id = document.getElementById('clienteId').value;
             const datos = {
                 nombre_apellido: document.getElementById('nombre').value,
-                celular: document.getElementById('celular').value,
-                ciudad: document.getElementById('ciudad').value,
-                usuario: document.getElementById('usuario').value,
-                clave: document.getElementById('clave').value,
-                app_instalada: document.getElementById('app').value,
-                fecha_vencimiento: document.getElementById('vencimiento').value,
-                precio: parseFloat(document.getElementById('precio').value) || 0,
-                creado_por: currentUser.id
+                celular: document.getElementById('celular').value, ciudad: document.getElementById('ciudad').value,
+                usuario: document.getElementById('usuario').value, clave: document.getElementById('clave').value,
+                app_instalada: document.getElementById('app').value, fecha_vencimiento: document.getElementById('vencimiento').value,
+                precio: parseFloat(document.getElementById('precio').value) || 0, creado_por: idSupervisado || currentUser.id
             };
             if (id) await supabaseClient.from('clientes').update(datos).eq('id', id);
             else await supabaseClient.from('clientes').insert([datos]);
             cerrarModal(); cargarClientes();
         };
-
         function actualizarDashboard(data) {
-            const hoy = new Date();
-            let act = 0, ven = 0, pro = 0;
+            const hoy = new Date(); let act = 0, ven = 0, pro = 0;
             data.forEach(c => {
                 const d = Math.ceil((new Date(c.fecha_vencimiento) - hoy) / (1000 * 60 * 60 * 24));
                 if (d > 0) act++; else ven++;
@@ -407,38 +354,23 @@
             document.getElementById('count-vencidos').innerText = ven;
             document.getElementById('count-pronto').innerText = pro;
         }
-
-        function cambiarSeccion(sec) {
-            document.getElementById('sec-clientes').classList.toggle('hidden', sec !== 'clientes');
-            document.getElementById('sec-usuarios').classList.toggle('hidden', sec !== 'usuarios');
-            document.getElementById('tab-clientes').classList.toggle('tab-activa', sec === 'clientes');
-            document.getElementById('tab-usuarios').classList.toggle('tab-activa', sec === 'usuarios');
-            if (sec === 'usuarios') cargarUsuariosSistema();
-        }
-
-        function cambiarFiltroApp(app, el) {
-            filtroAppActual = app;
-            document.querySelectorAll('.btn-app').forEach(b => b.classList.remove('filtro-activo'));
-            el.classList.add('filtro-activo');
-            filtrarClientes();
-        }
-
-        function cambiarFiltroEstado(est) {
-            filtroEstadoActual = (filtroEstadoActual === est) ? 'TODOS' : est;
-            document.querySelectorAll('.dashboard-card').forEach(c => c.classList.remove('card-seleccionada'));
-            if (filtroEstadoActual !== 'TODOS') {
-                const id = est === 'ACTIVOS' ? 'btn-filtro-activos' : est === 'VENCIDOS' ? 'btn-filtro-vencidos' : 'btn-filtro-pronto';
-                document.getElementById(id).classList.add('card-seleccionada');
-            }
-            filtrarClientes();
-        }
-
-        async function eliminarCliente(id) { if (confirm('¿Eliminar cliente?')) { await supabaseClient.from('clientes').delete().eq('id', id); cargarClientes(); } }
-        async function eliminarUserSistema(id) { if (confirm('¿Borrar este acceso?')) { await supabaseClient.from('usuarios_sistema').delete().eq('id', id); cargarUsuariosSistema(); } }
+        function toggleTheme() { document.documentElement.classList.toggle('light'); }
+        function logout() { localStorage.removeItem('session_tvdigital'); location.reload(); }
         function cerrarModal() { document.getElementById('modalCliente').classList.add('hidden'); }
-        function toggleTheme() { document.documentElement.classList.toggle('light'); localStorage.setItem('theme', document.documentElement.classList.contains('light') ? 'light' : 'dark'); }
-        if (localStorage.getItem('theme') === 'light') document.documentElement.classList.add('light');
-
+        function cambiarFiltroApp(app, el) { 
+            filtroAppActual = app; 
+            document.querySelectorAll('.btn-app').forEach(b => b.classList.remove('filtro-activo'));
+            el.classList.add('filtro-activo'); filtrarClientes(); 
+        }
+        function cambiarFiltroEstado(est) { 
+            filtroEstadoActual = (filtroEstadoActual === est) ? 'TODOS' : est; 
+            document.querySelectorAll('.dashboard-card').forEach(c => c.classList.remove('card-seleccionada'));
+            if (filtroEstadoActual !== 'TODOS') document.getElementById(`btn-filtro-${est.toLowerCase()}`).classList.add('card-seleccionada');
+            filtrarClientes(); 
+        }
+        async function eliminarCliente(id) { if (confirm('¿Eliminar?')) { await supabaseClient.from('clientes').delete().eq('id', id); cargarClientes(); } }
+        async function eliminarUserSistema(id) { if (confirm('¿Borrar acceso?')) { await supabaseClient.from('usuarios_sistema').delete().eq('id', id); cargarUsuariosSistema(); } }
+        
         window.onload = checkSession;
     </script>
 </body>
