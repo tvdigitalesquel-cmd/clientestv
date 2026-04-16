@@ -1,1 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso - Tv Digital</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(-45deg, #0f172a, #1e293b, #1e3a8a, #1e1b4b);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
 
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .input-style {
+            background: rgba(15, 23, 42, 0.6);
+            transition: all 0.3s ease;
+        }
+
+        .input-style:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <div class="glass-card w-full max-w-md p-10 rounded-3xl shadow-2xl">
+        <div class="text-center mb-10">
+            <div class="inline-flex items-center justify-center w-20 h-20 bg-blue-600 rounded-2xl shadow-lg mb-4 transform -rotate-6">
+                <span class="text-white text-4xl font-black italic">TV</span>
+            </div>
+            <h1 class="text-3xl font-black text-white uppercase tracking-tighter italic">Tv Digital</h1>
+            <p class="text-gray-400 text-sm font-medium mt-1 uppercase tracking-widest">Panel de Administración</p>
+        </div>
+
+        <form id="formLogin" class="space-y-6">
+            <div>
+                <label class="block text-[10px] font-bold text-blue-400 uppercase ml-1 mb-2">Usuario</label>
+                <input type="text" id="loginUser" required
+                    class="input-style w-full p-4 rounded-2xl border border-gray-700 text-white outline-none placeholder-gray-500"
+                    placeholder="Ingresa tu usuario">
+            </div>
+
+            <div>
+                <label class="block text-[10px] font-bold text-blue-400 uppercase ml-1 mb-2">Contraseña</label>
+                <input type="password" id="loginPass" required
+                    class="input-style w-full p-4 rounded-2xl border border-gray-700 text-white outline-none placeholder-gray-500"
+                    placeholder="••••••••">
+            </div>
+
+            <button type="submit" 
+                class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-4 rounded-2xl transition duration-300 transform active:scale-95 shadow-lg uppercase tracking-wider">
+                Entrar al Sistema
+            </button>
+
+            <p id="loginError" class="hidden text-red-500 text-xs text-center font-bold uppercase italic animate-bounce">
+                ⚠️ Credenciales incorrectas o acceso vencido
+            </p>
+        </form>
+
+        <div class="mt-12 text-center">
+            <p class="text-gray-500 text-[9px] font-bold uppercase tracking-widest">&copy; 2026 Tecno Store Patagonia</p>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://vjbdhbbxbvoigbidquya.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_4ogrbtxBrBWBFj-NRJOrbg_XnpmO4pS';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        document.getElementById('formLogin').onsubmit = async (e) => {
+            e.preventDefault();
+            const u = document.getElementById('loginUser').value;
+            const p = document.getElementById('loginPass').value;
+
+            const { data, error } = await supabaseClient
+                .from('usuarios_sistema')
+                .select('*')
+                .eq('username', u)
+                .eq('password', p)
+                .single();
+
+            if (data) {
+                const hoy = new Date();
+                const venci = data.vencimiento_acceso ? new Date(data.vencimiento_acceso) : null;
+                
+                if (venci && venci < hoy) {
+                    mostrarError("Acceso vencido. Contacta al soporte.");
+                    return;
+                }
+
+                // Guardamos sesión y redirigimos a la página principal
+                localStorage.setItem('session_tvdigital', JSON.stringify(data));
+                window.location.href = 'index.html'; 
+            } else {
+                mostrarError();
+            }
+        };
+
+        function mostrarError(msj) {
+            const err = document.getElementById('loginError');
+            if(msj) err.innerText = "⚠️ " + msj;
+            err.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
