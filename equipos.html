@@ -9,36 +9,41 @@
     <script>tailwind.config = { darkMode: 'class' }</script>
     <style>
         input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(var(--tw-date-invert, 1)); }
-        
-        /* Animación para estados activos/supervisión */
-        @keyframes pulse-purple {
-            0%, 100% { background-color: rgba(168, 85, 247, 0.1); border-color: #a855f7; }
-            50% { background-color: rgba(168, 85, 247, 0.3); border-color: #d8b4fe; }
-        }
-        
         .modo-normal .accent-color { color: #3b82f6; }
         .modo-normal .accent-bg { background-color: #2563eb; }
-        
-        /* Estilos Modo Supervisión */
-        .modo-supervision-activo { border: 5px solid #a855f7; }
-        .modo-supervision-activo #nav-main { background-color: #4c1d95 !important; }
-
-        /* Modo Claro */
         .light .bg-gray-900 { background-color: #f3f4f6; color: #1f2937; }
         .light .bg-gray-800 { background-color: #ffffff; color: #1f2937; }
         .light .border-gray-700 { border-color: #e5e7eb; }
         .light .text-white { color: #1f2937; }
         .light { --tw-date-invert: 0; }
+        
+        /* Estilo para los botones con iconos como en tu captura */
+        .btn-filtro {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 900;
+            text-transform: uppercase;
+            transition: all 0.2s;
+        }
+        .btn-filtro img { width: 16px; height: 16px; object-fit: contain; }
     </style>
 </head>
 <body id="body-app" class="modo-normal bg-gray-900 text-white font-sans min-h-screen pb-20 transition-all duration-300">
 
     <div id="contenido-app" class="hidden">
-        <nav id="nav-main" class="bg-gray-800 border-b border-gray-700 mb-6 sticky top-0 z-40 backdrop-blur-md bg-opacity-80 transition-colors duration-500">
+        <nav class="bg-gray-800 border-b border-gray-700 mb-6 sticky top-0 z-40 backdrop-blur-md bg-opacity-80">
             <div class="container mx-auto px-4 flex justify-between items-center">
                 <div class="flex gap-4">
-                    <a href="index.html" class="py-4 font-bold uppercase text-[10px] text-gray-400">Mis Clientes</a>
-                    <button class="py-4 font-bold uppercase text-[10px] text-blue-500 border-b-3 border-blue-500">Gestionar Equipo</button>
+                    <a href="index.html" class="py-4 font-bold uppercase text-[10px] text-gray-400 flex items-center gap-1">
+                        <span>📱</span> Mis Clientes
+                    </a>
+                    <button class="py-4 font-bold uppercase text-[10px] text-blue-500 border-b-2 border-blue-500">
+                        Gestionar Equipo
+                    </button>
                 </div>
                 <div class="flex items-center gap-3">
                     <button onclick="toggleTheme()" class="bg-gray-700 p-2 rounded-full text-xs">☀️</button>
@@ -56,19 +61,15 @@
                     </div>
 
                     <form id="formNuevoUsuario" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3">
-                        <input type="text" id="newUsername" placeholder="Usuario" class="bg-gray-900 p-3 rounded-xl border border-gray-700 outline-none text-sm text-white" required>
-                        <input type="password" id="newPassword" placeholder="Contraseña" class="bg-gray-900 p-3 rounded-xl border border-gray-700 outline-none text-sm text-white" required>
-                        <select id="newRol" class="bg-gray-900 p-3 rounded-xl border border-gray-700 outline-none text-sm text-white font-bold uppercase"></select>
-                        <input type="date" id="newVencimiento" class="bg-gray-900 p-3 rounded-xl border border-gray-700 outline-none text-sm text-white" required>
-                        <button type="submit" class="accent-bg font-black rounded-xl uppercase text-[10px] text-white py-3">Dar Acceso</button>
+                        <input type="text" id="newUsername" placeholder="Usuario" class="bg-gray-900 p-4 rounded-xl border border-gray-700 outline-none text-sm" required>
+                        <input type="password" id="newPassword" placeholder="Contraseña" class="bg-gray-900 p-4 rounded-xl border border-gray-700 outline-none text-sm" required>
+                        <select id="newRol" class="bg-gray-900 p-4 rounded-xl border border-gray-700 outline-none text-sm font-bold uppercase"></select>
+                        <input type="date" id="newVencimiento" class="bg-gray-900 p-4 rounded-xl border border-gray-700 outline-none text-sm" required>
+                        <button type="submit" class="accent-bg font-black rounded-xl uppercase text-[11px] text-white py-4 shadow-lg active:scale-95 transition-transform">Dar Acceso</button>
                     </form>
                 </div>
 
-                <div class="mb-4">
-                    <p class="text-[10px] font-black uppercase text-gray-500 tracking-widest mb-2">Miembros del equipo</p>
-                    <div id="lista-usuarios-sistema" class="grid gap-3">
-                        </div>
-                </div>
+                <div id="lista-usuarios-sistema" class="grid gap-3"></div>
             </section>
         </div>
     </div>
@@ -90,12 +91,9 @@
                 const selRol = document.getElementById('newRol');
                 if (currentUser.rol === 'admin') {
                     selRol.innerHTML = '<option value="admin">ADMINISTRADOR</option><option value="revendedor">REVENDEDOR</option><option value="vendedor">VENDEDOR</option>';
-                } else if (currentUser.rol === 'revendedor') {
+                } else {
                     document.getElementById('titulo-gestion-usuarios').innerText = "Mis Vendedores";
                     selRol.innerHTML = '<option value="vendedor">VENDEDOR</option>';
-                } else {
-                    // Si un vendedor intenta entrar aquí, lo sacamos
-                    window.location.href = 'index.html';
                 }
                 cargarUsuariosSistema();
             }
@@ -103,66 +101,54 @@
 
         async function cargarUsuariosSistema() {
             let query = supabaseClient.from('usuarios_sistema').select('*');
-            if (currentUser.rol === 'revendedor') query = query.eq('padre_id', currentUser.id);
+            if (currentUser.rol !== 'admin') query = query.eq('padre_id', currentUser.id);
             
             const { data } = await query;
             const cont = document.getElementById('lista-usuarios-sistema');
             cont.innerHTML = '';
             
-            const ordenados = (data || []).sort((a, b) => {
-                if (a.rol === 'revendedor' && b.rol !== 'revendedor') return -1;
-                if (a.rol !== 'revendedor' && b.rol === 'revendedor') return 1;
-                return 0;
-            });
-
-            ordenados.forEach(u => {
+            (data || []).forEach(u => {
                 if (u.id === currentUser.id) return;
-                
-                const esRevendedor = u.rol === 'revendedor';
-                const cardClass = esRevendedor 
-                    ? 'bg-gradient-to-r from-purple-900/40 to-blue-900/40 border-purple-500/50' 
-                    : 'bg-gray-800 border-gray-700';
-
                 cont.innerHTML += `
-                    <div class="${cardClass} p-4 border rounded-2xl flex justify-between items-center hover:scale-[1.01] transition shadow-md">
+                    <div class="bg-gray-800 border-gray-700 p-4 border rounded-2xl flex justify-between items-center shadow-md">
                         <div class="flex items-center gap-3">
-                            <div class="w-2 h-8 ${esRevendedor ? 'bg-purple-400 shadow-[0_0_10px_#a855f7]' : 'bg-gray-600'} rounded-full"></div>
+                            <div class="w-2 h-8 ${u.rol === 'revendedor' ? 'bg-purple-500' : 'bg-blue-500'} rounded-full"></div>
                             <div>
-                                <p class="font-black text-sm uppercase italic tracking-tighter text-white">${u.username} ${esRevendedor ? '👑' : ''}</p>
-                                <p class="text-[9px] ${esRevendedor ? 'text-purple-300' : 'text-gray-400'} font-bold uppercase tracking-widest">${u.rol}</p>
-                                <p class="text-[8px] text-gray-500 uppercase">Acceso hasta: ${u.vencimiento || 'N/A'}</p>
+                                <p class="font-black text-sm uppercase italic">${u.username}</p>
+                                <p class="text-[9px] font-bold uppercase tracking-widest text-gray-500">${u.rol}</p>
+                                <p class="text-[8px] text-gray-400 uppercase">Vencimiento: ${u.vencimiento_acceso || 'Sin fecha'}</p>
                             </div>
                         </div>
-                        <div class="flex gap-2">
-                             <button onclick="eliminarUserSistema(${u.id})" class="text-red-500 text-[9px] font-black border border-red-500/20 px-3 py-2 rounded-xl hover:bg-red-500 hover:text-white transition">ELIMINAR</button>
-                        </div>
-                    </div>
-                `;
+                        <button onclick="eliminarUserSistema(${u.id})" class="text-red-500 text-[9px] font-black border border-red-500/20 px-3 py-2 rounded-xl">ELIMINAR</button>
+                    </div>`;
             });
         }
 
-        // Lógica para crear nuevo usuario
         document.getElementById('formNuevoUsuario').onsubmit = async (e) => {
             e.preventDefault();
+            
+            // MAPEO CORRECTO A 'vencimiento_acceso'
             const newUser = {
                 username: document.getElementById('newUsername').value,
                 password: document.getElementById('newPassword').value,
                 rol: document.getElementById('newRol').value,
-                vencimiento: document.getElementById('newVencimiento').value,
+                vencimiento_acceso: document.getElementById('newVencimiento').value, 
                 padre_id: currentUser.id
             };
 
             const { error } = await supabaseClient.from('usuarios_sistema').insert([newUser]);
+            
             if (error) {
                 alert("Error al crear usuario: " + error.message);
             } else {
                 document.getElementById('formNuevoUsuario').reset();
                 cargarUsuariosSistema();
+                alert("Usuario creado exitosamente");
             }
         };
 
         async function eliminarUserSistema(id) { 
-            if (confirm('¿Revocar acceso a este usuario definitivamente?')) { 
+            if (confirm('¿Revocar acceso a este usuario?')) { 
                 await supabaseClient.from('usuarios_sistema').delete().eq('id', id); 
                 cargarUsuariosSistema(); 
             } 
@@ -170,7 +156,6 @@
 
         function toggleTheme() { document.documentElement.classList.toggle('light'); }
         function logout() { localStorage.removeItem('session_tvdigital'); window.location.href = 'logueo.html'; }
-        
         window.onload = checkSession;
     </script>
 </body>
