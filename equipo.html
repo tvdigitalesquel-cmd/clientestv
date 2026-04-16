@@ -8,69 +8,329 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script>tailwind.config = { darkMode: 'class' }</script>
     <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        html.light-mode { color-scheme: light; }
         input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(var(--tw-date-invert, 1)); }
-        .modo-normal .accent-color { color: #3b82f6; }
-        .modo-normal .accent-bg { background-color: #2563eb; }
-        .light .bg-gray-900 { background-color: #f3f4f6; color: #1f2937; }
-        .light .bg-gray-800 { background-color: #ffffff; color: #1f2937; }
-        .light .border-gray-700 { border-color: #e5e7eb; }
-        .light .text-white { color: #1f2937; }
-        .light { --tw-date-invert: 0; }
         
-        /* Estilo para los botones con iconos como en tu captura */
-        .btn-filtro {
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .card-usuario {
+            animation: slideIn 0.4s ease-out;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .card-usuario::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s;
+        }
+        .card-usuario:hover::before { left: 100%; }
+        .card-usuario:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(59, 130, 246, 0.2); }
+        
+        .modal-backdrop {
+            animation: fadeIn 0.3s ease-out;
+        }
+        .modal-content {
+            animation: slideIn 0.4s ease-out;
+        }
+        
+        .delete-btn {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            transition: all 0.3s ease;
+        }
+        .delete-btn:hover {
+            box-shadow: 0 10px 25px -5px rgba(239, 68, 68, 0.4);
+            transform: scale(1.05);
+        }
+        
+        .btn-action {
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-action:active { transform: scale(0.95); }
+        
+        .rol-admin { background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(220, 38, 38, 0.1) 100%); border-left: 4px solid #ef4444; }
+        .rol-revendedor { background: linear-gradient(135deg, rgba(168, 85, 247, 0.2) 0%, rgba(147, 51, 234, 0.1) 100%); border-left: 4px solid #a855f7; }
+        .rol-vendedor { background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(37, 99, 235, 0.1) 100%); border-left: 4px solid #3b82f6; }
+        
+        .header-modern {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #0c4a6e 100%);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+        }
+        
+        html.light-mode .header-modern {
+            background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 50%, #f0f4ff 100%);
+            border-bottom: 1px solid rgba(59, 130, 246, 0.3);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.3);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            box-shadow: 0 15px 35px -5px rgba(59, 130, 246, 0.4);
+            transform: translateY(-2px);
+        }
+        .btn-primary:active { transform: scale(0.98); }
+        
+        .input-modern {
+            background: rgba(31, 41, 55, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(107, 114, 128, 0.3);
+            transition: all 0.3s ease;
+        }
+        .input-modern:focus {
+            border-color: rgba(59, 130, 246, 0.6);
+            background: rgba(31, 41, 55, 0.8);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
+        }
+        
+        html.light-mode .input-modern {
+            background: rgba(249, 250, 251, 0.8);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            color: #1f2937;
+        }
+        
+        html.light-mode .input-modern:focus {
+            border-color: rgba(59, 130, 246, 0.6);
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
+        .theme-toggle {
+            cursor: pointer;
+            width: 50px;
+            height: 28px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 14px;
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            border-radius: 12px;
-            font-size: 10px;
-            font-weight: 900;
-            text-transform: uppercase;
-            transition: all 0.2s;
+            padding: 2px;
+            transition: all 0.3s ease;
+            position: relative;
         }
-        .btn-filtro img { width: 16px; height: 16px; object-fit: contain; }
+        
+        .theme-toggle.active {
+            background: rgba(59, 130, 246, 0.3);
+            border-color: rgba(59, 130, 246, 0.5);
+        }
+        
+        .theme-toggle span {
+            width: 24px;
+            height: 24px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        
+        .theme-toggle .dark-icon {
+            position: absolute;
+            left: 2px;
+        }
+        
+        .theme-toggle .light-icon {
+            position: absolute;
+            right: 2px;
+        }
+        
+        .theme-toggle.active .dark-icon {
+            opacity: 0.3;
+        }
+        
+        .theme-toggle.active .light-icon {
+            opacity: 1;
+        }
+        
+        .theme-toggle:not(.active) .dark-icon {
+            opacity: 1;
+        }
+        
+        .theme-toggle:not(.active) .light-icon {
+            opacity: 0.3;
+        }
+
+        html.light-mode {
+            background-color: #f3f4f6;
+            color: #1f2937;
+        }
+        
+        html.light-mode body {
+            background-color: #f3f4f6 !important;
+            color: #1f2937 !important;
+        }
+        
+        html.light-mode .bg-gray-950 {
+            background-color: #f3f4f6 !important;
+        }
+        
+        html.light-mode .bg-gray-900 {
+            background-color: #ffffff !important;
+        }
+        
+        html.light-mode .bg-gray-800 {
+            background-color: #f9fafb !important;
+        }
+        
+        html.light-mode .border-gray-700 {
+            border-color: rgba(59, 130, 246, 0.1) !important;
+        }
+        
+        html.light-mode .text-white {
+            color: #1f2937 !important;
+        }
+        
+        html.light-mode .text-gray-300 {
+            color: #4b5563 !important;
+        }
+        
+        html.light-mode .text-gray-400 {
+            color: #6b7280 !important;
+        }
+        
+        html.light-mode .text-gray-500 {
+            color: #9ca3af !important;
+        }
+        
+        html.light-mode .text-blue-400 {
+            color: #2563eb !important;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #9ca3af;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(99, 102, 241, 0.1) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            transition: all 0.3s ease;
+        }
+        .stat-card:hover {
+            border-color: rgba(59, 130, 246, 0.5);
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(99, 102, 241, 0.2) 100%);
+            transform: translateY(-2px);
+        }
+        
+        html.light-mode .stat-card {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(99, 102, 241, 0.05) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .dialog-confirmar {
+            animation: fadeIn 0.3s ease-out;
+        }
     </style>
 </head>
-<body id="body-app" class="modo-normal bg-gray-900 text-white font-sans min-h-screen pb-20 transition-all duration-300">
+<body id="body-app" class="bg-gray-950 text-white font-sans min-h-screen pb-20 transition-all duration-300">
 
-    <div id="contenido-app" class="hidden">
-        <nav class="bg-gray-800 border-b border-gray-700 mb-6 sticky top-0 z-40 backdrop-blur-md bg-opacity-80">
-            <div class="container mx-auto px-4 flex justify-between items-center">
-                <div class="flex gap-4">
-                    <a href="index.html" class="py-4 font-bold uppercase text-[10px] text-gray-400 flex items-center gap-1">
-                        <span>📱</span> Mis Clientes
-                    </a>
-                    <button class="py-4 font-bold uppercase text-[10px] text-blue-500 border-b-2 border-blue-500">
-                        Gestionar Equipo
-                    </button>
-                </div>
-                <div class="flex items-center gap-3">
-                    <button onclick="toggleTheme()" class="bg-gray-700 p-2 rounded-full text-xs">☀️</button>
-                    <button onclick="logout()" class="text-red-500 font-bold text-[10px] uppercase border border-red-500/30 px-2 py-1 rounded">Salir</button>
-                </div>
+    <!-- NAVBAR -->
+    <nav class="header-modern sticky top-0 z-40 backdrop-blur-xl bg-opacity-90">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex gap-8">
+                <a href="index.html" class="py-4 font-bold uppercase text-sm hover:text-blue-400 transition">Mis Clientes</a>
+                <button class="py-4 font-bold uppercase text-sm border-b-2 border-blue-500 text-blue-500">Gestionar Equipo</button>
             </div>
-        </nav>
+            <div class="flex items-center gap-4">
+                <span id="info-sesion" class="text-xs text-gray-400 font-semibold"></span>
+                
+                <!-- THEME TOGGLE -->
+                <button onclick="toggleTheme()" class="theme-toggle" title="Cambiar tema">
+                    <span class="dark-icon">🌙</span>
+                    <span class="light-icon">☀️</span>
+                </button>
+                
+                <button onclick="logout()" class="text-red-400 font-bold text-xs uppercase border border-red-500/50 px-4 py-2 rounded-xl hover:bg-red-500/10 transition">Salir</button>
+            </div>
+        </div>
+    </nav>
 
-        <div class="container mx-auto px-4">
-            <section id="sec-usuarios">
-                <div class="bg-gray-800 p-6 rounded-2xl border border-gray-700 mb-6 shadow-xl">
-                    <div class="flex justify-between items-center mb-4">
-                        <h2 id="titulo-gestion-usuarios" class="text-lg font-bold accent-color uppercase italic">Gestionar Equipo</h2>
-                        <p id="info-sesion" class="text-[10px] text-gray-500 font-bold uppercase"></p>
-                    </div>
+    <div class="container mx-auto px-4 py-8">
+        <!-- HEADER -->
+        <header class="mb-10">
+            <h1 id="titulo-gestion" class="text-4xl font-black text-blue-400 uppercase tracking-tight">Gestionar Equipo</h1>
+            <p class="text-sm text-gray-500 mt-2">Administra los usuarios y vendedores de tu equipo</p>
+        </header>
 
-                    <form id="formNuevoUsuario" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3">
-                        <input type="text" id="newUsername" placeholder="Usuario" class="bg-gray-900 p-4 rounded-xl border border-gray-700 outline-none text-sm" required>
-                        <input type="password" id="newPassword" placeholder="Contraseña" class="bg-gray-900 p-4 rounded-xl border border-gray-700 outline-none text-sm" required>
-                        <select id="newRol" class="bg-gray-900 p-4 rounded-xl border border-gray-700 outline-none text-sm font-bold uppercase"></select>
-                        <input type="date" id="newVencimiento" class="bg-gray-900 p-4 rounded-xl border border-gray-700 outline-none text-sm" required>
-                        <button type="submit" class="accent-bg font-black rounded-xl uppercase text-[11px] text-white py-4 shadow-lg active:scale-95 transition-transform">Dar Acceso</button>
-                    </form>
+        <!-- ESTADÍSTICAS -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <div class="stat-card p-6 rounded-2xl text-center">
+                <p class="text-xs uppercase font-bold text-blue-400 opacity-80 mb-2">Total de Usuarios</p>
+                <h2 id="count-total" class="text-4xl font-black text-blue-400">0</h2>
+            </div>
+            <div class="stat-card p-6 rounded-2xl text-center">
+                <p class="text-xs uppercase font-bold text-purple-400 opacity-80 mb-2">Revendedores</p>
+                <h2 id="count-revendedores" class="text-4xl font-black text-purple-400">0</h2>
+            </div>
+            <div class="stat-card p-6 rounded-2xl text-center">
+                <p class="text-xs uppercase font-bold text-green-400 opacity-80 mb-2">Vendedores</p>
+                <h2 id="count-vendedores" class="text-4xl font-black text-green-400">0</h2>
+            </div>
+        </div>
+
+        <!-- FORMULARIO NUEVO USUARIO -->
+        <div class="bg-gray-800 border border-gray-700 p-8 rounded-3xl mb-8 shadow-lg">
+            <h2 class="text-2xl font-black text-blue-400 uppercase mb-6 tracking-tight">➕ Crear Nuevo Acceso</h2>
+            
+            <form id="formNuevoUsuario" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                <div>
+                    <label class="text-xs font-bold text-blue-400 uppercase block mb-2">Usuario</label>
+                    <input type="text" id="newUsername" placeholder="Nombre de usuario" class="input-modern w-full p-4 rounded-2xl outline-none text-sm" required>
                 </div>
+                <div>
+                    <label class="text-xs font-bold text-blue-400 uppercase block mb-2">Contraseña</label>
+                    <input type="password" id="newPassword" placeholder="Contraseña" class="input-modern w-full p-4 rounded-2xl outline-none text-sm" required>
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-blue-400 uppercase block mb-2">Rol</label>
+                    <select id="newRol" class="input-modern w-full p-4 rounded-2xl outline-none text-sm font-bold uppercase" required></select>
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-blue-400 uppercase block mb-2">Vencimiento</label>
+                    <input type="date" id="newVencimiento" class="input-modern w-full p-4 rounded-2xl outline-none text-sm" required>
+                </div>
+                <button type="submit" class="btn-primary font-bold rounded-2xl uppercase text-sm self-end py-4 shadow-lg transition-transform">
+                    ✓ Crear Acceso
+                </button>
+            </form>
+        </div>
 
-                <div id="lista-usuarios-sistema" class="grid gap-3"></div>
-            </section>
+        <!-- LISTA DE USUARIOS -->
+        <div>
+            <h2 class="text-2xl font-black text-blue-400 uppercase mb-6 tracking-tight">Equipo de Usuarios</h2>
+            <div id="lista-usuarios-sistema" class="grid gap-4"></div>
+        </div>
+    </div>
+
+    <!-- MODAL CONFIRMAR ELIMINACIÓN -->
+    <div id="modalConfirmar" class="fixed inset-0 bg-black/80 dialog-confirmar hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-gray-800 border border-gray-700 rounded-3xl p-8 shadow-2xl max-w-sm modal-content">
+            <h3 class="text-2xl font-bold text-red-400 mb-4">⚠️ Confirmar Eliminación</h3>
+            <p class="text-gray-300 mb-6">¿Estás seguro de que deseas revocar acceso a <span id="nombre-usuario-confirmar" class="font-bold text-white"></span>? Esta acción no se puede deshacer.</p>
+            <div class="flex gap-4">
+                <button onclick="confirmarEliminar()" class="flex-1 delete-btn py-3 rounded-xl font-bold uppercase text-white">REVOCAR</button>
+                <button onclick="cerrarConfirmar()" class="flex-1 bg-gray-700 hover:bg-gray-600 py-3 rounded-xl font-bold uppercase">CANCELAR</button>
+            </div>
         </div>
     </div>
 
@@ -80,54 +340,120 @@
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         let currentUser = JSON.parse(localStorage.getItem('session_tvdigital'));
+        let usuarioAEliminar = null;
+
+        const rolColors = {
+            'admin': { bg: 'bg-red-900/30', text: 'text-red-400', border: 'border-red-500/20', icon: '👑' },
+            'revendedor': { bg: 'bg-purple-900/30', text: 'text-purple-400', border: 'border-purple-500/20', icon: '🔷' },
+            'vendedor': { bg: 'bg-blue-900/30', text: 'text-blue-400', border: 'border-blue-500/20', icon: '📊' }
+        };
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const isLightMode = html.classList.contains('light-mode');
+            if (isLightMode) {
+                html.classList.remove('light-mode');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                html.classList.add('light-mode');
+                localStorage.setItem('theme', 'light');
+            }
+        }
 
         function checkSession() {
+            // Cargar tema guardado
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            if (savedTheme === 'light') {
+                document.documentElement.classList.add('light-mode');
+            }
+            
             if (!currentUser) {
                 window.location.href = 'logueo.html';
-            } else {
-                document.getElementById('contenido-app').classList.remove('hidden');
-                document.getElementById('info-sesion').innerText = `${currentUser.rol.toUpperCase()}: ${currentUser.username}`;
-                
-                const selRol = document.getElementById('newRol');
-                if (currentUser.rol === 'admin') {
-                    selRol.innerHTML = '<option value="admin">ADMINISTRADOR</option><option value="revendedor">REVENDEDOR</option><option value="vendedor">VENDEDOR</option>';
-                } else {
-                    document.getElementById('titulo-gestion-usuarios').innerText = "Mis Vendedores";
-                    selRol.innerHTML = '<option value="vendedor">VENDEDOR</option>';
-                }
-                cargarUsuariosSistema();
+                return;
             }
+
+            document.getElementById('info-sesion').innerText = `${currentUser.rol.toUpperCase()} • ${currentUser.username}`;
+            
+            const selRol = document.getElementById('newRol');
+            if (currentUser.rol === 'admin') {
+                document.getElementById('titulo-gestion').innerText = 'Gestionar Equipo';
+                selRol.innerHTML = '<option value="revendedor">REVENDEDOR</option><option value="vendedor">VENDEDOR</option>';
+            } else {
+                document.getElementById('titulo-gestion').innerText = 'Mis Vendedores';
+                selRol.innerHTML = '<option value="vendedor">VENDEDOR</option>';
+            }
+            
+            cargarUsuariosSistema();
         }
 
         async function cargarUsuariosSistema() {
             let query = supabaseClient.from('usuarios_sistema').select('*');
-            if (currentUser.rol !== 'admin') query = query.eq('padre_id', currentUser.id);
+            if (currentUser.rol !== 'admin') {
+                query = query.eq('padre_id', currentUser.id);
+            }
             
             const { data } = await query;
             const cont = document.getElementById('lista-usuarios-sistema');
             cont.innerHTML = '';
             
+            let countTotal = 0, countRevendedores = 0, countVendedores = 0;
+            
+            if (!data || data.length === 0) {
+                cont.innerHTML = `
+                    <div class="empty-state col-span-full">
+                        <p class="text-xl font-bold mb-2">No hay usuarios para mostrar</p>
+                        <p class="text-sm">Crea un nuevo acceso para tu equipo</p>
+                    </div>
+                `;
+                actualizarEstadisticas(0, 0, 0);
+                return;
+            }
+            
             (data || []).forEach(u => {
                 if (u.id === currentUser.id) return;
+                
+                countTotal++;
+                if (u.rol === 'revendedor') countRevendedores++;
+                if (u.rol === 'vendedor') countVendedores++;
+                
+                const config = rolColors[u.rol] || rolColors['vendedor'];
+                
                 cont.innerHTML += `
-                    <div class="bg-gray-800 border-gray-700 p-4 border rounded-2xl flex justify-between items-center shadow-md">
-                        <div class="flex items-center gap-3">
-                            <div class="w-2 h-8 ${u.rol === 'revendedor' ? 'bg-purple-500' : 'bg-blue-500'} rounded-full"></div>
-                            <div>
-                                <p class="font-black text-sm uppercase italic">${u.username}</p>
-                                <p class="text-[9px] font-bold uppercase tracking-widest text-gray-500">${u.rol}</p>
-                                <p class="text-[8px] text-gray-400 uppercase">Vencimiento: ${u.vencimiento_acceso || 'Sin fecha'}</p>
+                    <div class="bg-gray-800 border border-gray-700 p-6 rounded-2xl card-usuario shadow-lg hover:shadow-2xl">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="flex items-start gap-4 flex-1">
+                                <div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl bg-gray-900 border border-gray-700">
+                                    ${config.icon}
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="font-black text-lg uppercase italic leading-tight">${u.username}</h3>
+                                    <div class="space-y-1 mt-2">
+                                        <span class="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase ${config.bg} ${config.text}">
+                                            ${u.rol}
+                                        </span>
+                                        <p class="text-xs text-gray-400 mt-2">📅 Vence: ${u.vencimiento_acceso || 'Sin fecha'}</p>
+                                    </div>
+                                </div>
                             </div>
+                            <button onclick="abrirConfirmarEliminar(${JSON.stringify(u).replace(/"/g, '&quot;')})" class="btn-action delete-btn text-white py-2 px-4 rounded-xl font-bold text-sm transition-all" title="Revocar acceso">
+                                🗑️
+                            </button>
                         </div>
-                        <button onclick="eliminarUserSistema(${u.id})" class="text-red-500 text-[9px] font-black border border-red-500/20 px-3 py-2 rounded-xl">ELIMINAR</button>
                     </div>`;
             });
+            
+            actualizarEstadisticas(countTotal, countRevendedores, countVendedores);
+        }
+
+        function actualizarEstadisticas(total, revendedores, vendedores) {
+            document.getElementById('count-total').innerText = total;
+            document.getElementById('count-revendedores').innerText = revendedores;
+            document.getElementById('count-vendedores').innerText = vendedores;
         }
 
         document.getElementById('formNuevoUsuario').onsubmit = async (e) => {
             e.preventDefault();
             
-            // MAPEO CORRECTO A 'vencimiento_acceso'
             const newUser = {
                 username: document.getElementById('newUsername').value,
                 password: document.getElementById('newPassword').value,
@@ -143,19 +469,37 @@
             } else {
                 document.getElementById('formNuevoUsuario').reset();
                 cargarUsuariosSistema();
-                alert("Usuario creado exitosamente");
+                alert("Usuario creado exitosamente ✓");
             }
         };
 
-        async function eliminarUserSistema(id) { 
-            if (confirm('¿Revocar acceso a este usuario?')) { 
-                await supabaseClient.from('usuarios_sistema').delete().eq('id', id); 
-                cargarUsuariosSistema(); 
-            } 
+        function abrirConfirmarEliminar(usuario) {
+            usuarioAEliminar = usuario;
+            document.getElementById('nombre-usuario-confirmar').innerText = usuario.username;
+            document.getElementById('modalConfirmar').classList.remove('hidden');
         }
 
-        function toggleTheme() { document.documentElement.classList.toggle('light'); }
-        function logout() { localStorage.removeItem('session_tvdigital'); window.location.href = 'logueo.html'; }
+        function cerrarConfirmar() {
+            document.getElementById('modalConfirmar').classList.add('hidden');
+            usuarioAEliminar = null;
+        }
+
+        async function confirmarEliminar() {
+            if (!usuarioAEliminar) return;
+            const { error } = await supabaseClient.from('usuarios_sistema').delete().eq('id', usuarioAEliminar.id);
+            if (error) {
+                alert('Error: ' + error.message);
+            } else {
+                cerrarConfirmar();
+                cargarUsuariosSistema();
+            }
+        }
+
+        function logout() { 
+            localStorage.removeItem('session_tvdigital'); 
+            window.location.href = 'logueo.html'; 
+        }
+        
         window.onload = checkSession;
     </script>
 </body>
