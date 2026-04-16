@@ -7,10 +7,14 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
-            background: linear-gradient(-45deg, #0f172a, #1e293b, #1e3a8a, #1e1b4b);
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 25%, #1e3a8a 50%, #1e1b4b 75%, #0f172a 100%);
             background-size: 400% 400%;
             animation: gradient 15s ease infinite;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
         }
 
         @keyframes gradient {
@@ -19,61 +23,239 @@
             100% { background-position: 0% 50%; }
         }
 
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.3), 0 0 40px rgba(59, 130, 246, 0.1); }
+            50% { box-shadow: 0 0 30px rgba(59, 130, 246, 0.5), 0 0 60px rgba(59, 130, 246, 0.2); }
+        }
+
         .glass-card {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            animation: slideUp 0.8s ease-out, glow 3s ease-in-out infinite;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo-box {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            box-shadow: 0 15px 35px rgba(59, 130, 246, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            animation: slideUp 0.8s ease-out 0.1s both;
         }
 
         .input-style {
-            background: rgba(15, 23, 42, 0.6);
-            transition: all 0.3s ease;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(107, 114, 128, 0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: slideUp 0.8s ease-out both;
         }
 
+        .input-style:nth-of-type(1) { animation-delay: 0.2s; }
+        .input-style:nth-of-type(2) { animation-delay: 0.3s; }
+
         .input-style:focus {
-            border-color: #3b82f6;
-            box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+            border-color: rgba(59, 130, 246, 0.8);
+            background: rgba(15, 23, 42, 0.9);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .input-style::placeholder {
+            color: rgba(156, 163, 175, 0.5);
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: slideUp 0.8s ease-out 0.4s both;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-submit:active {
+            transform: scale(0.98);
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        .loading {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .spinner {
+            border: 2px solid rgba(59, 130, 246, 0.2);
+            border-top: 2px solid #3b82f6;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 0.8s linear infinite;
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .title {
+            animation: slideUp 0.8s ease-out 0.05s both;
+        }
+
+        .subtitle {
+            animation: slideUp 0.8s ease-out 0.1s both;
+        }
+
+        .form-container {
+            animation: slideUp 0.8s ease-out 0.15s both;
+        }
+
+        .footer-text {
+            animation: slideUp 0.8s ease-out 0.5s both;
+        }
+
+        /* Decorative elements */
+        .blob {
+            position: fixed;
+            border-radius: 50%;
+            opacity: 0.05;
+            z-index: -1;
+            filter: blur(40px);
+        }
+
+        .blob-1 {
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            top: -100px;
+            left: -100px;
+            animation: float 20s infinite;
+        }
+
+        .blob-2 {
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(135deg, #2563eb, #1e40af);
+            bottom: -150px;
+            right: -100px;
+            animation: float 25s infinite reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(20px, -20px); }
+            50% { transform: translate(0, 20px); }
+            75% { transform: translate(-20px, -10px); }
+        }
+
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.3), transparent);
+            animation: slideUp 0.8s ease-out 0.35s both;
+        }
+
+        .label-text {
+            font-size: 11px;
+            font-weight: 700;
+            color: #60a5fa;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4">
+<body class="flex flex-col items-center justify-center min-h-screen p-4">
 
-    <div class="glass-card w-full max-w-md p-10 rounded-3xl shadow-2xl">
+    <!-- Decorative blobs -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <div class="w-full max-w-md">
+        <!-- LOGO & TITLE -->
         <div class="text-center mb-10">
-            <div class="inline-flex items-center justify-center w-20 h-20 bg-blue-600 rounded-2xl shadow-lg mb-4 transform -rotate-6">
-                <span class="text-white text-4xl font-black italic">TV</span>
+            <div class="logo-box inline-flex items-center justify-center w-24 h-24 rounded-3xl shadow-lg mb-6 transform hover:scale-105 transition-transform duration-300">
+                <span class="text-white text-5xl font-black italic">TV</span>
             </div>
-            <h1 class="text-3xl font-black text-white uppercase tracking-tighter italic">Tv Digital</h1>
-            <p class="text-gray-400 text-sm font-medium mt-1 uppercase tracking-widest">Panel de Administración</p>
+            <h1 class="title text-4xl font-black text-white uppercase tracking-tighter italic">Tv Digital</h1>
+            <p class="subtitle text-blue-300 text-sm font-bold mt-3 uppercase tracking-widest">Gestor de Clientes Profesional</p>
         </div>
 
-        <form id="formLogin" class="space-y-6">
-            <div>
-                <label class="block text-[10px] font-bold text-blue-400 uppercase ml-1 mb-2">Usuario</label>
-                <input type="text" id="loginUser" required
-                    class="input-style w-full p-4 rounded-2xl border border-gray-700 text-white outline-none placeholder-gray-500"
-                    placeholder="Ingresa tu usuario">
-            </div>
+        <!-- FORM CARD -->
+        <div class="glass-card p-10 rounded-3xl">
+            <form id="formLogin" class="form-container space-y-6">
+                <!-- USERNAME FIELD -->
+                <div>
+                    <label class="label-text block mb-3">👤 Usuario</label>
+                    <input 
+                        type="text" 
+                        id="loginUser" 
+                        class="input-style w-full p-4 rounded-2xl border text-white outline-none placeholder-gray-600"
+                        placeholder="Ingresa tu usuario"
+                        required
+                        autocomplete="username"
+                    >
+                </div>
 
-            <div>
-                <label class="block text-[10px] font-bold text-blue-400 uppercase ml-1 mb-2">Contraseña</label>
-                <input type="password" id="loginPass" required
-                    class="input-style w-full p-4 rounded-2xl border border-gray-700 text-white outline-none placeholder-gray-500"
-                    placeholder="••••••••">
-            </div>
+                <!-- PASSWORD FIELD -->
+                <div>
+                    <label class="label-text block mb-3">🔐 Contraseña</label>
+                    <input 
+                        type="password" 
+                        id="loginPass" 
+                        class="input-style w-full p-4 rounded-2xl border text-white outline-none placeholder-gray-600"
+                        placeholder="••••••••"
+                        required
+                        autocomplete="current-password"
+                    >
+                </div>
 
-            <button type="submit" 
-                class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-4 rounded-2xl transition duration-300 transform active:scale-95 shadow-lg uppercase tracking-wider">
-                Entrar al Sistema
-            </button>
+                <!-- DIVIDER -->
+                <div class="divider my-2"></div>
 
-            <p id="loginError" class="hidden text-red-500 text-xs text-center font-bold uppercase italic animate-bounce">
-                ⚠️ Credenciales incorrectas o acceso vencido
+                <!-- SUBMIT BUTTON -->
+                <button 
+                    type="submit" 
+                    class="btn-submit w-full bg-blue-600 text-white font-bold py-4 px-6 rounded-2xl uppercase tracking-wider text-sm flex items-center justify-center gap-2 transition-all duration-300"
+                >
+                    <span id="btn-text">🚀 Entrar al Sistema</span>
+                </button>
+
+                <!-- ERROR MESSAGE -->
+                <p id="loginError" class="hidden error-message text-sm text-center font-bold uppercase py-3 px-4 rounded-xl">
+                    ⚠️ Credenciales incorrectas o acceso vencido
+                </p>
+            </form>
+        </div>
+
+        <!-- INFO TEXT -->
+        <div class="footer-text text-center mt-10">
+            <p class="text-gray-500 text-xs font-semibold uppercase tracking-widest">
+                Plataforma Segura de Gestión
             </p>
-        </form>
-
-        <div class="mt-12 text-center">
-            <p class="text-gray-500 text-[9px] font-bold uppercase tracking-widest">&copy; 2026 Tecno Store Patagonia</p>
+            <p class="text-gray-600 text-[10px] font-bold uppercase tracking-widest mt-3">
+                &#169; 2026 Tv Digital - Todos los Derechos Reservados
+            </p>
+            <p class="text-gray-700 text-[9px] mt-4 font-medium">
+                Tecno Store Patagonia
+            </p>
         </div>
     </div>
 
@@ -82,19 +264,38 @@
         const SUPABASE_KEY = 'sb_publishable_4ogrbtxBrBWBFj-NRJOrbg_XnpmO4pS';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        document.getElementById('formLogin').onsubmit = async (e) => {
+        const form = document.getElementById('formLogin');
+        const errorMsg = document.getElementById('loginError');
+        const userInput = document.getElementById('loginUser');
+        const passInput = document.getElementById('loginPass');
+        const btnText = document.getElementById('btn-text');
+        const submitBtn = form.querySelector('button[type="submit"]');
+
+        form.onsubmit = async (e) => {
             e.preventDefault();
-            const u = document.getElementById('loginUser').value;
-            const p = document.getElementById('loginPass').value;
+            
+            const username = userInput.value.trim();
+            const password = passInput.value;
 
-            const { data, error } = await supabaseClient
-                .from('usuarios_sistema')
-                .select('*')
-                .eq('username', u)
-                .eq('password', p)
-                .single();
+            // Mostrar loading
+            submitBtn.classList.add('loading');
+            btnText.innerHTML = '<span class="spinner"></span>Validando...';
+            errorMsg.classList.add('hidden');
 
-            if (data) {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('usuarios_sistema')
+                    .select('*')
+                    .eq('username', username)
+                    .eq('password', password)
+                    .single();
+
+                if (error || !data) {
+                    mostrarError("Credenciales incorrectas");
+                    return;
+                }
+
+                // Verificar vencimiento
                 const hoy = new Date();
                 const venci = data.vencimiento_acceso ? new Date(data.vencimiento_acceso) : null;
                 
@@ -103,19 +304,40 @@
                     return;
                 }
 
-                // Guardamos sesión y redirigimos a la página principal
+                // Login exitoso
                 localStorage.setItem('session_tvdigital', JSON.stringify(data));
-                window.location.href = 'index.html'; 
-            } else {
-                mostrarError();
+                btnText.innerHTML = '✓ Acceso Concedido';
+                submitBtn.style.background = 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)';
+                
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 800);
+
+            } catch (err) {
+                mostrarError("Error de conexión. Intenta de nuevo.");
+                console.error(err);
+            } finally {
+                if (!localStorage.getItem('session_tvdigital')) {
+                    submitBtn.classList.remove('loading');
+                    btnText.innerText = '🚀 Entrar al Sistema';
+                    submitBtn.style.background = '';
+                }
             }
         };
 
-        function mostrarError(msj) {
-            const err = document.getElementById('loginError');
-            if(msj) err.innerText = "⚠️ " + msj;
-            err.classList.remove('hidden');
+        function mostrarError(mensaje) {
+            errorMsg.innerText = "⚠️ " + mensaje;
+            errorMsg.classList.remove('hidden');
+            submitBtn.classList.remove('loading');
+            btnText.innerText = '🚀 Entrar al Sistema';
+            submitBtn.style.background = '';
+            userInput.focus();
         }
+
+        // Auto-focus en campo de usuario
+        window.addEventListener('load', () => {
+            userInput.focus();
+        });
     </script>
 </body>
 </html>
