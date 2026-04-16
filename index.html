@@ -27,58 +27,101 @@
         .light .text-white { color: #1f2937; }
         .light .text-gray-400 { color: #6b7280; }
         .light { --tw-date-invert: 0; }
+        .tab-activa { border-bottom: 3px solid #3b82f6; color: #3b82f6; }
     </style>
 </head>
 <body class="bg-gray-900 text-white font-sans min-h-screen pb-20 transition-colors duration-300">
 
-    <div class="container mx-auto px-4 py-6">
-        <header class="flex justify-between items-center mb-6">
-            <div>
-                <h1 class="text-2xl font-bold text-blue-500 uppercase tracking-wider">Panel Clientes</h1>
-                <p class="text-gray-400 text-xs italic">Tv Digital </p>
-            </div>
-            <div class="flex items-center gap-3">
-                <button onclick="toggleTheme()" class="bg-gray-800 dark:bg-gray-700 p-2 rounded-full border border-gray-700 shadow-md">
-                    <span id="theme-icon">🌙</span>
-                </button>
-                <button onclick="abrirModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-xl font-bold shadow-lg transition active:scale-95">
-                    + Nuevo
-                </button>
-            </div>
-        </header>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 text-white">
-            <div id="btn-filtro-activos" onclick="cambiarFiltroEstado('ACTIVOS')" class="dashboard-card bg-green-700 p-4 rounded-xl shadow-lg border-b-4 border-green-900">
-                <p class="text-xs uppercase font-bold opacity-80">Activos</p>
-                <h2 id="count-activos" class="text-4xl font-black my-2">0</h2>
-            </div>
-            <div id="btn-filtro-vencidos" onclick="cambiarFiltroEstado('VENCIDOS')" class="dashboard-card bg-red-600 p-4 rounded-xl shadow-lg border-b-4 border-red-800">
-                <p class="text-xs uppercase font-bold opacity-80">Vencidos</p>
-                <h2 id="count-vencidos" class="text-4xl font-black my-2">0</h2>
-            </div>
-            <div id="btn-filtro-pronto" onclick="cambiarFiltroEstado('PRONTO')" class="dashboard-card bg-yellow-500 p-4 rounded-xl shadow-lg border-b-4 border-yellow-700 text-gray-900">
-                <p class="text-xs uppercase font-bold opacity-80">Vencen pronto</p>
-                <h2 id="count-pronto" class="text-4xl font-black my-2 text-gray-900">0</h2>
-            </div>
+    <div id="pantalla-login" class="fixed inset-0 bg-gray-900 z-[100] flex items-center justify-center p-4">
+        <div class="bg-gray-800 p-8 rounded-2xl border border-gray-700 w-full max-w-sm shadow-2xl">
+            <h1 class="text-2xl font-black text-blue-500 mb-6 text-center uppercase tracking-tighter italic">Tv Digital Login</h1>
+            <form id="formLogin" class="space-y-4">
+                <input type="text" id="loginUser" placeholder="Usuario" class="w-full bg-gray-900 border border-gray-700 p-3 rounded-xl outline-none text-white" required>
+                <input type="password" id="loginPass" placeholder="Contraseña" class="w-full bg-gray-900 border border-gray-700 p-3 rounded-xl outline-none text-white" required>
+                <button type="submit" class="w-full bg-blue-600 p-3 rounded-xl font-bold uppercase hover:bg-blue-700 transition">Entrar</button>
+                <p id="loginError" class="text-red-500 text-xs text-center hidden italic mt-2">Usuario o contraseña incorrectos</p>
+            </form>
         </div>
+    </div>
 
-        <div class="space-y-4 mb-8">
-            <div class="relative">
-                <input type="text" id="inputBusqueda" onkeyup="filtrarClientes()" placeholder="🔍 Buscar cliente, usuario o ciudad..." 
-                   class="w-full bg-gray-800 border border-gray-700 rounded-xl p-4 text-white outline-none focus:border-blue-500 transition shadow-sm">
-                <button onclick="limpiarFiltros()" class="absolute right-4 top-4 text-xs text-gray-400 underline uppercase font-bold">Limpiar</button>
+    <div id="contenido-app" class="hidden">
+        
+        <nav class="bg-gray-800 border-b border-gray-700 mb-6">
+            <div class="container mx-auto px-4 flex justify-between items-center">
+                <div class="flex gap-6">
+                    <button onclick="cambiarSeccion('clientes')" id="tab-clientes" class="py-4 font-bold uppercase text-xs tab-activa">Clientes</button>
+                    <button onclick="cambiarSeccion('usuarios')" id="tab-usuarios" class="py-4 font-bold uppercase text-xs hidden">Administrar Usuarios</button>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button onclick="toggleTheme()" class="text-xl">☀️</button>
+                    <button onclick="logout()" class="text-red-500 font-bold text-xs uppercase">Salir</button>
+                </div>
             </div>
+        </nav>
+
+        <div class="container mx-auto px-4">
             
-            <div class="flex flex-wrap gap-2">
-                <button onclick="cambiarFiltroApp('TODOS', this)" class="btn-app filtro-activo flex-1 bg-gray-700 text-white border-2 border-transparent py-2 rounded-lg text-xs font-bold uppercase">Todas</button>
-                <button onclick="cambiarFiltroApp('LUMIX', this)" class="btn-app flex-1 bg-blue-600 text-white border-2 border-transparent py-2 rounded-lg text-xs font-bold uppercase">Lumix</button>
-                <button onclick="cambiarFiltroApp('TV PLUS 2', this)" class="btn-app flex-1 bg-green-600 text-white border-2 border-transparent py-2 rounded-lg text-xs font-bold uppercase">TV Plus 2</button>
-                <button onclick="cambiarFiltroApp('FEMON', this)" class="btn-app flex-1 bg-purple-600 text-white border-2 border-transparent py-2 rounded-lg text-xs font-bold uppercase">Femon</button>
-            </div>
-        </div>
+            <section id="sec-clientes">
+                <header class="flex justify-between items-center mb-6">
+                    <div>
+                        <h1 class="text-2xl font-bold text-blue-500 uppercase tracking-wider">Panel Clientes</h1>
+                        <p class="text-gray-400 text-xs italic">Tv Digital</p>
+                    </div>
+                    <button onclick="abrirModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-xl font-bold shadow-lg transition active:scale-95">
+                        + Nuevo
+                    </button>
+                </header>
 
-        <div id="contenedor-clientes" class="grid gap-4">
-            <div class="text-center py-10 text-gray-500">Cargando datos...</div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 text-white text-center">
+                    <div id="btn-filtro-activos" onclick="cambiarFiltroEstado('ACTIVOS')" class="dashboard-card bg-green-700 p-4 rounded-xl shadow-lg border-b-4 border-green-900">
+                        <p class="text-xs uppercase font-bold opacity-80">Activos</p>
+                        <h2 id="count-activos" class="text-4xl font-black my-2">0</h2>
+                    </div>
+                    <div id="btn-filtro-vencidos" onclick="cambiarFiltroEstado('VENCIDOS')" class="dashboard-card bg-red-600 p-4 rounded-xl shadow-lg border-b-4 border-red-800">
+                        <p class="text-xs uppercase font-bold opacity-80">Vencidos</p>
+                        <h2 id="count-vencidos" class="text-4xl font-black my-2">0</h2>
+                    </div>
+                    <div id="btn-filtro-pronto" onclick="cambiarFiltroEstado('PRONTO')" class="dashboard-card bg-yellow-500 p-4 rounded-xl shadow-lg border-b-4 border-yellow-700 text-gray-900">
+                        <p class="text-xs uppercase font-bold opacity-80">Vencen pronto</p>
+                        <h2 id="count-pronto" class="text-4xl font-black my-2 text-gray-900">0</h2>
+                    </div>
+                </div>
+
+                <div class="space-y-4 mb-8">
+                    <div class="relative">
+                        <input type="text" id="inputBusqueda" onkeyup="filtrarClientes()" placeholder="🔍 Buscar cliente, usuario o ciudad..." 
+                           class="w-full bg-gray-800 border border-gray-700 rounded-xl p-4 text-white outline-none focus:border-blue-500 transition shadow-sm">
+                        <button onclick="limpiarFiltros()" class="absolute right-4 top-4 text-xs text-gray-400 underline uppercase font-bold">Limpiar</button>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="cambiarFiltroApp('TODOS', this)" class="btn-app filtro-activo flex-1 bg-gray-700 text-white border-2 border-transparent py-2 rounded-lg text-xs font-bold uppercase">Todas</button>
+                        <button onclick="cambiarFiltroApp('LUMIX', this)" class="btn-app flex-1 bg-blue-600 text-white border-2 border-transparent py-2 rounded-lg text-xs font-bold uppercase">Lumix</button>
+                        <button onclick="cambiarFiltroApp('TV PLUS 2', this)" class="btn-app flex-1 bg-green-600 text-white border-2 border-transparent py-2 rounded-lg text-xs font-bold uppercase">TV Plus 2</button>
+                        <button onclick="cambiarFiltroApp('FEMON', this)" class="btn-app flex-1 bg-purple-600 text-white border-2 border-transparent py-2 rounded-lg text-xs font-bold uppercase">Femon</button>
+                    </div>
+                </div>
+
+                <div id="contenedor-clientes" class="grid gap-4">
+                    <div class="text-center py-10 text-gray-500">Cargando datos...</div>
+                </div>
+            </section>
+
+            <section id="sec-usuarios" class="hidden">
+                <div class="bg-gray-800 p-6 rounded-2xl border border-gray-700 mb-6">
+                    <h2 class="text-xl font-bold text-blue-500 mb-4 uppercase">Crear Nuevo Usuario del Panel</h2>
+                    <form id="formNuevoUsuario" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <input type="text" id="newUsername" placeholder="Usuario" class="bg-gray-900 p-3 rounded-xl border border-gray-700 outline-none" required>
+                        <input type="password" id="newPassword" placeholder="Contraseña" class="bg-gray-900 p-3 rounded-xl border border-gray-700 outline-none" required>
+                        <select id="newRol" class="bg-gray-900 p-3 rounded-xl border border-gray-700 outline-none">
+                            <option value="vendedor">Vendedor (Solo Clientes)</option>
+                            <option value="admin">Administrador (Control Total)</option>
+                        </select>
+                        <button type="submit" class="bg-blue-600 font-bold rounded-xl py-3 uppercase text-xs">Crear Acceso</button>
+                    </form>
+                </div>
+                <div id="lista-usuarios-sistema" class="grid gap-3"></div>
+            </section>
+
         </div>
     </div>
 
@@ -92,7 +135,7 @@
                 <input type="hidden" id="clienteId">
                 <input type="text" id="nombre" placeholder="Nombre Completo" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 outline-none focus:border-blue-500" required>
                 <div class="grid grid-cols-2 gap-4">
-                    <input type="tel" id="celular" placeholder="Celular (Ej: 2945123456)" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 outline-none">
+                    <input type="tel" id="celular" placeholder="Celular" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 outline-none">
                     <input type="text" id="ciudad" placeholder="Ciudad" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 outline-none">
                 </div>
                 <div class="grid grid-cols-2 gap-4">
@@ -121,50 +164,57 @@
         let todosLosClientes = [];
         let filtroAppActual = 'TODOS';
         let filtroEstadoActual = 'TODOS';
+        let currentUser = JSON.parse(localStorage.getItem('session_tvdigital'));
 
-        function toggleTheme() {
-            const body = document.documentElement;
-            const icon = document.getElementById('theme-icon');
-            if (body.classList.contains('light')) {
-                body.classList.remove('light');
-                icon.innerText = '🌙';
-                localStorage.setItem('theme', 'dark');
+        // --- LOGIN Y SESIÓN ---
+        document.getElementById('formLogin').onsubmit = async (e) => {
+            e.preventDefault();
+            const u = document.getElementById('loginUser').value;
+            const p = document.getElementById('loginPass').value;
+
+            const { data, error } = await supabaseClient
+                .from('usuarios_sistema')
+                .select('*')
+                .eq('username', u)
+                .eq('password', p)
+                .single();
+
+            if (data) {
+                localStorage.setItem('session_tvdigital', JSON.stringify(data));
+                location.reload();
             } else {
-                body.classList.add('light');
-                icon.innerText = '☀️';
-                localStorage.setItem('theme', 'light');
+                document.getElementById('loginError').classList.remove('hidden');
+            }
+        };
+
+        function checkSession() {
+            if (currentUser) {
+                document.getElementById('pantalla-login').classList.add('hidden');
+                document.getElementById('contenido-app').classList.remove('hidden');
+                if (currentUser.rol === 'admin') {
+                    document.getElementById('tab-usuarios').classList.remove('hidden');
+                }
+                cargarClientes();
             }
         }
 
-        if (localStorage.getItem('theme') === 'light' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: light)').matches)) {
-            document.documentElement.classList.add('light');
-            document.getElementById('theme-icon').innerText = '☀️';
+        function logout() {
+            localStorage.removeItem('session_tvdigital');
+            location.reload();
         }
 
-        function abrirModal(editData = null) {
-            const modal = document.getElementById('modalCliente');
-            const form = document.getElementById('formCliente');
-            form.reset();
-            document.getElementById('clienteId').value = '';
-            if (editData) {
-                document.getElementById('modalTitulo').innerText = "Editar Cliente";
-                document.getElementById('clienteId').value = editData.id;
-                document.getElementById('nombre').value = editData.nombre_apellido;
-                document.getElementById('celular').value = editData.celular || '';
-                document.getElementById('ciudad').value = editData.ciudad || '';
-                document.getElementById('usuario').value = editData.usuario;
-                document.getElementById('clave').value = editData.clave;
-                document.getElementById('app').value = editData.app_instalada;
-                document.getElementById('vencimiento').value = editData.fecha_vencimiento;
-                document.getElementById('precio').value = editData.precio || 0;
-            } else {
-                document.getElementById('modalTitulo').innerText = "Nuevo Cliente";
-            }
-            modal.classList.remove('hidden');
+        function cambiarSeccion(sec) {
+            document.getElementById('sec-clientes').classList.add('hidden');
+            document.getElementById('sec-usuarios').classList.add('hidden');
+            document.getElementById('tab-clientes').classList.remove('tab-activa');
+            document.getElementById('tab-usuarios').classList.remove('tab-activa');
+
+            document.getElementById('sec-' + sec).classList.remove('hidden');
+            document.getElementById('tab-' + sec).classList.add('tab-activa');
+            if (sec === 'usuarios') cargarUsuariosSistema();
         }
 
-        function cerrarModal() { document.getElementById('modalCliente').classList.add('hidden'); }
-
+        // --- CLIENTES ---
         async function cargarClientes() {
             const { data, error } = await supabaseClient.from('clientes').select('*').order('fecha_vencimiento', { ascending: true });
             if (!error) {
@@ -172,55 +222,6 @@
                 actualizarDashboard(data);
                 filtrarClientes();
             }
-        }
-
-        function enviarWhatsApp(nombre, celular, dias, precio, app) {
-            if (!celular) {
-                alert("Este cliente no tiene un número de celular registrado.");
-                return;
-            }
-            // Limpiar el número de espacios o guiones
-            const numLimpiado = celular.replace(/\D/g, '');
-            let mensaje = "";
-            
-            if (dias <= 0) {
-                mensaje = `Hola ${nombre}! Te escribo de Tv Digital. Te informamos que tu servicio de ${app} ha vencido. El costo de renovación es de $${precio}. Avisanos si querés renovar!`;
-            } else {
-                mensaje = `Hola ${nombre}! Te escribo de Tv digital Patagonia para avisarte que tu servicio de ${app} vence en ${dias} días. El costo es de $${precio}. Saludos!`;
-            }
-            
-            const url = `https://wa.me/${numLimpiado}?text=${encodeURIComponent(mensaje)}`;
-            window.open(url, '_blank');
-        }
-
-        function actualizarDashboard(data) {
-            const hoy = new Date();
-            let activos = 0, vencidos = 0, pronto = 0;
-            data.forEach(c => {
-                const dias = Math.ceil((new Date(c.fecha_vencimiento) - hoy) / (1000 * 60 * 60 * 24));
-                if (dias > 0) activos++; else vencidos++;
-                if (dias > 0 && dias <= 7) pronto++;
-            });
-            document.getElementById('count-activos').innerText = activos;
-            document.getElementById('count-vencidos').innerText = vencidos;
-            document.getElementById('count-pronto').innerText = pronto;
-        }
-
-        function cambiarFiltroApp(app, el) {
-            filtroAppActual = app;
-            document.querySelectorAll('.btn-app').forEach(b => b.classList.remove('filtro-activo'));
-            el.classList.add('filtro-activo');
-            filtrarClientes();
-        }
-
-        function cambiarFiltroEstado(estado) {
-            filtroEstadoActual = (filtroEstadoActual === estado) ? 'TODOS' : estado;
-            document.querySelectorAll('.dashboard-card').forEach(c => c.classList.remove('card-seleccionada'));
-            if (filtroEstadoActual !== 'TODOS') {
-                const idBtn = estado === 'ACTIVOS' ? 'btn-filtro-activos' : estado === 'VENCIDOS' ? 'btn-filtro-vencidos' : 'btn-filtro-pronto';
-                document.getElementById(idBtn).classList.add('card-seleccionada');
-            }
-            filtrarClientes();
         }
 
         function filtrarClientes() {
@@ -269,7 +270,7 @@
                             </div>
                             <button onclick="enviarWhatsApp('${c.nombre_apellido}', '${c.celular}', ${dias}, '${c.precio}', '${c.app_instalada}')" 
                                     class="bg-green-600 hover:bg-green-500 text-white p-2 rounded-lg flex items-center justify-center shadow-md active:scale-90 transition">
-                                <span class="text-xs font-bold">WhatsApp</span>
+                                <span class="text-xs font-bold uppercase">Mandar Msj</span>
                             </button>
                         </div>
                     </div>
@@ -277,12 +278,103 @@
             });
         }
 
-        async function eliminarCliente(id) {
-            if (confirm('¿Eliminar cliente?')) {
-                const { error } = await supabaseClient.from('clientes').delete().eq('id', id);
-                if (!error) cargarClientes();
+        // --- GESTIÓN USUARIOS SISTEMA ---
+        async function cargarUsuariosSistema() {
+            const { data } = await supabaseClient.from('usuarios_sistema').select('*');
+            const cont = document.getElementById('lista-usuarios-sistema');
+            cont.innerHTML = '';
+            data.forEach(u => {
+                cont.innerHTML += `
+                    <div class="bg-gray-800 p-4 border border-gray-700 rounded-xl flex justify-between items-center">
+                        <div>
+                            <p class="font-bold">${u.username}</p>
+                            <p class="text-[10px] uppercase font-black text-blue-500">${u.rol}</p>
+                        </div>
+                        <button onclick="eliminarUserSistema(${u.id})" class="text-red-500 font-bold text-xs uppercase">Eliminar Acceso</button>
+                    </div>
+                `;
+            });
+        }
+
+        document.getElementById('formNuevoUsuario').onsubmit = async (e) => {
+            e.preventDefault();
+            const datos = {
+                username: document.getElementById('newUsername').value,
+                password: document.getElementById('newPassword').value,
+                rol: document.getElementById('newRol').value
+            };
+            const { error } = await supabaseClient.from('usuarios_sistema').insert([datos]);
+            if (!error) { e.target.reset(); cargarUsuariosSistema(); }
+            else { alert("Error: El usuario ya existe o hubo un problema."); }
+        };
+
+        async function eliminarUserSistema(id) {
+            if (confirm('¿Eliminar este acceso al panel?')) {
+                await supabaseClient.from('usuarios_sistema').delete().eq('id', id);
+                cargarUsuariosSistema();
             }
         }
+
+        // --- FUNCIONES AUXILIARES ---
+        function enviarWhatsApp(nombre, celular, dias, precio, app) {
+            if (!celular) { alert("Sin celular registrado."); return; }
+            const numLimpiado = celular.replace(/\D/g, '');
+            let mensaje = dias <= 0 
+                ? `Hola ${nombre}! Te escribo de Tv Digital. Tu servicio de ${app} ha vencido. El costo de renovación es de $${precio}. Avisanos si querés renovar!`
+                : `Hola ${nombre}! Te escribo de Tv Digital para avisarte que tu servicio de ${app} vence en ${dias} días. El costo es de $${precio}. Saludos!`;
+            window.open(`https://wa.me/${numLimpiado}?text=${encodeURIComponent(mensaje)}`, '_blank');
+        }
+
+        function actualizarDashboard(data) {
+            const hoy = new Date();
+            let activos = 0, vencidos = 0, pronto = 0;
+            data.forEach(c => {
+                const dias = Math.ceil((new Date(c.fecha_vencimiento) - hoy) / (1000 * 60 * 60 * 24));
+                if (dias > 0) activos++; else vencidos++;
+                if (dias > 0 && dias <= 7) pronto++;
+            });
+            document.getElementById('count-activos').innerText = activos;
+            document.getElementById('count-vencidos').innerText = vencidos;
+            document.getElementById('count-pronto').innerText = pronto;
+        }
+
+        function cambiarFiltroApp(app, el) {
+            filtroAppActual = app;
+            document.querySelectorAll('.btn-app').forEach(b => b.classList.remove('filtro-activo'));
+            el.classList.add('filtro-activo');
+            filtrarClientes();
+        }
+
+        function cambiarFiltroEstado(estado) {
+            filtroEstadoActual = (filtroEstadoActual === estado) ? 'TODOS' : estado;
+            document.querySelectorAll('.dashboard-card').forEach(c => c.classList.remove('card-seleccionada'));
+            if (filtroEstadoActual !== 'TODOS') {
+                const idBtn = estado === 'ACTIVOS' ? 'btn-filtro-activos' : estado === 'VENCIDOS' ? 'btn-filtro-vencidos' : 'btn-filtro-pronto';
+                document.getElementById(idBtn).classList.add('card-seleccionada');
+            }
+            filtrarClientes();
+        }
+
+        function abrirModal(editData = null) {
+            const modal = document.getElementById('modalCliente');
+            document.getElementById('formCliente').reset();
+            document.getElementById('clienteId').value = '';
+            if (editData) {
+                document.getElementById('modalTitulo').innerText = "Editar Cliente";
+                document.getElementById('clienteId').value = editData.id;
+                document.getElementById('nombre').value = editData.nombre_apellido;
+                document.getElementById('celular').value = editData.celular || '';
+                document.getElementById('ciudad').value = editData.ciudad || '';
+                document.getElementById('usuario').value = editData.usuario;
+                document.getElementById('clave').value = editData.clave;
+                document.getElementById('app').value = editData.app_instalada;
+                document.getElementById('vencimiento').value = editData.fecha_vencimiento;
+                document.getElementById('precio').value = editData.precio || 0;
+            }
+            modal.classList.remove('hidden');
+        }
+
+        function cerrarModal() { document.getElementById('modalCliente').classList.add('hidden'); }
 
         document.getElementById('formCliente').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -297,21 +389,31 @@
                 fecha_vencimiento: document.getElementById('vencimiento').value,
                 precio: parseFloat(document.getElementById('precio').value) || 0
             };
-            const res = id ? await supabaseClient.from('clientes').update(datos).eq('id', id) : await supabaseClient.from('clientes').insert([datos]);
-            if (!res.error) { cerrarModal(); cargarClientes(); }
+            if (id) await supabaseClient.from('clientes').update(datos).eq('id', id);
+            else await supabaseClient.from('clientes').insert([datos]);
+            cerrarModal(); cargarClientes();
         });
 
-        function limpiarFiltros() {
-            filtroAppActual = 'TODOS';
-            filtroEstadoActual = 'TODOS';
-            document.getElementById('inputBusqueda').value = '';
-            document.querySelectorAll('.dashboard-card').forEach(c => c.classList.remove('card-seleccionada'));
-            document.querySelectorAll('.btn-app').forEach(b => b.classList.remove('filtro-activo'));
-            document.querySelector('.btn-app').classList.add('filtro-activo');
-            filtrarClientes();
+        async function eliminarCliente(id) {
+            if (confirm('¿Eliminar cliente?')) {
+                await supabaseClient.from('clientes').delete().eq('id', id);
+                cargarClientes();
+            }
         }
 
-        window.onload = cargarClientes;
+        function limpiarFiltros() {
+            filtroAppActual = 'TODOS'; filtroEstadoActual = 'TODOS';
+            document.getElementById('inputBusqueda').value = '';
+            cargarClientes();
+        }
+
+        function toggleTheme() {
+            document.documentElement.classList.toggle('light');
+            const isLight = document.documentElement.classList.contains('light');
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+        }
+
+        window.onload = checkSession;
     </script>
 </body>
 </html>
