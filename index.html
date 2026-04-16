@@ -3,12 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tv Digital - Panel de Control</title>
+    <title>Tv Digital - Panel Jerárquico</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = { darkMode: 'class' }
-    </script>
+    <script>tailwind.config = { darkMode: 'class' }</script>
     <style>
         input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(var(--tw-date-invert, 1)); }
         @keyframes pulse-red {
@@ -49,7 +47,7 @@
             <div class="container mx-auto px-4 flex justify-between items-center">
                 <div class="flex gap-4">
                     <button onclick="cambiarSeccion('clientes')" id="tab-clientes" class="py-4 font-bold uppercase text-[10px] tab-activa">Mis Clientes</button>
-                    <button onclick="cambiarSeccion('usuarios')" id="tab-usuarios" class="py-4 font-bold uppercase text-[10px] hidden">Gestionar Vendedores</button>
+                    <button onclick="cambiarSeccion('usuarios')" id="tab-usuarios" class="py-4 font-bold uppercase text-[10px] hidden">Gestionar Equipo</button>
                 </div>
                 <div class="flex items-center gap-3">
                     <button onclick="toggleTheme()" class="bg-gray-700 p-2 rounded-full text-xs">☀️</button>
@@ -96,8 +94,8 @@
                 </div>
 
                 <div class="space-y-4 mb-8">
-                    <input type="text" id="inputBusqueda" onkeyup="filtrarClientes()" placeholder="🔍 Buscar..." 
-                       class="w-full bg-gray-800 border border-gray-700 rounded-xl p-4 text-white outline-none focus:border-blue-500">
+                    <input type="text" id="inputBusqueda" onkeyup="filtrarClientes()" placeholder="🔍 Buscar por nombre, usuario o ciudad..." 
+                           class="w-full bg-gray-800 border border-gray-700 rounded-xl p-4 text-white outline-none focus:border-blue-500">
                     <div class="flex flex-wrap gap-2">
                         <button onclick="cambiarFiltroApp('TODOS', this)" class="btn-app filtro-activo flex-1 bg-gray-700 py-2 rounded-lg text-[10px] font-bold uppercase">Todas</button>
                         <button onclick="cambiarFiltroApp('LUMIX', this)" class="btn-app flex-1 bg-blue-600 py-2 rounded-lg text-[10px] font-bold uppercase">Lumix</button>
@@ -111,19 +109,17 @@
 
             <section id="sec-usuarios" class="hidden">
                 <div class="bg-gray-800 p-6 rounded-2xl border border-gray-700 mb-6 shadow-xl">
-                    <h2 class="text-lg font-bold text-blue-500 mb-4 uppercase italic">Crear Nuevo Vendedor</h2>
+                    <h2 id="titulo-gestion-usuarios" class="text-lg font-bold text-blue-500 mb-4 uppercase italic">Crear Acceso</h2>
                     <form id="formNuevoUsuario" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3">
                         <input type="text" id="newUsername" placeholder="Usuario" class="bg-gray-900 p-3 rounded-xl border border-gray-700 outline-none text-sm" required>
                         <input type="password" id="newPassword" placeholder="Contraseña" class="bg-gray-900 p-3 rounded-xl border border-gray-700 outline-none text-sm" required>
                         <select id="newRol" class="bg-gray-900 p-3 rounded-xl border border-gray-700 outline-none text-sm text-white">
-                            <option value="vendedor">Vendedor</option>
-                            <option value="admin">Administrador</option>
-                        </select>
+                            </select>
                         <input type="date" id="newVencimiento" class="bg-gray-900 p-3 rounded-xl border border-gray-700 outline-none text-sm text-white" required>
                         <button type="submit" class="bg-blue-600 font-bold rounded-xl uppercase text-[10px]">Dar Acceso</button>
                     </form>
                 </div>
-                <p class="text-[10px] text-gray-500 mb-3 font-bold uppercase tracking-widest">⚠️ Haz clic en un vendedor para supervisar sus clientes</p>
+                <p class="text-[10px] text-gray-500 mb-3 font-bold uppercase tracking-widest">⚠️ Toca un usuario para ver sus clientes</p>
                 <div id="lista-usuarios-sistema" class="grid gap-3"></div>
             </section>
         </div>
@@ -169,9 +165,9 @@
         let filtroAppActual = 'TODOS';
         let filtroEstadoActual = 'TODOS';
         let currentUser = JSON.parse(localStorage.getItem('session_tvdigital'));
-        let idSupervisado = null; // Para que el admin vea a otros
+        let idSupervisado = null;
 
-        // --- LOGIN Y VENCIMIENTO ---
+        // --- LOGIN ---
         document.getElementById('formLogin').onsubmit = async (e) => {
             e.preventDefault();
             const u = document.getElementById('loginUser').value;
@@ -194,9 +190,21 @@
             if (currentUser) {
                 document.getElementById('pantalla-login').classList.add('hidden');
                 document.getElementById('contenido-app').classList.remove('hidden');
-                document.getElementById('info-sesion').innerText = `Sesión: ${currentUser.username}`;
+                document.getElementById('info-sesion').innerText = `${currentUser.rol.toUpperCase()}: ${currentUser.username}`;
                 
-                // Mostrar días restantes al vendedor
+                const selRol = document.getElementById('newRol');
+                
+                // Configuración por Rol
+                if (currentUser.rol === 'admin') {
+                    document.getElementById('tab-usuarios').classList.remove('hidden');
+                    selRol.innerHTML = '<option value="admin">Admin</option><option value="revendedor">Revendedor</option><option value="vendedor">Vendedor</option>';
+                } else if (currentUser.rol === 'revendedor') {
+                    document.getElementById('tab-usuarios').classList.remove('hidden');
+                    document.getElementById('titulo-gestion-usuarios').innerText = "Mis Vendedores";
+                    selRol.innerHTML = '<option value="vendedor">Vendedor</option>';
+                }
+
+                // Alerta vencimiento sistema
                 if (currentUser.vencimiento_acceso) {
                     const dias = Math.ceil((new Date(currentUser.vencimiento_acceso) - new Date()) / (1000 * 60 * 60 * 24));
                     if (dias <= 10) {
@@ -205,32 +213,84 @@
                     }
                 }
 
-                if (currentUser.rol === 'admin') document.getElementById('tab-usuarios').classList.remove('hidden');
                 cargarClientes();
             }
         }
 
         function logout() { localStorage.removeItem('session_tvdigital'); location.reload(); }
 
-        // --- CARGAR CLIENTES (MODO PRIVADO O SUPERVISIÓN) ---
+        // --- CARGAR CLIENTES (JERÁRQUICO) ---
         async function cargarClientes() {
-            const idABuscar = idSupervisado || currentUser.id;
-            const { data } = await supabaseClient.from('clientes')
-                .select('*')
-                .eq('creado_por', idABuscar)
-                .order('fecha_vencimiento', { ascending: true });
+            let query = supabaseClient.from('clientes').select('*');
             
+            if (idSupervisado) {
+                query = query.eq('creado_por', idSupervisado);
+            } else if (currentUser.rol === 'vendedor') {
+                query = query.eq('creado_por', currentUser.id);
+            } else if (currentUser.rol === 'revendedor') {
+                // Ver mis clientes y los de mis vendedores
+                const { data: misVendedores } = await supabaseClient.from('usuarios_sistema').select('id').eq('padre_id', currentUser.id);
+                const ids = [currentUser.id, ...misVendedores.map(v => v.id)];
+                query = query.in('creado_por', ids);
+            }
+            // Admin no tiene filtros, ve todo.
+
+            const { data } = await query.order('fecha_vencimiento', { ascending: true });
             todosLosClientes = data || [];
             actualizarDashboard(todosLosClientes);
             filtrarClientes();
         }
+
+        // --- GESTIÓN DE USUARIOS (JERÁRQUICO) ---
+        async function cargarUsuariosSistema() {
+            let query = supabaseClient.from('usuarios_sistema').select('*');
+            
+            if (currentUser.rol === 'revendedor') {
+                query = query.eq('padre_id', currentUser.id);
+            }
+
+            const { data } = await query;
+            const cont = document.getElementById('lista-usuarios-sistema');
+            cont.innerHTML = '';
+            data.forEach(u => {
+                if (u.id === currentUser.id) return; // No mostrarse a si mismo
+
+                const hoy = new Date();
+                const venci = u.vencimiento_acceso ? new Date(u.vencimiento_acceso) : null;
+                const estaVencido = venci && venci < hoy;
+                const dias = venci ? Math.ceil((venci - hoy) / (1000 * 60 * 60 * 24)) : '∞';
+
+                cont.innerHTML += `
+                    <div class="bg-gray-800 p-4 border border-gray-700 rounded-xl flex justify-between items-center cursor-pointer hover:border-blue-500 transition shadow-md"
+                         onclick="supervisarVendedor(${u.id}, '${u.username}')">
+                        <div>
+                            <p class="font-black text-sm uppercase">${u.username} <span class="text-[9px] text-blue-500">[${u.rol}]</span></p>
+                            <p class="text-[10px] ${estaVencido ? 'text-red-500' : 'text-gray-400'} font-bold">Vence en: ${dias} d</p>
+                        </div>
+                        <button onclick="event.stopPropagation(); eliminarUserSistema(${u.id})" class="text-red-500 text-[10px] font-bold border border-red-500/20 px-3 py-1 rounded">BORRAR</button>
+                    </div>
+                `;
+            });
+        }
+
+        document.getElementById('formNuevoUsuario').onsubmit = async (e) => {
+            e.preventDefault();
+            await supabaseClient.from('usuarios_sistema').insert([{
+                username: document.getElementById('newUsername').value,
+                password: document.getElementById('newPassword').value,
+                rol: document.getElementById('newRol').value,
+                vencimiento_acceso: document.getElementById('newVencimiento').value,
+                padre_id: currentUser.id
+            }]);
+            e.target.reset(); cargarUsuariosSistema();
+        };
 
         // --- SUPERVISIÓN ---
         function supervisarVendedor(id, nombre) {
             idSupervisado = id;
             document.getElementById('vendedor-nombre').innerText = nombre;
             document.getElementById('modo-supervision').classList.remove('hidden');
-            document.getElementById('btn-nuevo-cliente').classList.add('hidden'); // No agregar clientes a otros
+            document.getElementById('btn-nuevo-cliente').classList.add('hidden');
             cambiarSeccion('clientes');
             cargarClientes();
         }
@@ -242,52 +302,7 @@
             cargarClientes();
         }
 
-        // --- ADMIN USUARIOS ---
-        async function cargarUsuariosSistema() {
-            const { data } = await supabaseClient.from('usuarios_sistema').select('*');
-            const cont = document.getElementById('lista-usuarios-sistema');
-            cont.innerHTML = '';
-            data.forEach(u => {
-                const hoy = new Date();
-                const venci = u.vencimiento_acceso ? new Date(u.vencimiento_acceso) : null;
-                const estaVencido = venci && venci < hoy;
-                const dias = venci ? Math.ceil((venci - hoy) / (1000 * 60 * 60 * 24)) : '∞';
-
-                cont.innerHTML += `
-                    <div class="bg-gray-800 p-4 border border-gray-700 rounded-xl flex justify-between items-center cursor-pointer hover:border-purple-500 transition shadow-md"
-                         onclick="supervisarVendedor(${u.id}, '${u.username}')">
-                        <div>
-                            <p class="font-black text-sm uppercase">${u.username} <span class="text-[9px] text-blue-500">[${u.rol}]</span></p>
-                            <p class="text-[10px] ${estaVencido ? 'text-red-500' : 'text-gray-400'} font-bold">
-                                Acceso vence en: ${dias} días ${estaVencido ? '(CORTADO)' : ''}
-                            </p>
-                        </div>
-                        <button onclick="event.stopPropagation(); eliminarUserSistema(${u.id})" class="text-red-500 text-[10px] font-bold border border-red-500/20 px-3 py-1 rounded">BORRAR</button>
-                    </div>
-                `;
-            });
-        }
-
-        // --- RESTO DE FUNCIONALIDAD ---
-        document.getElementById('formCliente').onsubmit = async (e) => {
-            e.preventDefault();
-            const id = document.getElementById('clienteId').value;
-            const datos = {
-                nombre_apellido: document.getElementById('nombre').value,
-                celular: document.getElementById('celular').value,
-                ciudad: document.getElementById('ciudad').value,
-                usuario: document.getElementById('usuario').value,
-                clave: document.getElementById('clave').value,
-                app_instalada: document.getElementById('app').value,
-                fecha_vencimiento: document.getElementById('vencimiento').value,
-                precio: parseFloat(document.getElementById('precio').value) || 0,
-                creado_por: currentUser.id
-            };
-            if (id) await supabaseClient.from('clientes').update(datos).eq('id', id);
-            else await supabaseClient.from('clientes').insert([datos]);
-            cerrarModal(); cargarClientes();
-        };
-
+        // --- RESTO DE FUNCIONES (WA, FILTROS, MODAL) ---
         function filtrarClientes() {
             const bus = document.getElementById('inputBusqueda').value.toLowerCase();
             const cont = document.getElementById('contenedor-clientes');
@@ -332,23 +347,53 @@
             });
         }
 
-        document.getElementById('formNuevoUsuario').onsubmit = async (e) => {
-            e.preventDefault();
-            await supabaseClient.from('usuarios_sistema').insert([{
-                username: document.getElementById('newUsername').value,
-                password: document.getElementById('newPassword').value,
-                rol: document.getElementById('newRol').value,
-                vencimiento_acceso: document.getElementById('newVencimiento').value
-            }]);
-            e.target.reset(); cargarUsuariosSistema();
-        };
-
-        async function eliminarUserSistema(id) {
-            if (confirm('¿Borrar este vendedor?')) {
-                await supabaseClient.from('usuarios_sistema').delete().eq('id', id);
-                cargarUsuariosSistema();
-            }
+        function enviarWA(nom, cel, dias, pre, app) {
+            if (!cel) return alert("Sin número");
+            const msj = dias <= 0 
+                ? `Hola ${nom}! Te aviso de Tv Digital que venció tu ${app}. Renovación: $${pre}.`
+                : `Hola ${nom}! Te aviso de Tv Digital que tu ${app} vence en ${dias} días. Precio: $${pre}.`;
+            window.open(`https://wa.me/${cel.replace(/\D/g,'')}?text=${encodeURIComponent(msj)}`, '_blank');
         }
+
+        function abrirModal(d = null) {
+            const m = document.getElementById('modalCliente');
+            document.getElementById('formCliente').reset();
+            document.getElementById('clienteId').value = '';
+            if (d) {
+                document.getElementById('modalTitulo').innerText = "Editar Cliente";
+                document.getElementById('clienteId').value = d.id;
+                document.getElementById('nombre').value = d.nombre_apellido;
+                document.getElementById('celular').value = d.celular || '';
+                document.getElementById('ciudad').value = d.ciudad || '';
+                document.getElementById('usuario').value = d.usuario;
+                document.getElementById('clave').value = d.clave;
+                document.getElementById('app').value = d.app_instalada;
+                document.getElementById('vencimiento').value = d.fecha_vencimiento;
+                document.getElementById('precio').value = d.precio;
+            } else {
+                document.getElementById('modalTitulo').innerText = "Nuevo Cliente";
+            }
+            m.classList.remove('hidden');
+        }
+
+        document.getElementById('formCliente').onsubmit = async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('clienteId').value;
+            const datos = {
+                nombre_apellido: document.getElementById('nombre').value,
+                celular: document.getElementById('celular').value,
+                ciudad: document.getElementById('ciudad').value,
+                usuario: document.getElementById('usuario').value,
+                clave: document.getElementById('clave').value,
+                app_instalada: document.getElementById('app').value,
+                fecha_vencimiento: document.getElementById('vencimiento').value,
+                precio: parseFloat(document.getElementById('precio').value) || 0,
+                creado_por: currentUser.id
+            };
+            if (id) await supabaseClient.from('clientes').update(datos).eq('id', id);
+            else await supabaseClient.from('clientes').insert([datos]);
+            cerrarModal(); cargarClientes();
+        };
 
         function actualizarDashboard(data) {
             const hoy = new Date();
@@ -388,48 +433,12 @@
             filtrarClientes();
         }
 
-        function enviarWA(nom, cel, dias, pre, app) {
-            if (!cel) return alert("Sin número");
-            const msj = dias <= 0 
-                ? `Hola ${nom}! Te aviso de Tv Digital que venció tu ${app}. Renovación: $${pre}.`
-                : `Hola ${nom}! Te aviso de Tv Digital que tu ${app} vence en ${dias} días. Precio: $${pre}.`;
-            window.open(`https://wa.me/${cel.replace(/\D/g,'')}?text=${encodeURIComponent(msj)}`, '_blank');
-        }
-
-        function toggleTheme() {
-            document.documentElement.classList.toggle('light');
-            localStorage.setItem('theme', document.documentElement.classList.contains('light') ? 'light' : 'dark');
-        }
-
-        function abrirModal(d = null) {
-            const m = document.getElementById('modalCliente');
-            document.getElementById('formCliente').reset();
-            document.getElementById('clienteId').value = '';
-            if (d) {
-                document.getElementById('modalTitulo').innerText = "Editar Cliente";
-                document.getElementById('clienteId').value = d.id;
-                document.getElementById('nombre').value = d.nombre_apellido;
-                document.getElementById('celular').value = d.celular || '';
-                document.getElementById('ciudad').value = d.ciudad || '';
-                document.getElementById('usuario').value = d.usuario;
-                document.getElementById('clave').value = d.clave;
-                document.getElementById('app').value = d.app_instalada;
-                document.getElementById('vencimiento').value = d.fecha_vencimiento;
-                document.getElementById('precio').value = d.precio;
-            }
-            m.classList.remove('hidden');
-        }
-
+        async function eliminarCliente(id) { if (confirm('¿Eliminar cliente?')) { await supabaseClient.from('clientes').delete().eq('id', id); cargarClientes(); } }
+        async function eliminarUserSistema(id) { if (confirm('¿Borrar este acceso?')) { await supabaseClient.from('usuarios_sistema').delete().eq('id', id); cargarUsuariosSistema(); } }
         function cerrarModal() { document.getElementById('modalCliente').classList.add('hidden'); }
-
-        async function eliminarCliente(id) {
-            if (confirm('¿Eliminar?')) {
-                await supabaseClient.from('clientes').delete().eq('id', id);
-                cargarClientes();
-            }
-        }
-
+        function toggleTheme() { document.documentElement.classList.toggle('light'); localStorage.setItem('theme', document.documentElement.classList.contains('light') ? 'light' : 'dark'); }
         if (localStorage.getItem('theme') === 'light') document.documentElement.classList.add('light');
+
         window.onload = checkSession;
     </script>
 </body>
