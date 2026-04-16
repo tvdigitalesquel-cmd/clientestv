@@ -56,6 +56,15 @@
             box-shadow: 0 10px 25px -5px rgba(239, 68, 68, 0.4);
             transform: scale(1.05);
         }
+
+        .edit-btn {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            transition: all 0.3s ease;
+        }
+        .edit-btn:hover {
+            box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.4);
+            transform: scale(1.05);
+        }
         
         .btn-action {
             transition: all 0.3s ease;
@@ -67,6 +76,22 @@
         .rol-admin { background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(220, 38, 38, 0.1) 100%); border-left: 4px solid #ef4444; }
         .rol-revendedor { background: linear-gradient(135deg, rgba(168, 85, 247, 0.2) 0%, rgba(147, 51, 234, 0.1) 100%); border-left: 4px solid #a855f7; }
         .rol-vendedor { background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(37, 99, 235, 0.1) 100%); border-left: 4px solid #3b82f6; }
+
+        .user-disabled {
+            opacity: 0.6;
+            border: 2px solid rgba(239, 68, 68, 0.3) !important;
+        }
+
+        .disabled-badge {
+            background-color: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            display: inline-block;
+        }
         
         .header-modern {
             background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #0c4a6e 100%);
@@ -77,6 +102,22 @@
         html.light-mode .header-modern {
             background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 50%, #f0f4ff 100%);
             border-bottom: 1px solid rgba(59, 130, 246, 0.3);
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(99, 102, 241, 0.1) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            transition: all 0.3s ease;
+        }
+        .stat-card:hover {
+            border-color: rgba(59, 130, 246, 0.5);
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(99, 102, 241, 0.2) 100%);
+            transform: translateY(-2px);
+        }
+        
+        html.light-mode .stat-card {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(99, 102, 241, 0.05) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.3);
         }
         
         .btn-primary {
@@ -221,24 +262,53 @@
             color: #9ca3af;
         }
 
-        .stat-card {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(99, 102, 241, 0.1) 100%);
-            border: 1px solid rgba(59, 130, 246, 0.2);
-            transition: all 0.3s ease;
-        }
-        .stat-card:hover {
-            border-color: rgba(59, 130, 246, 0.5);
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(99, 102, 241, 0.2) 100%);
-            transform: translateY(-2px);
-        }
-        
-        html.light-mode .stat-card {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(99, 102, 241, 0.05) 100%);
-            border: 1px solid rgba(59, 130, 246, 0.3);
-        }
-
         .dialog-confirmar {
             animation: fadeIn 0.3s ease-out;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #374151;
+            transition: 0.3s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #22c55e;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
         }
     </style>
 </head>
@@ -322,6 +392,55 @@
         </div>
     </div>
 
+    <!-- MODAL EDITAR USUARIO -->
+    <div id="modalEditar" class="fixed inset-0 bg-black/80 modal-backdrop hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-gray-800 border border-gray-700 w-full max-w-md rounded-3xl p-8 shadow-2xl overflow-y-auto max-h-[95vh] modal-content">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-black uppercase text-blue-400 tracking-tight">Editar Usuario</h3>
+                <button onclick="cerrarModalEditar()" class="text-gray-500 hover:text-white text-3xl transition">✕</button>
+            </div>
+            
+            <form id="formEditarUsuario" class="space-y-5">
+                <input type="hidden" id="edit-user-id">
+
+                <div>
+                    <label class="text-xs font-bold text-blue-400 uppercase block mb-2">Usuario</label>
+                    <input type="text" id="edit-username" class="input-modern w-full p-3 rounded-2xl outline-none text-sm" disabled>
+                </div>
+
+                <div>
+                    <label class="text-xs font-bold text-blue-400 uppercase block mb-2">Nueva Contraseña (dejar en blanco para no cambiar)</label>
+                    <input type="password" id="edit-password" class="input-modern w-full p-3 rounded-2xl outline-none text-sm" placeholder="••••••••">
+                </div>
+
+                <div>
+                    <label class="text-xs font-bold text-blue-400 uppercase block mb-2">Vencimiento</label>
+                    <input type="date" id="edit-vencimiento" class="input-modern w-full p-3 rounded-2xl outline-none text-sm">
+                </div>
+
+                <div class="flex items-center justify-between bg-gray-900 p-4 rounded-2xl border border-gray-700">
+                    <div>
+                        <p class="text-xs font-bold text-blue-400 uppercase">Estado del Acceso</p>
+                        <p class="text-xs text-gray-400 mt-1">Habilitar o deshabilitar acceso</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="edit-activo">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="flex gap-3 pt-4">
+                    <button type="submit" class="flex-1 btn-primary py-3 rounded-2xl font-bold uppercase text-sm shadow-lg transition">
+                        ✓ GUARDAR
+                    </button>
+                    <button type="button" onclick="cerrarModalEditar()" class="flex-1 bg-gray-700 hover:bg-gray-600 py-3 rounded-2xl font-bold uppercase text-sm">
+                        CANCELAR
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- MODAL CONFIRMAR ELIMINACIÓN -->
     <div id="modalConfirmar" class="fixed inset-0 bg-black/80 dialog-confirmar hidden flex items-center justify-center p-4 z-50">
         <div class="bg-gray-800 border border-gray-700 rounded-3xl p-8 shadow-2xl max-w-sm modal-content">
@@ -341,6 +460,7 @@
 
         let currentUser = JSON.parse(localStorage.getItem('session_tvdigital'));
         let usuarioAEliminar = null;
+        let usuarioEnEdicion = null;
 
         const rolColors = {
             'admin': { bg: 'bg-red-900/30', text: 'text-red-400', border: 'border-red-500/20', icon: '👑' },
@@ -361,7 +481,6 @@
         }
 
         function checkSession() {
-            // Cargar tema guardado
             const savedTheme = localStorage.getItem('theme') || 'dark';
             if (savedTheme === 'light') {
                 document.documentElement.classList.add('light-mode');
@@ -417,9 +536,12 @@
                 if (u.rol === 'vendedor') countVendedores++;
                 
                 const config = rolColors[u.rol] || rolColors['vendedor'];
+                const isDisabled = u.activo === false;
+                const venciEn = u.vencimiento_acceso ? Math.ceil((new Date(u.vencimiento_acceso) - new Date()) / (1000 * 60 * 60 * 24)) : null;
+                const venciColor = venciEn !== null && venciEn <= 7 && venciEn > 0 ? 'text-yellow-400' : venciEn !== null && venciEn <= 0 ? 'text-red-400' : 'text-green-400';
                 
                 cont.innerHTML += `
-                    <div class="bg-gray-800 border border-gray-700 p-6 rounded-2xl card-usuario shadow-lg hover:shadow-2xl">
+                    <div class="bg-gray-800 border border-gray-700 p-6 rounded-2xl card-usuario shadow-lg hover:shadow-2xl ${isDisabled ? 'user-disabled' : ''}">
                         <div class="flex justify-between items-start mb-4">
                             <div class="flex items-start gap-4 flex-1">
                                 <div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl bg-gray-900 border border-gray-700">
@@ -427,17 +549,23 @@
                                 </div>
                                 <div class="flex-1">
                                     <h3 class="font-black text-lg uppercase italic leading-tight">${u.username}</h3>
-                                    <div class="space-y-1 mt-2">
+                                    <div class="space-y-2 mt-2">
                                         <span class="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase ${config.bg} ${config.text}">
                                             ${u.rol}
                                         </span>
-                                        <p class="text-xs text-gray-400 mt-2">📅 Vence: ${u.vencimiento_acceso || 'Sin fecha'}</p>
+                                        ${isDisabled ? '<span class="disabled-badge ml-2">🔒 Deshabilitado</span>' : ''}
+                                        <p class="text-xs text-gray-400 mt-1">📅 Vence: <span class="${venciColor}">${u.vencimiento_acceso ? u.vencimiento_acceso + ' (' + venciEn + ' días)' : 'Sin fecha'}</span></p>
                                     </div>
                                 </div>
                             </div>
-                            <button onclick="abrirConfirmarEliminar(${JSON.stringify(u).replace(/"/g, '&quot;')})" class="btn-action delete-btn text-white py-2 px-4 rounded-xl font-bold text-sm transition-all" title="Revocar acceso">
-                                🗑️
-                            </button>
+                            <div class="flex gap-2">
+                                <button onclick="abrirModalEditar(${JSON.stringify(u).replace(/"/g, '&quot;')})" class="btn-action edit-btn text-white py-2 px-3 rounded-xl font-bold text-sm transition-all" title="Editar usuario">
+                                    ✏️
+                                </button>
+                                <button onclick="abrirConfirmarEliminar(${JSON.stringify(u).replace(/"/g, '&quot;')})" class="btn-action delete-btn text-white py-2 px-3 rounded-xl font-bold text-sm transition-all" title="Eliminar usuario">
+                                    🗑️
+                                </button>
+                            </div>
                         </div>
                     </div>`;
             });
@@ -451,6 +579,49 @@
             document.getElementById('count-vendedores').innerText = vendedores;
         }
 
+        function abrirModalEditar(usuario) {
+            usuarioEnEdicion = usuario;
+            document.getElementById('edit-user-id').value = usuario.id;
+            document.getElementById('edit-username').value = usuario.username;
+            document.getElementById('edit-password').value = '';
+            document.getElementById('edit-vencimiento').value = usuario.vencimiento_acceso || '';
+            document.getElementById('edit-activo').checked = usuario.activo !== false;
+            document.getElementById('modalEditar').classList.remove('hidden');
+        }
+
+        function cerrarModalEditar() {
+            document.getElementById('modalEditar').classList.add('hidden');
+            usuarioEnEdicion = null;
+        }
+
+        document.getElementById('formEditarUsuario').onsubmit = async (e) => {
+            e.preventDefault();
+            
+            const id = document.getElementById('edit-user-id').value;
+            const password = document.getElementById('edit-password').value;
+            const vencimiento = document.getElementById('edit-vencimiento').value;
+            const activo = document.getElementById('edit-activo').checked;
+
+            const updateData = {
+                vencimiento_acceso: vencimiento,
+                activo: activo
+            };
+
+            if (password) {
+                updateData.password = password;
+            }
+
+            const { error } = await supabaseClient.from('usuarios_sistema').update(updateData).eq('id', id);
+            
+            if (error) {
+                alert("Error al actualizar: " + error.message);
+            } else {
+                cerrarModalEditar();
+                cargarUsuariosSistema();
+                alert("Usuario actualizado exitosamente ✓");
+            }
+        };
+
         document.getElementById('formNuevoUsuario').onsubmit = async (e) => {
             e.preventDefault();
             
@@ -459,7 +630,8 @@
                 password: document.getElementById('newPassword').value,
                 rol: document.getElementById('newRol').value,
                 vencimiento_acceso: document.getElementById('newVencimiento').value, 
-                padre_id: currentUser.id
+                padre_id: currentUser.id,
+                activo: true
             };
 
             const { error } = await supabaseClient.from('usuarios_sistema').insert([newUser]);
