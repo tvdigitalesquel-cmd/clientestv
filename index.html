@@ -3,150 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tv Digital - Panel Premium</title>
+    <title>Tv Digital - Panel Full</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>tailwind.config = { darkMode: 'class' }</script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-        
-        body { font-family: 'Inter', sans-serif; }
-
-        input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); }
-        
-        /* Animación de alerta más suave */
-        @keyframes pulse-soft {
-            0%, 100% { transform: scale(1); box-shadow: 0 0 0 rgba(239, 68, 68, 0); }
-            50% { transform: scale(1.01); box-shadow: 0 0 20px rgba(239, 68, 68, 0.2); }
-        }
-        .alerta-vencimiento { 
-            animation: pulse-soft 2s infinite; 
-            border: 2px solid #ef4444 !important; 
-        }
-
-        .filtro-activo { 
-            border: 2px solid white !important; 
-            transform: translateY(-4px);
-            box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.5);
-        }
-
-        .btn-app { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-
-        /* Selector de Apps en Modal mejorado */
-        .app-option {
-            border: 2px solid #374151;
-            transition: all 0.2s ease;
-            filter: grayscale(0.8);
-            opacity: 0.6;
-        }
-        .app-option.selected {
-            border-color: #3b82f6;
-            background-color: rgba(59, 130, 246, 0.1);
-            filter: grayscale(0);
-            opacity: 1;
-            transform: scale(1.05);
-        }
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: white; }
+        .alerta-vencimiento { border: 2px solid #ef4444 !important; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+        .filtro-activo { border: 2px solid white !important; transform: translateY(-2px); }
+        .app-option.selected { border-color: #3b82f6; background: rgba(59,130,246,0.2); filter: grayscale(0); opacity: 1; }
+        .app-option { filter: grayscale(1); opacity: 0.5; transition: 0.3s; cursor: pointer; }
     </style>
 </head>
-<body class="bg-[#0f172a] text-white min-h-screen pb-24">
+<body class="pb-24">
 
-    <nav class="bg-[#1e293b]/80 backdrop-blur-xl sticky top-0 z-50 border-b border-slate-700/50">
+    <nav class="bg-slate-800/80 backdrop-blur-md sticky top-0 z-50 border-b border-slate-700">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <h2 class="text-blue-500 font-black italic tracking-tighter text-xl uppercase">Mis Clientes</h2>
-            <div class="flex items-center gap-4">
-                <a href="equipo.html" id="link-equipos" class="hidden text-[10px] font-bold bg-slate-700 px-3 py-1.5 rounded-lg uppercase tracking-wider">Equipo</a>
-                <button onclick="logout()" class="text-red-400 font-black text-[10px] border border-red-500/20 px-3 py-1.5 rounded-lg uppercase hover:bg-red-500/10 transition-all">Salir</button>
+            <div class="flex gap-6">
+                <a href="index.html" class="text-blue-500 font-black uppercase text-xs border-b-2 border-blue-500 pb-1">Mis Clientes</a>
+                <a href="equipo.html" id="link-equipos" class="text-slate-400 font-black uppercase text-xs hover:text-white transition-colors">Gestionar Equipo</a>
             </div>
+            <button onclick="logout()" class="text-red-500 font-bold text-[10px] uppercase border border-red-500/20 px-3 py-1 rounded-lg">Salir</button>
         </div>
     </nav>
 
     <div class="container mx-auto px-6 mt-8">
-        <header class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+        <header class="flex justify-between items-end mb-10">
             <div>
-                <p id="info-sesion" class="text-blue-400 font-black text-[10px] uppercase tracking-[0.2em] mb-1"></p>
-                <h1 class="text-4xl md:text-5xl font-black uppercase italic tracking-tighter leading-none">Panel <span class="text-blue-600">Clientes</span></h1>
+                <p id="info-sesion" class="text-blue-400 font-black text-[10px] uppercase mb-1 tracking-widest"></p>
+                <h1 class="text-4xl font-black uppercase italic italic">Panel <span class="text-blue-600">Clientes</span></h1>
             </div>
-            <button onclick="abrirModal()" class="bg-blue-600 hover:bg-blue-500 text-white px-8 py-4 rounded-2xl font-black text-sm shadow-[0_10px_30px_-10px_rgba(37,99,235,0.5)] active:scale-95 transition-all uppercase tracking-widest">+ Nuevo Cliente</button>
+            <button onclick="abrirModal()" class="bg-blue-600 px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg shadow-blue-900/40">+ Nuevo Cliente</button>
         </header>
 
-        <div class="grid grid-cols-3 gap-4 mb-10">
-            <div onclick="cambiarFiltroEstado('ACTIVOS')" class="bg-slate-800/50 border border-green-500/20 p-6 rounded-[2rem] cursor-pointer hover:bg-green-500/5 transition-all group">
-                <p class="text-[10px] uppercase font-black text-green-500 mb-2 tracking-widest">Activos</p>
-                <h2 id="count-activos" class="text-4xl font-black group-hover:scale-110 transition-transform origin-left">0</h2>
+        <div class="grid grid-cols-3 gap-4 mb-8">
+            <div onclick="cambiarFiltroEstado('ACTIVOS')" class="bg-slate-800 p-6 rounded-[2rem] border-b-4 border-green-600 cursor-pointer">
+                <p class="text-[9px] font-black uppercase opacity-60">Activos</p>
+                <h2 id="count-activos" class="text-3xl font-black">0</h2>
             </div>
-            <div onclick="cambiarFiltroEstado('VENCIDOS')" class="bg-slate-800/50 border border-red-500/20 p-6 rounded-[2rem] cursor-pointer hover:bg-red-500/5 transition-all group">
-                <p class="text-[10px] uppercase font-black text-red-500 mb-2 tracking-widest">Vencidos</p>
-                <h2 id="count-vencidos" class="text-4xl font-black group-hover:scale-110 transition-transform origin-left">0</h2>
+            <div onclick="cambiarFiltroEstado('VENCIDOS')" class="bg-slate-800 p-6 rounded-[2rem] border-b-4 border-red-600 cursor-pointer">
+                <p class="text-[9px] font-black uppercase opacity-60">Vencidos</p>
+                <h2 id="count-vencidos" class="text-3xl font-black">0</h2>
             </div>
-            <div onclick="cambiarFiltroEstado('PRONTO')" class="bg-slate-800/50 border border-yellow-500/20 p-6 rounded-[2rem] cursor-pointer hover:bg-yellow-500/5 transition-all group">
-                <p class="text-[10px] uppercase font-black text-yellow-500 mb-2 tracking-widest">Pronto</p>
-                <h2 id="count-pronto" class="text-4xl font-black group-hover:scale-110 transition-transform origin-left">0</h2>
+            <div onclick="cambiarFiltroEstado('PRONTO')" class="bg-slate-800 p-6 rounded-[2rem] border-b-4 border-yellow-500 cursor-pointer">
+                <p class="text-[9px] font-black uppercase opacity-60">Pronto</p>
+                <h2 id="count-pronto" class="text-3xl font-black">0</h2>
             </div>
         </div>
 
-        <div class="relative mb-8">
-            <input type="text" id="inputBusqueda" onkeyup="filtrarClientes()" placeholder="Buscar por nombre o usuario..." class="w-full bg-slate-800/50 border border-slate-700/50 rounded-[1.5rem] py-5 px-8 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all text-lg font-medium">
-            <span class="absolute right-6 top-1/2 -translate-y-1/2 text-slate-500">🔍</span>
-        </div>
+        <input type="text" id="inputBusqueda" onkeyup="filtrarClientes()" placeholder="Buscar por nombre o usuario..." class="w-full bg-slate-800 border border-slate-700 rounded-2xl py-4 px-6 mb-8 outline-none focus:border-blue-500">
         
         <div id="contenedor-filtros-apps" class="flex flex-wrap gap-4 mb-10"></div>
-
         <div id="contenedor-clientes" class="grid gap-6"></div>
     </div>
 
-    <div id="modalCliente" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md hidden flex items-center justify-center p-4 z-[100]">
-        <div class="bg-slate-900 border border-slate-700/50 w-full max-w-xl rounded-[2.5rem] p-10 shadow-2xl max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center mb-8">
-                <h3 class="text-2xl font-black italic uppercase tracking-tighter">Nueva Ficha</h3>
-                <button onclick="cerrarModal()" class="text-slate-500 hover:text-white text-3xl transition-colors">&times;</button>
-            </div>
-            
-            <form id="form-cliente" class="space-y-6">
+    <div id="modalCliente" class="fixed inset-0 bg-black/90 backdrop-blur-md hidden flex items-center justify-center p-4 z-[100]">
+        <div class="bg-slate-900 border border-slate-700 w-full max-w-xl rounded-[2.5rem] p-10 overflow-y-auto max-h-[90vh]">
+            <h3 id="modal-titulo" class="text-2xl font-black uppercase italic mb-8 text-blue-500">Nuevo Cliente</h3>
+            <form id="form-cliente" class="space-y-4">
+                <input type="hidden" id="edit-id">
                 <div class="grid grid-cols-2 gap-4">
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-black uppercase text-slate-500 ml-1">Cliente</label>
-                        <input type="text" id="nombre-apellido" placeholder="Nombre completo" class="w-full bg-slate-950 border border-slate-700 p-4 rounded-2xl outline-none focus:border-blue-500" required>
-                    </div>
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-black uppercase text-slate-500 ml-1">WhatsApp</label>
-                        <input type="text" id="celular-cliente" placeholder="Sin el +" class="w-full bg-slate-950 border border-slate-700 p-4 rounded-2xl outline-none focus:border-blue-500" required>
-                    </div>
+                    <input type="text" id="nombre-apellido" placeholder="Nombre" class="bg-slate-800 p-4 rounded-xl outline-none border border-slate-700" required>
+                    <input type="text" id="celular-cliente" placeholder="WhatsApp" class="bg-slate-800 p-4 rounded-xl outline-none border border-slate-700" required>
                 </div>
-
                 <div class="grid grid-cols-2 gap-4">
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-black uppercase text-slate-500 ml-1">Usuario TV</label>
-                        <input type="text" id="usuario-tv" class="w-full bg-slate-950 border border-slate-700 p-4 rounded-2xl outline-none focus:border-blue-500" required>
-                    </div>
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-black uppercase text-slate-500 ml-1">Contraseña</label>
-                        <input type="text" id="clave-tv" class="w-full bg-slate-950 border border-slate-700 p-4 rounded-2xl outline-none focus:border-blue-500" required>
-                    </div>
+                    <input type="text" id="usuario-tv" placeholder="Usuario" class="bg-slate-800 p-4 rounded-xl outline-none border border-slate-700" required>
+                    <input type="text" id="clave-tv" placeholder="Clave" class="bg-slate-800 p-4 rounded-xl outline-none border border-slate-700" required>
                 </div>
-
                 <div class="grid grid-cols-2 gap-4">
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-black uppercase text-slate-500 ml-1">Ciudad</label>
-                        <input type="text" id="ciudad-cliente" class="w-full bg-slate-950 border border-slate-700 p-4 rounded-2xl outline-none focus:border-blue-500" required>
-                    </div>
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-black uppercase text-slate-500 ml-1">Precio Cobrado</label>
-                        <input type="number" id="precio-servicio" placeholder="$" class="w-full bg-slate-950 border border-slate-700 p-4 rounded-2xl outline-none text-green-500 font-bold focus:border-blue-500" required>
-                    </div>
+                    <input type="text" id="ciudad-cliente" placeholder="Ciudad" class="bg-slate-800 p-4 rounded-xl outline-none border border-slate-700">
+                    <input type="number" id="precio-servicio" placeholder="Precio $" class="bg-slate-800 p-4 rounded-xl outline-none border border-slate-700 font-bold text-green-500">
                 </div>
-
-                <div class="space-y-3">
-                    <label class="text-[10px] font-black uppercase text-slate-500 ml-1">Aplicación</label>
-                    <div id="app-selector" class="grid grid-cols-4 gap-3"></div>
-                    <input type="hidden" id="app-seleccionada" required>
+                <div id="app-selector" class="grid grid-cols-4 gap-2 py-2"></div>
+                <input type="hidden" id="app-seleccionada" required>
+                <div>
+                    <label class="text-[10px] font-black uppercase text-blue-400 ml-1">Vencimiento</label>
+                    <input type="date" id="vencimiento-cliente" class="w-full bg-slate-800 p-4 rounded-xl outline-none border border-slate-700" required>
                 </div>
-
-                <div class="space-y-2">
-                    <label class="text-[10px] font-black uppercase text-blue-500 ml-1 tracking-widest">Fecha de Vencimiento</label>
-                    <input type="date" id="vencimiento-cliente" class="w-full bg-slate-950 border border-slate-700 p-4 rounded-2xl outline-none text-white font-black" required>
+                <div class="flex gap-2">
+                    <button type="button" onclick="cerrarModal()" class="flex-1 bg-slate-700 py-4 rounded-xl font-black uppercase text-xs">Cancelar</button>
+                    <button type="submit" class="flex-2 bg-blue-600 py-4 px-10 rounded-xl font-black uppercase text-xs">Guardar Cambios</button>
                 </div>
-
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 py-5 rounded-2xl font-black uppercase italic tracking-widest shadow-xl transition-all active:scale-95">Guardar Cliente</button>
             </form>
         </div>
     </div>
@@ -171,85 +109,12 @@
             'CAELUM': { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/caelum.png', color: '#0891b2' }
         };
 
-        function checkSession() {
-            if (!currentUser) { window.location.href = 'logueo.html'; return; }
-            if (currentUser.rol === 'admin' || currentUser.rol === 'revendedor') document.getElementById('link-equipos').classList.remove('hidden');
-            document.getElementById('info-sesion').innerText = `${currentUser.rol}: ${currentUser.username}`;
-            cargarClientes();
-            generarSelectorAppsModal();
-        }
-
         async function cargarClientes() {
             const { data } = await supabaseClient.from('clientes').select('*').eq('creado_por', currentUser.id).order('fecha_vencimiento', { ascending: true });
             todosLosClientes = data || [];
             generarFiltrosApps(todosLosClientes);
             actualizarDashboard(todosLosClientes);
             filtrarClientes();
-        }
-
-        function generarSelectorAppsModal() {
-            const container = document.getElementById('app-selector');
-            let html = '';
-            for (const [name, config] of Object.entries(configApps)) {
-                html += `
-                    <div onclick="seleccionarAppModal('${name}', this)" class="app-option bg-slate-950 p-4 rounded-2xl flex flex-col items-center gap-2">
-                        <img src="${config.logo}" class="w-10 h-10 object-contain">
-                        <span class="text-[7px] font-black uppercase text-center text-slate-400">${name}</span>
-                    </div>
-                `;
-            }
-            container.innerHTML = html;
-        }
-
-        function seleccionarAppModal(nombre, elemento) {
-            document.querySelectorAll('.app-option').forEach(el => el.classList.remove('selected'));
-            elemento.classList.add('selected');
-            document.getElementById('app-seleccionada').value = nombre;
-        }
-
-        function abrirModal() { document.getElementById('modalCliente').classList.remove('hidden'); }
-        function cerrarModal() { 
-            document.getElementById('modalCliente').classList.add('hidden'); 
-            document.getElementById('form-cliente').reset();
-            document.querySelectorAll('.app-option').forEach(el => el.classList.remove('selected'));
-        }
-
-        document.getElementById('form-cliente').onsubmit = async (e) => {
-            e.preventDefault();
-            const app = document.getElementById('app-seleccionada').value;
-            if(!app) return alert("Elige una App.");
-            const nuevo = {
-                nombre_apellido: document.getElementById('nombre-apellido').value,
-                celular: document.getElementById('celular-cliente').value,
-                usuario: document.getElementById('usuario-tv').value,
-                clave: document.getElementById('clave-tv').value,
-                ciudad: document.getElementById('ciudad-cliente').value,
-                precio: document.getElementById('precio-servicio').value,
-                app_instalada: app,
-                fecha_vencimiento: document.getElementById('vencimiento-cliente').value,
-                creado_por: currentUser.id,
-                vendedor_name: currentUser.username
-            };
-            const { error } = await supabaseClient.from('clientes').insert([nuevo]);
-            if (error) alert("Error al guardar: " + error.message);
-            else { cerrarModal(); cargarClientes(); }
-        };
-
-        function generarFiltrosApps(clientes) {
-            const contenedor = document.getElementById('contenedor-filtros-apps');
-            const appsEnUso = [...new Set(clientes.map(c => c.app_instalada))];
-            let html = `<button onclick="cambiarFiltroApp('TODOS', this)" class="btn-app filtro-activo px-8 py-4 rounded-2xl text-[10px] font-black uppercase bg-slate-800 border-2 border-transparent">🎯 Todas</button>`;
-            appsEnUso.forEach(app => {
-                const config = configApps[app];
-                if (config) {
-                    html += `
-                    <button onclick="cambiarFiltroApp('${app}', this)" class="btn-app px-6 py-4 rounded-2xl text-[10px] font-black uppercase flex items-center gap-3 border-2 border-transparent" style="background-color: ${config.color}; color: white;">
-                        <img src="${config.logo}" class="w-8 h-8 object-contain">
-                        ${app}
-                    </button>`;
-                }
-            });
-            contenedor.innerHTML = html;
         }
 
         function filtrarClientes() {
@@ -271,48 +136,105 @@
                 const d = Math.ceil((new Date(c.fecha_vencimiento) - hoy) / (1000 * 60 * 60 * 24));
                 const config = configApps[c.app_instalada];
                 cont.innerHTML += `
-                    <div class="bg-slate-800/40 border border-slate-700/50 p-8 rounded-[2.5rem] flex flex-col md:flex-row justify-between items-center gap-6 shadow-xl transition-all hover:bg-slate-800/60 ${d <= 2 ? 'alerta-vencimiento' : ''}">
-                        <div class="flex items-center gap-8 w-full md:w-auto">
-                            <div class="w-20 h-20 bg-slate-950 rounded-[1.5rem] flex items-center justify-center border border-slate-700 p-3 shadow-inner">
-                                <img src="${config ? config.logo : ''}" class="w-full h-full object-contain">
+                    <div class="bg-slate-800 p-8 rounded-[2.5rem] flex flex-col md:flex-row justify-between items-center gap-6 shadow-xl ${d <= 2 ? 'alerta-vencimiento' : ''}">
+                        <div class="flex items-center gap-6 w-full md:w-auto">
+                            <div class="w-20 h-20 bg-slate-900 rounded-2xl flex items-center justify-center p-3 border border-slate-700">
+                                <img src="${config?.logo}" class="w-full h-full object-contain">
                             </div>
                             <div>
-                                <h3 class="text-3xl font-black uppercase italic leading-tight mb-1">${c.nombre_apellido}</h3>
-                                <div class="flex items-center gap-3">
-                                    <span class="text-[10px] font-black uppercase px-2 py-1 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20">${c.app_instalada}</span>
-                                    <span class="text-xs font-bold text-slate-500 uppercase tracking-widest">${c.usuario}</span>
-                                </div>
+                                <h3 class="text-2xl font-black uppercase italic">${c.nombre_apellido}</h3>
+                                <p class="text-xs font-bold text-slate-500 uppercase">${c.app_instalada} • ${c.usuario}</p>
                             </div>
                         </div>
 
-                        <div class="flex items-center justify-between md:justify-end gap-10 w-full md:w-auto border-t md:border-t-0 border-slate-700/50 pt-6 md:pt-0">
-                            <div class="text-left md:text-right">
-                                <p class="text-4xl font-black leading-none ${d <= 0 ? 'text-red-500' : 'text-green-500'} mb-1">${d <= 0 ? 'VENCIDO' : d + ' DÍAS'}</p>
-                                <p class="text-sm font-black text-slate-400 uppercase italic tracking-tighter">$${c.precio || 0}</p>
+                        <div class="flex items-center gap-6 w-full md:w-auto justify-between">
+                            <div class="text-right">
+                                <p class="text-3xl font-black ${d <= 0 ? 'text-red-500' : 'text-green-500'}">${d <= 0 ? 'VENCIDO' : d + ' DÍAS'}</p>
+                                <p class="text-sm font-black text-slate-400">$${c.precio || 0}</p>
                             </div>
-                            <button onclick="enviarWA('${c.nombre_apellido}','${c.celular}',${d})" class="bg-[#25D366] hover:bg-[#128C7E] text-white p-5 rounded-2xl shadow-[0_10px_20px_-5px_rgba(37,211,102,0.4)] transition-all active:scale-90">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" class="w-8 h-8">
-                            </button>
+                            <div class="flex gap-2">
+                                <button onclick="prepararEdicion('${c.id}')" class="bg-blue-600/20 text-blue-400 p-4 rounded-xl hover:bg-blue-600 hover:text-white transition-all">✏️</button>
+                                <button onclick="eliminarCliente('${c.id}')" class="bg-red-600/20 text-red-400 p-4 rounded-xl hover:bg-red-600 hover:text-white transition-all">🗑️</button>
+                                <button onclick="enviarWA('${c.nombre_apellido}','${c.celular}',${d})" class="bg-green-600 p-4 rounded-xl shadow-lg shadow-green-900/20"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" class="w-6 h-6"></button>
+                            </div>
                         </div>
                     </div>`;
             });
         }
 
-        function cambiarFiltroEstado(est) { filtroEstadoActual = est; filtrarClientes(); }
-        function cambiarFiltroApp(app, el) { filtroAppActual = app; document.querySelectorAll('.btn-app').forEach(b => b.classList.remove('filtro-activo')); el.classList.add('filtro-activo'); filtrarClientes(); }
-        function actualizarDashboard(data) {
-            const hoy = new Date(); let act = 0, ven = 0, pro = 0;
-            data.forEach(c => {
-                const d = Math.ceil((new Date(c.fecha_vencimiento) - hoy) / (1000 * 60 * 60 * 24));
-                if (d > 0) act++; else ven++;
-                if (d > 0 && d <= 7) pro++;
-            });
-            document.getElementById('count-activos').innerText = act;
-            document.getElementById('count-vencidos').innerText = ven;
-            document.getElementById('count-pronto').innerText = pro;
+        async function eliminarCliente(id) {
+            if(confirm("¿Seguro que quieres eliminar este cliente?")) {
+                const { error } = await supabaseClient.from('clientes').delete().eq('id', id);
+                if (error) alert(error.message); else cargarClientes();
+            }
+        }
+
+        function prepararEdicion(id) {
+            const c = todosLosClientes.find(cli => cli.id == id);
+            document.getElementById('edit-id').value = c.id;
+            document.getElementById('nombre-apellido').value = c.nombre_apellido;
+            document.getElementById('celular-cliente').value = c.celular;
+            document.getElementById('usuario-tv').value = c.usuario;
+            document.getElementById('clave-tv').value = c.clave;
+            document.getElementById('ciudad-cliente').value = c.ciudad;
+            document.getElementById('precio-servicio').value = c.precio;
+            document.getElementById('vencimiento-cliente').value = c.fecha_vencimiento;
+            document.getElementById('app-seleccionada').value = c.app_instalada;
+            document.getElementById('modal-titulo').innerText = "Editar Cliente";
+            abrirModal();
+        }
+
+        document.getElementById('form-cliente').onsubmit = async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('edit-id').value;
+            const payload = {
+                nombre_apellido: document.getElementById('nombre-apellido').value,
+                celular: document.getElementById('celular-cliente').value,
+                usuario: document.getElementById('usuario-tv').value,
+                clave: document.getElementById('clave-tv').value,
+                ciudad: document.getElementById('ciudad-cliente').value,
+                precio: document.getElementById('precio-servicio').value,
+                app_instalada: document.getElementById('app-seleccionada').value,
+                fecha_vencimiento: document.getElementById('vencimiento-cliente').value,
+            };
+
+            let res;
+            if (id) res = await supabaseClient.from('clientes').update(payload).eq('id', id);
+            else res = await supabaseClient.from('clientes').insert([{...payload, creado_por: currentUser.id, vendedor_name: currentUser.username}]);
+
+            if (res.error) alert(res.error.message);
+            else { cerrarModal(); cargarClientes(); }
+        };
+
+        // --- FUNCIONES AUXILIARES ---
+        function generarSelectorAppsModal() {
+            const container = document.getElementById('app-selector');
+            container.innerHTML = Object.entries(configApps).map(([name, config]) => `
+                <div onclick="seleccionarAppModal('${name}', this)" class="app-option bg-slate-950 p-3 rounded-xl flex flex-col items-center gap-1 border border-slate-700">
+                    <img src="${config.logo}" class="w-8 h-8 object-contain">
+                    <span class="text-[6px] font-black uppercase text-center">${name}</span>
+                </div>
+            `).join('');
+        }
+        function seleccionarAppModal(nombre, elemento) {
+            document.querySelectorAll('.app-option').forEach(el => el.classList.remove('selected'));
+            elemento.classList.add('selected');
+            document.getElementById('app-seleccionada').value = nombre;
+        }
+        function abrirModal() { document.getElementById('modalCliente').classList.remove('hidden'); }
+        function cerrarModal() { 
+            document.getElementById('modalCliente').classList.add('hidden'); 
+            document.getElementById('form-cliente').reset();
+            document.getElementById('edit-id').value = "";
+            document.getElementById('modal-titulo').innerText = "Nuevo Cliente";
         }
         function logout() { localStorage.removeItem('session_tvdigital'); window.location.href = 'logueo.html'; }
-        window.onload = checkSession;
+        window.onload = () => {
+            if (!currentUser) window.location.href = 'logueo.html';
+            document.getElementById('info-sesion').innerText = `Vendedor: ${currentUser.username}`;
+            cargarClientes();
+            generarSelectorAppsModal();
+        };
     </script>
 </body>
 </html>
