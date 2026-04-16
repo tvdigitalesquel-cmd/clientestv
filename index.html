@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tv Digital - Panel Premium</title>
+    <title>Tv Digital - Panel Dinámico</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>tailwind.config = { darkMode: 'class' }</script>
@@ -14,8 +14,6 @@
             50% { background-color: rgba(220, 38, 38, 0.3); border-color: #f87171; }
         }
         .alerta-vencimiento { animation: pulse-red 2s infinite; border-width: 2px; }
-        
-        /* Botones de Filtro Optimizados */
         .filtro-activo { border-color: white !important; transform: scale(1.05); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); }
         .btn-app { transition: all 0.2s ease-in-out; border-width: 2px; }
         
@@ -66,15 +64,15 @@
                 </header>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
-                    <div id="btn-filtro-activos" onclick="cambiarFiltroEstado('ACTIVOS')" class="dashboard-card bg-green-700 p-4 rounded-xl border-b-4 border-green-900">
+                    <div id="btn-filtro-activos" onclick="cambiarFiltroEstado('ACTIVOS')" class="dashboard-card bg-green-700 p-4 rounded-xl border-b-4 border-green-900 cursor-pointer">
                         <p class="text-xs uppercase font-bold opacity-70">Activos</p>
                         <h2 id="count-activos" class="text-3xl font-black">0</h2>
                     </div>
-                    <div id="btn-filtro-vencidos" onclick="cambiarFiltroEstado('VENCIDOS')" class="dashboard-card bg-red-600 p-4 rounded-xl border-b-4 border-red-800">
+                    <div id="btn-filtro-vencidos" onclick="cambiarFiltroEstado('VENCIDOS')" class="dashboard-card bg-red-600 p-4 rounded-xl border-b-4 border-red-800 cursor-pointer">
                         <p class="text-xs uppercase font-bold opacity-70">Vencidos</p>
                         <h2 id="count-vencidos" class="text-3xl font-black">0</h2>
                     </div>
-                    <div id="btn-filtro-pronto" onclick="cambiarFiltroEstado('PRONTO')" class="dashboard-card bg-yellow-500 p-4 rounded-xl border-b-4 border-yellow-700 text-gray-900">
+                    <div id="btn-filtro-pronto" onclick="cambiarFiltroEstado('PRONTO')" class="dashboard-card bg-yellow-500 p-4 rounded-xl border-b-4 border-yellow-700 text-gray-900 cursor-pointer">
                         <p class="text-xs uppercase font-bold opacity-70">Vencen pronto</p>
                         <h2 id="count-pronto" class="text-3xl font-black">0</h2>
                     </div>
@@ -84,37 +82,8 @@
                     <input type="text" id="inputBusqueda" onkeyup="filtrarClientes()" placeholder="🔍 Buscar por nombre o usuario..." 
                            class="w-full bg-gray-800 border border-gray-700 rounded-xl p-4 text-white outline-none focus:ring-2 focus:ring-blue-500 transition-all">
                     
-                    <div class="flex flex-wrap gap-3">
-                        <button onclick="cambiarFiltroApp('TODOS', this)" class="btn-app filtro-activo px-4 py-3 rounded-xl text-xs font-black uppercase bg-slate-700 flex items-center gap-2 border-transparent"><span>📱</span> TODAS</button>
-                        
-                        <button onclick="cambiarFiltroApp('LUMIX TV', this)" class="btn-app px-4 py-3 rounded-xl text-xs font-black uppercase bg-[#2563eb] flex items-center gap-2 border-transparent text-white">
-                            <img src="https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/lumixtv.png" class="w-6 h-6 object-contain"> LUMIX TV
-                        </button>
-                        
-                        <button onclick="cambiarFiltroApp('FEMON TV', this)" class="btn-app px-4 py-3 rounded-xl text-xs font-black uppercase bg-[#dc2626] flex items-center gap-2 border-transparent text-white">
-                            <img src="https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/femontv.png" class="w-6 h-6 object-contain"> FEMON TV
-                        </button>
-                        
-                        <button onclick="cambiarFiltroApp('TV PLUS 2', this)" class="btn-app px-4 py-3 rounded-xl text-xs font-black uppercase bg-[#16a34a] flex items-center gap-2 border-transparent text-white">
-                            <img src="https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/tvplus2.png" class="w-6 h-6 object-contain"> TV PLUS 2
-                        </button>
-                        
-                        <button onclick="cambiarFiltroApp('ZYRON TV', this)" class="btn-app px-4 py-3 rounded-xl text-xs font-black uppercase bg-[#ca8a04] flex items-center gap-2 border-transparent text-black">
-                            <img src="https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/zyrontv.png" class="w-6 h-6 object-contain"> ZYRON TV
-                        </button>
-                        
-                        <button onclick="cambiarFiltroApp('ZYRON TUBE', this)" class="btn-app px-4 py-3 rounded-xl text-xs font-black uppercase bg-[#ea580c] flex items-center gap-2 border-transparent text-white">
-                            <img src="https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/zyrontube.png" class="w-6 h-6 object-contain"> ZYRON TUBE
-                        </button>
-                        
-                        <button onclick="cambiarFiltroApp('POWER SIGNALS', this)" class="btn-app px-4 py-3 rounded-xl text-xs font-black uppercase bg-[#4f46e5] flex items-center gap-2 border-transparent text-white">
-                            <img src="https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/powersignals.png" class="w-6 h-6 object-contain"> POWER SIGNALS
-                        </button>
-
-                        <button onclick="cambiarFiltroApp('CAELUM', this)" class="btn-app px-4 py-3 rounded-xl text-xs font-black uppercase bg-[#0891b2] flex items-center gap-2 border-transparent text-white">
-                            <img src="https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/caelum.png" class="w-6 h-6 object-contain"> CAELUM
-                        </button>
-                    </div>
+                    <div id="contenedor-filtros-apps" class="flex flex-wrap gap-3">
+                        </div>
                 </div>
 
                 <div id="contenedor-clientes" class="grid gap-4"></div>
@@ -122,7 +91,7 @@
 
             <section id="sec-usuarios" class="hidden">
                 <div class="bg-gray-800 p-6 rounded-2xl border border-gray-700 mb-6 shadow-xl">
-                    <h2 id="titulo-gestion-usuarios" class="text-lg font-bold accent-color mb-4 uppercase italic">Gestionar Equipo</h2>
+                    <h2 class="text-lg font-bold accent-color mb-4 uppercase italic">Gestionar Equipo</h2>
                     <form id="formNuevoUsuario" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3">
                         <input type="text" id="newUsername" placeholder="Usuario" class="bg-gray-900 p-3 rounded-xl border border-gray-700 outline-none text-sm" required>
                         <input type="password" id="newPassword" placeholder="Contraseña" class="bg-gray-900 p-3 rounded-xl border border-gray-700 outline-none text-sm" required>
@@ -186,14 +155,14 @@
         let currentUser = JSON.parse(localStorage.getItem('session_tvdigital'));
         let idSupervisado = null;
 
-        const logosApp = {
-            'LUMIX TV': 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/lumixtv.png',
-            'FEMON TV': 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/femontv.png',
-            'TV PLUS 2': 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/tvplus2.png',
-            'ZYRON TV': 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/zyrontv.png',
-            'ZYRON TUBE': 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/zyrontube.png',
-            'POWER SIGNALS': 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/powersignals.png',
-            'CAELUM': 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/caelum.png'
+        const configApps = {
+            'LUMIX TV': { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/lumixtv.png', color: '#2563eb', text: 'white' },
+            'FEMON TV': { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/femontv.png', color: '#dc2626', text: 'white' },
+            'TV PLUS 2': { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/tvplus2.png', color: '#16a34a', text: 'white' },
+            'ZYRON TV': { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/zyrontv.png', color: '#ca8a04', text: 'black' },
+            'ZYRON TUBE': { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/zyrontube.png', color: '#ea580c', text: 'white' },
+            'POWER SIGNALS': { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/powersignals.png', color: '#4f46e5', text: 'white' },
+            'CAELUM': { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/caelum.png', color: '#0891b2', text: 'white' }
         };
 
         function checkSession() {
@@ -201,28 +170,41 @@
             else {
                 document.getElementById('contenido-app').classList.remove('hidden');
                 document.getElementById('info-sesion').innerText = `${currentUser.rol.toUpperCase()}: ${currentUser.username}`;
-                const selRol = document.getElementById('newRol');
-                if (currentUser.rol === 'admin') {
-                    document.getElementById('tab-usuarios').classList.remove('hidden');
-                    selRol.innerHTML = '<option value="admin">ADMINISTRADOR</option><option value="revendedor">REVENDEDOR</option><option value="vendedor">VENDEDOR</option>';
-                } else if (currentUser.rol === 'revendedor') {
-                    document.getElementById('tab-usuarios').classList.remove('hidden');
-                    selRol.innerHTML = '<option value="vendedor">VENDEDOR</option>';
-                }
                 cargarClientes();
             }
         }
 
         async function cargarClientes() {
             let query = supabaseClient.from('clientes').select('*');
-            // PRIVACIDAD: Si NO superviso, solo veo mis propios clientes
             if (idSupervisado) query = query.eq('creado_por', idSupervisado);
             else query = query.eq('creado_por', currentUser.id);
 
             const { data } = await query.order('fecha_vencimiento', { ascending: true });
             todosLosClientes = data || [];
+            generarFiltrosApps(todosLosClientes);
             actualizarDashboard(todosLosClientes);
             filtrarClientes();
+        }
+
+        // FUNCIÓN CLAVE: Solo genera botones de apps que tienen clientes
+        function generarFiltrosApps(clientes) {
+            const contenedor = document.getElementById('contenedor-filtros-apps');
+            const appsEnUso = [...new Set(clientes.map(c => c.app_instalada))];
+            
+            let html = `<button onclick="cambiarFiltroApp('TODOS', this)" class="btn-app ${filtroAppActual === 'TODOS' ? 'filtro-activo' : ''} px-4 py-3 rounded-xl text-xs font-black uppercase bg-slate-700 flex items-center gap-2 border-transparent"><span>📱</span> TODAS</button>`;
+            
+            appsEnUso.forEach(app => {
+                const config = configApps[app];
+                if (config) {
+                    html += `
+                        <button onclick="cambiarFiltroApp('${app}', this)" class="btn-app ${filtroAppActual === app ? 'filtro-activo' : ''} px-4 py-3 rounded-xl text-xs font-black uppercase flex items-center gap-2 border-transparent" 
+                                style="background-color: ${config.color}; color: ${config.text};">
+                            <img src="${config.logo}" class="w-6 h-6 object-contain"> ${app}
+                        </button>
+                    `;
+                }
+            });
+            contenedor.innerHTML = html;
         }
 
         function filtrarClientes() {
@@ -242,16 +224,16 @@
             cont.innerHTML = '';
             filtrados.forEach(c => {
                 const d = Math.ceil((new Date(c.fecha_vencimiento) - hoy) / (1000 * 60 * 60 * 24));
-                const imgLogo = logosApp[c.app_instalada] || '';
+                const config = configApps[c.app_instalada];
                 cont.innerHTML += `
                     <div class="bg-gray-800 border border-gray-700 p-5 rounded-3xl flex justify-between items-center shadow-lg transition-all ${d <= 2 ? 'alerta-vencimiento' : ''}">
                         <div class="flex items-center gap-5">
                             <div class="w-14 h-14 bg-gray-900 rounded-2xl flex items-center justify-center border border-gray-700 overflow-hidden">
-                                ${imgLogo ? `<img src="${imgLogo}" class="w-full h-full object-contain">` : '<span>📱</span>'}
+                                ${config ? `<img src="${config.logo}" class="w-full h-full object-contain">` : '<span>📱</span>'}
                             </div>
                             <div>
                                 <h3 class="font-black text-sm uppercase italic text-white">${c.nombre_apellido}</h3>
-                                <p class="text-[9px] text-blue-400 font-bold uppercase">${c.app_instalada}</p>
+                                <p class="text-[9px] font-bold uppercase" style="color: ${config ? config.color : '#3b82f6'}">${c.app_instalada}</p>
                             </div>
                         </div>
                         <div class="flex items-center gap-6">
@@ -265,7 +247,7 @@
                                 </div>
                                 <button onclick="enviarWA('${c.nombre_apellido}','${c.celular}',${d},'${c.precio}','${c.app_instalada}')" 
                                     class="bg-green-600 text-white py-2 px-3 rounded-xl text-[10px] font-black uppercase flex items-center justify-center gap-2">
-                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.72.938 3.659 1.434 5.63 1.434h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg> AVISAR WPP
+                                    AVISAR WA
                                 </button>
                             </div>
                         </div>
@@ -274,67 +256,36 @@
             });
         }
 
-        async function cargarUsuariosSistema() {
-            let query = supabaseClient.from('usuarios_sistema').select('*');
-            if (currentUser.rol === 'revendedor') query = query.eq('padre_id', currentUser.id);
-            const { data } = await query;
-            const cont = document.getElementById('lista-usuarios-sistema');
-            cont.innerHTML = '';
-            const ordenados = (data || []).sort((a, b) => (a.rol === 'revendedor' ? -1 : 1));
-            ordenados.forEach(u => {
-                if (u.id === currentUser.id) return;
-                const esRev = u.rol === 'revendedor';
-                cont.innerHTML += `
-                    <div class="${esRev ? 'bg-gradient-to-r from-purple-900/40 to-blue-900/40 border-purple-500' : 'bg-gray-800 border-gray-700'} p-4 border rounded-2xl flex justify-between items-center cursor-pointer" onclick="supervisarVendedor(${u.id}, '${u.username}')">
-                        <div class="flex items-center gap-3">
-                            <div class="w-2 h-8 ${esRev ? 'bg-purple-400' : 'bg-gray-600'} rounded-full"></div>
-                            <div><p class="font-black text-white uppercase text-sm">${u.username} ${esRev ? '👑' : ''}</p><p class="text-[9px] uppercase font-bold text-gray-400">${u.rol}</p></div>
-                        </div>
-                        <button onclick="event.stopPropagation(); eliminarUserSistema(${u.id})" class="text-red-500 text-xs font-black">ELIMINAR</button>
-                    </div>`;
+        function cambiarFiltroApp(app, el) { 
+            filtroAppActual = app; 
+            document.querySelectorAll('.btn-app').forEach(b => b.classList.remove('filtro-activo')); 
+            el.classList.add('filtro-activo'); 
+            filtrarClientes(); 
+        }
+
+        function actualizarDashboard(data) {
+            const hoy = new Date(); let act = 0, ven = 0, pro = 0;
+            data.forEach(c => {
+                const d = Math.ceil((new Date(c.fecha_vencimiento) - hoy) / (1000 * 60 * 60 * 24));
+                if (d > 0) act++; else ven++;
+                if (d > 0 && d <= 7) pro++;
             });
+            document.getElementById('count-activos').innerText = act;
+            document.getElementById('count-vencidos').innerText = ven;
+            document.getElementById('count-pronto').innerText = pro;
         }
 
-        function supervisarVendedor(id, nombre) {
-            idSupervisado = id;
-            document.getElementById('body-app').classList.replace('modo-normal', 'modo-supervision-activo');
-            document.getElementById('vendedor-nombre').innerText = nombre;
-            document.getElementById('modo-supervision').classList.remove('hidden');
-            document.getElementById('btn-nuevo-cliente').classList.add('hidden');
-            cambiarSeccion('clientes');
-            cargarClientes();
-        }
-
-        function salirSupervision() {
-            idSupervisado = null;
-            document.getElementById('body-app').classList.replace('modo-supervision-activo', 'modo-normal');
-            document.getElementById('modo-supervision').classList.add('hidden');
-            document.getElementById('btn-nuevo-cliente').classList.remove('hidden');
-            cargarClientes();
-        }
-
-        function enviarWA(nom, cel, d, pre, app) {
-            if (!cel) return alert("¡Sin número!");
-            const msj = d <= 0 ? `Hola ${nom}! Venció tu suscripción de ${app}. Renovación: $${pre}.` : `Hola ${nom}! Tu cuenta de ${app} vence en ${d} días. Renovación: $${pre}.`;
-            window.open(`https://wa.me/${cel.replace(/\D/g,'')}?text=${encodeURIComponent(msj)}`, '_blank');
-        }
-
-        function cambiarSeccion(sec) {
-            document.getElementById('sec-clientes').classList.toggle('hidden', sec !== 'clientes');
-            document.getElementById('sec-usuarios').classList.toggle('hidden', sec !== 'usuarios');
-            document.getElementById('tab-clientes').classList.toggle('tab-activa', sec === 'clientes');
-            document.getElementById('tab-usuarios').classList.toggle('tab-activa', sec === 'usuarios');
-            if (sec === 'usuarios') cargarUsuariosSistema();
-        }
-
+        async function eliminarCliente(id) { if (confirm('¿Eliminar cliente?')) { await supabaseClient.from('clientes').delete().eq('id', id); cargarClientes(); } }
+        function toggleTheme() { document.documentElement.classList.toggle('light'); }
+        function logout() { localStorage.removeItem('session_tvdigital'); window.location.href = 'logueo.html'; }
+        function cerrarModal() { document.getElementById('modalCliente').classList.add('hidden'); }
         function abrirModal(d = null) {
             document.getElementById('formCliente').reset();
             document.getElementById('clienteId').value = d ? d.id : '';
             if(d) {
                 document.getElementById('nombre').value = d.nombre_apellido; document.getElementById('celular').value = d.celular || '';
                 document.getElementById('app').value = d.app_instalada; document.getElementById('vencimiento').value = d.fecha_vencimiento;
-                actualizarLogoModal(d.app_instalada);
-            } else { actualizarLogoModal(document.getElementById('app').value); }
+            }
             document.getElementById('modalCliente').classList.remove('hidden');
         }
 
@@ -352,32 +303,6 @@
             cerrarModal(); cargarClientes();
         };
 
-        function actualizarLogoModal(val) {
-            const img = document.getElementById('modal-app-logo');
-            const icon = document.getElementById('modal-app-icon');
-            if(logosApp[val]) { img.src = logosApp[val]; img.classList.remove('hidden'); icon.classList.add('hidden'); }
-            else { img.classList.add('hidden'); icon.classList.remove('hidden'); }
-        }
-
-        function actualizarDashboard(data) {
-            const hoy = new Date(); let act = 0, ven = 0, pro = 0;
-            data.forEach(c => {
-                const d = Math.ceil((new Date(c.fecha_vencimiento) - hoy) / (1000 * 60 * 60 * 24));
-                if (d > 0) act++; else ven++;
-                if (d > 0 && d <= 7) pro++;
-            });
-            document.getElementById('count-activos').innerText = act;
-            document.getElementById('count-vencidos').innerText = ven;
-            document.getElementById('count-pronto').innerText = pro;
-        }
-
-        function toggleTheme() { document.documentElement.classList.toggle('light'); }
-        function logout() { localStorage.removeItem('session_tvdigital'); window.location.href = 'logueo.html'; }
-        function cerrarModal() { document.getElementById('modalCliente').classList.add('hidden'); }
-        function cambiarFiltroApp(app, el) { filtroAppActual = app; document.querySelectorAll('.btn-app').forEach(b => b.classList.remove('filtro-activo')); el.classList.add('filtro-activo'); filtrarClientes(); }
-        function cambiarFiltroEstado(est) { filtroEstadoActual = (filtroEstadoActual === est) ? 'TODOS' : est; document.querySelectorAll('.dashboard-card').forEach(c => c.classList.remove('card-seleccionada')); if (filtroEstadoActual !== 'TODOS') document.getElementById(`btn-filtro-${est.toLowerCase()}`).classList.add('card-seleccionada'); filtrarClientes(); }
-        async function eliminarCliente(id) { if (confirm('¿Eliminar cliente?')) { await supabaseClient.from('clientes').delete().eq('id', id); cargarClientes(); } }
-        async function eliminarUserSistema(id) { if (confirm('¿Revocar acceso?')) { await supabaseClient.from('usuarios_sistema').delete().eq('id', id); cargarUsuariosSistema(); } }
         window.onload = checkSession;
     </script>
 </body>
