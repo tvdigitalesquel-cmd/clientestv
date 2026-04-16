@@ -332,7 +332,6 @@
             color: #1d4ed8 !important;
         }
 
-        /* Card compacta para mobile/responsive */
         .card-cliente-compact {
             display: flex;
             flex-direction: column;
@@ -374,6 +373,25 @@
             border-radius: 10px;
             flex-shrink: 0;
         }
+
+        .vendor-expiry {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(37, 99, 235, 0.05) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            padding: 12px;
+            border-radius: 12px;
+            margin-top: 8px;
+        }
+
+        .vendor-expiry-text {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .expiry-soon { color: #fbbf24; }
+        .expiry-expired { color: #f87171; }
+        .expiry-ok { color: #86efac; }
     </style>
 </head>
 <body id="body-app" class="bg-gray-950 text-white font-sans min-h-screen pb-20 transition-all duration-300">
@@ -546,7 +564,6 @@
         }
 
         function checkSession() {
-            // Cargar tema guardado
             const savedTheme = localStorage.getItem('theme') || 'dark';
             if (savedTheme === 'light') {
                 document.documentElement.classList.add('light-mode');
@@ -554,7 +571,16 @@
             
             if (!currentUser) { window.location.href = 'logueo.html'; return; }
             if (currentUser.rol === 'admin' || currentUser.rol === 'revendedor') document.getElementById('link-equipos').classList.remove('hidden');
-            document.getElementById('info-sesion').innerText = `${currentUser.rol.toUpperCase()} • ${currentUser.username}`;
+            
+            let infoText = `${currentUser.rol.toUpperCase()} • ${currentUser.username}`;
+            if (currentUser.vencimiento_acceso) {
+                const venciDate = new Date(currentUser.vencimiento_acceso);
+                const hoy = new Date();
+                const diasRestantes = Math.ceil((venciDate - hoy) / (1000 * 60 * 60 * 24));
+                infoText += ` | 📅 ${diasRestantes > 0 ? diasRestantes + ' días' : 'Vencido'}`;
+            }
+            document.getElementById('info-sesion').innerText = infoText;
+            
             cargarClientes();
             generarSelectorAppsModal();
         }
@@ -608,7 +634,6 @@
             document.getElementById('precio-servicio').value = cliente.precio;
             document.getElementById('vencimiento-cliente').value = cliente.fecha_vencimiento;
             
-            // Seleccionar la app correcta
             const appElements = document.querySelectorAll('.app-option');
             appElements.forEach(el => {
                 const appName = el.querySelector('span').textContent.trim();
@@ -663,12 +688,10 @@
             };
 
             if (clienteEnEdicion) {
-                // EDITAR
                 const { error } = await supabaseClient.from('clientes').update(datosCliente).eq('id', clienteEnEdicion.id);
                 if (error) alert("Error: " + error.message);
                 else { cerrarModal(); cargarClientes(); }
             } else {
-                // CREAR
                 datosCliente.creado_por = currentUser.id;
                 const { error } = await supabaseClient.from('clientes').insert([datosCliente]);
                 if (error) alert("Error: " + error.message);
@@ -719,17 +742,30 @@
                 const d = Math.ceil((new Date(c.fecha_vencimiento) - hoy) / (1000 * 60 * 60 * 24));
                 const config = configApps[c.app_instalada];
                 let estadoBadge = '';
-                let estado = '';
                 
                 if (d <= 0) {
                     estadoBadge = 'estado-vencido';
-                    estado = '❌ VENCIDO';
                 } else if (d <= 7) {
                     estadoBadge = 'estado-pronto';
-                    estado = '⏰ PRONTO';
                 } else {
                     estadoBadge = 'estado-activo';
-                    estado = '✓ ACTIVO';
+                }
+
+                let vendorExpiryHTML = '';
+                if (currentUser.rol !== 'admin' && currentUser.vencimiento_acceso) {
+                    const venciDate = new Date(currentUser.vencimiento_acceso);
+                    const diasRestantes = Math.ceil((venciDate - hoy) / (1000 * 60 * 60 * 24));
+                    let expiryClass = 'expiry-ok';
+                    if (diasRestantes <= 0) expiryClass = 'expiry-expired';
+                    else if (diasRestantes <= 7) expiryClass = 'expiry-soon';
+                    
+                    vendorExpiryHTML = `
+                        <div class="vendor-expiry">
+                            <p class="vendor-expiry-text ${expiryClass}">
+                                📅 Tu acceso vence: ${currentUser.vencimiento_acceso} (${diasRestantes > 0 ? diasRestantes + ' días' : 'Vencido'})
+                            </p>
+                        </div>
+                    `;
                 }
                 
                 cont.innerHTML += `
@@ -750,6 +786,8 @@
                                 <span class="estado-badge ${estadoBadge}">${d <= 0 ? 'Vencido' : d + ' días'}</span>
                             </div>
                         </div>
+                        
+                        ${vendorExpiryHTML}
                         
                         <div class="client-actions">
                             <button onclick="enviarWA('${c.nombre_apellido}','${c.celular}',${d})" class="btn-action whatsapp-btn icon-btn transition-all" title="Enviar WhatsApp">
