@@ -9,16 +9,12 @@
     <script>tailwind.config = { darkMode: 'class' }</script>
     <style>
         input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(var(--tw-date-invert, 1)); }
-        
-        /* Animación para vencimientos críticos */
         @keyframes pulse-red {
             0%, 100% { background-color: rgba(220, 38, 38, 0.1); border-color: #ef4444; }
             50% { background-color: rgba(220, 38, 38, 0.3); border-color: #f87171; }
         }
         .alerta-vencimiento { animation: pulse-red 2s infinite; border-width: 2px; }
-        
-        /* Estilos de UI */
-        .filtro-activo { border-color: currentColor !important; font-weight: 800; transform: scale(1.05); }
+        .filtro-activo { border-color: white !important; font-weight: 800; transform: scale(1.05); }
         .dashboard-card { cursor: pointer; transition: transform 0.2s; }
         .dashboard-card:active { transform: scale(0.95); }
         .card-seleccionada { ring: 4px solid currentColor; ring-offset: 2px; }
@@ -27,14 +23,12 @@
         .modo-normal .accent-bg { background-color: #2563eb; }
         .modo-normal .tab-activa { border-bottom: 3px solid #3b82f6; color: #3b82f6; }
 
-        /* Estilos Modo Supervisión */
         .modo-supervision-activo { border: 5px solid #a855f7; }
         .modo-supervision-activo .accent-color { color: #d8b4fe; }
         .modo-supervision-activo .accent-bg { background-color: #9333ea; }
         .modo-supervision-activo #nav-main { background-color: #4c1d95 !important; }
         .modo-supervision-activo .tab-activa { border-bottom: 3px solid #d8b4fe; color: #d8b4fe; }
 
-        /* Modo Claro */
         .light .bg-gray-900 { background-color: #f3f4f6; color: #1f2937; }
         .light .bg-gray-800 { background-color: #ffffff; color: #1f2937; }
         .light .border-gray-700 { border-color: #e5e7eb; }
@@ -93,14 +87,14 @@
                     <input type="text" id="inputBusqueda" onkeyup="filtrarClientes()" placeholder="🔍 Buscar por nombre o usuario..." 
                            class="w-full bg-gray-800 border border-gray-700 rounded-xl p-4 text-white outline-none focus:ring-2 focus:ring-blue-500 transition-all">
                     
-                    <div class="flex flex-wrap gap-2">
-                        <button onclick="cambiarFiltroApp('TODOS', this)" class="btn-app filtro-activo px-4 py-2 rounded-lg text-[9px] font-black uppercase bg-gray-700">Todas</button>
-                        <button onclick="cambiarFiltroApp('LUMIX TV', this)" class="btn-app px-4 py-2 rounded-lg text-[9px] font-black uppercase bg-blue-600">Lumix</button>
-                        <button onclick="cambiarFiltroApp('FEMON TV', this)" class="btn-app px-4 py-2 rounded-lg text-[9px] font-black uppercase bg-red-600">Femon</button>
-                        <button onclick="cambiarFiltroApp('TV PLUS 2', this)" class="btn-app px-4 py-2 rounded-lg text-[9px] font-black uppercase bg-green-600">Plus 2</button>
-                        <button onclick="cambiarFiltroApp('ZYRON TV', this)" class="btn-app px-4 py-2 rounded-lg text-[9px] font-black uppercase bg-yellow-600 text-black">Zyron TV</button>
-                        <button onclick="cambiarFiltroApp('ZYRON TUBE', this)" class="btn-app px-4 py-2 rounded-lg text-[9px] font-black uppercase bg-orange-600">Zyron Tube</button>
-                        <button onclick="cambiarFiltroApp('POWER SIGNALS', this)" class="btn-app px-4 py-2 rounded-lg text-[9px] font-black uppercase bg-indigo-600">Power</button>
+                    <div class="flex flex-wrap gap-3">
+                        <button onclick="cambiarFiltroApp('TODOS', this)" class="btn-app filtro-activo px-4 py-2 rounded-xl text-[10px] font-black uppercase bg-gray-700 flex items-center gap-2 border-2 border-transparent transition-all"><span>📱</span> TODAS</button>
+                        <button onclick="cambiarFiltroApp('LUMIX TV', this)" class="btn-app px-3 py-2 rounded-xl text-[10px] font-black uppercase bg-blue-600 flex items-center gap-2 border-2 border-transparent transition-all"><img src="https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/lumixtv.png" class="w-5 h-5 object-contain"> LUMIX TV</button>
+                        <button onclick="cambiarFiltroApp('FEMON TV', this)" class="btn-app px-3 py-2 rounded-xl text-[10px] font-black uppercase bg-red-600 flex items-center gap-2 border-2 border-transparent transition-all"><img src="https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/femontv.png" class="w-5 h-5 object-contain"> FEMON TV</button>
+                        <button onclick="cambiarFiltroApp('TV PLUS 2', this)" class="btn-app px-3 py-2 rounded-xl text-[10px] font-black uppercase bg-green-600 flex items-center gap-2 border-2 border-transparent transition-all"><img src="https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/tvplus2.png" class="w-5 h-5 object-contain"> TV PLUS 2</button>
+                        <button onclick="cambiarFiltroApp('ZYRON TV', this)" class="btn-app px-3 py-2 rounded-xl text-[10px] font-black uppercase bg-yellow-600 text-black flex items-center gap-2 border-2 border-transparent transition-all"><img src="https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/zyrontv.png" class="w-5 h-5 object-contain"> ZYRON TV</button>
+                        <button onclick="cambiarFiltroApp('ZYRON TUBE', this)" class="btn-app px-3 py-2 rounded-xl text-[10px] font-black uppercase bg-orange-600 flex items-center gap-2 border-2 border-transparent transition-all"><img src="https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/zyrontube.png" class="w-5 h-5 object-contain"> ZYRON TUBE</button>
+                        <button onclick="cambiarFiltroApp('POWER SIGNALS', this)" class="btn-app px-3 py-2 rounded-xl text-[10px] font-black uppercase bg-indigo-600 flex items-center gap-2 border-2 border-transparent transition-all"><img src="https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/powersignals.png" class="w-5 h-5 object-contain"> POWER SIGNALS</button>
                     </div>
                 </div>
 
@@ -125,18 +119,16 @@
 
     <div id="modalCliente" class="fixed inset-0 bg-black/95 backdrop-blur-md hidden flex items-center justify-center p-4 z-50">
         <div class="bg-gray-800 rounded-3xl p-8 w-full max-w-md border border-gray-700 shadow-2xl text-white relative">
-            
             <div class="absolute -top-10 left-1/2 -translate-x-1/2 w-20 h-20 bg-gray-900 rounded-3xl border-4 border-gray-800 shadow-2xl flex items-center justify-center overflow-hidden">
                 <img id="modal-app-logo" src="" class="w-full h-full object-contain hidden">
                 <span id="modal-app-icon" class="text-4xl">📱</span>
             </div>
-
             <h2 id="modalTitulo" class="text-xl font-black accent-color mb-6 mt-6 uppercase italic tracking-tighter text-center">Datos del Cliente</h2>
             <form id="formCliente" class="space-y-4">
                 <input type="hidden" id="clienteId">
                 <input type="text" id="nombre" placeholder="Nombre y Apellido" class="w-full bg-gray-900 border border-gray-700 rounded-2xl p-4 outline-none focus:ring-2 focus:ring-blue-500" required>
                 <div class="grid grid-cols-2 gap-4">
-                    <input type="tel" id="celular" placeholder="WhatsApp (Ej: 5492945...)" class="w-full bg-gray-900 border border-gray-700 rounded-2xl p-4 outline-none">
+                    <input type="tel" id="celular" placeholder="WhatsApp" class="w-full bg-gray-900 border border-gray-700 rounded-2xl p-4 outline-none">
                     <input type="text" id="ciudad" placeholder="Ciudad" class="w-full bg-gray-900 border border-gray-700 rounded-2xl p-4 outline-none">
                 </div>
                 <div class="grid grid-cols-2 gap-4">
@@ -165,7 +157,6 @@
     </div>
 
     <script>
-        // Configuración Supabase
         const SUPABASE_URL = 'https://vjbdhbbxbvoigbidquya.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_4ogrbtxBrBWBFj-NRJOrbg_XnpmO4pS';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -176,7 +167,6 @@
         let currentUser = JSON.parse(localStorage.getItem('session_tvdigital'));
         let idSupervisado = null;
 
-        // Mapeo de logos desde tu GitHub
         const logosApp = {
             'LUMIX TV': 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/lumixtv.png',
             'FEMON TV': 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/femontv.png',
@@ -187,63 +177,46 @@
             'CAELUM': 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/caelum.png'
         };
 
-        // Función para cambiar el logo en el modal dinámicamente
         function actualizarLogoModal(val) {
             const img = document.getElementById('modal-app-logo');
             const icon = document.getElementById('modal-app-icon');
-            if(logosApp[val]) {
-                img.src = logosApp[val];
-                img.classList.remove('hidden');
-                icon.classList.add('hidden');
-            } else {
-                img.classList.add('hidden');
-                icon.classList.remove('hidden');
-            }
+            if(logosApp[val]) { img.src = logosApp[val]; img.classList.remove('hidden'); icon.classList.add('hidden'); }
+            else { img.classList.add('hidden'); icon.classList.remove('hidden'); }
         }
 
-        // Seguridad de Sesión
         function checkSession() {
-            if (!currentUser) {
-                window.location.href = 'logueo.html';
-            } else {
+            if (!currentUser) { window.location.href = 'logueo.html'; }
+            else {
                 document.getElementById('contenido-app').classList.remove('hidden');
                 document.getElementById('info-sesion').innerText = `${currentUser.rol.toUpperCase()}: ${currentUser.username}`;
-                
                 const selRol = document.getElementById('newRol');
                 if (currentUser.rol === 'admin') {
                     document.getElementById('tab-usuarios').classList.remove('hidden');
                     selRol.innerHTML = '<option value="admin">ADMINISTRADOR</option><option value="revendedor">REVENDEDOR</option><option value="vendedor">VENDEDOR</option>';
                 } else if (currentUser.rol === 'revendedor') {
                     document.getElementById('tab-usuarios').classList.remove('hidden');
-                    document.getElementById('titulo-gestion-usuarios').innerText = "Mis Vendedores";
                     selRol.innerHTML = '<option value="vendedor">VENDEDOR</option>';
                 }
                 cargarClientes();
             }
         }
 
-        // Cargar Clientes desde DB
         async function cargarClientes() {
             let query = supabaseClient.from('clientes').select('*');
+            // PRIVACIDAD: Si NO estoy supervisando, solo veo mis propios clientes (seas admin o revendedor)
             if (idSupervisado) query = query.eq('creado_por', idSupervisado);
-            else if (currentUser.rol === 'vendedor') query = query.eq('creado_por', currentUser.id);
-            else if (currentUser.rol === 'revendedor') {
-                const { data: vends } = await supabaseClient.from('usuarios_sistema').select('id').eq('padre_id', currentUser.id);
-                const ids = [currentUser.id, ...(vends || []).map(v => v.id)];
-                query = query.in('creado_por', ids);
-            }
+            else query = query.eq('creado_por', currentUser.id);
+
             const { data } = await query.order('fecha_vencimiento', { ascending: true });
             todosLosClientes = data || [];
             actualizarDashboard(todosLosClientes);
             filtrarClientes();
         }
 
-        // Renderizado de lista de clientes con Botón WA e ícono
         function filtrarClientes() {
             const bus = document.getElementById('inputBusqueda').value.toLowerCase();
             const cont = document.getElementById('contenedor-clientes');
             const hoy = new Date();
-
             const filtrados = todosLosClientes.filter(c => {
                 const d = Math.ceil((new Date(c.fecha_vencimiento) - hoy) / (1000 * 60 * 60 * 24));
                 const cBus = c.nombre_apellido.toLowerCase().includes(bus) || c.usuario.toLowerCase().includes(bus);
@@ -254,42 +227,33 @@
                 if (filtroEstadoActual === 'PRONTO') cEst = (d > 0 && d <= 7);
                 return cBus && cApp && cEst;
             });
-
             cont.innerHTML = '';
             filtrados.forEach(c => {
                 const d = Math.ceil((new Date(c.fecha_vencimiento) - hoy) / (1000 * 60 * 60 * 24));
                 const imgLogo = logosApp[c.app_instalada] || '';
-                
                 cont.innerHTML += `
-                    <div class="bg-gray-800 border border-gray-700 p-5 rounded-3xl flex justify-between items-center shadow-lg transition-all hover:border-gray-500 ${d <= 2 ? 'alerta-vencimiento' : ''}">
+                    <div class="bg-gray-800 border border-gray-700 p-5 rounded-3xl flex justify-between items-center shadow-lg transition-all ${d <= 2 ? 'alerta-vencimiento' : ''}">
                         <div class="flex items-center gap-5">
-                            <div class="w-14 h-14 bg-gray-900 rounded-2xl overflow-hidden flex items-center justify-center border border-gray-700 shadow-inner">
-                                ${imgLogo ? `<img src="${imgLogo}" class="w-full h-full object-contain" onerror="this.src='https://img.icons8.com/ios-filled/50/ffffff/tv-show.png'">` : '<span class="text-2xl">📱</span>'}
+                            <div class="w-14 h-14 bg-gray-900 rounded-2xl flex items-center justify-center border border-gray-700 overflow-hidden">
+                                ${imgLogo ? `<img src="${imgLogo}" class="w-full h-full object-contain">` : '<span>📱</span>'}
                             </div>
                             <div>
-                                <h3 class="font-black text-sm uppercase italic tracking-tight text-white">${c.nombre_apellido}</h3>
-                                <p class="text-[9px] text-blue-400 font-bold uppercase tracking-widest">${c.app_instalada}</p>
-                                <p class="text-[10px] text-gray-500 font-medium italic">${c.usuario} | ${c.clave}</p>
+                                <h3 class="font-black text-sm uppercase italic text-white">${c.nombre_apellido}</h3>
+                                <p class="text-[9px] text-blue-400 font-bold uppercase">${c.app_instalada}</p>
                             </div>
                         </div>
-
                         <div class="flex items-center gap-6">
                             <div class="text-right">
-                                <p class="text-xl font-black ${d <= 0 ? 'text-red-500' : 'text-green-500'}">
-                                    ${d <= 0 ? 'VENCIDO' : d + ' DÍAS'}
-                                </p>
-                                <p class="text-[9px] font-bold text-gray-500 uppercase tracking-tighter">Vence: ${c.fecha_vencimiento}</p>
+                                <p class="text-xl font-black ${d <= 0 ? 'text-red-500' : 'text-green-500'}">${d <= 0 ? 'VENCIDO' : d + ' DÍAS'}</p>
                             </div>
-                            
                             <div class="flex flex-col gap-2">
                                 <div class="flex gap-2">
-                                    <button onclick='abrirModal(${JSON.stringify(c)})' class="bg-gray-700/50 p-2 rounded-xl text-blue-400 hover:bg-blue-500 hover:text-white transition shadow-sm">✏️</button>
-                                    <button onclick="eliminarCliente(${c.id})" class="bg-gray-700/50 p-2 rounded-xl text-red-500 hover:bg-red-500 hover:text-white transition shadow-sm">🗑️</button>
+                                    <button onclick='abrirModal(${JSON.stringify(c)})' class="bg-gray-700 p-2 rounded-xl text-blue-400">✏️</button>
+                                    <button onclick="eliminarCliente(${c.id})" class="bg-gray-700 p-2 rounded-xl text-red-500">🗑️</button>
                                 </div>
                                 <button onclick="enviarWA('${c.nombre_apellido}','${c.celular}',${d},'${c.precio}','${c.app_instalada}')" 
-                                    class="bg-green-600 hover:bg-green-500 text-white py-2 px-3 rounded-xl text-[9px] font-black uppercase flex items-center justify-center gap-2 transition-transform active:scale-95 shadow-md">
-                                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.72.938 3.659 1.434 5.63 1.434h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-                                    Enviar Wpp
+                                    class="bg-green-600 text-white py-2 px-3 rounded-xl text-[9px] font-black uppercase flex items-center justify-center gap-2">
+                                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.72.938 3.659 1.434 5.63 1.434h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg> AVISAR WA
                                 </button>
                             </div>
                         </div>
@@ -298,47 +262,27 @@
             });
         }
 
-        // Cargar Equipo (Jerarquía de Usuarios)
         async function cargarUsuariosSistema() {
             let query = supabaseClient.from('usuarios_sistema').select('*');
             if (currentUser.rol === 'revendedor') query = query.eq('padre_id', currentUser.id);
             const { data } = await query;
             const cont = document.getElementById('lista-usuarios-sistema');
             cont.innerHTML = '';
-            
-            // ORDENAR: REVENDEDORES PRIMERO
-            const ordenados = (data || []).sort((a, b) => {
-                if (a.rol === 'revendedor' && b.rol !== 'revendedor') return -1;
-                if (a.rol !== 'revendedor' && b.rol === 'revendedor') return 1;
-                return 0;
-            });
-
+            const ordenados = (data || []).sort((a, b) => (a.rol === 'revendedor' ? -1 : 1));
             ordenados.forEach(u => {
                 if (u.id === currentUser.id) return;
-                
-                const esRevendedor = u.rol === 'revendedor';
-                // Color diferente para revendedores
-                const cardClass = esRevendedor 
-                    ? 'bg-gradient-to-r from-purple-900/40 to-blue-900/40 border-purple-500/50' 
-                    : 'bg-gray-800 border-gray-700';
-
+                const esRev = u.rol === 'revendedor';
                 cont.innerHTML += `
-                    <div class="${cardClass} p-4 border rounded-2xl flex justify-between items-center cursor-pointer hover:scale-[1.01] transition shadow-md"
-                         onclick="supervisarVendedor(${u.id}, '${u.username}')">
+                    <div class="${esRev ? 'bg-gradient-to-r from-purple-900/40 to-blue-900/40 border-purple-500' : 'bg-gray-800 border-gray-700'} p-4 border rounded-2xl flex justify-between items-center cursor-pointer" onclick="supervisarVendedor(${u.id}, '${u.username}')">
                         <div class="flex items-center gap-3">
-                            <div class="w-2 h-8 ${esRevendedor ? 'bg-purple-400 shadow-[0_0_10px_#a855f7]' : 'bg-gray-600'} rounded-full"></div>
-                            <div>
-                                <p class="font-black text-sm uppercase italic tracking-tighter text-white">${u.username} ${esRevendedor ? '👑' : ''}</p>
-                                <p class="text-[9px] ${esRevendedor ? 'text-purple-300' : 'text-gray-400'} font-bold uppercase tracking-widest">${u.rol}</p>
-                            </div>
+                            <div class="w-2 h-8 ${esRev ? 'bg-purple-400' : 'bg-gray-600'} rounded-full"></div>
+                            <div><p class="font-black text-white">${u.username} ${esRev ? '👑' : ''}</p><p class="text-[9px] uppercase font-bold text-gray-400">${u.rol}</p></div>
                         </div>
-                        <button onclick="event.stopPropagation(); eliminarUserSistema(${u.id})" class="text-red-500 text-[10px] font-black border border-red-500/20 px-4 py-2 rounded-xl hover:bg-red-500 hover:text-white transition">ELIMINAR ACCESO</button>
-                    </div>
-                `;
+                        <button onclick="event.stopPropagation(); eliminarUserSistema(${u.id})" class="text-red-500 text-[10px] font-black">ELIMINAR</button>
+                    </div>`;
             });
         }
 
-        // Supervisión
         function supervisarVendedor(id, nombre) {
             idSupervisado = id;
             document.getElementById('body-app').classList.replace('modo-normal', 'modo-supervision-activo');
@@ -357,16 +301,12 @@
             cargarClientes();
         }
 
-        // WhatsApp
         function enviarWA(nom, cel, d, pre, app) {
-            if (!cel) return alert("¡El cliente no tiene número de WhatsApp!");
-            const msj = d <= 0 
-                ? `Hola ${nom}! Venció tu suscripción de ${app}. El precio de renovación es $${pre}. Avisame si queres renovar.` 
-                : `Hola ${nom}! Tu cuenta de ${app} vence en ${d} días. El precio de renovación es $${pre}.`;
+            if (!cel) return alert("¡Sin número!");
+            const msj = d <= 0 ? `Hola ${nom}! Venció tu suscripción de ${app}. Renovación: $${pre}.` : `Hola ${nom}! Tu cuenta de ${app} vence en ${d} días. Renovación: $${pre}.`;
             window.open(`https://wa.me/${cel.replace(/\D/g,'')}?text=${encodeURIComponent(msj)}`, '_blank');
         }
 
-        // Navegación de pestañas
         function cambiarSeccion(sec) {
             document.getElementById('sec-clientes').classList.toggle('hidden', sec !== 'clientes');
             document.getElementById('sec-usuarios').classList.toggle('hidden', sec !== 'usuarios');
@@ -375,25 +315,14 @@
             if (sec === 'usuarios') cargarUsuariosSistema();
         }
 
-        // Modales
         function abrirModal(d = null) {
             document.getElementById('formCliente').reset();
             document.getElementById('clienteId').value = d ? d.id : '';
             if(d) {
-                document.getElementById('nombre').value = d.nombre_apellido;
-                document.getElementById('celular').value = d.celular || '';
-                document.getElementById('ciudad').value = d.ciudad || '';
-                document.getElementById('usuario').value = d.usuario;
-                document.getElementById('clave').value = d.clave;
-                document.getElementById('app').value = d.app_instalada;
-                document.getElementById('vencimiento').value = d.fecha_vencimiento;
-                document.getElementById('precio').value = d.precio;
-                document.getElementById('modalTitulo').innerText = "Editar Cliente";
+                document.getElementById('nombre').value = d.nombre_apellido; document.getElementById('celular').value = d.celular || '';
+                document.getElementById('app').value = d.app_instalada; document.getElementById('vencimiento').value = d.fecha_vencimiento;
                 actualizarLogoModal(d.app_instalada);
-            } else {
-                document.getElementById('modalTitulo').innerText = "Nuevo Cliente";
-                actualizarLogoModal(document.getElementById('app').value);
-            }
+            } else { actualizarLogoModal(document.getElementById('app').value); }
             document.getElementById('modalCliente').classList.remove('hidden');
         }
 
@@ -401,8 +330,7 @@
             e.preventDefault();
             const id = document.getElementById('clienteId').value;
             const datos = {
-                nombre_apellido: document.getElementById('nombre').value,
-                celular: document.getElementById('celular').value, ciudad: document.getElementById('ciudad').value,
+                nombre_apellido: document.getElementById('nombre').value, celular: document.getElementById('celular').value,
                 usuario: document.getElementById('usuario').value, clave: document.getElementById('clave').value,
                 app_instalada: document.getElementById('app').value, fecha_vencimiento: document.getElementById('vencimiento').value,
                 precio: parseFloat(document.getElementById('precio').value) || 0, creado_por: idSupervisado || currentUser.id
@@ -427,23 +355,10 @@
         function toggleTheme() { document.documentElement.classList.toggle('light'); }
         function logout() { localStorage.removeItem('session_tvdigital'); window.location.href = 'logueo.html'; }
         function cerrarModal() { document.getElementById('modalCliente').classList.add('hidden'); }
-
-        function cambiarFiltroApp(app, el) { 
-            filtroAppActual = app; 
-            document.querySelectorAll('.btn-app').forEach(b => b.classList.remove('filtro-activo'));
-            el.classList.add('filtro-activo'); filtrarClientes(); 
-        }
-
-        function cambiarFiltroEstado(est) { 
-            filtroEstadoActual = (filtroEstadoActual === est) ? 'TODOS' : est; 
-            document.querySelectorAll('.dashboard-card').forEach(c => c.classList.remove('card-seleccionada'));
-            if (filtroEstadoActual !== 'TODOS') document.getElementById(`btn-filtro-${est.toLowerCase()}`).classList.add('card-seleccionada');
-            filtrarClientes(); 
-        }
-
-        async function eliminarCliente(id) { if (confirm('¿Seguro deseas eliminar este cliente?')) { await supabaseClient.from('clientes').delete().eq('id', id); cargarClientes(); } }
-        async function eliminarUserSistema(id) { if (confirm('¿Revocar acceso a este usuario?')) { await supabaseClient.from('usuarios_sistema').delete().eq('id', id); cargarUsuariosSistema(); } }
-        
+        function cambiarFiltroApp(app, el) { filtroAppActual = app; document.querySelectorAll('.btn-app').forEach(b => b.classList.remove('filtro-activo')); el.classList.add('filtro-activo'); filtrarClientes(); }
+        function cambiarFiltroEstado(est) { filtroEstadoActual = (filtroEstadoActual === est) ? 'TODOS' : est; document.querySelectorAll('.dashboard-card').forEach(c => c.classList.remove('card-seleccionada')); if (filtroEstadoActual !== 'TODOS') document.getElementById(`btn-filtro-${est.toLowerCase()}`).classList.add('card-seleccionada'); filtrarClientes(); }
+        async function eliminarCliente(id) { if (confirm('¿Eliminar cliente?')) { await supabaseClient.from('clientes').delete().eq('id', id); cargarClientes(); } }
+        async function eliminarUserSistema(id) { if (confirm('¿Revocar acceso?')) { await supabaseClient.from('usuarios_sistema').delete().eq('id', id); cargarUsuariosSistema(); } }
         window.onload = checkSession;
     </script>
 </body>
