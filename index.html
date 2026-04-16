@@ -9,11 +9,15 @@
     <script>tailwind.config = { darkMode: 'class' }</script>
     <style>
         input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(var(--tw-date-invert, 1)); }
+        
+        /* Animación para vencimientos críticos */
         @keyframes pulse-red {
             0%, 100% { background-color: rgba(220, 38, 38, 0.1); border-color: #ef4444; }
             50% { background-color: rgba(220, 38, 38, 0.3); border-color: #f87171; }
         }
         .alerta-vencimiento { animation: pulse-red 2s infinite; border-width: 2px; }
+        
+        /* Estilos de UI */
         .filtro-activo { border-color: currentColor !important; font-weight: 800; transform: scale(1.05); }
         .dashboard-card { cursor: pointer; transition: transform 0.2s; }
         .dashboard-card:active { transform: scale(0.95); }
@@ -23,12 +27,14 @@
         .modo-normal .accent-bg { background-color: #2563eb; }
         .modo-normal .tab-activa { border-bottom: 3px solid #3b82f6; color: #3b82f6; }
 
+        /* Estilos Modo Supervisión */
         .modo-supervision-activo { border: 5px solid #a855f7; }
         .modo-supervision-activo .accent-color { color: #d8b4fe; }
         .modo-supervision-activo .accent-bg { background-color: #9333ea; }
         .modo-supervision-activo #nav-main { background-color: #4c1d95 !important; }
         .modo-supervision-activo .tab-activa { border-bottom: 3px solid #d8b4fe; color: #d8b4fe; }
 
+        /* Modo Claro */
         .light .bg-gray-900 { background-color: #f3f4f6; color: #1f2937; }
         .light .bg-gray-800 { background-color: #ffffff; color: #1f2937; }
         .light .border-gray-700 { border-color: #e5e7eb; }
@@ -130,7 +136,7 @@
                 <input type="hidden" id="clienteId">
                 <input type="text" id="nombre" placeholder="Nombre y Apellido" class="w-full bg-gray-900 border border-gray-700 rounded-2xl p-4 outline-none focus:ring-2 focus:ring-blue-500" required>
                 <div class="grid grid-cols-2 gap-4">
-                    <input type="tel" id="celular" placeholder="WhatsApp" class="w-full bg-gray-900 border border-gray-700 rounded-2xl p-4 outline-none">
+                    <input type="tel" id="celular" placeholder="WhatsApp (Ej: 5492945...)" class="w-full bg-gray-900 border border-gray-700 rounded-2xl p-4 outline-none">
                     <input type="text" id="ciudad" placeholder="Ciudad" class="w-full bg-gray-900 border border-gray-700 rounded-2xl p-4 outline-none">
                 </div>
                 <div class="grid grid-cols-2 gap-4">
@@ -159,6 +165,7 @@
     </div>
 
     <script>
+        // Configuración Supabase
         const SUPABASE_URL = 'https://vjbdhbbxbvoigbidquya.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_4ogrbtxBrBWBFj-NRJOrbg_XnpmO4pS';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -169,6 +176,7 @@
         let currentUser = JSON.parse(localStorage.getItem('session_tvdigital'));
         let idSupervisado = null;
 
+        // Mapeo de logos desde tu GitHub
         const logosApp = {
             'LUMIX TV': 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/lumixtv.png',
             'FEMON TV': 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/femontv.png',
@@ -179,6 +187,7 @@
             'CAELUM': 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/caelum.png'
         };
 
+        // Función para cambiar el logo en el modal dinámicamente
         function actualizarLogoModal(val) {
             const img = document.getElementById('modal-app-logo');
             const icon = document.getElementById('modal-app-icon');
@@ -192,6 +201,7 @@
             }
         }
 
+        // Seguridad de Sesión
         function checkSession() {
             if (!currentUser) {
                 window.location.href = 'logueo.html';
@@ -212,6 +222,7 @@
             }
         }
 
+        // Cargar Clientes desde DB
         async function cargarClientes() {
             let query = supabaseClient.from('clientes').select('*');
             if (idSupervisado) query = query.eq('creado_por', idSupervisado);
@@ -227,6 +238,7 @@
             filtrarClientes();
         }
 
+        // Renderizado de lista de clientes con Botón WA e ícono
         function filtrarClientes() {
             const bus = document.getElementById('inputBusqueda').value.toLowerCase();
             const cont = document.getElementById('contenedor-clientes');
@@ -276,6 +288,7 @@
                                 </div>
                                 <button onclick="enviarWA('${c.nombre_apellido}','${c.celular}',${d},'${c.precio}','${c.app_instalada}')" 
                                     class="bg-green-600 hover:bg-green-500 text-white py-2 px-3 rounded-xl text-[9px] font-black uppercase flex items-center justify-center gap-2 transition-transform active:scale-95 shadow-md">
+                                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.72.938 3.659 1.434 5.63 1.434h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
                                     AVISAR WA
                                 </button>
                             </div>
@@ -285,6 +298,7 @@
             });
         }
 
+        // Cargar Equipo (Jerarquía de Usuarios)
         async function cargarUsuariosSistema() {
             let query = supabaseClient.from('usuarios_sistema').select('*');
             if (currentUser.rol === 'revendedor') query = query.eq('padre_id', currentUser.id);
@@ -303,6 +317,7 @@
                 if (u.id === currentUser.id) return;
                 
                 const esRevendedor = u.rol === 'revendedor';
+                // Color diferente para revendedores
                 const cardClass = esRevendedor 
                     ? 'bg-gradient-to-r from-purple-900/40 to-blue-900/40 border-purple-500/50' 
                     : 'bg-gray-800 border-gray-700';
@@ -311,7 +326,7 @@
                     <div class="${cardClass} p-4 border rounded-2xl flex justify-between items-center cursor-pointer hover:scale-[1.01] transition shadow-md"
                          onclick="supervisarVendedor(${u.id}, '${u.username}')">
                         <div class="flex items-center gap-3">
-                            <div class="w-2 h-8 ${esRevendedor ? 'bg-purple-400' : 'bg-gray-600'} rounded-full shadow-[0_0_10px_rgba(168,85,247,0.5)]"></div>
+                            <div class="w-2 h-8 ${esRevendedor ? 'bg-purple-400 shadow-[0_0_10px_#a855f7]' : 'bg-gray-600'} rounded-full"></div>
                             <div>
                                 <p class="font-black text-sm uppercase italic tracking-tighter text-white">${u.username} ${esRevendedor ? '👑' : ''}</p>
                                 <p class="text-[9px] ${esRevendedor ? 'text-purple-300' : 'text-gray-400'} font-bold uppercase tracking-widest">${u.rol}</p>
@@ -323,6 +338,7 @@
             });
         }
 
+        // Supervisión
         function supervisarVendedor(id, nombre) {
             idSupervisado = id;
             document.getElementById('body-app').classList.replace('modo-normal', 'modo-supervision-activo');
@@ -341,12 +357,16 @@
             cargarClientes();
         }
 
+        // WhatsApp
         function enviarWA(nom, cel, d, pre, app) {
             if (!cel) return alert("¡El cliente no tiene número de WhatsApp!");
-            const msj = d <= 0 ? `Hola ${nom}! Venció tu suscripción de ${app}. Renovación: $${pre}.` : `Hola ${nom}! Tu cuenta de ${app} vence en ${d} días. El precio de renovación es $${pre}.`;
+            const msj = d <= 0 
+                ? `Hola ${nom}! Venció tu suscripción de ${app}. El precio de renovación es $${pre}. Avisame si queres renovar.` 
+                : `Hola ${nom}! Tu cuenta de ${app} vence en ${d} días. El precio de renovación es $${pre}.`;
             window.open(`https://wa.me/${cel.replace(/\D/g,'')}?text=${encodeURIComponent(msj)}`, '_blank');
         }
 
+        // Navegación de pestañas
         function cambiarSeccion(sec) {
             document.getElementById('sec-clientes').classList.toggle('hidden', sec !== 'clientes');
             document.getElementById('sec-usuarios').classList.toggle('hidden', sec !== 'usuarios');
@@ -355,6 +375,7 @@
             if (sec === 'usuarios') cargarUsuariosSistema();
         }
 
+        // Modales
         function abrirModal(d = null) {
             document.getElementById('formCliente').reset();
             document.getElementById('clienteId').value = d ? d.id : '';
