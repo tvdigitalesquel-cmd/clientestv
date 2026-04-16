@@ -10,6 +10,7 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        html.light-mode { color-scheme: light; }
         input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(var(--tw-date-invert, 1)); }
         
         @keyframes pulse-red {
@@ -28,6 +29,39 @@
         .alerta-vencimiento { animation: pulse-red 2s infinite; border-width: 2px; }
         .filtro-activo { border-color: white !important; background: linear-gradient(135deg, rgba(59, 130, 246, 0.8) 0%, rgba(37, 99, 235, 0.6) 100%); box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.4); }
         .btn-app { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); border-width: 2px; }
+        
+        .app-filter {
+            border: 2px solid #374151;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            filter: grayscale(0.8);
+            opacity: 0.7;
+            padding: 12px 16px;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        .app-filter.filtro-activo {
+            border-color: #3b82f6;
+            background-color: rgba(59, 130, 246, 0.15);
+            filter: grayscale(0);
+            opacity: 1;
+            transform: scale(1.08);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+        }
+        .app-filter img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+        }
+        .app-filter span {
+            font-size: 11px;
+            font-weight: bold;
+            text-align: center;
+            text-transform: uppercase;
+        }
         
         .app-option {
             border: 2px solid #374151;
@@ -113,6 +147,11 @@
             border-bottom: 1px solid rgba(59, 130, 246, 0.2);
         }
         
+        html.light-mode .header-modern {
+            background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 50%, #f0f4ff 100%);
+            border-bottom: 1px solid rgba(59, 130, 246, 0.3);
+        }
+        
         .stat-card {
             background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(99, 102, 241, 0.1) 100%);
             border: 1px solid rgba(59, 130, 246, 0.2);
@@ -122,6 +161,11 @@
             border-color: rgba(59, 130, 246, 0.5);
             background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(99, 102, 241, 0.2) 100%);
             transform: translateY(-2px);
+        }
+        
+        html.light-mode .stat-card {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(99, 102, 241, 0.05) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.3);
         }
         
         .btn-primary {
@@ -147,6 +191,17 @@
             box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
         }
         
+        html.light-mode .input-modern {
+            background: rgba(249, 250, 251, 0.8);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            color: #1f2937;
+        }
+        
+        html.light-mode .input-modern:focus {
+            border-color: rgba(59, 130, 246, 0.6);
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
         .empty-state {
             text-align: center;
             padding: 60px 20px;
@@ -162,6 +217,112 @@
         .dialog-confirmar {
             animation: fadeIn 0.3s ease-out;
         }
+        
+        .theme-toggle {
+            cursor: pointer;
+            width: 50px;
+            height: 28px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            padding: 2px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .theme-toggle.active {
+            background: rgba(59, 130, 246, 0.3);
+            border-color: rgba(59, 130, 246, 0.5);
+        }
+        
+        .theme-toggle span {
+            width: 24px;
+            height: 24px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        
+        .theme-toggle .dark-icon {
+            position: absolute;
+            left: 2px;
+        }
+        
+        .theme-toggle .light-icon {
+            position: absolute;
+            right: 2px;
+        }
+        
+        .theme-toggle.active .dark-icon {
+            opacity: 0.3;
+        }
+        
+        .theme-toggle.active .light-icon {
+            opacity: 1;
+        }
+        
+        .theme-toggle:not(.active) .dark-icon {
+            opacity: 1;
+        }
+        
+        .theme-toggle:not(.active) .light-icon {
+            opacity: 0.3;
+        }
+
+        html.light-mode {
+            background-color: #f3f4f6;
+            color: #1f2937;
+        }
+        
+        html.light-mode body {
+            background-color: #f3f4f6 !important;
+            color: #1f2937 !important;
+        }
+        
+        html.light-mode .bg-gray-950 {
+            background-color: #f3f4f6 !important;
+        }
+        
+        html.light-mode .bg-gray-900 {
+            background-color: #ffffff !important;
+        }
+        
+        html.light-mode .bg-gray-800 {
+            background-color: #f9fafb !important;
+        }
+        
+        html.light-mode .border-gray-700 {
+            border-color: rgba(59, 130, 246, 0.1) !important;
+        }
+        
+        html.light-mode .text-white {
+            color: #1f2937 !important;
+        }
+        
+        html.light-mode .text-gray-300 {
+            color: #4b5563 !important;
+        }
+        
+        html.light-mode .text-gray-400 {
+            color: #6b7280 !important;
+        }
+        
+        html.light-mode .text-gray-500 {
+            color: #9ca3af !important;
+        }
+        
+        html.light-mode .text-blue-400 {
+            color: #2563eb !important;
+        }
+        
+        html.light-mode .text-blue-500 {
+            color: #1d4ed8 !important;
+        }
     </style>
 </head>
 <body id="body-app" class="bg-gray-950 text-white font-sans min-h-screen pb-20 transition-all duration-300">
@@ -175,6 +336,13 @@
             </div>
             <div class="flex items-center gap-4">
                 <span id="info-sesion" class="text-xs text-gray-400 font-semibold"></span>
+                
+                <!-- THEME TOGGLE -->
+                <button onclick="toggleTheme()" class="theme-toggle" title="Cambiar tema">
+                    <span class="dark-icon">🌙</span>
+                    <span class="light-icon">☀️</span>
+                </button>
+                
                 <button onclick="logout()" class="text-red-400 font-bold text-xs uppercase border border-red-500/50 px-4 py-2 rounded-xl hover:bg-red-500/10 transition">Salir</button>
             </div>
         </div>
@@ -211,7 +379,7 @@
         <!-- BÚSQUEDA Y FILTROS -->
         <div class="mb-8">
             <input type="text" id="inputBusqueda" onkeyup="filtrarClientes()" placeholder="🔍 Buscar por nombre, usuario o ciudad..." class="w-full input-modern p-4 rounded-2xl outline-none text-sm mb-6">
-            <div id="contenedor-filtros-apps" class="flex flex-wrap gap-2"></div>
+            <div id="contenedor-filtros-apps" class="flex flex-wrap gap-3"></div>
         </div>
 
         <!-- CLIENTES -->
@@ -314,7 +482,25 @@
             'CAELUM': { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/caelum.png', color: '#0891b2' }
         };
 
+        function toggleTheme() {
+            const html = document.documentElement;
+            const isLightMode = html.classList.contains('light-mode');
+            if (isLightMode) {
+                html.classList.remove('light-mode');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                html.classList.add('light-mode');
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
         function checkSession() {
+            // Cargar tema guardado
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            if (savedTheme === 'light') {
+                document.documentElement.classList.add('light-mode');
+            }
+            
             if (!currentUser) { window.location.href = 'logueo.html'; return; }
             if (currentUser.rol === 'admin' || currentUser.rol === 'revendedor') document.getElementById('link-equipos').classList.remove('hidden');
             document.getElementById('info-sesion').innerText = `${currentUser.rol.toUpperCase()} • ${currentUser.username}`;
@@ -442,11 +628,11 @@
         function generarFiltrosApps(clientes) {
             const contenedor = document.getElementById('contenedor-filtros-apps');
             const appsEnUso = [...new Set(clientes.map(c => c.app_instalada))];
-            let html = `<button onclick="cambiarFiltroApp('TODOS', this)" class="btn-app filtro-activo px-4 py-2 rounded-xl text-xs font-bold uppercase bg-slate-700 border-transparent">✓ TODAS</button>`;
+            let html = `<button onclick="cambiarFiltroApp('TODOS', this)" class="app-filter filtro-activo"><span>✓ TODAS</span></button>`;
             appsEnUso.forEach(app => {
                 const config = configApps[app];
                 if (config) {
-                    html += `<button onclick="cambiarFiltroApp('${app}', this)" class="btn-app px-4 py-2 rounded-xl text-xs font-bold uppercase flex items-center gap-2 border-2 border-transparent hover:border-opacity-50" style="background-color: ${config.color}22;"><img src="${config.logo}" class="w-4 h-4 object-contain"> ${app}</button>`;
+                    html += `<button onclick="cambiarFiltroApp('${app}', this)" class="app-filter" style="color: ${config.color};"><img src="${config.logo}" class="w-10 h-10 object-contain"><span>${app}</span></button>`;
                 }
             });
             contenedor.innerHTML = html;
@@ -519,13 +705,16 @@
                         </div>
                         
                         <div class="border-t border-gray-700 pt-4 flex gap-3">
-                            <button onclick="enviarWA('${c.nombre_apellido}','${c.celular}',${d})" class="btn-action flex-1 bg-green-600 hover:bg-green-500 text-white py-2 rounded-xl font-bold text-sm flex items-center justify-center gap-2">
-                                <span>💬 WhatsApp</span>
+                            <button onclick="enviarWA('${c.nombre_apellido}','${c.celular}',${d})" class="btn-action flex-1 bg-green-600 hover:bg-green-500 text-white py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.67-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.076 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421-7.403h-.004a9.87 9.87 0 00-4.781 1.226l-.34-.17-3.524.35.356 3.465-.225.356a9.9 9.9 0 1513.6 0l-.227-.354.2-3.46-3.747-.368-.215.128c-1.324-.643-2.791-.988-4.514-.988z"/>
+                                </svg>
+                                WhatsApp
                             </button>
-                            <button onclick="abrirModalEditar(${JSON.stringify(c).replace(/"/g, '&quot;')})" class="btn-action edit-btn text-white py-2 px-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2">
+                            <button onclick="abrirModalEditar(${JSON.stringify(c).replace(/"/g, '&quot;')})" class="btn-action edit-btn text-white py-3 px-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all" title="Editar cliente">
                                 ✏️
                             </button>
-                            <button onclick="abrirConfirmarEliminar(${JSON.stringify(c).replace(/"/g, '&quot;')})" class="btn-action delete-btn text-white py-2 px-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2">
+                            <button onclick="abrirConfirmarEliminar(${JSON.stringify(c).replace(/"/g, '&quot;')})" class="btn-action delete-btn text-white py-3 px-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all" title="Eliminar cliente">
                                 🗑️
                             </button>
                         </div>
@@ -540,7 +729,7 @@
         
         function cambiarFiltroApp(app, el) { 
             filtroAppActual = app; 
-            document.querySelectorAll('.btn-app').forEach(b => b.classList.remove('filtro-activo')); 
+            document.querySelectorAll('.app-filter').forEach(b => b.classList.remove('filtro-activo')); 
             el.classList.add('filtro-activo'); 
             filtrarClientes(); 
         }
