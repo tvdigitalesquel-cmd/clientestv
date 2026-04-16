@@ -6,81 +6,197 @@
     <title>Control de Clientes - TV App</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .bg-gray-750 { background-color: #2d3748; }
+    </style>
 </head>
-<body class="bg-gray-900 text-white font-sans">
+<body class="bg-gray-900 text-white font-sans min-h-screen">
 
-    <div class="container mx-auto px-4 py-8">
+    <div class="container mx-auto px-4 py-6">
         <header class="flex justify-between items-center mb-8">
-            <h1 class="text-2xl font-bold text-blue-500">Gestión de Clientes</h1>
-            <button onclick="mostrarModal()" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-sm transition">
+            <div>
+                <h1 class="text-2xl font-bold text-blue-500">Gestión de Clientes</h1>
+                <p class="text-gray-400 text-sm">Control de suscripciones TV</p>
+            </div>
+            <button onclick="mostrarModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg font-bold shadow-lg transition">
                 + Nuevo Cliente
             </button>
         </header>
 
-        <div class="overflow-x-auto bg-gray-800 rounded-xl shadow-lg">
+        <div class="overflow-x-auto bg-gray-800 rounded-xl shadow-2xl border border-gray-700">
             <table class="w-full text-left border-collapse">
                 <thead>
-                    <tr class="border-b border-gray-700">
-                        <th class="p-4 text-gray-400 font-medium">Cliente</th>
-                        <th class="p-4 text-gray-400 font-medium">App</th>
-                        <th class="p-4 text-gray-400 font-medium">Usuario / Clave</th>
-                        <th class="p-4 text-gray-400 font-medium">Vencimiento</th>
+                    <tr class="border-b border-gray-700 bg-gray-800/50">
+                        <th class="p-4 text-gray-400 font-medium uppercase text-xs">Cliente</th>
+                        <th class="p-4 text-gray-400 font-medium uppercase text-xs">App</th>
+                        <th class="p-4 text-gray-400 font-medium uppercase text-xs">Credenciales</th>
+                        <th class="p-4 text-gray-400 font-medium uppercase text-xs text-center">Vencimiento</th>
                     </tr>
                 </thead>
                 <tbody id="lista-clientes">
-                    </tbody>
+                    <tr>
+                        <td colspan="4" class="p-8 text-center text-gray-500 italic">Cargando base de datos...</td>
+                    </tr>
+                </tbody>
             </table>
         </div>
     </div>
 
+    <div id="modalCliente" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-gray-800 rounded-2xl p-6 w-full max-w-md border border-gray-700 shadow-2xl">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-bold text-blue-400">Datos del Cliente</h2>
+                <button onclick="cerrarModal()" class="text-gray-500 hover:text-white">&times;</button>
+            </div>
+            
+            <form id="formNuevoCliente" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 uppercase mb-1">Nombre y Apellido</label>
+                    <input type="text" id="nombre" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white focus:border-blue-500 outline-none" placeholder="Ej: Juan Perez" required>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-400 uppercase mb-1">Usuario App</label>
+                        <input type="text" id="usuario" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white focus:border-blue-500 outline-none" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-400 uppercase mb-1">Clave</label>
+                        <input type="text" id="clave" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white focus:border-blue-500 outline-none" required>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 uppercase mb-1">Aplicación</label>
+                    <select id="app" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white focus:border-blue-500 outline-none">
+                        <option value="LUMIX">LUMIX</option>
+                        <option value="TV PLUS 2">TV PLUS 2</option>
+                        <option value="FEMON">FEMON</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 uppercase mb-1">Fecha de Vencimiento</label>
+                    <input type="date" id="vencimiento" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white focus:border-blue-500 outline-none" required>
+                </div>
+                
+                <div class="flex flex-col space-y-3 pt-4">
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-bold transition shadow-lg">
+                        Guardar en Base de Datos
+                    </button>
+                    <button type="button" onclick="cerrarModal()" class="w-full text-gray-500 hover:text-gray-300 py-2 text-sm transition">
+                        Cancelar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
-        // Configuración de Supabase
+        // Configuración de Supabase (Tus credenciales)
         const SUPABASE_URL = 'https://vjbdhbbxbvoigbidquya.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_4ogrbtxBrBWBFj-NRJOrbg_XnpmO4pS';
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+        // Funciones para el Modal
+        function mostrarModal() {
+            document.getElementById('modalCliente').classList.remove('hidden');
+        }
+
+        function cerrarModal() {
+            document.getElementById('modalCliente').classList.add('hidden');
+            document.getElementById('formNuevoCliente').reset();
+        }
+
+        // Función para cargar clientes desde Supabase
         async function cargarClientes() {
-            const { data, error } = await supabase
+            const tbody = document.getElementById('lista-clientes');
+            
+            const { data, error } = await supabaseClient
                 .from('clientes')
                 .select('*')
                 .order('fecha_vencimiento', { ascending: true });
 
             if (error) {
-                console.error('Error:', error);
+                console.error('Error al cargar:', error);
+                tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-red-500">Error de conexión con la DB</td></tr>`;
                 return;
             }
 
-            const tbody = document.getElementById('lista-clientes');
-            tbody.innerHTML = '';
+            if (data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="p-8 text-center text-gray-500">No hay clientes registrados</td></tr>`;
+                return;
+            }
 
+            tbody.innerHTML = '';
             data.forEach(cliente => {
                 // Cálculo de días restantes
                 const hoy = new Date();
                 const venc = new Date(cliente.fecha_vencimiento);
-                const dias = Math.ceil((venc - hoy) / (1000 * 60 * 60 * 24));
-                const colorDias = dias <= 5 ? 'text-red-500' : 'text-green-400';
+                const diferenciaMs = venc - hoy;
+                const dias = Math.ceil(diferenciaMs / (1000 * 60 * 60 * 24));
+                
+                // Color según urgencia
+                let colorDias = 'text-green-400';
+                if (dias <= 0) colorDias = 'text-red-500';
+                else if (dias <= 5) colorDias = 'text-yellow-500';
 
                 tbody.innerHTML += `
-                    <tr class="border-b border-gray-700 hover:bg-gray-750 transition">
+                    <tr class="border-b border-gray-700 hover:bg-gray-750/50 transition">
                         <td class="p-4">
-                            <div class="font-bold">${cliente.nombre_apellido}</div>
+                            <div class="font-bold text-gray-200">${cliente.nombre_apellido}</div>
                         </td>
                         <td class="p-4">
-                            <span class="px-2 py-1 bg-gray-700 rounded text-xs">${cliente.app_instalada}</span>
-                        </td>
-                        <td class="p-4 text-sm font-mono">
-                            <div class="text-blue-300 underline">${cliente.usuario}</div>
-                            <div class="text-gray-500">${cliente.clave}</div>
+                            <span class="px-2 py-1 bg-gray-900 border border-gray-700 rounded text-[10px] font-bold text-blue-400 tracking-wider">
+                                ${cliente.app_instalada}
+                            </span>
                         </td>
                         <td class="p-4">
-                            <div class="font-bold ${colorDias}">${dias} días</div>
-                            <div class="text-xs text-gray-500">${cliente.fecha_vencimiento}</div>
+                            <div class="text-sm font-mono text-blue-200">${cliente.usuario}</div>
+                            <div class="text-xs text-gray-500 font-mono">${cliente.clave}</div>
+                        </td>
+                        <td class="p-4 text-center">
+                            <div class="font-black ${colorDias} text-lg">${dias <= 0 ? 'Vencido' : dias + ' d'}</div>
+                            <div class="text-[10px] text-gray-500 uppercase font-semibold">${cliente.fecha_vencimiento}</div>
                         </td>
                     </tr>
                 `;
             });
         }
 
+        // Evento para guardar nuevo cliente
+        document.getElementById('formNuevoCliente').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const btnSubmit = e.target.querySelector('button[type="submit"]');
+            btnSubmit.disabled = true;
+            btnSubmit.innerText = 'Guardando...';
+
+            const nuevoCliente = {
+                nombre_apellido: document.getElementById('nombre').value,
+                usuario: document.getElementById('usuario').value,
+                clave: document.getElementById('clave').value,
+                app_instalada: document.getElementById('app').value,
+                fecha_vencimiento: document.getElementById('vencimiento').value
+            };
+
+            const { error } = await supabaseClient
+                .from('clientes')
+                .insert([nuevoCliente]);
+
+            if (error) {
+                alert('Error al guardar: ' + error.message);
+                btnSubmit.disabled = false;
+                btnSubmit.innerText = 'Guardar en Base de Datos';
+            } else {
+                cerrarModal();
+                cargarClientes();
+                btnSubmit.disabled = false;
+                btnSubmit.innerText = 'Guardar en Base de Datos';
+            }
+        });
+
+        // Iniciar carga al abrir la página
         window.onload = cargarClientes;
     </script>
 </body>
