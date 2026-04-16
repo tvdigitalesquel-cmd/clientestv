@@ -19,7 +19,6 @@
         .dashboard-card:active { transform: scale(0.95); }
         .card-seleccionada { ring: 4px solid currentColor; ring-offset: 2px; }
         
-        /* Estilos Dinámicos de Color */
         .modo-normal .accent-color { color: #3b82f6; }
         .modo-normal .accent-bg { background-color: #2563eb; }
         .modo-normal .tab-activa { border-bottom: 3px solid #3b82f6; color: #3b82f6; }
@@ -55,7 +54,6 @@
         </nav>
 
         <div class="container mx-auto px-4">
-            
             <div id="modo-supervision" class="hidden mb-4 p-4 rounded-xl bg-purple-600 border-2 border-white shadow-lg text-center flex justify-between items-center animate-pulse">
                 <p class="text-xs font-black uppercase italic text-white">⚠️ MODO SUPERVISIÓN: <span id="vendedor-nombre"></span></p>
                 <button onclick="salirSupervision()" class="bg-white text-purple-700 px-4 py-1 rounded-lg font-black text-[10px] uppercase shadow-md">Volver a mi cuenta</button>
@@ -64,7 +62,7 @@
             <section id="sec-clientes">
                 <header class="flex justify-between items-center mb-6">
                     <div>
-                        <h1 class="text-xl font-black accent-color uppercase italic">Clientes</h1>
+                        <h1 class="text-xl font-black accent-color uppercase italic tracking-tighter">Panel Clientes</h1>
                         <p id="info-sesion" class="text-[10px] text-gray-500 font-bold uppercase"></p>
                     </div>
                     <button onclick="abrirModal()" id="btn-nuevo-cliente" class="accent-bg px-5 py-2 rounded-xl font-bold shadow-lg text-sm">+ Nuevo</button>
@@ -86,13 +84,17 @@
                 </div>
 
                 <div class="space-y-4 mb-8">
-                    <input type="text" id="inputBusqueda" onkeyup="filtrarClientes()" placeholder="🔍 Buscar cliente..." 
-                           class="w-full bg-gray-800 border border-gray-700 rounded-xl p-4 text-white outline-none focus:ring-2 focus:ring-blue-500">
+                    <input type="text" id="inputBusqueda" onkeyup="filtrarClientes()" placeholder="🔍 Buscar por nombre o usuario..." 
+                           class="w-full bg-gray-800 border border-gray-700 rounded-xl p-4 text-white outline-none focus:ring-2 focus:ring-blue-500 transition-all">
+                    
                     <div class="flex flex-wrap gap-2">
-                        <button onclick="cambiarFiltroApp('TODOS', this)" class="btn-app filtro-activo flex-1 bg-gray-700 py-2 rounded-lg text-[10px] font-bold uppercase">Todas</button>
-                        <button onclick="cambiarFiltroApp('LUMIX', this)" class="btn-app flex-1 bg-blue-600 py-2 rounded-lg text-[10px] font-bold uppercase text-white">Lumix</button>
-                        <button onclick="cambiarFiltroApp('TV PLUS 2', this)" class="btn-app flex-1 bg-green-600 py-2 rounded-lg text-[10px] font-bold uppercase text-white">TV Plus 2</button>
-                        <button onclick="cambiarFiltroApp('FEMON', this)" class="btn-app flex-1 bg-purple-600 py-2 rounded-lg text-[10px] font-bold uppercase text-white">Femon</button>
+                        <button onclick="cambiarFiltroApp('TODOS', this)" class="btn-app filtro-activo px-4 py-2 rounded-lg text-[9px] font-black uppercase bg-gray-700">Todas</button>
+                        <button onclick="cambiarFiltroApp('LUMIX TV', this)" class="btn-app px-4 py-2 rounded-lg text-[9px] font-black uppercase bg-blue-600">Lumix</button>
+                        <button onclick="cambiarFiltroApp('FEMON TV', this)" class="btn-app px-4 py-2 rounded-lg text-[9px] font-black uppercase bg-red-600">Femon</button>
+                        <button onclick="cambiarFiltroApp('TV PLUS 2', this)" class="btn-app px-4 py-2 rounded-lg text-[9px] font-black uppercase bg-green-600">Plus 2</button>
+                        <button onclick="cambiarFiltroApp('ZYRON TV', this)" class="btn-app px-4 py-2 rounded-lg text-[9px] font-black uppercase bg-yellow-600 text-black">Zyron TV</button>
+                        <button onclick="cambiarFiltroApp('ZYRON TUBE', this)" class="btn-app px-4 py-2 rounded-lg text-[9px] font-black uppercase bg-orange-600">Zyron Tube</button>
+                        <button onclick="cambiarFiltroApp('POWER SIGNALS', this)" class="btn-app px-4 py-2 rounded-lg text-[9px] font-black uppercase bg-indigo-600">Power</button>
                     </div>
                 </div>
 
@@ -105,9 +107,9 @@
                     <form id="formNuevoUsuario" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3">
                         <input type="text" id="newUsername" placeholder="Usuario" class="bg-gray-900 p-3 rounded-xl border border-gray-700 outline-none text-sm" required>
                         <input type="password" id="newPassword" placeholder="Contraseña" class="bg-gray-900 p-3 rounded-xl border border-gray-700 outline-none text-sm" required>
-                        <select id="newRol" class="bg-gray-900 p-3 rounded-xl border border-gray-700 outline-none text-sm text-white"></select>
+                        <select id="newRol" class="bg-gray-900 p-3 rounded-xl border border-gray-700 outline-none text-sm text-white font-bold uppercase"></select>
                         <input type="date" id="newVencimiento" class="bg-gray-900 p-3 rounded-xl border border-gray-700 outline-none text-sm text-white" required>
-                        <button type="submit" class="accent-bg font-bold rounded-xl uppercase text-[10px] text-white">Dar Acceso</button>
+                        <button type="submit" class="accent-bg font-black rounded-xl uppercase text-[10px] text-white">Dar Acceso</button>
                     </form>
                 </div>
                 <div id="lista-usuarios-sistema" class="grid gap-3"></div>
@@ -115,32 +117,35 @@
         </div>
     </div>
 
-    <div id="modalCliente" class="fixed inset-0 bg-black/90 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
-        <div class="bg-gray-800 rounded-2xl p-6 w-full max-w-md border border-gray-700 shadow-2xl text-white">
-            <h2 id="modalTitulo" class="text-xl font-bold accent-color mb-6 uppercase">Datos Cliente</h2>
+    <div id="modalCliente" class="fixed inset-0 bg-black/95 backdrop-blur-md hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-gray-800 rounded-3xl p-8 w-full max-w-md border border-gray-700 shadow-2xl text-white">
+            <h2 id="modalTitulo" class="text-xl font-black accent-color mb-6 uppercase italic tracking-tighter">Datos del Cliente</h2>
             <form id="formCliente" class="space-y-4">
                 <input type="hidden" id="clienteId">
-                <input type="text" id="nombre" placeholder="Nombre Apellido" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 outline-none focus:border-blue-500" required>
+                <input type="text" id="nombre" placeholder="Nombre y Apellido" class="w-full bg-gray-900 border border-gray-700 rounded-2xl p-4 outline-none focus:ring-2 focus:ring-blue-500" required>
                 <div class="grid grid-cols-2 gap-4">
-                    <input type="tel" id="celular" placeholder="WhatsApp (549...)" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 outline-none">
-                    <input type="text" id="ciudad" placeholder="Ciudad" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 outline-none">
+                    <input type="tel" id="celular" placeholder="WhatsApp" class="w-full bg-gray-900 border border-gray-700 rounded-2xl p-4 outline-none">
+                    <input type="text" id="ciudad" placeholder="Ciudad" class="w-full bg-gray-900 border border-gray-700 rounded-2xl p-4 outline-none">
                 </div>
                 <div class="grid grid-cols-2 gap-4">
-                    <input type="text" id="usuario" placeholder="Usuario App" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 outline-none" required>
-                    <input type="text" id="clave" placeholder="Clave" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 outline-none" required>
+                    <input type="text" id="usuario" placeholder="Usuario App" class="w-full bg-gray-900 border border-gray-700 rounded-2xl p-4 outline-none font-mono" required>
+                    <input type="text" id="clave" placeholder="Clave App" class="w-full bg-gray-900 border border-gray-700 rounded-2xl p-4 outline-none font-mono" required>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
-                    <select id="app" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 outline-none text-white">
-                        <option value="LUMIX">LUMIX</option>
+                    <select id="app" class="w-full bg-gray-900 border border-gray-700 rounded-2xl p-4 outline-none text-white font-bold">
+                        <option value="LUMIX TV">LUMIX TV</option>
+                        <option value="FEMON TV">FEMON TV</option>
                         <option value="TV PLUS 2">TV PLUS 2</option>
-                        <option value="FEMON">FEMON</option>
+                        <option value="ZYRON TV">ZYRON TV</option>
+                        <option value="ZYRON TUBE">ZYRON TUBE</option>
+                        <option value="POWER SIGNALS">POWER SIGNALS</option>
                     </select>
-                    <input type="date" id="vencimiento" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 outline-none" required>
+                    <input type="date" id="vencimiento" class="w-full bg-gray-900 border border-gray-700 rounded-2xl p-4 outline-none" required>
                 </div>
-                <input type="number" id="precio" placeholder="Precio $" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 outline-none">
-                <div class="flex gap-2 pt-4">
-                    <button type="button" onclick="cerrarModal()" class="flex-1 bg-gray-700 py-3 rounded-xl font-bold uppercase text-xs">Cerrar</button>
-                    <button type="submit" class="flex-1 accent-bg py-3 rounded-xl font-bold uppercase text-xs text-white">Guardar</button>
+                <input type="number" id="precio" placeholder="Precio Renovación $" class="w-full bg-gray-900 border border-gray-700 rounded-2xl p-4 outline-none">
+                <div class="flex gap-3 pt-6">
+                    <button type="button" onclick="cerrarModal()" class="flex-1 bg-gray-700 py-4 rounded-2xl font-black uppercase text-xs tracking-widest">Cerrar</button>
+                    <button type="submit" class="flex-1 accent-bg py-4 rounded-2xl font-black uppercase text-xs text-white tracking-widest shadow-lg">Guardar</button>
                 </div>
             </form>
         </div>
@@ -157,46 +162,35 @@
         let currentUser = JSON.parse(localStorage.getItem('session_tvdigital'));
         let idSupervisado = null;
 
-        // VERIFICACIÓN DE SESIÓN CON REDIRECCIÓN
+        // --- MAPEO DE LOGOS DESDE GITHUB ---
+        // REEMPLAZA ESTOS LINKS POR TUS LINKS RAW DE GITHUB
+        const logosApp = {
+            'LUMIX TV': 'https://raw.githubusercontent.com/TU_USUARIO/REPO/main/lumix.webp',
+            'FEMON TV': 'https://raw.githubusercontent.com/TU_USUARIO/REPO/main/femon.webp',
+            'TV PLUS 2': 'https://raw.githubusercontent.com/TU_USUARIO/REPO/main/plus2.webp',
+            'ZYRON TV': 'https://raw.githubusercontent.com/TU_USUARIO/REPO/main/zyrontv.webp',
+            'ZYRON TUBE': 'https://raw.githubusercontent.com/TU_USUARIO/REPO/main/zyrontube.webp',
+            'POWER SIGNALS': 'https://raw.githubusercontent.com/TU_USUARIO/REPO/main/power.webp'
+        };
+
         function checkSession() {
             if (!currentUser) {
-                // Si no hay usuario, manda al login externo
                 window.location.href = 'logueo.html';
             } else {
-                // Si hay usuario, muestra la app y configura
                 document.getElementById('contenido-app').classList.remove('hidden');
                 document.getElementById('info-sesion').innerText = `${currentUser.rol.toUpperCase()}: ${currentUser.username}`;
                 
                 const selRol = document.getElementById('newRol');
                 if (currentUser.rol === 'admin') {
                     document.getElementById('tab-usuarios').classList.remove('hidden');
-                    selRol.innerHTML = '<option value="admin">Admin</option><option value="revendedor">Revendedor</option><option value="vendedor">Vendedor</option>';
+                    selRol.innerHTML = '<option value="admin">ADMINISTRADOR</option><option value="revendedor">REVENDEDOR</option><option value="vendedor">VENDEDOR</option>';
                 } else if (currentUser.rol === 'revendedor') {
                     document.getElementById('tab-usuarios').classList.remove('hidden');
                     document.getElementById('titulo-gestion-usuarios').innerText = "Mis Vendedores";
-                    selRol.innerHTML = '<option value="vendedor">Vendedor</option>';
+                    selRol.innerHTML = '<option value="vendedor">VENDEDOR</option>';
                 }
                 cargarClientes();
             }
-        }
-
-        // --- SUPERVISIÓN ---
-        function supervisarVendedor(id, nombre) {
-            idSupervisado = id;
-            document.getElementById('body-app').classList.replace('modo-normal', 'modo-supervision-activo');
-            document.getElementById('vendedor-nombre').innerText = nombre;
-            document.getElementById('modo-supervision').classList.remove('hidden');
-            document.getElementById('btn-nuevo-cliente').classList.add('hidden');
-            cambiarSeccion('clientes');
-            cargarClientes();
-        }
-
-        function salirSupervision() {
-            idSupervisado = null;
-            document.getElementById('body-app').classList.replace('modo-supervision-activo', 'modo-normal');
-            document.getElementById('modo-supervision').classList.add('hidden');
-            document.getElementById('btn-nuevo-cliente').classList.remove('hidden');
-            cargarClientes();
         }
 
         async function cargarClientes() {
@@ -218,6 +212,7 @@
             const bus = document.getElementById('inputBusqueda').value.toLowerCase();
             const cont = document.getElementById('contenedor-clientes');
             const hoy = new Date();
+
             const filtrados = todosLosClientes.filter(c => {
                 const d = Math.ceil((new Date(c.fecha_vencimiento) - hoy) / (1000 * 60 * 60 * 24));
                 const cBus = c.nombre_apellido.toLowerCase().includes(bus) || c.usuario.toLowerCase().includes(bus);
@@ -232,32 +227,46 @@
             cont.innerHTML = '';
             filtrados.forEach(c => {
                 const d = Math.ceil((new Date(c.fecha_vencimiento) - hoy) / (1000 * 60 * 60 * 24));
+                const imgLogo = logosApp[c.app_instalada] || '';
+                
                 cont.innerHTML += `
-                    <div class="bg-gray-800 border border-gray-700 p-4 rounded-2xl flex justify-between items-center ${d <= 2 ? 'alerta-vencimiento' : ''}">
-                        <div class="flex-1">
-                            <h3 class="font-bold text-sm">${c.nombre_apellido}</h3>
-                            <p class="text-[9px] text-gray-400 font-bold uppercase">${c.app_instalada} | ${c.usuario}</p>
-                            <p class="text-[9px] text-blue-500 font-bold">${c.celular || 'S/N'} ${c.ciudad ? ' - '+c.ciudad : ''}</p>
-                        </div>
-                        <div class="text-right mr-4">
-                            <p class="text-xl font-black ${d <= 0 ? 'text-red-500' : 'text-green-500'}">${d <= 0 ? 'Vencido' : d + ' d'}</p>
-                            <p class="text-[10px] font-bold text-blue-500">$${c.precio}</p>
-                        </div>
-                        <div class="flex flex-col gap-2">
-                            <div class="flex gap-1">
-                                <button onclick='abrirModal(${JSON.stringify(c)})' class="bg-gray-700 p-2 rounded-lg text-blue-400 text-xs">✏️</button>
-                                <button onclick="eliminarCliente(${c.id})" class="bg-gray-700 p-2 rounded-lg text-red-500 text-xs">🗑️</button>
+                    <div class="bg-gray-800 border border-gray-700 p-5 rounded-3xl flex justify-between items-center shadow-lg transition-all hover:border-gray-500 ${d <= 2 ? 'alerta-vencimiento' : ''}">
+                        <div class="flex items-center gap-5">
+                            <div class="w-14 h-14 bg-gray-900 rounded-2xl overflow-hidden flex items-center justify-center border border-gray-700 shadow-inner">
+                                ${imgLogo ? `<img src="${imgLogo}" class="w-full h-full object-cover" onerror="this.innerHTML='📱'; this.type='text'">` : '<span class="text-2xl">📱</span>'}
                             </div>
-                            <button onclick="enviarWA('${c.nombre_apellido}','${c.celular}',${d},'${c.precio}','${c.app_instalada}')" 
-                                class="bg-green-600 hover:bg-green-500 text-white p-2 rounded-lg text-[10px] font-black uppercase flex items-center justify-center gap-1 shadow-md">
-                                MSJ
-                            </button>
+                            <div>
+                                <h3 class="font-black text-sm uppercase italic tracking-tight text-white">${c.nombre_apellido}</h3>
+                                <p class="text-[9px] text-blue-400 font-bold uppercase tracking-widest">${c.app_instalada}</p>
+                                <p class="text-[10px] text-gray-500 font-medium italic">${c.usuario} | ${c.clave}</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-6">
+                            <div class="text-right">
+                                <p class="text-xl font-black ${d <= 0 ? 'text-red-500' : 'text-green-500'}">
+                                    ${d <= 0 ? 'VENCIDO' : d + ' DÍAS'}
+                                </p>
+                                <p class="text-[9px] font-bold text-gray-500 uppercase tracking-tighter">Vence: ${c.fecha_vencimiento}</p>
+                            </div>
+                            
+                            <div class="flex flex-col gap-2">
+                                <div class="flex gap-2">
+                                    <button onclick='abrirModal(${JSON.stringify(c)})' class="bg-gray-700/50 p-2 rounded-xl text-blue-400 hover:bg-blue-500 hover:text-white transition shadow-sm">✏️</button>
+                                    <button onclick="eliminarCliente(${c.id})" class="bg-gray-700/50 p-2 rounded-xl text-red-500 hover:bg-red-500 hover:text-white transition shadow-sm">🗑️</button>
+                                </div>
+                                <button onclick="enviarWA('${c.nombre_apellido}','${c.celular}',${d},'${c.precio}','${c.app_instalada}')" 
+                                    class="bg-green-600 hover:bg-green-500 text-white py-2 px-3 rounded-xl text-[9px] font-black uppercase flex items-center justify-center gap-2 transition-transform active:scale-95 shadow-md">
+                                    AVISAR WA
+                                </button>
+                            </div>
                         </div>
                     </div>
                 `;
             });
         }
 
+        // --- LÓGICA DE USUARIOS ---
         async function cargarUsuariosSistema() {
             let query = supabaseClient.from('usuarios_sistema').select('*');
             if (currentUser.rol === 'revendedor') query = query.eq('padre_id', currentUser.id);
@@ -267,20 +276,42 @@
             (data || []).forEach(u => {
                 if (u.id === currentUser.id) return;
                 cont.innerHTML += `
-                    <div class="bg-gray-800 p-4 border border-gray-700 rounded-xl flex justify-between items-center cursor-pointer hover:border-purple-500 transition shadow-md"
+                    <div class="bg-gray-800 p-4 border border-gray-700 rounded-2xl flex justify-between items-center cursor-pointer hover:border-purple-500 transition shadow-md"
                          onclick="supervisarVendedor(${u.id}, '${u.username}')">
-                        <div>
-                            <p class="font-black text-sm uppercase">${u.username} <span class="text-[9px] text-blue-500">[${u.rol}]</span></p>
+                        <div class="flex items-center gap-3">
+                            <div class="w-2 h-8 bg-purple-500 rounded-full"></div>
+                            <div>
+                                <p class="font-black text-sm uppercase italic tracking-tighter text-white">${u.username}</p>
+                                <p class="text-[9px] text-purple-400 font-bold uppercase tracking-widest">${u.rol}</p>
+                            </div>
                         </div>
-                        <button onclick="event.stopPropagation(); eliminarUserSistema(${u.id})" class="text-red-500 text-[10px] font-bold border border-red-500/20 px-3 py-1 rounded">BORRAR</button>
+                        <button onclick="event.stopPropagation(); eliminarUserSistema(${u.id})" class="text-red-500 text-[10px] font-black border border-red-500/20 px-4 py-2 rounded-xl hover:bg-red-500 hover:text-white transition">ELIMINAR ACCESO</button>
                     </div>
                 `;
             });
         }
 
+        function supervisarVendedor(id, nombre) {
+            idSupervisado = id;
+            document.getElementById('body-app').classList.replace('modo-normal', 'modo-supervision-activo');
+            document.getElementById('vendedor-nombre').innerText = nombre;
+            document.getElementById('modo-supervision').classList.remove('hidden');
+            document.getElementById('btn-nuevo-cliente').classList.add('hidden');
+            cambiarSeccion('clientes');
+            cargarClientes();
+        }
+
+        function salirSupervision() {
+            idSupervisado = null;
+            document.getElementById('body-app').classList.replace('modo-supervision-activo', 'modo-normal');
+            document.getElementById('modo-supervision').classList.add('hidden');
+            document.getElementById('btn-nuevo-cliente').classList.remove('hidden');
+            cargarClientes();
+        }
+
         function enviarWA(nom, cel, d, pre, app) {
-            if (!cel) return alert("Sin número");
-            const msj = d <= 0 ? `Hola ${nom}! Venció tu ${app}. Renovación: $${pre}.` : `Hola ${nom}! Tu ${app} vence en ${d} días. Precio: $${pre}.`;
+            if (!cel) return alert("¡El cliente no tiene número de WhatsApp!");
+            const msj = d <= 0 ? `Hola ${nom}! Venció tu suscripción de ${app}. Renovación: $${pre}.` : `Hola ${nom}! Tu cuenta de ${app} vence en ${d} días. El precio de renovación es $${pre}.`;
             window.open(`https://wa.me/${cel.replace(/\D/g,'')}?text=${encodeURIComponent(msj)}`, '_blank');
         }
 
@@ -304,6 +335,9 @@
                 document.getElementById('app').value = d.app_instalada;
                 document.getElementById('vencimiento').value = d.fecha_vencimiento;
                 document.getElementById('precio').value = d.precio;
+                document.getElementById('modalTitulo').innerText = "Editar Cliente";
+            } else {
+                document.getElementById('modalTitulo').innerText = "Nuevo Cliente";
             }
             document.getElementById('modalCliente').classList.remove('hidden');
         }
@@ -336,12 +370,7 @@
         }
 
         function toggleTheme() { document.documentElement.classList.toggle('light'); }
-        
-        function logout() { 
-            localStorage.removeItem('session_tvdigital'); 
-            window.location.href = 'logueo.html'; 
-        }
-
+        function logout() { localStorage.removeItem('session_tvdigital'); window.location.href = 'logueo.html'; }
         function cerrarModal() { document.getElementById('modalCliente').classList.add('hidden'); }
 
         function cambiarFiltroApp(app, el) { 
@@ -357,9 +386,8 @@
             filtrarClientes(); 
         }
 
-        async function eliminarCliente(id) { if (confirm('¿Eliminar?')) { await supabaseClient.from('clientes').delete().eq('id', id); cargarClientes(); } }
-        
-        async function eliminarUserSistema(id) { if (confirm('¿Borrar acceso?')) { await supabaseClient.from('usuarios_sistema').delete().eq('id', id); cargarUsuariosSistema(); } }
+        async function eliminarCliente(id) { if (confirm('¿Seguro deseas eliminar este cliente?')) { await supabaseClient.from('clientes').delete().eq('id', id); cargarClientes(); } }
+        async function eliminarUserSistema(id) { if (confirm('¿Revocar acceso a este usuario?')) { await supabaseClient.from('usuarios_sistema').delete().eq('id', id); cargarUsuariosSistema(); } }
         
         window.onload = checkSession;
     </script>
