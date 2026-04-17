@@ -345,19 +345,261 @@
             transform: translateY(-2px);
             box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
         }
+
+        /* MOBILE STYLES */
+        @media (max-width: 768px) {
+            .header-modern .flex {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            .header-modern a, .header-modern button {
+                font-size: 10px;
+                padding: 8px 12px;
+            }
+
+            header {
+                flex-direction: column;
+                align-items: flex-start !important;
+            }
+
+            header h1 {
+                font-size: 24px !important;
+            }
+
+            header p {
+                font-size: 11px !important;
+            }
+
+            .stat-card {
+                padding: 16px !important;
+            }
+
+            .stat-card h2 {
+                font-size: 24px !important;
+            }
+
+            .card-usuario {
+                padding: 16px !important;
+                flex-direction: column !important;
+            }
+
+            .card-usuario > div:first-child {
+                flex-direction: column !important;
+            }
+
+            .card-usuario .w-12 {
+                width: 40px !important;
+                height: 40px !important;
+            }
+
+            .card-usuario h3 {
+                font-size: 14px !important;
+            }
+
+            .card-usuario p {
+                font-size: 11px !important;
+            }
+
+            .card-usuario > div:last-child {
+                width: 100% !important;
+                flex-direction: column !important;
+                gap: 8px;
+            }
+
+            .card-usuario button {
+                width: 100% !important;
+                font-size: 12px !important;
+            }
+
+            #formNuevoUsuario {
+                grid-template-columns: 1fr !important;
+                gap: 12px !important;
+            }
+
+            #formNuevoUsuario input, #formNuevoUsuario select {
+                font-size: 14px !important;
+                padding: 12px !important;
+            }
+
+            #formNuevoUsuario button {
+                font-size: 12px !important;
+                padding: 12px !important;
+            }
+
+            .modal-content {
+                padding: 16px !important;
+            }
+
+            .modal-content h3 {
+                font-size: 18px !important;
+            }
+
+            .modal-content input, .modal-content select {
+                font-size: 14px !important;
+                padding: 12px !important;
+            }
+
+            .modal-content button {
+                padding: 12px !important;
+                font-size: 12px !important;
+            }
+
+            .dialog-confirmar h3 {
+                font-size: 18px !important;
+            }
+
+            .dialog-confirmar p {
+                font-size: 12px !important;
+            }
+
+            .dialog-confirmar button {
+                font-size: 12px !important;
+                padding: 12px !important;
+            }
+
+            .card-cliente {
+                padding: 12px !important;
+                font-size: 12px !important;
+            }
+
+            .card-cliente p {
+                font-size: 11px !important;
+            }
+
+            .estado-badge {
+                font-size: 9px !important;
+            }
+
+            .back-btn {
+                padding: 8px 16px;
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding-left: 8px !important;
+                padding-right: 8px !important;
+            }
+
+            header {
+                padding: 16px 8px !important;
+            }
+
+            header h1 {
+                font-size: 20px !important;
+            }
+
+            .stat-card {
+                padding: 12px !important;
+            }
+
+            .stat-card h2 {
+                font-size: 20px !important;
+            }
+
+            .stat-card p {
+                font-size: 9px !important;
+            }
+
+            .card-usuario {
+                padding: 12px !important;
+            }
+
+            .card-usuario .w-12 {
+                width: 36px !important;
+                height: 36px !important;
+            }
+
+            .card-usuario h3 {
+                font-size: 13px !important;
+            }
+
+            .card-usuario p {
+                font-size: 10px !important;
+            }
+
+            #formNuevoUsuario {
+                grid-template-columns: 1fr !important;
+                gap: 10px !important;
+            }
+
+            #formNuevoUsuario input, #formNuevoUsuario select {
+                font-size: 13px !important;
+                padding: 10px !important;
+                border-radius: 8px !important;
+            }
+
+            #formNuevoUsuario button {
+                font-size: 11px !important;
+                padding: 10px !important;
+                border-radius: 10px !important;
+            }
+
+            .modal-content {
+                padding: 12px !important;
+                border-radius: 20px !important;
+            }
+
+            .modal-content h3 {
+                font-size: 16px !important;
+                margin-bottom: 12px !important;
+            }
+
+            .modal-content input, .modal-content select {
+                padding: 10px !important;
+                font-size: 13px !important;
+                border-radius: 8px !important;
+            }
+
+            .modal-content button {
+                padding: 10px !important;
+                font-size: 11px !important;
+                border-radius: 10px !important;
+            }
+
+            .dialog-confirmar {
+                padding: 16px !important;
+            }
+
+            .dialog-confirmar h3 {
+                font-size: 16px !important;
+                margin-bottom: 12px !important;
+            }
+
+            .dialog-confirmar p {
+                font-size: 11px !important;
+                margin-bottom: 12px !important;
+            }
+
+            .dialog-confirmar button {
+                font-size: 11px !important;
+                padding: 10px !important;
+                border-radius: 8px !important;
+            }
+
+            .back-btn {
+                padding: 6px 12px;
+                font-size: 11px;
+                margin-bottom: 12px;
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body id="body-app" class="bg-gray-950 text-white font-sans min-h-screen pb-20 transition-all duration-300">
 
     <!-- NAVBAR -->
     <nav class="header-modern sticky top-0 z-40 backdrop-blur-xl bg-opacity-90">
-        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-            <div class="flex gap-8">
-                <a href="index.html" class="py-4 font-bold uppercase text-sm hover:text-blue-400 transition">Mis Clientes</a>
-                <button class="py-4 font-bold uppercase text-sm border-b-2 border-blue-500 text-blue-500">Gestionar Equipo</button>
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center flex-wrap gap-2">
+            <div class="flex gap-4 sm:gap-8 flex-wrap">
+                <a href="index.html" class="py-4 font-bold uppercase text-xs sm:text-sm hover:text-blue-400 transition">Mis Clientes</a>
+                <button class="py-4 font-bold uppercase text-xs sm:text-sm border-b-2 border-blue-500 text-blue-500">Equipo</button>
+                <a href="reporte.html" class="py-4 font-bold uppercase text-xs sm:text-sm hover:text-blue-400 transition hidden sm:block">Reportes</a>
             </div>
             <div class="flex items-center gap-4">
-                <span id="info-sesion" class="text-xs text-gray-400 font-semibold"></span>
+                <span id="info-sesion" class="text-[10px] sm:text-xs text-gray-400 font-semibold hidden sm:inline"></span>
                 
                 <!-- THEME TOGGLE -->
                 <button onclick="toggleTheme()" class="theme-toggle" title="Cambiar tema">
@@ -365,79 +607,79 @@
                     <span class="light-icon">☀️</span>
                 </button>
                 
-                <button onclick="logout()" class="text-red-400 font-bold text-xs uppercase border border-red-500/50 px-4 py-2 rounded-xl hover:bg-red-500/10 transition">Salir</button>
+                <button onclick="logout()" class="text-red-400 font-bold text-xs uppercase border border-red-500/50 px-2 sm:px-4 py-2 rounded-xl hover:bg-red-500/10 transition">Salir</button>
             </div>
         </div>
     </nav>
 
     <div class="container mx-auto px-4 py-8">
-        <!-- HEADER -->
-        <header class="mb-10" id="header-principal">
-            <h1 id="titulo-gestion" class="text-4xl font-black text-blue-400 uppercase tracking-tight">Gestionar Equipo</h1>
-            <p class="text-sm text-gray-500 mt-2">Administra los usuarios y vendedores de tu equipo</p>
+        <!-- HEADER PRINCIPAL -->
+        <header id="header-principal" class="mb-10">
+            <h1 id="titulo-gestion" class="text-3xl sm:text-4xl font-black text-blue-400 uppercase tracking-tight">Gestionar Equipo</h1>
+            <p class="text-xs sm:text-sm text-gray-500 mt-2">Administra los usuarios y vendedores de tu equipo</p>
         </header>
 
         <!-- HEADER CLIENTES DEL VENDEDOR -->
         <header id="header-clientes" class="mb-10 hidden">
-            <button onclick="volverAEquipo()" class="back-btn mb-4">← VOLVER</button>
-            <h1 id="titulo-clientes-vendedor" class="text-4xl font-black text-blue-400 uppercase tracking-tight">Clientes de Usuario</h1>
-            <p id="info-clientes-vendedor" class="text-sm text-gray-500 mt-2"></p>
+            <button onclick="volverAEquipo()" class="back-btn mb-4 w-full sm:w-auto">← VOLVER</button>
+            <h1 id="titulo-clientes-vendedor" class="text-3xl sm:text-4xl font-black text-blue-400 uppercase tracking-tight">Clientes</h1>
+            <p id="info-clientes-vendedor" class="text-xs sm:text-sm text-gray-500 mt-2"></p>
         </header>
 
         <!-- ESTADÍSTICAS -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8" id="estadisticas">
-            <div class="stat-card p-6 rounded-2xl text-center">
+        <div id="estadisticas" class="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-4 mb-8">
+            <div class="stat-card p-4 sm:p-6 rounded-2xl text-center">
                 <p class="text-xs uppercase font-bold text-blue-400 opacity-80 mb-2">Total de Usuarios</p>
-                <h2 id="count-total" class="text-4xl font-black text-blue-400">0</h2>
+                <h2 id="count-total" class="text-3xl sm:text-4xl font-black text-blue-400">0</h2>
             </div>
-            <div class="stat-card p-6 rounded-2xl text-center">
+            <div class="stat-card p-4 sm:p-6 rounded-2xl text-center">
                 <p class="text-xs uppercase font-bold text-purple-400 opacity-80 mb-2">Revendedores</p>
-                <h2 id="count-revendedores" class="text-4xl font-black text-purple-400">0</h2>
+                <h2 id="count-revendedores" class="text-3xl sm:text-4xl font-black text-purple-400">0</h2>
             </div>
-            <div class="stat-card p-6 rounded-2xl text-center">
+            <div class="stat-card p-4 sm:p-6 rounded-2xl text-center">
                 <p class="text-xs uppercase font-bold text-green-400 opacity-80 mb-2">Vendedores</p>
-                <h2 id="count-vendedores" class="text-4xl font-black text-green-400">0</h2>
+                <h2 id="count-vendedores" class="text-3xl sm:text-4xl font-black text-green-400">0</h2>
             </div>
         </div>
 
         <!-- FORMULARIO NUEVO USUARIO -->
-        <div class="bg-gray-800 border border-gray-700 p-8 rounded-3xl mb-8 shadow-lg" id="seccion-form">
-            <h2 class="text-2xl font-black text-blue-400 uppercase mb-6 tracking-tight">➕ Crear Nuevo Acceso</h2>
+        <div class="bg-gray-800 border border-gray-700 p-4 sm:p-8 rounded-3xl mb-8 shadow-lg" id="seccion-form">
+            <h2 class="text-xl sm:text-2xl font-black text-blue-400 uppercase mb-6 tracking-tight">➕ Crear Nuevo Acceso</h2>
             
-            <form id="formNuevoUsuario" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+            <form id="formNuevoUsuario" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
                 <div>
                     <label class="text-xs font-bold text-blue-400 uppercase block mb-2">Usuario</label>
-                    <input type="text" id="newUsername" placeholder="Nombre de usuario" class="input-modern w-full p-4 rounded-2xl outline-none text-sm" required>
+                    <input type="text" id="newUsername" placeholder="Nombre de usuario" class="input-modern w-full p-3 sm:p-4 rounded-2xl outline-none text-sm" required>
                 </div>
                 <div>
                     <label class="text-xs font-bold text-blue-400 uppercase block mb-2">Contraseña</label>
-                    <input type="password" id="newPassword" placeholder="Contraseña" class="input-modern w-full p-4 rounded-2xl outline-none text-sm" required>
+                    <input type="password" id="newPassword" placeholder="Contraseña" class="input-modern w-full p-3 sm:p-4 rounded-2xl outline-none text-sm" required>
                 </div>
                 <div>
                     <label class="text-xs font-bold text-blue-400 uppercase block mb-2">Rol</label>
-                    <select id="newRol" class="input-modern w-full p-4 rounded-2xl outline-none text-sm font-bold uppercase" required></select>
+                    <select id="newRol" class="input-modern w-full p-3 sm:p-4 rounded-2xl outline-none text-sm font-bold uppercase" required></select>
                 </div>
                 <div>
                     <label class="text-xs font-bold text-blue-400 uppercase block mb-2">Vencimiento</label>
-                    <input type="date" id="newVencimiento" class="input-modern w-full p-4 rounded-2xl outline-none text-sm" required>
+                    <input type="date" id="newVencimiento" class="input-modern w-full p-3 sm:p-4 rounded-2xl outline-none text-sm" required>
                 </div>
-                <button type="submit" class="btn-primary font-bold rounded-2xl uppercase text-sm self-end py-4 shadow-lg transition-transform">
-                    ✓ Crear Acceso
+                <button type="submit" class="btn-primary font-bold rounded-2xl uppercase text-xs sm:text-sm self-end py-3 sm:py-4 shadow-lg transition-transform">
+                    ✓ Crear
                 </button>
             </form>
         </div>
 
         <!-- LISTA DE USUARIOS -->
         <div id="seccion-usuarios">
-            <h2 class="text-2xl font-black text-blue-400 uppercase mb-6 tracking-tight">Equipo de Usuarios</h2>
-            <div id="lista-usuarios-sistema" class="grid gap-4"></div>
+            <h2 class="text-xl sm:text-2xl font-black text-blue-400 uppercase mb-6 tracking-tight">Equipo de Usuarios</h2>
+            <div id="lista-usuarios-sistema" class="grid gap-3 sm:gap-4"></div>
         </div>
 
         <!-- LISTA DE CLIENTES DEL VENDEDOR -->
         <div id="seccion-clientes-vendedor" class="hidden">
-            <h2 class="text-2xl font-black text-blue-400 uppercase mb-6 tracking-tight">Clientes Registrados</h2>
-            <input type="text" id="buscar-cliente" placeholder="🔍 Buscar cliente..." class="w-full input-modern p-4 rounded-2xl outline-none text-sm mb-6" onkeyup="filtrarClientesVendedor()">
-            <div id="lista-clientes-vendedor" class="grid gap-4"></div>
+            <h2 class="text-xl sm:text-2xl font-black text-blue-400 uppercase mb-6 tracking-tight">Clientes Registrados</h2>
+            <input type="text" id="buscar-cliente" placeholder="🔍 Buscar cliente..." class="w-full input-modern p-4 rounded-2xl outline-none text-sm mb-6">
+            <div id="lista-clientes-vendedor" class="grid gap-3 sm:gap-4"></div>
         </div>
     </div>
 
@@ -445,7 +687,7 @@
     <div id="modalEditar" class="fixed inset-0 bg-black/80 modal-backdrop hidden flex items-center justify-center p-4 z-50">
         <div class="bg-gray-800 border border-gray-700 w-full max-w-md rounded-3xl p-8 shadow-2xl overflow-y-auto max-h-[95vh] modal-content">
             <div class="flex justify-between items-center mb-6">
-                <h3 class="text-2xl font-black uppercase text-blue-400 tracking-tight">Editar Usuario</h3>
+                <h3 class="text-xl sm:text-2xl font-black uppercase text-blue-400 tracking-tight">Editar Usuario</h3>
                 <button onclick="cerrarModalEditar()" class="text-gray-500 hover:text-white text-3xl transition">✕</button>
             </div>
             
@@ -454,23 +696,23 @@
 
                 <div>
                     <label class="text-xs font-bold text-blue-400 uppercase block mb-2">Usuario</label>
-                    <input type="text" id="edit-username" class="input-modern w-full p-3 rounded-2xl outline-none text-sm" disabled>
+                    <input type="text" id="edit-username" class="input-modern w-full p-3 sm:p-4 rounded-2xl outline-none text-sm" disabled>
                 </div>
 
                 <div>
-                    <label class="text-xs font-bold text-blue-400 uppercase block mb-2">Nueva Contraseña (dejar en blanco para no cambiar)</label>
-                    <input type="password" id="edit-password" class="input-modern w-full p-3 rounded-2xl outline-none text-sm" placeholder="••••••••">
+                    <label class="text-xs font-bold text-blue-400 uppercase block mb-2">Nueva Contraseña</label>
+                    <input type="password" id="edit-password" class="input-modern w-full p-3 sm:p-4 rounded-2xl outline-none text-sm" placeholder="Dejar en blanco para no cambiar">
                 </div>
 
                 <div>
                     <label class="text-xs font-bold text-blue-400 uppercase block mb-2">Vencimiento</label>
-                    <input type="date" id="edit-vencimiento" class="input-modern w-full p-3 rounded-2xl outline-none text-sm">
+                    <input type="date" id="edit-vencimiento" class="input-modern w-full p-3 sm:p-4 rounded-2xl outline-none text-sm">
                 </div>
 
                 <div class="flex items-center justify-between bg-gray-900 p-4 rounded-2xl border border-gray-700">
                     <div>
                         <p class="text-xs font-bold text-blue-400 uppercase">Estado del Acceso</p>
-                        <p class="text-xs text-gray-400 mt-1">Habilitar o deshabilitar acceso</p>
+                        <p class="text-xs text-gray-400 mt-1">Habilitar o deshabilitar</p>
                     </div>
                     <label class="toggle-switch">
                         <input type="checkbox" id="edit-activo">
@@ -478,11 +720,11 @@
                     </label>
                 </div>
 
-                <div class="flex gap-3 pt-4">
-                    <button type="submit" class="flex-1 btn-primary py-3 rounded-2xl font-bold uppercase text-sm shadow-lg transition">
+                <div class="flex flex-col sm:flex-row gap-3 pt-4">
+                    <button type="submit" class="flex-1 btn-primary py-3 sm:py-4 rounded-2xl font-bold uppercase text-sm shadow-lg transition">
                         ✓ GUARDAR
                     </button>
-                    <button type="button" onclick="cerrarModalEditar()" class="flex-1 bg-gray-700 hover:bg-gray-600 py-3 rounded-2xl font-bold uppercase text-sm">
+                    <button type="button" onclick="cerrarModalEditar()" class="flex-1 bg-gray-700 hover:bg-gray-600 py-3 sm:py-4 rounded-2xl font-bold uppercase text-sm">
                         CANCELAR
                     </button>
                 </div>
@@ -492,12 +734,12 @@
 
     <!-- MODAL CONFIRMAR ELIMINACIÓN -->
     <div id="modalConfirmar" class="fixed inset-0 bg-black/80 dialog-confirmar hidden flex items-center justify-center p-4 z-50">
-        <div class="bg-gray-800 border border-gray-700 rounded-3xl p-8 shadow-2xl max-w-sm modal-content">
-            <h3 class="text-2xl font-bold text-red-400 mb-4">⚠️ Confirmar Eliminación</h3>
-            <p class="text-gray-300 mb-6">¿Estás seguro de que deseas revocar acceso a <span id="nombre-usuario-confirmar" class="font-bold text-white"></span>? Esta acción no se puede deshacer.</p>
-            <div class="flex gap-4">
-                <button onclick="confirmarEliminar()" class="flex-1 delete-btn py-3 rounded-xl font-bold uppercase text-white">REVOCAR</button>
-                <button onclick="cerrarConfirmar()" class="flex-1 bg-gray-700 hover:bg-gray-600 py-3 rounded-xl font-bold uppercase">CANCELAR</button>
+        <div class="bg-gray-800 border border-gray-700 rounded-3xl p-8 shadow-2xl max-w-sm modal-content w-full">
+            <h3 class="text-xl sm:text-2xl font-bold text-red-400 mb-4">⚠️ Confirmar Eliminación</h3>
+            <p class="text-gray-300 mb-6 text-sm sm:text-base">¿Estás seguro de que deseas revocar acceso a <span id="nombre-usuario-confirmar" class="font-bold text-white"></span>?</p>
+            <div class="flex flex-col sm:flex-row gap-4">
+                <button onclick="confirmarEliminar()" class="flex-1 delete-btn py-3 rounded-xl font-bold uppercase text-white text-sm">REVOCAR</button>
+                <button onclick="cerrarConfirmar()" class="flex-1 bg-gray-700 hover:bg-gray-600 py-3 rounded-xl font-bold uppercase text-sm">CANCELAR</button>
             </div>
         </div>
     </div>
@@ -588,8 +830,8 @@
             if (!data || data.length === 0) {
                 cont.innerHTML = `
                     <div class="empty-state col-span-full">
-                        <p class="text-xl font-bold mb-2">No hay usuarios para mostrar</p>
-                        <p class="text-sm">Crea un nuevo acceso para tu equipo</p>
+                        <p class="text-lg sm:text-xl font-bold mb-2">No hay usuarios</p>
+                        <p class="text-xs sm:text-sm">Crea un nuevo acceso para tu equipo</p>
                     </div>
                 `;
                 actualizarEstadisticas(0, 0, 0);
@@ -608,36 +850,33 @@
                 const venciEn = u.vencimiento_acceso ? Math.ceil((new Date(u.vencimiento_acceso) - new Date()) / (1000 * 60 * 60 * 24)) : null;
                 const venciColor = venciEn !== null && venciEn <= 7 && venciEn > 0 ? 'text-yellow-400' : venciEn !== null && venciEn <= 0 ? 'text-red-400' : 'text-green-400';
                 
-                // Contar clientes del usuario
                 const clientesDelUsuario = todosLosClientes.filter(c => c.creado_por === u.id);
                 
                 cont.innerHTML += `
-                    <div class="bg-gray-800 border border-gray-700 p-6 rounded-2xl card-usuario shadow-lg hover:shadow-2xl ${isDisabled ? 'user-disabled' : ''}" onclick="verClientesVendedor(${JSON.stringify(u).replace(/"/g, '&quot;')})">
-                        <div class="flex justify-between items-start mb-4">
-                            <div class="flex items-start gap-4 flex-1">
-                                <div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl bg-gray-900 border border-gray-700">
-                                    ${config.icon}
-                                </div>
-                                <div class="flex-1">
-                                    <h3 class="font-black text-lg uppercase italic leading-tight">${u.username}</h3>
-                                    <div class="space-y-2 mt-2">
-                                        <span class="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase ${config.bg} ${config.text}">
-                                            ${u.rol}
-                                        </span>
-                                        ${isDisabled ? '<span class="disabled-badge ml-2">🔒 Deshabilitado</span>' : ''}
-                                        <p class="text-xs text-gray-400 mt-1">📅 Vence: <span class="${venciColor}">${u.vencimiento_acceso ? u.vencimiento_acceso + ' (' + venciEn + ' días)' : 'Sin fecha'}</span></p>
-                                        <p class="text-xs text-blue-400 font-bold mt-1">👥 ${clientesDelUsuario.length} cliente${clientesDelUsuario.length !== 1 ? 's' : ''}</p>
-                                    </div>
+                    <div class="bg-gray-800 border border-gray-700 p-4 sm:p-6 rounded-2xl card-usuario shadow-lg hover:shadow-2xl ${isDisabled ? 'user-disabled' : ''}" onclick="verClientesVendedor(${JSON.stringify(u).replace(/"/g, '&quot;')})">
+                        <div class="flex items-start gap-3 sm:gap-4 flex-1 mb-4">
+                            <div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl bg-gray-900 border border-gray-700">
+                                ${config.icon}
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="font-black text-sm sm:text-lg uppercase italic leading-tight">${u.username}</h3>
+                                <div class="space-y-2 mt-2">
+                                    <span class="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase ${config.bg} ${config.text}">
+                                        ${u.rol}
+                                    </span>
+                                    ${isDisabled ? '<span class="disabled-badge ml-2">🔒 Deshabilitado</span>' : ''}
+                                    <p class="text-xs text-gray-400 mt-1">📅 Vence: <span class="${venciColor}">${u.vencimiento_acceso ? u.vencimiento_acceso + ' (' + venciEn + 'd)' : 'Sin fecha'}</span></p>
+                                    <p class="text-xs text-blue-400 font-bold mt-1">👥 ${clientesDelUsuario.length} cliente${clientesDelUsuario.length !== 1 ? 's' : ''}</p>
                                 </div>
                             </div>
-                            <div class="flex gap-2 flex-col">
-                                <button onclick="event.stopPropagation(); abrirModalEditar(${JSON.stringify(u).replace(/"/g, '&quot;')})" class="btn-action edit-btn text-white py-2 px-3 rounded-xl font-bold text-sm transition-all" title="Editar usuario">
-                                    ✏️
-                                </button>
-                                <button onclick="event.stopPropagation(); abrirConfirmarEliminar(${JSON.stringify(u).replace(/"/g, '&quot;')})" class="btn-action delete-btn text-white py-2 px-3 rounded-xl font-bold text-sm transition-all" title="Eliminar usuario">
-                                    🗑️
-                                </button>
-                            </div>
+                        </div>
+                        <div class="flex flex-col sm:flex-row gap-2">
+                            <button onclick="event.stopPropagation(); abrirModalEditar(${JSON.stringify(u).replace(/"/g, '&quot;')})" class="btn-action edit-btn text-white py-2 px-3 rounded-xl font-bold text-sm transition-all flex-1" title="Editar usuario">
+                                ✏️ Editar
+                            </button>
+                            <button onclick="event.stopPropagation(); abrirConfirmarEliminar(${JSON.stringify(u).replace(/"/g, '&quot;')})" class="btn-action delete-btn text-white py-2 px-3 rounded-xl font-bold text-sm transition-all flex-1" title="Eliminar usuario">
+                                🗑️ Eliminar
+                            </button>
                         </div>
                     </div>`;
             });
@@ -685,8 +924,8 @@
             if (clientesVendedorActual.length === 0) {
                 cont.innerHTML = `
                     <div class="empty-state col-span-full">
-                        <p class="text-xl font-bold mb-2">No hay clientes registrados</p>
-                        <p class="text-sm">Este vendedor aún no tiene clientes asignados</p>
+                        <p class="text-lg sm:text-xl font-bold mb-2">No hay clientes</p>
+                        <p class="text-xs sm:text-sm">Este vendedor aún no tiene clientes asignados</p>
                     </div>
                 `;
                 return;
@@ -705,23 +944,23 @@
                 }
                 
                 cont.innerHTML += `
-                    <div class="bg-gray-800 border border-gray-700 p-4 rounded-2xl card-cliente shadow-lg">
-                        <div class="flex justify-between items-start">
-                            <div class="flex items-start gap-3 flex-1">
+                    <div class="bg-gray-800 border border-gray-700 p-3 sm:p-4 rounded-2xl card-cliente shadow-lg">
+                        <div class="flex justify-between items-start gap-3">
+                            <div class="flex items-start gap-2 sm:gap-3 flex-1">
                                 <div class="w-10 h-10 bg-gray-900 rounded-lg flex items-center justify-center border border-gray-700 flex-shrink-0">
                                     <img src="${config ? config.logo : ''}" class="w-5 h-5 object-contain">
                                 </div>
-                                <div class="flex-1">
-                                    <h3 class="font-bold text-sm uppercase">${c.nombre_apellido}</h3>
-                                    <p class="text-[9px] text-gray-400 mt-1">📱 ${c.usuario} • 📍 ${c.ciudad}</p>
-                                    <p class="text-[9px] text-gray-500 mt-1">📺 ${c.app_instalada} • 💰 $${parseFloat(c.precio).toFixed(2)}</p>
+                                <div class="flex-1 min-w-0">
+                                    <h3 class="font-bold text-sm uppercase truncate">${c.nombre_apellido}</h3>
+                                    <p class="text-[8px] sm:text-[9px] text-gray-400 mt-1 truncate">📱 ${c.usuario} • 📍 ${c.ciudad}</p>
+                                    <p class="text-[8px] sm:text-[9px] text-gray-500 mt-1">📺 ${c.app_instalada} • 💰 $${parseFloat(c.precio).toFixed(2)}</p>
                                 </div>
                             </div>
                             <div class="text-right flex-shrink-0">
-                                <div class="text-xl font-black ${d <= 0 ? 'text-red-500' : d <= 7 ? 'text-yellow-400' : 'text-green-400'}">
+                                <div class="text-lg sm:text-xl font-black ${d <= 0 ? 'text-red-500' : d <= 7 ? 'text-yellow-400' : 'text-green-400'}">
                                     ${d}
                                 </div>
-                                <span class="estado-badge ${estadoBadge}">${d <= 0 ? 'Vencido' : d + ' días'}</span>
+                                <span class="estado-badge ${estadoBadge}">${d <= 0 ? 'Venc' : d + 'd'}</span>
                             </div>
                         </div>
                     </div>`;
@@ -742,8 +981,8 @@
             if (filtrados.length === 0) {
                 cont.innerHTML = `
                     <div class="empty-state col-span-full">
-                        <p class="text-xl font-bold mb-2">No hay resultados</p>
-                        <p class="text-sm">No se encontraron clientes con esos criterios</p>
+                        <p class="text-lg sm:text-xl font-bold mb-2">No hay resultados</p>
+                        <p class="text-xs sm:text-sm">No se encontraron clientes</p>
                     </div>
                 `;
                 return;
@@ -762,23 +1001,23 @@
                 }
                 
                 cont.innerHTML += `
-                    <div class="bg-gray-800 border border-gray-700 p-4 rounded-2xl card-cliente shadow-lg">
-                        <div class="flex justify-between items-start">
-                            <div class="flex items-start gap-3 flex-1">
+                    <div class="bg-gray-800 border border-gray-700 p-3 sm:p-4 rounded-2xl card-cliente shadow-lg">
+                        <div class="flex justify-between items-start gap-3">
+                            <div class="flex items-start gap-2 sm:gap-3 flex-1">
                                 <div class="w-10 h-10 bg-gray-900 rounded-lg flex items-center justify-center border border-gray-700 flex-shrink-0">
                                     <img src="${config ? config.logo : ''}" class="w-5 h-5 object-contain">
                                 </div>
-                                <div class="flex-1">
-                                    <h3 class="font-bold text-sm uppercase">${c.nombre_apellido}</h3>
-                                    <p class="text-[9px] text-gray-400 mt-1">📱 ${c.usuario} • 📍 ${c.ciudad}</p>
-                                    <p class="text-[9px] text-gray-500 mt-1">📺 ${c.app_instalada} • 💰 $${parseFloat(c.precio).toFixed(2)}</p>
+                                <div class="flex-1 min-w-0">
+                                    <h3 class="font-bold text-sm uppercase truncate">${c.nombre_apellido}</h3>
+                                    <p class="text-[8px] sm:text-[9px] text-gray-400 mt-1 truncate">📱 ${c.usuario} • 📍 ${c.ciudad}</p>
+                                    <p class="text-[8px] sm:text-[9px] text-gray-500 mt-1">📺 ${c.app_instalada} • 💰 $${parseFloat(c.precio).toFixed(2)}</p>
                                 </div>
                             </div>
                             <div class="text-right flex-shrink-0">
-                                <div class="text-xl font-black ${d <= 0 ? 'text-red-500' : d <= 7 ? 'text-yellow-400' : 'text-green-400'}">
+                                <div class="text-lg sm:text-xl font-black ${d <= 0 ? 'text-red-500' : d <= 7 ? 'text-yellow-400' : 'text-green-400'}">
                                     ${d}
                                 </div>
-                                <span class="estado-badge ${estadoBadge}">${d <= 0 ? 'Vencido' : d + ' días'}</span>
+                                <span class="estado-badge ${estadoBadge}">${d <= 0 ? 'Venc' : d + 'd'}</span>
                             </div>
                         </div>
                     </div>`;
@@ -830,7 +1069,7 @@
             } else {
                 cerrarModalEditar();
                 cargarUsuariosSistema();
-                alert("Usuario actualizado exitosamente ✓");
+                alert("Usuario actualizado ✓");
             }
         };
 
@@ -849,11 +1088,11 @@
             const { error } = await supabaseClient.from('usuarios_sistema').insert([newUser]);
             
             if (error) {
-                alert("Error al crear usuario: " + error.message);
+                alert("Error al crear: " + error.message);
             } else {
                 document.getElementById('formNuevoUsuario').reset();
                 cargarUsuariosSistema();
-                alert("Usuario creado exitosamente ✓");
+                alert("Usuario creado ✓");
             }
         };
 
