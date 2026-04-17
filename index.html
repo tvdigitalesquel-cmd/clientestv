@@ -85,8 +85,8 @@
             position: relative;
             overflow: hidden;
             cursor: pointer;
-            background: linear-gradient(135deg, rgba(30, 58, 138, 0.6) 0%, rgba(15, 23, 42, 0.8) 100%);
-            border: 1px solid rgba(59, 130, 246, 0.3);
+            background: linear-gradient(135deg, rgba(51, 65, 85, 0.8) 0%, rgba(30, 41, 59, 0.9) 100%);
+            border: 1px solid rgba(148, 163, 184, 0.3);
             border-radius: 16px;
             padding: 0;
             display: flex;
@@ -100,16 +100,16 @@
             left: 0;
             right: 0;
             height: 4px;
-            background: linear-gradient(90deg, #3b82f6, #2563eb);
+            background: linear-gradient(90deg, #8b5cf6, #7c3aed);
             opacity: 0;
             transition: opacity 0.3s ease;
         }
 
         .card-cliente:hover {
             transform: translateY(-8px);
-            border-color: rgba(59, 130, 246, 0.6);
-            box-shadow: 0 25px 50px rgba(59, 130, 246, 0.3);
-            background: linear-gradient(135deg, rgba(30, 58, 138, 0.8) 0%, rgba(15, 23, 42, 0.95) 100%);
+            border-color: rgba(148, 163, 184, 0.5);
+            box-shadow: 0 25px 50px rgba(139, 92, 246, 0.3);
+            background: linear-gradient(135deg, rgba(51, 65, 85, 0.95) 0%, rgba(30, 41, 59, 1) 100%);
         }
 
         .card-cliente:hover::before {
@@ -118,7 +118,7 @@
 
         .card-cliente.alerta-vencimiento {
             border-color: #ef4444;
-            background: linear-gradient(135deg, rgba(127, 29, 29, 0.4) 0%, rgba(15, 23, 42, 0.8) 100%);
+            background: linear-gradient(135deg, rgba(127, 29, 29, 0.4) 0%, rgba(30, 41, 59, 0.8) 100%);
         }
 
         .card-cliente.alerta-vencimiento::before {
@@ -130,7 +130,7 @@
         /* CONTENIDO DE LA TARJETA */
         .card-header {
             padding: 20px;
-            border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+            border-bottom: 1px solid rgba(148, 163, 184, 0.2);
             display: flex;
             align-items: center;
             gap: 16px;
@@ -140,8 +140,8 @@
             width: 80px;
             height: 80px;
             border-radius: 12px;
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.3) 0%, rgba(37, 99, 235, 0.2) 100%);
-            border: 1px solid rgba(59, 130, 246, 0.4);
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.3) 0%, rgba(124, 58, 237, 0.2) 100%);
+            border: 1px solid rgba(139, 92, 246, 0.4);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -170,7 +170,7 @@
 
         .card-subtitle {
             font-size: 12px;
-            color: #93c5fd;
+            color: #cbd5e1;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -179,7 +179,7 @@
 
         .card-meta {
             font-size: 11px;
-            color: #60a5fa;
+            color: #a1a5b0;
             display: flex;
             align-items: center;
             gap: 6px;
@@ -218,8 +218,8 @@
         .card-dias {
             text-align: center;
             padding: 8px;
-            background: rgba(30, 58, 138, 0.3);
-            border-left: 1px solid rgba(59, 130, 246, 0.2);
+            background: rgba(139, 92, 246, 0.1);
+            border-left: 1px solid rgba(139, 92, 246, 0.2);
         }
 
         .card-dias-numero {
@@ -230,14 +230,14 @@
 
         .card-dias-texto {
             font-size: 10px;
-            color: #93c5fd;
+            color: #cbd5e1;
             margin-top: 4px;
             text-transform: uppercase;
         }
 
         .card-footer {
             padding: 12px 16px;
-            border-top: 1px solid rgba(59, 130, 246, 0.2);
+            border-top: 1px solid rgba(148, 163, 184, 0.2);
             display: flex;
             gap: 6px;
         }
@@ -271,15 +271,15 @@
         }
 
         .btn-edit {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(37, 99, 235, 0.1) 100%);
-            color: #60a5fa;
-            border: 1px solid rgba(59, 130, 246, 0.3);
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(124, 58, 237, 0.1) 100%);
+            color: #c4b5fd;
+            border: 1px solid rgba(139, 92, 246, 0.3);
         }
 
         .btn-edit:hover {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.4) 0%, rgba(37, 99, 235, 0.2) 100%);
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.4) 0%, rgba(124, 58, 237, 0.2) 100%);
             transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(59, 130, 246, 0.2);
+            box-shadow: 0 8px 16px rgba(139, 92, 246, 0.2);
         }
 
         .btn-delete {
@@ -312,24 +312,28 @@
         }
         
         html.light-mode .header-modern {
-            background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 50%, #f0f4ff 100%);
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 50%, #1e40af 100%);
             border-bottom: 1px solid rgba(59, 130, 246, 0.3);
         }
         
         .stat-card {
-            background: linear-gradient(135deg, rgba(30, 58, 138, 0.4) 0%, rgba(15, 23, 42, 0.6) 100%);
-            border: 1px solid rgba(59, 130, 246, 0.3);
+            background: linear-gradient(135deg, rgba(51, 65, 85, 0.4) 0%, rgba(30, 41, 59, 0.6) 100%);
+            border: 1px solid rgba(148, 163, 184, 0.3);
             transition: all 0.3s ease;
         }
         .stat-card:hover {
-            border-color: rgba(59, 130, 246, 0.6);
-            background: linear-gradient(135deg, rgba(30, 58, 138, 0.6) 0%, rgba(15, 23, 42, 0.8) 100%);
+            border-color: rgba(148, 163, 184, 0.6);
+            background: linear-gradient(135deg, rgba(51, 65, 85, 0.6) 0%, rgba(30, 41, 59, 0.8) 100%);
             transform: translateY(-2px);
         }
         
         html.light-mode .stat-card {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(99, 102, 241, 0.05) 100%);
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(99, 102, 241, 0.08) 100%);
             border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+        
+        html.light-mode .stat-card:hover {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(99, 102, 241, 0.15) 100%);
         }
         
         .btn-primary {
@@ -344,37 +348,41 @@
         .btn-primary:active { transform: scale(0.98); }
         
         .input-modern {
-            background: rgba(30, 58, 138, 0.3);
+            background: rgba(51, 65, 85, 0.3);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(59, 130, 246, 0.3);
+            border: 1px solid rgba(148, 163, 184, 0.3);
             transition: all 0.3s ease;
-            color: #e0f2fe;
+            color: #e2e8f0;
         }
         .input-modern:focus {
-            border-color: rgba(59, 130, 246, 0.6);
-            background: rgba(30, 58, 138, 0.5);
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+            border-color: rgba(139, 92, 246, 0.6);
+            background: rgba(51, 65, 85, 0.5);
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
         }
         
         .input-modern::placeholder {
-            color: #7dd3fc;
+            color: #cbd5e1;
         }
         
         html.light-mode .input-modern {
-            background: rgba(249, 250, 251, 0.8);
-            border: 1px solid rgba(59, 130, 246, 0.2);
+            background: rgba(249, 250, 251, 0.9);
+            border: 1px solid rgba(59, 130, 246, 0.3);
             color: #1f2937;
         }
         
         html.light-mode .input-modern:focus {
             border-color: rgba(59, 130, 246, 0.6);
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        html.light-mode .input-modern::placeholder {
+            color: #9ca3af;
         }
         
         .empty-state {
             text-align: center;
             padding: 60px 20px;
-            color: #7dd3fc;
+            color: #cbd5e1;
         }
         
         .dialog-confirmar {
@@ -437,54 +445,93 @@
             opacity: 0.3;
         }
 
+        /* LIGHT MODE BODY */
         html.light-mode {
-            background-color: #f3f4f6;
+            background: linear-gradient(135deg, #e0f2fe 0%, #f0f4f8 50%, #e8ecf1 100%);
             color: #1f2937;
         }
         
         html.light-mode body {
-            background-color: #f3f4f6 !important;
+            background: linear-gradient(135deg, #e0f2fe 0%, #f0f4f8 50%, #e8ecf1 100%) !important;
             color: #1f2937 !important;
         }
-        
-        html.light-mode .bg-gray-950 {
-            background-color: #f3f4f6 !important;
+
+        /* LIGHT MODE CARDS */
+        html.light-mode .card-cliente {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid rgba(59, 130, 246, 0.2);
         }
-        
-        html.light-mode .bg-gray-900 {
-            background-color: #ffffff !important;
+
+        html.light-mode .card-cliente:hover {
+            border-color: rgba(59, 130, 246, 0.4);
+            box-shadow: 0 25px 50px rgba(59, 130, 246, 0.15);
         }
-        
-        html.light-mode .bg-gray-800 {
-            background-color: #f9fafb !important;
+
+        html.light-mode .card-header {
+            border-bottom: 1px solid rgba(59, 130, 246, 0.1);
         }
-        
-        html.light-mode .border-gray-700 {
-            border-color: rgba(59, 130, 246, 0.1) !important;
+
+        html.light-mode .card-title {
+            color: #1e3a8a;
         }
-        
-        html.light-mode .text-white {
-            color: #1f2937 !important;
+
+        html.light-mode .card-subtitle {
+            color: #3b82f6;
         }
-        
-        html.light-mode .text-gray-300 {
-            color: #4b5563 !important;
+
+        html.light-mode .card-meta {
+            color: #60a5fa;
         }
-        
-        html.light-mode .text-gray-400 {
-            color: #6b7280 !important;
+
+        html.light-mode .card-dias {
+            background: rgba(59, 130, 246, 0.08);
+            border-left: 1px solid rgba(59, 130, 246, 0.2);
         }
-        
-        html.light-mode .text-gray-500 {
-            color: #9ca3af !important;
+
+        html.light-mode .card-dias-texto {
+            color: #64748b;
         }
-        
-        html.light-mode .text-blue-400 {
-            color: #2563eb !important;
+
+        html.light-mode .card-footer {
+            border-top: 1px solid rgba(59, 130, 246, 0.1);
         }
-        
-        html.light-mode .text-blue-500 {
-            color: #1d4ed8 !important;
+
+        html.light-mode .card-icon {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(99, 102, 241, 0.08) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        /* LIGHT MODE MODAL */
+        html.light-mode .modal-detail-bg {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        html.light-mode .detail-row {
+            background: rgba(59, 130, 246, 0.05);
+            border: 1px solid rgba(59, 130, 246, 0.1);
+        }
+
+        html.light-mode .detail-label {
+            color: #1e40af;
+        }
+
+        html.light-mode .detail-value {
+            color: #1f2937;
+        }
+
+        html.light-mode .detail-title {
+            color: #2563eb;
+        }
+
+        html.light-mode .modal-content {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important;
+            border: 1px solid rgba(59, 130, 246, 0.2) !important;
+        }
+
+        /* DARK MODE BACKGROUND */
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #1e40af 100%);
         }
 
         /* MODAL DETALLE CLIENTE */
@@ -494,12 +541,12 @@
         }
 
         .modal-detail-bg {
-            background: linear-gradient(135deg, rgba(30, 58, 138, 0.6) 0%, rgba(15, 23, 42, 0.8) 100%);
-            border: 1px solid rgba(59, 130, 246, 0.3);
+            background: linear-gradient(135deg, rgba(48, 42, 85, 0.95) 0%, rgba(24, 18, 54, 0.95) 100%);
+            border: 1px solid rgba(139, 92, 246, 0.3);
         }
 
         .detail-section {
-            border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+            border-bottom: 1px solid rgba(139, 92, 246, 0.2);
             padding: 20px 0;
         }
 
@@ -511,7 +558,7 @@
             font-size: 12px;
             font-weight: 700;
             text-transform: uppercase;
-            color: #60a5fa;
+            color: #c4b5fd;
             letter-spacing: 1px;
             margin-bottom: 12px;
             display: flex;
@@ -525,15 +572,15 @@
             align-items: center;
             margin-bottom: 10px;
             padding: 10px;
-            background: rgba(30, 58, 138, 0.2);
+            background: rgba(139, 92, 246, 0.15);
             border-radius: 8px;
-            border: 1px solid rgba(59, 130, 246, 0.2);
+            border: 1px solid rgba(139, 92, 246, 0.2);
         }
 
         .detail-label {
             font-size: 12px;
             font-weight: 600;
-            color: #93c5fd;
+            color: #cbd5e1;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
@@ -547,9 +594,9 @@
 
         .detail-copy-btn {
             padding: 4px 8px;
-            background: rgba(59, 130, 246, 0.2);
-            border: 1px solid rgba(59, 130, 246, 0.3);
-            color: #60a5fa;
+            background: rgba(139, 92, 246, 0.2);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            color: #c4b5fd;
             border-radius: 6px;
             font-size: 11px;
             cursor: pointer;
@@ -558,7 +605,7 @@
         }
 
         .detail-copy-btn:hover {
-            background: rgba(59, 130, 246, 0.4);
+            background: rgba(139, 92, 246, 0.4);
             transform: scale(1.05);
         }
 
@@ -870,7 +917,7 @@
         }
     </style>
 </head>
-<body id="body-app" class="font-sans min-h-screen pb-20 transition-all duration-300" style="background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #1e40af 100%);">
+<body id="body-app" class="font-sans min-h-screen pb-20 transition-all duration-300">
 
     <!-- NAVBAR -->
     <nav class="header-modern sticky top-0 z-40 backdrop-blur-xl bg-opacity-90">
@@ -897,8 +944,8 @@
         <!-- HEADER -->
         <header class="flex justify-between items-center mb-10">
             <div>
-                <h1 class="text-4xl font-black text-blue-300 uppercase tracking-tight">Gestor de Clientes</h1>
-                <p class="text-sm text-blue-200 mt-2">Administra todos tus clientes en un solo lugar</p>
+                <h1 class="text-4xl font-black text-blue-300 dark:text-blue-300 uppercase tracking-tight" style="color: inherit;">Gestor de Clientes</h1>
+                <p class="text-sm dark:text-blue-200 text-blue-700 mt-2">Administra todos tus clientes en un solo lugar</p>
             </div>
             <div class="flex gap-4">
                 <a href="reporte.html" class="btn-reporte px-8 py-4 rounded-2xl font-bold shadow-lg text-sm active:scale-95 transition-transform text-white hidden md:block">
@@ -940,15 +987,15 @@
     <div id="modalCliente" class="fixed inset-0 bg-black/80 modal-backdrop hidden flex items-center justify-center p-4 z-50">
         <div class="modal-detail-bg rounded-3xl p-8 shadow-2xl overflow-y-auto max-h-[95vh] modal-content w-full max-w-2xl">
             <div class="flex justify-between items-center mb-8">
-                <h3 id="modal-titulo" class="text-3xl font-black uppercase text-blue-300 tracking-tight">Nuevo Cliente</h3>
-                <button onclick="cerrarModal()" class="text-blue-300 hover:text-white text-3xl transition">✕</button>
+                <h3 id="modal-titulo" class="text-3xl font-black uppercase text-purple-300 tracking-tight">Nuevo Cliente</h3>
+                <button onclick="cerrarModal()" class="text-purple-300 hover:text-white text-3xl transition">✕</button>
             </div>
             
             <form id="form-cliente" class="space-y-6 text-left">
                 <input type="hidden" id="cliente-id">
 
                 <div class="space-y-4">
-                    <p class="text-xs font-bold text-blue-300 uppercase tracking-wider">📋 Datos de Contacto</p>
+                    <p class="text-xs font-bold text-purple-300 uppercase tracking-wider">📋 Datos de Contacto</p>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <input type="text" id="nombre-apellido" placeholder="Nombre completo" class="input-modern p-4 rounded-2xl outline-none text-sm col-span-2" required>
                         <input type="text" id="celular-cliente" placeholder="WhatsApp (ej: 2946123456)" class="input-modern p-4 rounded-2xl outline-none text-sm" required>
@@ -957,7 +1004,7 @@
                 </div>
 
                 <div class="space-y-4">
-                    <p class="text-xs font-bold text-blue-300 uppercase tracking-wider">🔐 Credenciales de Servicio</p>
+                    <p class="text-xs font-bold text-purple-300 uppercase tracking-wider">🔐 Credenciales de Servicio</p>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <input type="text" id="usuario-tv" placeholder="Usuario TV" class="input-modern p-4 rounded-2xl outline-none text-sm" required>
                         <input type="text" id="clave-tv" placeholder="Contraseña TV" class="input-modern p-4 rounded-2xl outline-none text-sm" required>
@@ -965,18 +1012,18 @@
                 </div>
 
                 <div class="space-y-4">
-                    <p class="text-xs font-bold text-blue-300 uppercase tracking-wider">💰 Información de Pago</p>
+                    <p class="text-xs font-bold text-purple-300 uppercase tracking-wider">💰 Información de Pago</p>
                     <input type="number" id="precio-servicio" placeholder="Precio ($)" min="0" step="0.01" class="w-full input-modern p-4 rounded-2xl outline-none text-sm font-bold text-green-400" required>
                 </div>
 
                 <div class="space-y-4">
-                    <p class="text-xs font-bold text-blue-300 uppercase tracking-wider">📺 Seleccionar Aplicación</p>
+                    <p class="text-xs font-bold text-purple-300 uppercase tracking-wider">📺 Seleccionar Aplicación</p>
                     <div id="app-selector" class="grid grid-cols-4 md:grid-cols-7 gap-3"></div>
                     <input type="hidden" id="app-seleccionada" required>
                 </div>
 
                 <div class="space-y-4">
-                    <p class="text-xs font-bold text-blue-300 uppercase tracking-wider">📅 Fechas</p>
+                    <p class="text-xs font-bold text-purple-300 uppercase tracking-wider">📅 Fechas</p>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="text-xs font-bold text-green-400 block mb-1">Fecha de Pago</label>
@@ -993,7 +1040,7 @@
                     <button type="submit" class="flex-1 btn-primary py-4 rounded-2xl font-bold uppercase tracking-wider shadow-lg transition">
                         ✓ GUARDAR
                     </button>
-                    <button type="button" onclick="cerrarModal()" class="flex-1 bg-blue-700 hover:bg-blue-600 py-4 rounded-2xl font-bold uppercase tracking-wider transition text-white">
+                    <button type="button" onclick="cerrarModal()" class="flex-1 bg-purple-700 hover:bg-purple-600 py-4 rounded-2xl font-bold uppercase tracking-wider transition text-white">
                         CANCELAR
                     </button>
                 </div>
@@ -1004,12 +1051,12 @@
     <!-- MODAL VER DETALLES CLIENTE -->
     <div id="modalDetalles" class="fixed inset-0 bg-black/80 modal-backdrop hidden flex items-center justify-center p-4 z-50">
         <div class="modal-detail-bg rounded-3xl shadow-2xl modal-content modal-detail w-full max-w-2xl">
-            <div class="sticky top-0 px-8 py-6 flex justify-between items-center border-b border-blue-500/30">
+            <div class="sticky top-0 px-8 py-6 flex justify-between items-center border-b border-purple-500/30">
                 <div>
-                    <h3 id="detail-titulo" class="text-2xl font-black uppercase text-blue-300 tracking-tight">Detalles del Cliente</h3>
-                    <p id="detail-status" class="text-xs text-blue-200 mt-2"></p>
+                    <h3 id="detail-titulo" class="text-2xl font-black uppercase text-purple-300 tracking-tight">Detalles del Cliente</h3>
+                    <p id="detail-status" class="text-xs text-purple-200 mt-2"></p>
                 </div>
-                <button onclick="cerrarDetalles()" class="text-blue-300 hover:text-white text-3xl transition">✕</button>
+                <button onclick="cerrarDetalles()" class="text-purple-300 hover:text-white text-3xl transition">✕</button>
             </div>
 
             <div class="px-8 py-6">
@@ -1084,8 +1131,8 @@
                 </div>
 
                 <!-- BOTONES DE ACCIÓN -->
-                <div class="flex gap-4 pt-6 border-t border-blue-500/30">
-                    <button onclick="abrirModalEditarDeDetalles()" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white py-3 rounded-xl font-bold uppercase text-sm transition">
+                <div class="flex gap-4 pt-6 border-t border-purple-500/30">
+                    <button onclick="abrirModalEditarDeDetalles()" class="flex-1 bg-purple-600 hover:bg-purple-500 text-white py-3 rounded-xl font-bold uppercase text-sm transition">
                         ✏️ Editar Cliente
                     </button>
                     <button onclick="abrirWhatsAppDeDetalles()" class="flex-1 bg-green-600 hover:bg-green-500 text-white py-3 rounded-xl font-bold uppercase text-sm transition">
@@ -1103,10 +1150,10 @@
     <div id="modalConfirmar" class="fixed inset-0 bg-black/80 dialog-confirmar hidden flex items-center justify-center p-4 z-50">
         <div class="modal-detail-bg rounded-3xl p-8 shadow-2xl modal-content max-w-sm w-full">
             <h3 class="text-2xl font-bold text-red-400 mb-4">⚠️ Confirmar Eliminación</h3>
-            <p class="text-blue-200 mb-6">¿Estás seguro de que deseas eliminar a <span id="nombre-cliente-confirmar" class="font-bold text-white"></span>? Esta acción no se puede deshacer.</p>
+            <p class="text-purple-200 mb-6">¿Estás seguro de que deseas eliminar a <span id="nombre-cliente-confirmar" class="font-bold text-white"></span>? Esta acción no se puede deshacer.</p>
             <div class="flex gap-4">
                 <button onclick="confirmarEliminar()" class="flex-1 bg-red-600 hover:bg-red-500 py-3 rounded-xl font-bold uppercase text-white">ELIMINAR</button>
-                <button onclick="cerrarConfirmar()" class="flex-1 bg-blue-700 hover:bg-blue-600 py-3 rounded-xl font-bold uppercase text-white">CANCELAR</button>
+                <button onclick="cerrarConfirmar()" class="flex-1 bg-purple-700 hover:bg-purple-600 py-3 rounded-xl font-bold uppercase text-white">CANCELAR</button>
             </div>
         </div>
     </div>
@@ -1181,9 +1228,9 @@
             let html = '';
             for (const [name, config] of Object.entries(configApps)) {
                 html += `
-                    <div onclick="seleccionarAppModal('${name}', this)" class="app-option bg-blue-900/30 p-3 rounded-xl flex flex-col items-center gap-2 text-center">
+                    <div onclick="seleccionarAppModal('${name}', this)" class="app-option bg-purple-900/30 p-3 rounded-xl flex flex-col items-center gap-2 text-center">
                         <img src="${config.logo}" class="w-8 h-8 object-contain">
-                        <span class="text-[7px] font-black uppercase leading-tight text-blue-200">${name}</span>
+                        <span class="text-[7px] font-black uppercase leading-tight text-purple-200">${name}</span>
                     </div>
                 `;
             }
