@@ -37,6 +37,7 @@
         
         .alerta-vencimiento { animation: pulse-red 2s infinite; border-width: 2px; }
         .filtro-activo { border-color: white !important; background: linear-gradient(135deg, rgba(59, 130, 246, 0.8) 0%, rgba(37, 99, 235, 0.6) 100%); box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.4); }
+        .btn-app { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); border-width: 2px; }
         
         .app-filter {
             border: 2px solid #374151;
@@ -227,6 +228,12 @@
             padding: 60px 20px;
             color: #9ca3af;
         }
+        .empty-state svg {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 20px;
+            opacity: 0.3;
+        }
         
         .dialog-confirmar {
             animation: fadeIn 0.3s ease-out;
@@ -332,6 +339,16 @@
         
         html.light-mode .text-blue-400 {
             color: #2563eb !important;
+        }
+        
+        html.light-mode .text-blue-500 {
+            color: #1d4ed8 !important;
+        }
+
+        .card-cliente-compact {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
 
         .client-header {
@@ -495,259 +512,58 @@
 
         /* MOBILE STYLES */
         @media (max-width: 768px) {
-            .header-modern .flex {
-                flex-wrap: wrap;
-                gap: 8px;
-            }
-
-            .header-modern a, .header-modern button {
-                font-size: 10px;
-                padding: 8px 12px;
-            }
-
-            header {
-                flex-direction: column;
-                align-items: flex-start !important;
-            }
-
-            header .flex {
-                width: 100%;
-                flex-direction: column;
-            }
-
-            header button, header a {
-                width: 100%;
-            }
-
-            .stat-card {
-                padding: 16px !important;
-            }
-
-            .stat-card h2 {
-                font-size: 24px !important;
-            }
-
-            .card-cliente {
-                padding: 12px !important;
-            }
-
-            .client-header {
-                flex-wrap: wrap;
-            }
-
-            .client-status {
-                width: 100%;
-                align-items: flex-start;
-                margin-top: 8px;
-            }
-
             .client-actions {
-                width: 100%;
-            }
-
-            .client-actions button {
-                flex: 1;
+                flex-wrap: wrap;
             }
 
             .icon-btn {
-                width: 100% !important;
-                height: auto !important;
+                width: 100%;
+                height: auto;
                 padding: 8px;
-            }
-
-            .app-filter {
-                padding: 8px 12px;
-                font-size: 9px;
-            }
-
-            .app-filter img {
-                width: 30px;
-                height: 30px;
-            }
-
-            #inputBusqueda {
-                font-size: 14px !important;
+                font-size: 16px;
             }
 
             .modal-content {
-                padding: 16px !important;
+                max-width: 95vw !important;
             }
 
-            .modal-content h3 {
-                font-size: 18px !important;
+            header {
+                flex-direction: column !important;
             }
 
-            .modal-content input, .modal-content select {
-                font-size: 14px !important;
-                padding: 12px !important;
+            header > div:last-child {
+                width: 100% !important;
+                flex-direction: column !important;
             }
 
-            .app-option {
-                padding: 8px !important;
-            }
-
-            .app-option img {
-                width: 24px !important;
-                height: 24px !important;
-            }
-
-            .app-option span {
-                font-size: 6px !important;
-            }
-
-            .btn-primary, .btn-reporte, .delete-btn, .edit-btn {
-                padding: 12px !important;
-                font-size: 11px !important;
-            }
-
-            .vendor-expiry {
-                margin-top: 8px;
-                padding: 8px;
-            }
-
-            .vendor-expiry-text {
-                font-size: 9px !important;
-            }
-
-            .alert-body {
-                padding: 20px;
-            }
-
-            .alert-action-btn, .alert-close-btn {
-                padding: 10px 20px;
-                font-size: 12px;
-                margin: 5px 2px;
-            }
-
-            .alert-close-btn {
-                margin-left: 0;
-                margin-top: 10px;
-                width: 100%;
+            header button {
+                width: 100% !important;
             }
         }
 
         @media (max-width: 480px) {
-            .container {
-                padding-left: 8px !important;
-                padding-right: 8px !important;
-            }
-
-            h1 {
-                font-size: 24px !important;
-            }
-
-            .header-modern {
-                padding: 8px !important;
-            }
-
-            .header-modern .container {
+            .client-header {
                 flex-direction: column;
-                gap: 8px;
             }
 
-            header p {
-                font-size: 11px !important;
-            }
-
-            .stat-card p {
-                font-size: 9px !important;
-            }
-
-            .stat-card h2 {
-                font-size: 20px !important;
+            .client-status {
+                align-items: flex-start;
+                width: 100%;
+                margin-top: 8px;
             }
 
             .card-cliente {
-                padding: 10px !important;
-                border-radius: 12px !important;
-            }
-
-            .client-header .w-12 {
-                width: 40px !important;
-                height: 40px !important;
-            }
-
-            .client-info h3 {
-                font-size: 12px !important;
-            }
-
-            .client-info p {
-                font-size: 10px !important;
-            }
-
-            .client-status > div {
-                font-size: 18px !important;
-            }
-
-            .estado-badge {
-                padding: 3px 8px;
-                font-size: 8px !important;
-            }
-
-            .app-filter {
-                padding: 6px 10px;
-                gap: 4px;
-            }
-
-            .app-filter img {
-                width: 24px !important;
-                height: 24px !important;
-            }
-
-            .app-filter span {
-                font-size: 7px !important;
-            }
-
-            .modal-content {
                 padding: 12px !important;
-                border-radius: 20px !important;
             }
 
-            .modal-content h3 {
-                font-size: 16px !important;
-                margin-bottom: 16px !important;
+            .icon-btn {
+                font-size: 14px;
             }
 
-            .modal-content form {
-                gap: 12px !important;
-            }
-
-            .modal-content input, .modal-content select {
-                padding: 10px !important;
-                font-size: 13px !important;
-                border-radius: 10px !important;
-            }
-
-            .modal-content button {
-                padding: 12px !important;
-                font-size: 12px !important;
-                border-radius: 12px !important;
-            }
-
-            .app-selector {
-                grid-template-columns: repeat(3, 1fr) !important;
-                gap: 8px !important;
-            }
-
-            .app-option {
-                padding: 6px !important;
-                border-radius: 8px !important;
-            }
-
-            .alert-icon {
-                font-size: 50px !important;
-            }
-
-            .alert-title {
-                font-size: 20px !important;
-            }
-
-            .alert-message {
-                font-size: 14px !important;
-            }
-
-            .client-name-alert {
-                font-size: 16px !important;
+            .alert-action-btn, .alert-close-btn {
+                display: block;
+                width: 100%;
+                margin: 5px 0;
             }
         }
     </style>
@@ -757,13 +573,13 @@
     <!-- NAVBAR -->
     <nav class="header-modern sticky top-0 z-40 backdrop-blur-xl bg-opacity-90">
         <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-            <div class="flex gap-8 flex-wrap">
+            <div class="flex gap-8">
                 <a href="index.html" class="py-4 font-bold uppercase text-sm border-b-2 border-blue-500 text-blue-500 hover:text-blue-400 transition">Mis Clientes</a>
                 <a href="equipo.html" id="link-equipos" class="py-4 font-bold uppercase text-sm hidden hover:text-blue-400 transition">Gestionar Equipo</a>
                 <a href="reporte.html" class="py-4 font-bold uppercase text-sm hover:text-blue-400 transition">Reportes</a>
             </div>
             <div class="flex items-center gap-4">
-                <span id="info-sesion" class="text-xs text-gray-400 font-semibold hidden sm:inline"></span>
+                <span id="info-sesion" class="text-xs text-gray-400 font-semibold"></span>
                 
                 <!-- THEME TOGGLE -->
                 <button onclick="toggleTheme()" class="theme-toggle" title="Cambiar tema">
@@ -778,52 +594,52 @@
 
     <div class="container mx-auto px-4 py-8">
         <!-- HEADER -->
-        <header class="flex justify-between items-center mb-10 gap-4">
-            <div class="flex-1">
-                <h1 class="text-4xl sm:text-4xl md:text-4xl font-black text-blue-400 uppercase tracking-tight">Gestor de Clientes</h1>
-                <p class="text-xs sm:text-sm text-gray-500 mt-2">Administra todos tus clientes</p>
+        <header class="flex justify-between items-center mb-10">
+            <div>
+                <h1 class="text-4xl font-black text-blue-400 uppercase tracking-tight">Gestor de Clientes</h1>
+                <p class="text-sm text-gray-500 mt-2">Administra todos tus clientes en un solo lugar</p>
             </div>
-            <div class="flex gap-2 sm:gap-4">
-                <a href="reporte.html" class="btn-reporte px-4 sm:px-8 py-4 rounded-2xl font-bold shadow-lg text-xs sm:text-sm active:scale-95 transition-transform text-white hidden sm:block">
-                    📊 Reportes
+            <div class="flex gap-4">
+                <a href="reporte.html" class="btn-reporte px-8 py-4 rounded-2xl font-bold shadow-lg text-sm active:scale-95 transition-transform text-white hidden md:block">
+                    📊 Ver Reportes
                 </a>
-                <button onclick="abrirModalNuevo()" id="btn-nuevo-cliente" class="btn-primary px-4 sm:px-8 py-4 rounded-2xl font-bold shadow-lg text-xs sm:text-sm active:scale-95 transition-transform">
-                    ✨ Nuevo
+                <button onclick="abrirModalNuevo()" id="btn-nuevo-cliente" class="btn-primary px-8 py-4 rounded-2xl font-bold shadow-lg text-sm active:scale-95 transition-transform">
+                    ✨ NUEVO CLIENTE
                 </button>
             </div>
         </header>
 
         <!-- ESTADÍSTICAS -->
-        <div class="grid grid-cols-3 sm:grid-cols-3 gap-2 sm:gap-4 mb-8">
-            <div onclick="cambiarFiltroEstado('ACTIVOS')" class="stat-card cursor-pointer p-4 sm:p-6 rounded-2xl text-center hover:scale-105">
-                <p class="text-xs uppercase font-bold text-green-400 opacity-80 mb-2">Activos</p>
-                <h2 id="count-activos" class="text-3xl sm:text-4xl font-black text-green-400">0</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <div onclick="cambiarFiltroEstado('ACTIVOS')" class="stat-card cursor-pointer p-6 rounded-2xl text-center hover:scale-105">
+                <p class="text-xs uppercase font-bold text-green-400 opacity-80 mb-2">Clientes Activos</p>
+                <h2 id="count-activos" class="text-4xl font-black text-green-400">0</h2>
             </div>
-            <div onclick="cambiarFiltroEstado('VENCIDOS')" class="stat-card cursor-pointer p-4 sm:p-6 rounded-2xl text-center hover:scale-105">
+            <div onclick="cambiarFiltroEstado('VENCIDOS')" class="stat-card cursor-pointer p-6 rounded-2xl text-center hover:scale-105">
                 <p class="text-xs uppercase font-bold text-red-400 opacity-80 mb-2">Vencidos</p>
-                <h2 id="count-vencidos" class="text-3xl sm:text-4xl font-black text-red-400">0</h2>
+                <h2 id="count-vencidos" class="text-4xl font-black text-red-400">0</h2>
             </div>
-            <div onclick="cambiarFiltroEstado('PRONTO')" class="stat-card cursor-pointer p-4 sm:p-6 rounded-2xl text-center hover:scale-105">
-                <p class="text-xs uppercase font-bold text-yellow-400 opacity-80 mb-2">Pronto</p>
-                <h2 id="count-pronto" class="text-3xl sm:text-4xl font-black text-yellow-400">0</h2>
+            <div onclick="cambiarFiltroEstado('PRONTO')" class="stat-card cursor-pointer p-6 rounded-2xl text-center hover:scale-105">
+                <p class="text-xs uppercase font-bold text-yellow-400 opacity-80 mb-2">Próximos a Vencer</p>
+                <h2 id="count-pronto" class="text-4xl font-black text-yellow-400">0</h2>
             </div>
         </div>
 
         <!-- BÚSQUEDA Y FILTROS -->
         <div class="mb-8">
-            <input type="text" id="inputBusqueda" onkeyup="filtrarClientes()" placeholder="🔍 Buscar..." class="w-full input-modern p-4 rounded-2xl outline-none text-sm mb-6">
-            <div id="contenedor-filtros-apps" class="flex flex-wrap gap-2 sm:gap-3"></div>
+            <input type="text" id="inputBusqueda" onkeyup="filtrarClientes()" placeholder="🔍 Buscar por nombre, usuario o ciudad..." class="w-full input-modern p-4 rounded-2xl outline-none text-sm mb-6">
+            <div id="contenedor-filtros-apps" class="flex flex-wrap gap-3"></div>
         </div>
 
         <!-- CLIENTES -->
-        <div id="contenedor-clientes" class="grid gap-3 sm:gap-4"></div>
+        <div id="contenedor-clientes" class="grid gap-4"></div>
     </div>
 
     <!-- MODAL CLIENTE (Crear/Editar) -->
     <div id="modalCliente" class="fixed inset-0 bg-black/80 modal-backdrop hidden flex items-center justify-center p-4 z-50">
         <div class="bg-gray-800 border border-gray-700 w-full max-w-2xl rounded-3xl p-8 shadow-2xl overflow-y-auto max-h-[95vh] modal-content">
             <div class="flex justify-between items-center mb-8">
-                <h3 id="modal-titulo" class="text-2xl sm:text-3xl font-black uppercase text-blue-400 tracking-tight">Nuevo Cliente</h3>
+                <h3 id="modal-titulo" class="text-3xl font-black uppercase text-blue-400 tracking-tight">Nuevo Cliente</h3>
                 <button onclick="cerrarModal()" class="text-gray-500 hover:text-white text-3xl transition">✕</button>
             </div>
             
@@ -834,15 +650,15 @@
                 <div class="space-y-4">
                     <p class="text-xs font-bold text-blue-400 uppercase tracking-wider">📋 Datos de Contacto</p>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <input type="text" id="nombre-apellido" placeholder="Nombre completo" class="input-modern p-4 rounded-2xl outline-none text-sm col-span-1 md:col-span-2" required>
-                        <input type="text" id="celular-cliente" placeholder="WhatsApp" class="input-modern p-4 rounded-2xl outline-none text-sm" required>
+                        <input type="text" id="nombre-apellido" placeholder="Nombre completo" class="input-modern p-4 rounded-2xl outline-none text-sm col-span-2" required>
+                        <input type="text" id="celular-cliente" placeholder="WhatsApp (ej: 1234567890)" class="input-modern p-4 rounded-2xl outline-none text-sm" required>
                         <input type="text" id="ciudad-cliente" placeholder="Ciudad" class="input-modern p-4 rounded-2xl outline-none text-sm" required>
                     </div>
                 </div>
 
                 <!-- SERVICIO -->
                 <div class="space-y-4">
-                    <p class="text-xs font-bold text-blue-400 uppercase tracking-wider">🔐 Credenciales</p>
+                    <p class="text-xs font-bold text-blue-400 uppercase tracking-wider">🔐 Credenciales de Servicio</p>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <input type="text" id="usuario-tv" placeholder="Usuario TV" class="input-modern p-4 rounded-2xl outline-none text-sm" required>
                         <input type="text" id="clave-tv" placeholder="Contraseña TV" class="input-modern p-4 rounded-2xl outline-none text-sm" required>
@@ -851,21 +667,21 @@
 
                 <!-- PRECIO -->
                 <div class="space-y-4">
-                    <p class="text-xs font-bold text-blue-400 uppercase tracking-wider">💰 Precio</p>
+                    <p class="text-xs font-bold text-blue-400 uppercase tracking-wider">💰 Información de Pago</p>
                     <input type="number" id="precio-servicio" placeholder="Precio ($)" min="0" step="0.01" class="w-full input-modern p-4 rounded-2xl outline-none text-sm font-bold text-green-400" required>
                 </div>
 
                 <!-- APLICACIÓN -->
                 <div class="space-y-4">
-                    <p class="text-xs font-bold text-blue-400 uppercase tracking-wider">📺 Aplicación</p>
-                    <div id="app-selector" class="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-7 gap-3"></div>
+                    <p class="text-xs font-bold text-blue-400 uppercase tracking-wider">📺 Seleccionar Aplicación</p>
+                    <div id="app-selector" class="grid grid-cols-4 md:grid-cols-7 gap-3"></div>
                     <input type="hidden" id="app-seleccionada" required>
                 </div>
 
                 <!-- PAGO Y VENCIMIENTO -->
                 <div class="space-y-4">
                     <p class="text-xs font-bold text-blue-400 uppercase tracking-wider">📅 Fechas</p>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="text-xs font-bold text-green-400 block mb-1">Fecha de Pago</label>
                             <input type="date" id="fecha-pago" class="w-full input-modern p-4 rounded-2xl outline-none text-sm" required>
@@ -878,11 +694,11 @@
                 </div>
 
                 <!-- BOTONES -->
-                <div class="flex flex-col sm:flex-row gap-4 pt-4">
-                    <button type="submit" class="flex-1 btn-primary py-4 rounded-2xl font-bold uppercase tracking-wider shadow-lg transition text-sm">
+                <div class="flex gap-4 pt-4">
+                    <button type="submit" class="flex-1 btn-primary py-4 rounded-2xl font-bold uppercase tracking-wider shadow-lg transition">
                         ✓ GUARDAR
                     </button>
-                    <button type="button" onclick="cerrarModal()" class="flex-1 bg-gray-700 hover:bg-gray-600 py-4 rounded-2xl font-bold uppercase tracking-wider transition text-sm">
+                    <button type="button" onclick="cerrarModal()" class="flex-1 bg-gray-700 hover:bg-gray-600 py-4 rounded-2xl font-bold uppercase tracking-wider transition">
                         CANCELAR
                     </button>
                 </div>
@@ -904,22 +720,22 @@
                     Vence en: <span id="alert-dias-restantes" style="font-size: 20px; color: #fca5a5;">0</span> días
                 </p>
                 <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-                    <button class="alert-action-btn" onclick="abrirWhatsAppAlerta()">📱 WhatsApp</button>
-                    <button class="alert-action-btn" onclick="abrirModalEditarAlerta()" style="background: #3b82f6; color: white;">✏️ Editar</button>
+                    <button class="alert-action-btn" onclick="abrirWhatsAppAlerta()">📱 Enviar WhatsApp</button>
+                    <button class="alert-action-btn" onclick="abrirModalEditarAlerta()" style="background: #3b82f6; color: white;">✏️ Editar Cliente</button>
                 </div>
-                <button class="alert-close-btn w-full sm:w-auto" onclick="cerrarAlerta()">CERRAR</button>
+                <button class="alert-close-btn" onclick="cerrarAlerta()">CERRAR</button>
             </div>
         </div>
     </div>
 
     <!-- MODAL CONFIRMAR ELIMINACIÓN -->
     <div id="modalConfirmar" class="fixed inset-0 bg-black/80 dialog-confirmar hidden flex items-center justify-center p-4 z-50">
-        <div class="bg-gray-800 border border-gray-700 rounded-3xl p-8 shadow-2xl max-w-sm modal-content w-full">
-            <h3 class="text-xl sm:text-2xl font-bold text-red-400 mb-4">⚠️ Confirmar Eliminación</h3>
-            <p class="text-gray-300 mb-6 text-sm sm:text-base">¿Estás seguro de que deseas eliminar a <span id="nombre-cliente-confirmar" class="font-bold text-white"></span>?</p>
-            <div class="flex flex-col sm:flex-row gap-4">
-                <button onclick="confirmarEliminar()" class="flex-1 delete-btn py-3 rounded-xl font-bold uppercase text-white text-sm">ELIMINAR</button>
-                <button onclick="cerrarConfirmar()" class="flex-1 bg-gray-700 hover:bg-gray-600 py-3 rounded-xl font-bold uppercase text-sm">CANCELAR</button>
+        <div class="bg-gray-800 border border-gray-700 rounded-3xl p-8 shadow-2xl max-w-sm modal-content">
+            <h3 class="text-2xl font-bold text-red-400 mb-4">⚠️ Confirmar Eliminación</h3>
+            <p class="text-gray-300 mb-6">¿Estás seguro de que deseas eliminar a <span id="nombre-cliente-confirmar" class="font-bold text-white"></span>? Esta acción no se puede deshacer.</p>
+            <div class="flex gap-4">
+                <button onclick="confirmarEliminar()" class="flex-1 delete-btn py-3 rounded-xl font-bold uppercase text-white">ELIMINAR</button>
+                <button onclick="cerrarConfirmar()" class="flex-1 bg-gray-700 hover:bg-gray-600 py-3 rounded-xl font-bold uppercase">CANCELAR</button>
             </div>
         </div>
     </div>
@@ -1172,8 +988,8 @@
             if (filtrados.length === 0) {
                 cont.innerHTML = `
                     <div class="empty-state col-span-full">
-                        <p class="text-lg sm:text-xl font-bold mb-2">No hay clientes</p>
-                        <p class="text-xs sm:text-sm">Intenta cambiar los filtros</p>
+                        <p class="text-xl font-bold mb-2">No hay clientes para mostrar</p>
+                        <p class="text-sm">Intenta cambiar los filtros o crea un nuevo cliente</p>
                     </div>
                 `;
                 return;
@@ -1204,41 +1020,43 @@
                     vendorExpiryHTML = `
                         <div class="vendor-expiry">
                             <p class="vendor-expiry-text ${expiryClass}">
-                                📅 Acceso: ${currentUser.vencimiento_acceso}
+                                📅 Tu acceso vence: ${currentUser.vencimiento_acceso} (${diasRestantes > 0 ? diasRestantes + ' días' : 'Vencido'})
                             </p>
                         </div>
                     `;
                 }
                 
                 cont.innerHTML += `
-                    <div class="bg-gray-800 border border-gray-700 p-4 sm:p-4 rounded-2xl card-cliente shadow-lg hover:shadow-2xl ${d <= 2 && d > 0 ? 'alerta-vencimiento' : ''}">
+                    <div class="bg-gray-800 border border-gray-700 p-4 rounded-2xl card-cliente shadow-lg hover:shadow-2xl ${d <= 2 && d > 0 ? 'alerta-vencimiento' : ''}">
                         <div class="client-header">
                             <div class="w-12 h-12 bg-gray-900 rounded-xl flex items-center justify-center border border-gray-700 flex-shrink-0">
                                 <img src="${config ? config.logo : ''}" class="w-6 h-6 object-contain">
                             </div>
                             <div class="client-info">
-                                <h3 class="font-black text-sm sm:text-base uppercase italic leading-tight">${c.nombre_apellido}</h3>
-                                <p class="text-[9px] sm:text-[10px] font-bold text-gray-400 mt-1">📺 ${c.app_instalada} • 👤 ${c.usuario}</p>
-                                <p class="text-[8px] sm:text-[9px] text-gray-500 mt-1">📍 ${c.ciudad} • 💰 $${parseFloat(c.precio).toFixed(2)}</p>
+                                <h3 class="font-black text-sm uppercase italic leading-tight">${c.nombre_apellido}</h3>
+                                <p class="text-[10px] font-bold text-gray-400 mt-1">📺 ${c.app_instalada} • 👤 ${c.usuario}</p>
+                                <p class="text-[9px] text-gray-500 mt-1">📍 ${c.ciudad} • 💰 $${parseFloat(c.precio).toFixed(2)}</p>
                             </div>
                             <div class="client-status">
-                                <div class="text-xl sm:text-2xl font-black ${d <= 0 ? 'text-red-500' : d <= 7 ? 'text-yellow-400' : 'text-green-400'}">
+                                <div class="text-2xl font-black ${d <= 0 ? 'text-red-500' : d <= 7 ? 'text-yellow-400' : 'text-green-400'}">
                                     ${d}
                                 </div>
-                                <span class="estado-badge ${estadoBadge}">${d <= 0 ? 'Vencido' : d + 'd'}</span>
+                                <span class="estado-badge ${estadoBadge}">${d <= 0 ? 'Vencido' : d + ' días'}</span>
                             </div>
                         </div>
                         
                         ${vendorExpiryHTML}
                         
                         <div class="client-actions">
-                            <button onclick="enviarWA('${c.nombre_apellido}','${c.celular}',${d})" class="btn-action whatsapp-btn icon-btn transition-all flex-1 text-sm" title="WhatsApp">
-                                📱
+                            <button onclick="enviarWA('${c.celular}', '${c.nombre_apellido}', ${d})" class="btn-action whatsapp-btn icon-btn transition-all" title="Enviar WhatsApp">
+                                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.67-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.076 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421-7.403h-.004a9.87 9.87 0 00-4.781 1.226l-.34-.17-3.524.35.356 3.465-.225.356a9.9 9.9 0 1513.6 0l-.227-.354.2-3.46-3.747-.368-.215.128c-1.324-.643-2.791-.988-4.514-.988z"/>
+                                </svg>
                             </button>
-                            <button onclick="abrirModalEditar(${JSON.stringify(c).replace(/"/g, '&quot;')})" class="btn-action edit-btn icon-btn transition-all flex-1 text-sm" title="Editar">
+                            <button onclick="abrirModalEditar(${JSON.stringify(c).replace(/"/g, '&quot;')})" class="btn-action edit-btn icon-btn transition-all" title="Editar cliente">
                                 ✏️
                             </button>
-                            <button onclick="abrirConfirmarEliminar(${JSON.stringify(c).replace(/"/g, '&quot;')})" class="btn-action delete-btn icon-btn transition-all flex-1 text-sm" title="Eliminar">
+                            <button onclick="abrirConfirmarEliminar(${JSON.stringify(c).replace(/"/g, '&quot;')})" class="btn-action delete-btn icon-btn transition-all" title="Eliminar cliente">
                                 🗑️
                             </button>
                         </div>
@@ -1270,10 +1088,10 @@
             document.getElementById('count-pronto').innerText = pro;
         }
 
-        function enviarWA(nombre, celular, dias) {
+        function enviarWA(celular, nombre, dias) {
             const mensaje = dias <= 0 
                 ? `Hola ${nombre}, tu servicio de TV ya venció. Por favor contacta para renovar.`
-                : `Hola ${nombre}, tu servicio de TV vence en ${dias} día${dias !== 1 ? 's' : ''}. Asegúrate de renovar.`;
+                : `Hola ${nombre}, tu servicio de TV vence en ${dias} día${dias !== 1 ? 's' : ''}. Asegúrate de renovar a tiempo.`;
             const url = `https://wa.me/${celular}?text=${encodeURIComponent(mensaje)}`;
             window.open(url, '_blank');
         }
