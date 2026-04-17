@@ -345,12 +345,6 @@
             color: #1d4ed8 !important;
         }
 
-        .card-cliente-compact {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
         .client-header {
             display: flex;
             gap: 12px;
@@ -511,59 +505,327 @@
         }
 
         /* MOBILE STYLES */
+        @media (max-width: 1024px) {
+            .header-modern .flex:first-child {
+                gap: 4px !important;
+            }
+
+            .header-modern a {
+                padding: 4px 12px !important;
+                font-size: 10px !important;
+            }
+        }
+
         @media (max-width: 768px) {
-            .client-actions {
-                flex-wrap: wrap;
+            .header-modern .container {
+                flex-direction: column !important;
+                gap: 8px !important;
             }
 
-            .icon-btn {
-                width: 100%;
-                height: auto;
-                padding: 8px;
-                font-size: 16px;
+            .header-modern .flex {
+                width: 100% !important;
+                gap: 4px !important;
             }
 
-            .modal-content {
-                max-width: 95vw !important;
+            .header-modern a {
+                padding: 6px 8px !important;
+                font-size: 9px !important;
+                flex: 1 !important;
+            }
+
+            .header-modern > div:last-child {
+                width: 100% !important;
+                gap: 6px !important;
+            }
+
+            #info-sesion {
+                display: none !important;
             }
 
             header {
                 flex-direction: column !important;
+                gap: 12px !important;
+            }
+
+            header > div:first-child {
+                width: 100% !important;
             }
 
             header > div:last-child {
                 width: 100% !important;
                 flex-direction: column !important;
+                gap: 8px !important;
             }
 
-            header button {
+            header h1 {
+                font-size: 28px !important;
+            }
+
+            header p {
+                font-size: 11px !important;
+            }
+
+            header button, header a {
                 width: 100% !important;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .client-header {
-                flex-direction: column;
+                font-size: 11px !important;
+                padding: 10px !important;
             }
 
-            .client-status {
-                align-items: flex-start;
-                width: 100%;
-                margin-top: 8px;
+            .stat-card {
+                padding: 16px !important;
+            }
+
+            .stat-card p {
+                font-size: 9px !important;
+            }
+
+            .stat-card h2 {
+                font-size: 24px !important;
+            }
+
+            .app-filter {
+                padding: 8px 12px !important;
+                gap: 4px !important;
+            }
+
+            .app-filter img {
+                width: 30px !important;
+                height: 30px !important;
+            }
+
+            .app-filter span {
+                font-size: 8px !important;
+            }
+
+            #inputBusqueda {
+                font-size: 13px !important;
             }
 
             .card-cliente {
                 padding: 12px !important;
             }
 
+            .client-header {
+                flex-wrap: wrap !important;
+            }
+
+            .client-status {
+                width: 100% !important;
+                align-items: flex-start !important;
+                margin-top: 8px !important;
+            }
+
+            .client-actions {
+                width: 100% !important;
+            }
+
             .icon-btn {
-                font-size: 14px;
+                width: 100% !important;
+                height: auto !important;
+                padding: 8px !important;
+            }
+
+            .modal-content {
+                padding: 16px !important;
+                max-width: 95vw !important;
+            }
+
+            .modal-content h3 {
+                font-size: 20px !important;
+            }
+
+            .modal-content form {
+                gap: 12px !important;
+            }
+
+            .modal-content input, .modal-content select {
+                padding: 12px !important;
+                font-size: 14px !important;
+            }
+
+            .modal-content button {
+                padding: 12px !important;
+                font-size: 12px !important;
+            }
+
+            .app-option {
+                padding: 8px !important;
+            }
+
+            .app-option img {
+                width: 24px !important;
+                height: 24px !important;
+            }
+
+            .app-option span {
+                font-size: 7px !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 8px !important;
+            }
+
+            .header-modern {
+                padding: 8px 4px !important;
+            }
+
+            .header-modern a {
+                padding: 4px 6px !important;
+                font-size: 8px !important;
+            }
+
+            header {
+                padding: 12px 0 !important;
+            }
+
+            header h1 {
+                font-size: 22px !important;
+            }
+
+            header p {
+                font-size: 10px !important;
+            }
+
+            header button {
+                padding: 8px !important;
+                font-size: 10px !important;
+            }
+
+            .stat-card {
+                padding: 12px !important;
+                gap: 4px !important;
+            }
+
+            .stat-card h2 {
+                font-size: 20px !important;
+            }
+
+            .stat-card p {
+                font-size: 8px !important;
+            }
+
+            .app-filter {
+                padding: 6px 10px !important;
+                gap: 3px !important;
+            }
+
+            .app-filter img {
+                width: 24px !important;
+                height: 24px !important;
+            }
+
+            .app-filter span {
+                font-size: 7px !important;
+            }
+
+            .card-cliente {
+                padding: 10px !important;
+            }
+
+            .client-header .w-12 {
+                width: 36px !important;
+                height: 36px !important;
+            }
+
+            .client-info h3 {
+                font-size: 12px !important;
+            }
+
+            .client-info p {
+                font-size: 9px !important;
+            }
+
+            .client-status > div {
+                font-size: 18px !important;
+            }
+
+            .estado-badge {
+                padding: 2px 8px !important;
+                font-size: 8px !important;
+            }
+
+            .vendor-expiry {
+                padding: 8px !important;
+                margin-top: 6px !important;
+            }
+
+            .vendor-expiry-text {
+                font-size: 9px !important;
+            }
+
+            .modal-content {
+                padding: 12px !important;
+                border-radius: 20px !important;
+            }
+
+            .modal-content h3 {
+                font-size: 18px !important;
+                margin-bottom: 12px !important;
+            }
+
+            .modal-content form {
+                gap: 10px !important;
+            }
+
+            .modal-content > div {
+                gap: 8px !important;
+            }
+
+            .modal-content input, .modal-content select {
+                padding: 10px !important;
+                font-size: 13px !important;
+                border-radius: 8px !important;
+            }
+
+            .modal-content button {
+                padding: 10px !important;
+                font-size: 11px !important;
+                border-radius: 12px !important;
+            }
+
+            .app-option {
+                padding: 6px !important;
+                border-radius: 8px !important;
+            }
+
+            .app-option img {
+                width: 20px !important;
+                height: 20px !important;
             }
 
             .alert-action-btn, .alert-close-btn {
-                display: block;
-                width: 100%;
-                margin: 5px 0;
+                padding: 10px 16px !important;
+                font-size: 12px !important;
+                margin: 6px 3px !important;
+                width: auto !important;
+            }
+
+            .alert-close-btn {
+                margin-left: 0 !important;
+                width: 100% !important;
+                margin-top: 10px !important;
+            }
+
+            .alert-body {
+                padding: 20px 16px !important;
+            }
+
+            .alert-icon {
+                font-size: 48px !important;
+            }
+
+            .alert-title {
+                font-size: 20px !important;
+            }
+
+            .alert-message {
+                font-size: 14px !important;
+            }
+
+            .client-name-alert {
+                font-size: 16px !important;
             }
         }
     </style>
@@ -651,7 +913,7 @@
                     <p class="text-xs font-bold text-blue-400 uppercase tracking-wider">📋 Datos de Contacto</p>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <input type="text" id="nombre-apellido" placeholder="Nombre completo" class="input-modern p-4 rounded-2xl outline-none text-sm col-span-2" required>
-                        <input type="text" id="celular-cliente" placeholder="WhatsApp (ej: 1234567890)" class="input-modern p-4 rounded-2xl outline-none text-sm" required>
+                        <input type="text" id="celular-cliente" placeholder="WhatsApp (ej: 2946123456)" class="input-modern p-4 rounded-2xl outline-none text-sm" required>
                         <input type="text" id="ciudad-cliente" placeholder="Ciudad" class="input-modern p-4 rounded-2xl outline-none text-sm" required>
                     </div>
                 </div>
@@ -839,7 +1101,7 @@
             if (!clienteAlertado) return;
             const hoy = new Date();
             const d = Math.ceil((new Date(clienteAlertado.fecha_vencimiento) - hoy) / (1000 * 60 * 60 * 24));
-            enviarWA(clienteAlertado.nombre_apellido, clienteAlertado.celular, d);
+            enviarWA(clienteAlertado.celular, clienteAlertado.nombre_apellido, d);
             cerrarAlerta();
         }
 
@@ -1089,10 +1351,17 @@
         }
 
         function enviarWA(celular, nombre, dias) {
+            // Agregar código de país si no lo tiene
+            let numeroFormato = celular;
+            if (!celular.startsWith('+')) {
+                numeroFormato = '+549' + celular;
+            }
+            
             const mensaje = dias <= 0 
                 ? `Hola ${nombre}, tu servicio de TV ya venció. Por favor contacta para renovar.`
                 : `Hola ${nombre}, tu servicio de TV vence en ${dias} día${dias !== 1 ? 's' : ''}. Asegúrate de renovar a tiempo.`;
-            const url = `https://wa.me/${celular}?text=${encodeURIComponent(mensaje)}`;
+            
+            const url = `https://wa.me/${numeroFormato}?text=${encodeURIComponent(mensaje)}`;
             window.open(url, '_blank');
         }
 
