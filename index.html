@@ -37,7 +37,6 @@
         
         .alerta-vencimiento { animation: pulse-red 2s infinite; border-width: 2px; }
         .filtro-activo { border-color: white !important; background: linear-gradient(135deg, rgba(59, 130, 246, 0.8) 0%, rgba(37, 99, 235, 0.6) 100%); box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.4); }
-        .btn-app { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); border-width: 2px; }
         
         .app-filter {
             border: 2px solid #374151;
@@ -88,24 +87,224 @@
             box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
         }
         
+        /* DISEÑO PROFESIONAL DE TARJETAS */
         .card-cliente {
             animation: slideIn 0.4s ease-out;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
+            cursor: pointer;
+            background: linear-gradient(135deg, rgba(31, 41, 55, 0.8) 0%, rgba(17, 24, 39, 0.9) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 16px;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
         }
+
         .card-cliente::before {
             content: '';
             position: absolute;
             top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-            transition: left 0.5s;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #3b82f6, #2563eb);
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
-        .card-cliente:hover::before { left: 100%; }
-        .card-cliente:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(59, 130, 246, 0.2); }
+
+        .card-cliente:hover {
+            transform: translateY(-8px);
+            border-color: rgba(59, 130, 246, 0.5);
+            box-shadow: 0 25px 50px rgba(59, 130, 246, 0.2);
+        }
+
+        .card-cliente:hover::before {
+            opacity: 1;
+        }
+
+        .card-cliente.alerta-vencimiento {
+            border-color: #ef4444;
+            background: linear-gradient(135deg, rgba(127, 29, 29, 0.3) 0%, rgba(31, 41, 55, 0.8) 100%);
+        }
+
+        .card-cliente.alerta-vencimiento::before {
+            background: linear-gradient(90deg, #ef4444, #dc2626);
+            opacity: 1;
+            animation: pulse-red 2s infinite;
+        }
+
+        /* CONTENIDO DE LA TARJETA */
+        .card-header {
+            padding: 16px;
+            border-bottom: 1px solid rgba(107, 114, 128, 0.1);
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(37, 99, 235, 0.1) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .card-icon img {
+            width: 28px;
+            height: 28px;
+            object-fit: contain;
+        }
+
+        .card-header-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .card-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .card-subtitle {
+            font-size: 12px;
+            color: #9ca3af;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 3px;
+        }
+
+        .card-meta {
+            font-size: 11px;
+            color: #6b7280;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .card-status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .status-activo {
+            background-color: rgba(34, 197, 94, 0.15);
+            color: #22c55e;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .status-pronto {
+            background-color: rgba(234, 179, 8, 0.15);
+            color: #eab308;
+            border: 1px solid rgba(234, 179, 8, 0.3);
+        }
+
+        .status-vencido {
+            background-color: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .card-dias {
+            text-align: center;
+            padding: 8px;
+            background: rgba(59, 130, 246, 0.05);
+            border-left: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .card-dias-numero {
+            font-size: 24px;
+            font-weight: 900;
+            line-height: 1;
+        }
+
+        .card-dias-texto {
+            font-size: 10px;
+            color: #9ca3af;
+            margin-top: 4px;
+            text-transform: uppercase;
+        }
+
+        .card-footer {
+            padding: 12px 16px;
+            border-top: 1px solid rgba(107, 114, 128, 0.1);
+            display: flex;
+            gap: 6px;
+        }
+
+        .btn-card-action {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .btn-whatsapp {
+            background: linear-gradient(135deg, rgba(37, 211, 102, 0.2) 0%, rgba(32, 186, 94, 0.1) 100%);
+            color: #25d366;
+            border: 1px solid rgba(37, 211, 102, 0.3);
+        }
+
+        .btn-whatsapp:hover {
+            background: linear-gradient(135deg, rgba(37, 211, 102, 0.4) 0%, rgba(32, 186, 94, 0.2) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(37, 211, 102, 0.2);
+        }
+
+        .btn-edit {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(37, 99, 235, 0.1) 100%);
+            color: #60a5fa;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-edit:hover {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.4) 0%, rgba(37, 99, 235, 0.2) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(59, 130, 246, 0.2);
+        }
+
+        .btn-delete {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(220, 38, 38, 0.1) 100%);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-delete:hover {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.4) 0%, rgba(220, 38, 38, 0.2) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(239, 68, 68, 0.2);
+        }
+
+        .btn-card-action:active {
+            transform: scale(0.95);
+        }
         
         .modal-backdrop {
             animation: fadeIn 0.3s ease-out;
@@ -113,54 +312,6 @@
         .modal-content {
             animation: slideIn 0.4s ease-out;
         }
-        
-        .alert-modal-content {
-            animation: slideIn 0.4s ease-out, pulse-alert 1.5s ease-in-out;
-        }
-        
-        .delete-btn {
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-        }
-        .delete-btn:hover {
-            box-shadow: 0 10px 25px -5px rgba(239, 68, 68, 0.4);
-            transform: scale(1.05);
-        }
-        
-        .edit-btn {
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-        }
-        .edit-btn:hover {
-            box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.4);
-            transform: scale(1.05);
-        }
-
-        .whatsapp-btn {
-            background: linear-gradient(135deg, #25d366 0%, #20ba5e 100%);
-        }
-        .whatsapp-btn:hover {
-            box-shadow: 0 10px 25px -5px rgba(37, 211, 102, 0.4);
-            transform: scale(1.05);
-        }
-        
-        .btn-action {
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-        }
-        .btn-action:active { transform: scale(0.95); }
-        
-        .estado-badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 10px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .estado-activo { background-color: rgba(34, 197, 94, 0.2); color: #22c55e; }
-        .estado-vencido { background-color: rgba(239, 68, 68, 0.2); color: #ef4444; }
-        .estado-pronto { background-color: rgba(234, 179, 8, 0.2); color: #eab308; }
         
         .header-modern {
             background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #0c4a6e 100%);
@@ -227,12 +378,6 @@
             text-align: center;
             padding: 60px 20px;
             color: #9ca3af;
-        }
-        .empty-state svg {
-            width: 100px;
-            height: 100px;
-            margin: 0 auto 20px;
-            opacity: 0.3;
         }
         
         .dialog-confirmar {
@@ -345,154 +490,74 @@
             color: #1d4ed8 !important;
         }
 
-        .client-header {
-            display: flex;
-            gap: 12px;
-            align-items: flex-start;
+        /* MODAL DETALLE CLIENTE */
+        .modal-detail {
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
-        .client-info {
-            flex: 1;
-            min-width: 0;
+        .detail-section {
+            border-bottom: 1px solid rgba(107, 114, 128, 0.2);
+            padding: 20px 0;
         }
 
-        .client-status {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 4px;
+        .detail-section:last-child {
+            border-bottom: none;
         }
 
-        .client-actions {
-            display: flex;
-            gap: 6px;
-            padding-top: 8px;
-            border-top: 1px solid rgba(107, 114, 128, 0.2);
-        }
-
-        .icon-btn {
-            width: 36px;
-            height: 36px;
+        .detail-title {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #60a5fa;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            border-radius: 10px;
-            flex-shrink: 0;
+            gap: 8px;
         }
 
-        .vendor-expiry {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(37, 99, 235, 0.05) 100%);
-            border: 1px solid rgba(59, 130, 246, 0.2);
-            padding: 12px;
-            border-radius: 12px;
-            margin-top: 8px;
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: rgba(31, 41, 55, 0.5);
+            border-radius: 8px;
+            border: 1px solid rgba(107, 114, 128, 0.1);
         }
 
-        .vendor-expiry-text {
-            font-size: 11px;
+        .detail-label {
+            font-size: 12px;
             font-weight: 600;
+            color: #9ca3af;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
-        .expiry-soon { color: #fbbf24; }
-        .expiry-expired { color: #f87171; }
-        .expiry-ok { color: #86efac; }
-
-        /* ALERTA MODAL */
-        .alert-modal {
-            background: linear-gradient(135deg, rgba(239, 68, 68, 0.95) 0%, rgba(220, 38, 38, 0.95) 100%);
-            border: 2px solid #fca5a5;
-            box-shadow: 0 0 50px rgba(239, 68, 68, 0.5);
-        }
-
-        .alert-header {
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-            padding: 20px;
-            border-radius: 20px 20px 0 0;
-            text-align: center;
-            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .alert-icon {
-            font-size: 60px;
-            margin-bottom: 10px;
-            display: block;
-            animation: shake 0.5s ease-in-out infinite;
-        }
-
-        .alert-title {
-            font-size: 24px;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: white;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-        }
-
-        .alert-body {
-            padding: 30px;
-            text-align: center;
-        }
-
-        .alert-message {
-            font-size: 16px;
-            font-weight: 600;
-            color: white;
-            margin-bottom: 20px;
-            line-height: 1.6;
-        }
-
-        .client-name-alert {
-            font-size: 20px;
-            font-weight: 900;
-            color: #fca5a5;
-            text-transform: uppercase;
-            margin: 10px 0;
-        }
-
-        .alert-action-btn {
-            background: white;
-            color: #ef4444;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 10px;
-            font-weight: bold;
+        .detail-value {
             font-size: 14px;
+            font-weight: 700;
+            color: #ffffff;
+            text-align: right;
+        }
+
+        .detail-copy-btn {
+            padding: 4px 8px;
+            background: rgba(59, 130, 246, 0.2);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #60a5fa;
+            border-radius: 6px;
+            font-size: 11px;
             cursor: pointer;
             transition: all 0.3s ease;
-            margin-top: 20px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            margin-left: 8px;
         }
 
-        .alert-action-btn:hover {
+        .detail-copy-btn:hover {
+            background: rgba(59, 130, 246, 0.4);
             transform: scale(1.05);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-        }
-
-        .alert-action-btn:active {
-            transform: scale(0.98);
-        }
-
-        .alert-close-btn {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 10px;
-            font-weight: bold;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-left: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .alert-close-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
         }
 
         .btn-reporte {
@@ -601,30 +666,6 @@
                 font-size: 13px !important;
             }
 
-            .card-cliente {
-                padding: 12px !important;
-            }
-
-            .client-header {
-                flex-wrap: wrap !important;
-            }
-
-            .client-status {
-                width: 100% !important;
-                align-items: flex-start !important;
-                margin-top: 8px !important;
-            }
-
-            .client-actions {
-                width: 100% !important;
-            }
-
-            .icon-btn {
-                width: 100% !important;
-                height: auto !important;
-                padding: 8px !important;
-            }
-
             .modal-content {
                 padding: 16px !important;
                 max-width: 95vw !important;
@@ -659,6 +700,18 @@
 
             .app-option span {
                 font-size: 7px !important;
+            }
+
+            .card-title {
+                font-size: 13px !important;
+            }
+
+            .card-subtitle {
+                font-size: 11px !important;
+            }
+
+            .btn-card-action {
+                font-size: 10px !important;
             }
         }
 
@@ -720,38 +773,34 @@
                 font-size: 7px !important;
             }
 
-            .card-cliente {
-                padding: 10px !important;
+            .card-header {
+                padding: 12px !important;
             }
 
-            .client-header .w-12 {
-                width: 36px !important;
-                height: 36px !important;
+            .card-icon {
+                width: 40px !important;
+                height: 40px !important;
             }
 
-            .client-info h3 {
+            .card-icon img {
+                width: 22px !important;
+            }
+
+            .card-title {
                 font-size: 12px !important;
             }
 
-            .client-info p {
-                font-size: 9px !important;
+            .card-subtitle {
+                font-size: 10px !important;
             }
 
-            .client-status > div {
-                font-size: 18px !important;
-            }
-
-            .estado-badge {
-                padding: 2px 8px !important;
-                font-size: 8px !important;
-            }
-
-            .vendor-expiry {
+            .card-footer {
                 padding: 8px !important;
-                margin-top: 6px !important;
+                gap: 4px !important;
             }
 
-            .vendor-expiry-text {
+            .btn-card-action {
+                padding: 6px !important;
                 font-size: 9px !important;
             }
 
@@ -795,37 +844,15 @@
                 height: 20px !important;
             }
 
-            .alert-action-btn, .alert-close-btn {
-                padding: 10px 16px !important;
-                font-size: 12px !important;
-                margin: 6px 3px !important;
-                width: auto !important;
+            .detail-row {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 8px !important;
             }
 
-            .alert-close-btn {
-                margin-left: 0 !important;
+            .detail-value {
+                text-align: left !important;
                 width: 100% !important;
-                margin-top: 10px !important;
-            }
-
-            .alert-body {
-                padding: 20px 16px !important;
-            }
-
-            .alert-icon {
-                font-size: 48px !important;
-            }
-
-            .alert-title {
-                font-size: 20px !important;
-            }
-
-            .alert-message {
-                font-size: 14px !important;
-            }
-
-            .client-name-alert {
-                font-size: 16px !important;
             }
         }
     </style>
@@ -843,7 +870,6 @@
             <div class="flex items-center gap-4">
                 <span id="info-sesion" class="text-xs text-gray-400 font-semibold"></span>
                 
-                <!-- THEME TOGGLE -->
                 <button onclick="toggleTheme()" class="theme-toggle" title="Cambiar tema">
                     <span class="dark-icon">🌙</span>
                     <span class="light-icon">☀️</span>
@@ -894,10 +920,10 @@
         </div>
 
         <!-- CLIENTES -->
-        <div id="contenedor-clientes" class="grid gap-4"></div>
+        <div id="contenedor-clientes" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
     </div>
 
-    <!-- MODAL CLIENTE (Crear/Editar) -->
+    <!-- MODAL CREAR/EDITAR CLIENTE -->
     <div id="modalCliente" class="fixed inset-0 bg-black/80 modal-backdrop hidden flex items-center justify-center p-4 z-50">
         <div class="bg-gray-800 border border-gray-700 w-full max-w-2xl rounded-3xl p-8 shadow-2xl overflow-y-auto max-h-[95vh] modal-content">
             <div class="flex justify-between items-center mb-8">
@@ -908,7 +934,6 @@
             <form id="form-cliente" class="space-y-6 text-left">
                 <input type="hidden" id="cliente-id">
 
-                <!-- DATOS DE CONTACTO -->
                 <div class="space-y-4">
                     <p class="text-xs font-bold text-blue-400 uppercase tracking-wider">📋 Datos de Contacto</p>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -918,7 +943,6 @@
                     </div>
                 </div>
 
-                <!-- SERVICIO -->
                 <div class="space-y-4">
                     <p class="text-xs font-bold text-blue-400 uppercase tracking-wider">🔐 Credenciales de Servicio</p>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -927,20 +951,17 @@
                     </div>
                 </div>
 
-                <!-- PRECIO -->
                 <div class="space-y-4">
                     <p class="text-xs font-bold text-blue-400 uppercase tracking-wider">💰 Información de Pago</p>
                     <input type="number" id="precio-servicio" placeholder="Precio ($)" min="0" step="0.01" class="w-full input-modern p-4 rounded-2xl outline-none text-sm font-bold text-green-400" required>
                 </div>
 
-                <!-- APLICACIÓN -->
                 <div class="space-y-4">
                     <p class="text-xs font-bold text-blue-400 uppercase tracking-wider">📺 Seleccionar Aplicación</p>
                     <div id="app-selector" class="grid grid-cols-4 md:grid-cols-7 gap-3"></div>
                     <input type="hidden" id="app-seleccionada" required>
                 </div>
 
-                <!-- PAGO Y VENCIMIENTO -->
                 <div class="space-y-4">
                     <p class="text-xs font-bold text-blue-400 uppercase tracking-wider">📅 Fechas</p>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -955,7 +976,6 @@
                     </div>
                 </div>
 
-                <!-- BOTONES -->
                 <div class="flex gap-4 pt-4">
                     <button type="submit" class="flex-1 btn-primary py-4 rounded-2xl font-bold uppercase tracking-wider shadow-lg transition">
                         ✓ GUARDAR
@@ -968,24 +988,100 @@
         </div>
     </div>
 
-    <!-- MODAL ALERTA VENCIMIENTO -->
-    <div id="modalAlerta" class="fixed inset-0 bg-black/80 modal-backdrop hidden flex items-center justify-center p-4 z-50">
-        <div class="alert-modal w-full max-w-md rounded-3xl shadow-2xl overflow-hidden alert-modal-content">
-            <div class="alert-header">
-                <span class="alert-icon">⏰</span>
-                <h3 class="alert-title">¡ALERTA!</h3>
-            </div>
-            <div class="alert-body">
-                <p class="alert-message">El servicio está próximo a vencer</p>
-                <p class="client-name-alert" id="alert-cliente-nombre">CLIENTE</p>
-                <p class="alert-message">
-                    Vence en: <span id="alert-dias-restantes" style="font-size: 20px; color: #fca5a5;">0</span> días
-                </p>
-                <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-                    <button class="alert-action-btn" onclick="abrirWhatsAppAlerta()">📱 Enviar WhatsApp</button>
-                    <button class="alert-action-btn" onclick="abrirModalEditarAlerta()" style="background: #3b82f6; color: white;">✏️ Editar Cliente</button>
+    <!-- MODAL VER DETALLES CLIENTE -->
+    <div id="modalDetalles" class="fixed inset-0 bg-black/80 modal-backdrop hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-gray-800 border border-gray-700 w-full max-w-2xl rounded-3xl shadow-2xl modal-content modal-detail">
+            <div class="sticky top-0 bg-gray-800 border-b border-gray-700 px-8 py-6 flex justify-between items-center">
+                <div>
+                    <h3 id="detail-titulo" class="text-2xl font-black uppercase text-blue-400 tracking-tight">Detalles del Cliente</h3>
+                    <p id="detail-status" class="text-xs text-gray-400 mt-2"></p>
                 </div>
-                <button class="alert-close-btn" onclick="cerrarAlerta()">CERRAR</button>
+                <button onclick="cerrarDetalles()" class="text-gray-500 hover:text-white text-3xl transition">✕</button>
+            </div>
+
+            <div class="px-8 py-6">
+                <!-- INFORMACIÓN PRINCIPAL -->
+                <div class="detail-section">
+                    <div class="detail-title">👤 Información de Contacto</div>
+                    <div class="detail-row">
+                        <span class="detail-label">Nombre</span>
+                        <span class="detail-value" id="detail-nombre"></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Teléfono</span>
+                        <span class="detail-value" id="detail-celular"></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Ciudad</span>
+                        <span class="detail-value" id="detail-ciudad"></span>
+                    </div>
+                </div>
+
+                <!-- CREDENCIALES -->
+                <div class="detail-section">
+                    <div class="detail-title">🔐 Credenciales del Servicio</div>
+                    <div class="detail-row">
+                        <span class="detail-label">Aplicación</span>
+                        <span class="detail-value" id="detail-app"></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Usuario</span>
+                        <div style="display: flex; align-items: center; gap: 4px;">
+                            <span class="detail-value" id="detail-usuario" style="margin: 0;"></span>
+                            <button class="detail-copy-btn" onclick="copiarAlPortapapeles(document.getElementById('detail-usuario').innerText)">Copiar</button>
+                        </div>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Contraseña</span>
+                        <div style="display: flex; align-items: center; gap: 4px;">
+                            <span class="detail-value" id="detail-clave" style="margin: 0;"></span>
+                            <button class="detail-copy-btn" onclick="copiarAlPortapapeles(document.getElementById('detail-clave').innerText)">Copiar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- INFORMACIÓN ECONÓMICA -->
+                <div class="detail-section">
+                    <div class="detail-title">💰 Información de Pago</div>
+                    <div class="detail-row">
+                        <span class="detail-label">Precio Mensual</span>
+                        <span class="detail-value" id="detail-precio"></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Fecha de Pago</span>
+                        <span class="detail-value" id="detail-fecha-pago"></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Fecha de Vencimiento</span>
+                        <span class="detail-value" id="detail-vencimiento"></span>
+                    </div>
+                </div>
+
+                <!-- INFORMACIÓN DE SEGUIMIENTO -->
+                <div class="detail-section">
+                    <div class="detail-title">📅 Información de Seguimiento</div>
+                    <div class="detail-row">
+                        <span class="detail-label">Vendedor</span>
+                        <span class="detail-value" id="detail-vendedor"></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Creado el</span>
+                        <span class="detail-value" id="detail-creado"></span>
+                    </div>
+                </div>
+
+                <!-- BOTONES DE ACCIÓN -->
+                <div class="flex gap-4 pt-6 border-t border-gray-700">
+                    <button onclick="abrirModalEditarDeDetalles()" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white py-3 rounded-xl font-bold uppercase text-sm transition">
+                        ✏️ Editar Cliente
+                    </button>
+                    <button onclick="abrirWhatsAppDeDetalles()" class="flex-1 bg-green-600 hover:bg-green-500 text-white py-3 rounded-xl font-bold uppercase text-sm transition">
+                        📱 Enviar WhatsApp
+                    </button>
+                    <button onclick="abrirEliminarDeDetalles()" class="flex-1 bg-red-600 hover:bg-red-500 text-white py-3 rounded-xl font-bold uppercase text-sm transition">
+                        🗑️ Eliminar
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -996,7 +1092,7 @@
             <h3 class="text-2xl font-bold text-red-400 mb-4">⚠️ Confirmar Eliminación</h3>
             <p class="text-gray-300 mb-6">¿Estás seguro de que deseas eliminar a <span id="nombre-cliente-confirmar" class="font-bold text-white"></span>? Esta acción no se puede deshacer.</p>
             <div class="flex gap-4">
-                <button onclick="confirmarEliminar()" class="flex-1 delete-btn py-3 rounded-xl font-bold uppercase text-white">ELIMINAR</button>
+                <button onclick="confirmarEliminar()" class="flex-1 bg-red-600 hover:bg-red-500 py-3 rounded-xl font-bold uppercase text-white">ELIMINAR</button>
                 <button onclick="cerrarConfirmar()" class="flex-1 bg-gray-700 hover:bg-gray-600 py-3 rounded-xl font-bold uppercase">CANCELAR</button>
             </div>
         </div>
@@ -1013,8 +1109,7 @@
         let currentUser = JSON.parse(localStorage.getItem('session_tvdigital'));
         let clienteEnEdicion = null;
         let clienteAEliminar = null;
-        let clienteAlertado = null;
-        let clientesAlertados = new Set();
+        let clienteDetalle = null;
         
         const configApps = {
             'LUMIX TV': { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/lumixtv.png', color: '#2563eb' },
@@ -1066,49 +1161,6 @@
             generarFiltrosApps(todosLosClientes);
             actualizarDashboard(todosLosClientes);
             filtrarClientes();
-            verificarClientesProximos();
-        }
-
-        function verificarClientesProximos() {
-            const hoy = new Date();
-            const clientesProximos = todosLosClientes.filter(c => {
-                const d = Math.ceil((new Date(c.fecha_vencimiento) - hoy) / (1000 * 60 * 60 * 24));
-                return d === 2 && !clientesAlertados.has(c.id);
-            });
-
-            if (clientesProximos.length > 0) {
-                mostrarAlerta(clientesProximos[0]);
-                clientesAlertados.add(clientesProximos[0].id);
-            }
-        }
-
-        function mostrarAlerta(cliente) {
-            clienteAlertado = cliente;
-            const hoy = new Date();
-            const d = Math.ceil((new Date(cliente.fecha_vencimiento) - hoy) / (1000 * 60 * 60 * 24));
-            
-            document.getElementById('alert-cliente-nombre').innerText = cliente.nombre_apellido;
-            document.getElementById('alert-dias-restantes').innerText = d;
-            document.getElementById('modalAlerta').classList.remove('hidden');
-        }
-
-        function cerrarAlerta() {
-            document.getElementById('modalAlerta').classList.add('hidden');
-            clienteAlertado = null;
-        }
-
-        function abrirWhatsAppAlerta() {
-            if (!clienteAlertado) return;
-            const hoy = new Date();
-            const d = Math.ceil((new Date(clienteAlertado.fecha_vencimiento) - hoy) / (1000 * 60 * 60 * 24));
-            enviarWA(clienteAlertado.celular, clienteAlertado.nombre_apellido, d);
-            cerrarAlerta();
-        }
-
-        function abrirModalEditarAlerta() {
-            if (!clienteAlertado) return;
-            abrirModalEditar(clienteAlertado);
-            cerrarAlerta();
         }
 
         function generarSelectorAppsModal() {
@@ -1169,6 +1221,70 @@
             clienteEnEdicion = null;
             document.getElementById('form-cliente').reset();
             document.querySelectorAll('.app-option').forEach(el => el.classList.remove('selected'));
+        }
+
+        function abrirDetalles(cliente) {
+            clienteDetalle = cliente;
+            const hoy = new Date();
+            const d = Math.ceil((new Date(cliente.fecha_vencimiento) - hoy) / (1000 * 60 * 60 * 24));
+            
+            let statusText = '';
+            if (d <= 0) {
+                statusText = '❌ VENCIDO';
+            } else if (d <= 7) {
+                statusText = '⏰ VENCE EN ' + d + ' DÍAS';
+            } else {
+                statusText = '✓ ACTIVO (' + d + ' DÍAS)';
+            }
+
+            document.getElementById('detail-titulo').innerText = cliente.nombre_apellido;
+            document.getElementById('detail-status').innerText = statusText;
+            document.getElementById('detail-nombre').innerText = cliente.nombre_apellido;
+            document.getElementById('detail-celular').innerText = cliente.celular;
+            document.getElementById('detail-ciudad').innerText = cliente.ciudad;
+            document.getElementById('detail-app').innerText = cliente.app_instalada;
+            document.getElementById('detail-usuario').innerText = cliente.usuario;
+            document.getElementById('detail-clave').innerText = cliente.clave;
+            document.getElementById('detail-precio').innerText = '$' + parseFloat(cliente.precio).toFixed(2);
+            document.getElementById('detail-fecha-pago').innerText = cliente.fecha_pago || 'Sin registrar';
+            document.getElementById('detail-vencimiento').innerText = cliente.fecha_vencimiento;
+            document.getElementById('detail-vendedor').innerText = cliente.vendedor_name || 'N/A';
+            document.getElementById('detail-creado').innerText = new Date(cliente.created_at).toLocaleDateString('es-ES') || 'N/A';
+
+            document.getElementById('modalDetalles').classList.remove('hidden');
+        }
+
+        function cerrarDetalles() {
+            document.getElementById('modalDetalles').classList.add('hidden');
+            clienteDetalle = null;
+        }
+
+        function copiarAlPortapapeles(texto) {
+            navigator.clipboard.writeText(texto).then(() => {
+                alert('✓ Copiado al portapapeles');
+            });
+        }
+
+        function abrirModalEditarDeDetalles() {
+            if (clienteDetalle) {
+                cerrarDetalles();
+                abrirModalEditar(clienteDetalle);
+            }
+        }
+
+        function abrirWhatsAppDeDetalles() {
+            if (clienteDetalle) {
+                const hoy = new Date();
+                const d = Math.ceil((new Date(clienteDetalle.fecha_vencimiento) - hoy) / (1000 * 60 * 60 * 24));
+                enviarWA(clienteDetalle.celular, clienteDetalle.nombre_apellido, d);
+            }
+        }
+
+        function abrirEliminarDeDetalles() {
+            if (clienteDetalle) {
+                cerrarDetalles();
+                abrirConfirmarEliminar(clienteDetalle);
+            }
         }
 
         function abrirConfirmarEliminar(cliente) {
@@ -1261,65 +1377,52 @@
             filtrados.forEach(c => {
                 const d = Math.ceil((new Date(c.fecha_vencimiento) - hoy) / (1000 * 60 * 60 * 24));
                 const config = configApps[c.app_instalada];
-                let estadoBadge = '';
                 
+                let statusClass = 'status-activo';
+                let statusIcon = '✓';
                 if (d <= 0) {
-                    estadoBadge = 'estado-vencido';
+                    statusClass = 'status-vencido';
+                    statusIcon = '❌';
                 } else if (d <= 7) {
-                    estadoBadge = 'estado-pronto';
-                } else {
-                    estadoBadge = 'estado-activo';
+                    statusClass = 'status-pronto';
+                    statusIcon = '⏰';
                 }
 
-                let vendorExpiryHTML = '';
-                if (currentUser.rol !== 'admin' && currentUser.vencimiento_acceso) {
-                    const venciDate = new Date(currentUser.vencimiento_acceso);
-                    const diasRestantes = Math.ceil((venciDate - hoy) / (1000 * 60 * 60 * 24));
-                    let expiryClass = 'expiry-ok';
-                    if (diasRestantes <= 0) expiryClass = 'expiry-expired';
-                    else if (diasRestantes <= 7) expiryClass = 'expiry-soon';
-                    
-                    vendorExpiryHTML = `
-                        <div class="vendor-expiry">
-                            <p class="vendor-expiry-text ${expiryClass}">
-                                📅 Tu acceso vence: ${currentUser.vencimiento_acceso} (${diasRestantes > 0 ? diasRestantes + ' días' : 'Vencido'})
-                            </p>
-                        </div>
-                    `;
-                }
+                let diasColor = 'text-green-400';
+                if (d <= 0) diasColor = 'text-red-500';
+                else if (d <= 7) diasColor = 'text-yellow-400';
                 
                 cont.innerHTML += `
-                    <div class="bg-gray-800 border border-gray-700 p-4 rounded-2xl card-cliente shadow-lg hover:shadow-2xl ${d <= 2 && d > 0 ? 'alerta-vencimiento' : ''}">
-                        <div class="client-header">
-                            <div class="w-12 h-12 bg-gray-900 rounded-xl flex items-center justify-center border border-gray-700 flex-shrink-0">
-                                <img src="${config ? config.logo : ''}" class="w-6 h-6 object-contain">
+                    <div class="card-cliente ${d <= 2 && d > 0 ? 'alerta-vencimiento' : ''}" onclick="abrirDetalles(${JSON.stringify(c).replace(/"/g, '&quot;')})">
+                        <div class="card-header">
+                            <div class="card-icon">
+                                <img src="${config ? config.logo : ''}" alt="${c.app_instalada}">
                             </div>
-                            <div class="client-info">
-                                <h3 class="font-black text-sm uppercase italic leading-tight">${c.nombre_apellido}</h3>
-                                <p class="text-[10px] font-bold text-gray-400 mt-1">📺 ${c.app_instalada} • 👤 ${c.usuario}</p>
-                                <p class="text-[9px] text-gray-500 mt-1">📍 ${c.ciudad} • 💰 $${parseFloat(c.precio).toFixed(2)}</p>
-                            </div>
-                            <div class="client-status">
-                                <div class="text-2xl font-black ${d <= 0 ? 'text-red-500' : d <= 7 ? 'text-yellow-400' : 'text-green-400'}">
-                                    ${d}
+                            <div class="card-header-info">
+                                <div class="card-title">${c.nombre_apellido}</div>
+                                <div class="card-subtitle">
+                                    📺 ${c.app_instalada}
                                 </div>
-                                <span class="estado-badge ${estadoBadge}">${d <= 0 ? 'Vencido' : d + ' días'}</span>
+                                <div class="card-meta">
+                                    👤 ${c.usuario}
+                                </div>
                             </div>
                         </div>
-                        
-                        ${vendorExpiryHTML}
-                        
-                        <div class="client-actions">
-                            <button onclick="enviarWA('${c.celular}', '${c.nombre_apellido}', ${d})" class="btn-action whatsapp-btn icon-btn transition-all" title="Enviar WhatsApp">
-                                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.67-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.076 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421-7.403h-.004a9.87 9.87 0 00-4.781 1.226l-.34-.17-3.524.35.356 3.465-.225.356a9.9 9.9 0 1513.6 0l-.227-.354.2-3.46-3.747-.368-.215.128c-1.324-.643-2.791-.988-4.514-.988z"/>
-                                </svg>
+
+                        <div class="card-dias">
+                            <div class="card-dias-numero ${diasColor}">${d}</div>
+                            <div class="card-dias-texto">${d <= 0 ? 'Vencido' : d === 1 ? 'Día' : 'Días'}</div>
+                        </div>
+
+                        <div class="card-footer">
+                            <button onclick="event.stopPropagation(); enviarWA('${c.celular}', '${c.nombre_apellido}', ${d})" class="btn-card-action btn-whatsapp">
+                                📱 WhatsApp
                             </button>
-                            <button onclick="abrirModalEditar(${JSON.stringify(c).replace(/"/g, '&quot;')})" class="btn-action edit-btn icon-btn transition-all" title="Editar cliente">
-                                ✏️
+                            <button onclick="event.stopPropagation(); abrirModalEditar(${JSON.stringify(c).replace(/"/g, '&quot;')})" class="btn-card-action btn-edit">
+                                ✏️ Editar
                             </button>
-                            <button onclick="abrirConfirmarEliminar(${JSON.stringify(c).replace(/"/g, '&quot;')})" class="btn-action delete-btn icon-btn transition-all" title="Eliminar cliente">
-                                🗑️
+                            <button onclick="event.stopPropagation(); abrirConfirmarEliminar(${JSON.stringify(c).replace(/"/g, '&quot;')})" class="btn-card-action btn-delete">
+                                🗑️ Eliminar
                             </button>
                         </div>
                     </div>`;
@@ -1351,7 +1454,6 @@
         }
 
         function enviarWA(celular, nombre, dias) {
-            // Agregar código de país si no lo tiene
             let numeroFormato = celular;
             if (!celular.startsWith('+')) {
                 numeroFormato = '+549' + celular;
