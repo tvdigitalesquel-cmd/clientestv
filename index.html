@@ -30,7 +30,7 @@
         .filtro-activo { border-color: white !important; background: linear-gradient(135deg, rgba(59, 130, 246, 0.8) 0%, rgba(37, 99, 235, 0.6) 100%); box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.4); }
         
         .app-filter {
-            border: 2px solid #374151;
+            border: 2px solid #1e3a8a;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
             filter: grayscale(0.8);
@@ -63,7 +63,7 @@
         }
         
         .app-option {
-            border: 2px solid #374151;
+            border: 2px solid #1e3a8a;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
             filter: grayscale(1);
@@ -85,8 +85,8 @@
             position: relative;
             overflow: hidden;
             cursor: pointer;
-            background: linear-gradient(135deg, rgba(31, 41, 55, 0.8) 0%, rgba(17, 24, 39, 0.9) 100%);
-            border: 1px solid rgba(59, 130, 246, 0.2);
+            background: linear-gradient(135deg, rgba(30, 58, 138, 0.6) 0%, rgba(15, 23, 42, 0.8) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.3);
             border-radius: 16px;
             padding: 0;
             display: flex;
@@ -107,8 +107,9 @@
 
         .card-cliente:hover {
             transform: translateY(-8px);
-            border-color: rgba(59, 130, 246, 0.5);
-            box-shadow: 0 25px 50px rgba(59, 130, 246, 0.2);
+            border-color: rgba(59, 130, 246, 0.6);
+            box-shadow: 0 25px 50px rgba(59, 130, 246, 0.3);
+            background: linear-gradient(135deg, rgba(30, 58, 138, 0.8) 0%, rgba(15, 23, 42, 0.95) 100%);
         }
 
         .card-cliente:hover::before {
@@ -117,7 +118,7 @@
 
         .card-cliente.alerta-vencimiento {
             border-color: #ef4444;
-            background: linear-gradient(135deg, rgba(127, 29, 29, 0.3) 0%, rgba(31, 41, 55, 0.8) 100%);
+            background: linear-gradient(135deg, rgba(127, 29, 29, 0.4) 0%, rgba(15, 23, 42, 0.8) 100%);
         }
 
         .card-cliente.alerta-vencimiento::before {
@@ -129,7 +130,7 @@
         /* CONTENIDO DE LA TARJETA */
         .card-header {
             padding: 20px;
-            border-bottom: 1px solid rgba(107, 114, 128, 0.1);
+            border-bottom: 1px solid rgba(59, 130, 246, 0.2);
             display: flex;
             align-items: center;
             gap: 16px;
@@ -139,8 +140,8 @@
             width: 80px;
             height: 80px;
             border-radius: 12px;
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(37, 99, 235, 0.1) 100%);
-            border: 1px solid rgba(59, 130, 246, 0.3);
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.3) 0%, rgba(37, 99, 235, 0.2) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.4);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -169,7 +170,7 @@
 
         .card-subtitle {
             font-size: 12px;
-            color: #9ca3af;
+            color: #93c5fd;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -178,7 +179,7 @@
 
         .card-meta {
             font-size: 11px;
-            color: #6b7280;
+            color: #60a5fa;
             display: flex;
             align-items: center;
             gap: 6px;
@@ -217,7 +218,7 @@
         .card-dias {
             text-align: center;
             padding: 8px;
-            background: rgba(59, 130, 246, 0.05);
+            background: rgba(30, 58, 138, 0.3);
             border-left: 1px solid rgba(59, 130, 246, 0.2);
         }
 
@@ -229,14 +230,14 @@
 
         .card-dias-texto {
             font-size: 10px;
-            color: #9ca3af;
+            color: #93c5fd;
             margin-top: 4px;
             text-transform: uppercase;
         }
 
         .card-footer {
             padding: 12px 16px;
-            border-top: 1px solid rgba(107, 114, 128, 0.1);
+            border-top: 1px solid rgba(59, 130, 246, 0.2);
             display: flex;
             gap: 6px;
         }
@@ -316,13 +317,13 @@
         }
         
         .stat-card {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(99, 102, 241, 0.1) 100%);
-            border: 1px solid rgba(59, 130, 246, 0.2);
+            background: linear-gradient(135deg, rgba(30, 58, 138, 0.4) 0%, rgba(15, 23, 42, 0.6) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.3);
             transition: all 0.3s ease;
         }
         .stat-card:hover {
-            border-color: rgba(59, 130, 246, 0.5);
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(99, 102, 241, 0.2) 100%);
+            border-color: rgba(59, 130, 246, 0.6);
+            background: linear-gradient(135deg, rgba(30, 58, 138, 0.6) 0%, rgba(15, 23, 42, 0.8) 100%);
             transform: translateY(-2px);
         }
         
@@ -343,15 +344,20 @@
         .btn-primary:active { transform: scale(0.98); }
         
         .input-modern {
-            background: rgba(31, 41, 55, 0.6);
+            background: rgba(30, 58, 138, 0.3);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(107, 114, 128, 0.3);
+            border: 1px solid rgba(59, 130, 246, 0.3);
             transition: all 0.3s ease;
+            color: #e0f2fe;
         }
         .input-modern:focus {
             border-color: rgba(59, 130, 246, 0.6);
-            background: rgba(31, 41, 55, 0.8);
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
+            background: rgba(30, 58, 138, 0.5);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+        }
+        
+        .input-modern::placeholder {
+            color: #7dd3fc;
         }
         
         html.light-mode .input-modern {
@@ -368,7 +374,7 @@
         .empty-state {
             text-align: center;
             padding: 60px 20px;
-            color: #9ca3af;
+            color: #7dd3fc;
         }
         
         .dialog-confirmar {
@@ -487,8 +493,13 @@
             overflow-y: auto;
         }
 
+        .modal-detail-bg {
+            background: linear-gradient(135deg, rgba(30, 58, 138, 0.6) 0%, rgba(15, 23, 42, 0.8) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
         .detail-section {
-            border-bottom: 1px solid rgba(107, 114, 128, 0.2);
+            border-bottom: 1px solid rgba(59, 130, 246, 0.2);
             padding: 20px 0;
         }
 
@@ -514,15 +525,15 @@
             align-items: center;
             margin-bottom: 10px;
             padding: 10px;
-            background: rgba(31, 41, 55, 0.5);
+            background: rgba(30, 58, 138, 0.2);
             border-radius: 8px;
-            border: 1px solid rgba(107, 114, 128, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
         }
 
         .detail-label {
             font-size: 12px;
             font-weight: 600;
-            color: #9ca3af;
+            color: #93c5fd;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
@@ -859,7 +870,7 @@
         }
     </style>
 </head>
-<body id="body-app" class="bg-gray-950 text-white font-sans min-h-screen pb-20 transition-all duration-300">
+<body id="body-app" class="font-sans min-h-screen pb-20 transition-all duration-300" style="background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #1e40af 100%);">
 
     <!-- NAVBAR -->
     <nav class="header-modern sticky top-0 z-40 backdrop-blur-xl bg-opacity-90">
@@ -886,8 +897,8 @@
         <!-- HEADER -->
         <header class="flex justify-between items-center mb-10">
             <div>
-                <h1 class="text-4xl font-black text-blue-400 uppercase tracking-tight">Gestor de Clientes</h1>
-                <p class="text-sm text-gray-500 mt-2">Administra todos tus clientes en un solo lugar</p>
+                <h1 class="text-4xl font-black text-blue-300 uppercase tracking-tight">Gestor de Clientes</h1>
+                <p class="text-sm text-blue-200 mt-2">Administra todos tus clientes en un solo lugar</p>
             </div>
             <div class="flex gap-4">
                 <a href="reporte.html" class="btn-reporte px-8 py-4 rounded-2xl font-bold shadow-lg text-sm active:scale-95 transition-transform text-white hidden md:block">
@@ -927,17 +938,17 @@
 
     <!-- MODAL CREAR/EDITAR CLIENTE -->
     <div id="modalCliente" class="fixed inset-0 bg-black/80 modal-backdrop hidden flex items-center justify-center p-4 z-50">
-        <div class="bg-gray-800 border border-gray-700 w-full max-w-2xl rounded-3xl p-8 shadow-2xl overflow-y-auto max-h-[95vh] modal-content">
+        <div class="modal-detail-bg rounded-3xl p-8 shadow-2xl overflow-y-auto max-h-[95vh] modal-content w-full max-w-2xl">
             <div class="flex justify-between items-center mb-8">
-                <h3 id="modal-titulo" class="text-3xl font-black uppercase text-blue-400 tracking-tight">Nuevo Cliente</h3>
-                <button onclick="cerrarModal()" class="text-gray-500 hover:text-white text-3xl transition">✕</button>
+                <h3 id="modal-titulo" class="text-3xl font-black uppercase text-blue-300 tracking-tight">Nuevo Cliente</h3>
+                <button onclick="cerrarModal()" class="text-blue-300 hover:text-white text-3xl transition">✕</button>
             </div>
             
             <form id="form-cliente" class="space-y-6 text-left">
                 <input type="hidden" id="cliente-id">
 
                 <div class="space-y-4">
-                    <p class="text-xs font-bold text-blue-400 uppercase tracking-wider">📋 Datos de Contacto</p>
+                    <p class="text-xs font-bold text-blue-300 uppercase tracking-wider">📋 Datos de Contacto</p>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <input type="text" id="nombre-apellido" placeholder="Nombre completo" class="input-modern p-4 rounded-2xl outline-none text-sm col-span-2" required>
                         <input type="text" id="celular-cliente" placeholder="WhatsApp (ej: 2946123456)" class="input-modern p-4 rounded-2xl outline-none text-sm" required>
@@ -946,7 +957,7 @@
                 </div>
 
                 <div class="space-y-4">
-                    <p class="text-xs font-bold text-blue-400 uppercase tracking-wider">🔐 Credenciales de Servicio</p>
+                    <p class="text-xs font-bold text-blue-300 uppercase tracking-wider">🔐 Credenciales de Servicio</p>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <input type="text" id="usuario-tv" placeholder="Usuario TV" class="input-modern p-4 rounded-2xl outline-none text-sm" required>
                         <input type="text" id="clave-tv" placeholder="Contraseña TV" class="input-modern p-4 rounded-2xl outline-none text-sm" required>
@@ -954,18 +965,18 @@
                 </div>
 
                 <div class="space-y-4">
-                    <p class="text-xs font-bold text-blue-400 uppercase tracking-wider">💰 Información de Pago</p>
+                    <p class="text-xs font-bold text-blue-300 uppercase tracking-wider">💰 Información de Pago</p>
                     <input type="number" id="precio-servicio" placeholder="Precio ($)" min="0" step="0.01" class="w-full input-modern p-4 rounded-2xl outline-none text-sm font-bold text-green-400" required>
                 </div>
 
                 <div class="space-y-4">
-                    <p class="text-xs font-bold text-blue-400 uppercase tracking-wider">📺 Seleccionar Aplicación</p>
+                    <p class="text-xs font-bold text-blue-300 uppercase tracking-wider">📺 Seleccionar Aplicación</p>
                     <div id="app-selector" class="grid grid-cols-4 md:grid-cols-7 gap-3"></div>
                     <input type="hidden" id="app-seleccionada" required>
                 </div>
 
                 <div class="space-y-4">
-                    <p class="text-xs font-bold text-blue-400 uppercase tracking-wider">📅 Fechas</p>
+                    <p class="text-xs font-bold text-blue-300 uppercase tracking-wider">📅 Fechas</p>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="text-xs font-bold text-green-400 block mb-1">Fecha de Pago</label>
@@ -982,7 +993,7 @@
                     <button type="submit" class="flex-1 btn-primary py-4 rounded-2xl font-bold uppercase tracking-wider shadow-lg transition">
                         ✓ GUARDAR
                     </button>
-                    <button type="button" onclick="cerrarModal()" class="flex-1 bg-gray-700 hover:bg-gray-600 py-4 rounded-2xl font-bold uppercase tracking-wider transition">
+                    <button type="button" onclick="cerrarModal()" class="flex-1 bg-blue-700 hover:bg-blue-600 py-4 rounded-2xl font-bold uppercase tracking-wider transition text-white">
                         CANCELAR
                     </button>
                 </div>
@@ -992,13 +1003,13 @@
 
     <!-- MODAL VER DETALLES CLIENTE -->
     <div id="modalDetalles" class="fixed inset-0 bg-black/80 modal-backdrop hidden flex items-center justify-center p-4 z-50">
-        <div class="bg-gray-800 border border-gray-700 w-full max-w-2xl rounded-3xl shadow-2xl modal-content modal-detail">
-            <div class="sticky top-0 bg-gray-800 border-b border-gray-700 px-8 py-6 flex justify-between items-center">
+        <div class="modal-detail-bg rounded-3xl shadow-2xl modal-content modal-detail w-full max-w-2xl">
+            <div class="sticky top-0 px-8 py-6 flex justify-between items-center border-b border-blue-500/30">
                 <div>
-                    <h3 id="detail-titulo" class="text-2xl font-black uppercase text-blue-400 tracking-tight">Detalles del Cliente</h3>
-                    <p id="detail-status" class="text-xs text-gray-400 mt-2"></p>
+                    <h3 id="detail-titulo" class="text-2xl font-black uppercase text-blue-300 tracking-tight">Detalles del Cliente</h3>
+                    <p id="detail-status" class="text-xs text-blue-200 mt-2"></p>
                 </div>
-                <button onclick="cerrarDetalles()" class="text-gray-500 hover:text-white text-3xl transition">✕</button>
+                <button onclick="cerrarDetalles()" class="text-blue-300 hover:text-white text-3xl transition">✕</button>
             </div>
 
             <div class="px-8 py-6">
@@ -1073,7 +1084,7 @@
                 </div>
 
                 <!-- BOTONES DE ACCIÓN -->
-                <div class="flex gap-4 pt-6 border-t border-gray-700">
+                <div class="flex gap-4 pt-6 border-t border-blue-500/30">
                     <button onclick="abrirModalEditarDeDetalles()" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white py-3 rounded-xl font-bold uppercase text-sm transition">
                         ✏️ Editar Cliente
                     </button>
@@ -1090,12 +1101,12 @@
 
     <!-- MODAL CONFIRMAR ELIMINACIÓN -->
     <div id="modalConfirmar" class="fixed inset-0 bg-black/80 dialog-confirmar hidden flex items-center justify-center p-4 z-50">
-        <div class="bg-gray-800 border border-gray-700 rounded-3xl p-8 shadow-2xl max-w-sm modal-content">
+        <div class="modal-detail-bg rounded-3xl p-8 shadow-2xl modal-content max-w-sm w-full">
             <h3 class="text-2xl font-bold text-red-400 mb-4">⚠️ Confirmar Eliminación</h3>
-            <p class="text-gray-300 mb-6">¿Estás seguro de que deseas eliminar a <span id="nombre-cliente-confirmar" class="font-bold text-white"></span>? Esta acción no se puede deshacer.</p>
+            <p class="text-blue-200 mb-6">¿Estás seguro de que deseas eliminar a <span id="nombre-cliente-confirmar" class="font-bold text-white"></span>? Esta acción no se puede deshacer.</p>
             <div class="flex gap-4">
                 <button onclick="confirmarEliminar()" class="flex-1 bg-red-600 hover:bg-red-500 py-3 rounded-xl font-bold uppercase text-white">ELIMINAR</button>
-                <button onclick="cerrarConfirmar()" class="flex-1 bg-gray-700 hover:bg-gray-600 py-3 rounded-xl font-bold uppercase">CANCELAR</button>
+                <button onclick="cerrarConfirmar()" class="flex-1 bg-blue-700 hover:bg-blue-600 py-3 rounded-xl font-bold uppercase text-white">CANCELAR</button>
             </div>
         </div>
     </div>
@@ -1170,9 +1181,9 @@
             let html = '';
             for (const [name, config] of Object.entries(configApps)) {
                 html += `
-                    <div onclick="seleccionarAppModal('${name}', this)" class="app-option bg-gray-900 p-3 rounded-xl flex flex-col items-center gap-2 text-center">
+                    <div onclick="seleccionarAppModal('${name}', this)" class="app-option bg-blue-900/30 p-3 rounded-xl flex flex-col items-center gap-2 text-center">
                         <img src="${config.logo}" class="w-8 h-8 object-contain">
-                        <span class="text-[7px] font-black uppercase leading-tight">${name}</span>
+                        <span class="text-[7px] font-black uppercase leading-tight text-blue-200">${name}</span>
                     </div>
                 `;
             }
