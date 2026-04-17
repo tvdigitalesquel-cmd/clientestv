@@ -25,15 +25,6 @@
             from { opacity: 0; }
             to { opacity: 1; }
         }
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
-            20%, 40%, 60%, 80% { transform: translateX(10px); }
-        }
-        @keyframes pulse-alert {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
         
         .alerta-vencimiento { animation: pulse-red 2s infinite; border-width: 2px; }
         .filtro-activo { border-color: white !important; background: linear-gradient(135deg, rgba(59, 130, 246, 0.8) 0%, rgba(37, 99, 235, 0.6) 100%); box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.4); }
@@ -137,16 +128,16 @@
 
         /* CONTENIDO DE LA TARJETA */
         .card-header {
-            padding: 16px;
+            padding: 20px;
             border-bottom: 1px solid rgba(107, 114, 128, 0.1);
             display: flex;
-            align-items: flex-start;
-            gap: 12px;
+            align-items: center;
+            gap: 16px;
         }
 
         .card-icon {
-            width: 48px;
-            height: 48px;
+            width: 80px;
+            height: 80px;
             border-radius: 12px;
             background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(37, 99, 235, 0.1) 100%);
             border: 1px solid rgba(59, 130, 246, 0.3);
@@ -157,8 +148,8 @@
         }
 
         .card-icon img {
-            width: 28px;
-            height: 28px;
+            width: 60px;
+            height: 60px;
             object-fit: contain;
         }
 
@@ -713,6 +704,27 @@
             .btn-card-action {
                 font-size: 10px !important;
             }
+
+            .card-icon {
+                width: 60px !important;
+                height: 60px !important;
+            }
+
+            .card-icon img {
+                width: 40px !important;
+                height: 40px !important;
+            }
+
+            .detail-row {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 8px !important;
+            }
+
+            .detail-value {
+                text-align: left !important;
+                width: 100% !important;
+            }
         }
 
         @media (max-width: 480px) {
@@ -778,12 +790,13 @@
             }
 
             .card-icon {
-                width: 40px !important;
-                height: 40px !important;
+                width: 50px !important;
+                height: 50px !important;
             }
 
             .card-icon img {
-                width: 22px !important;
+                width: 32px !important;
+                height: 32px !important;
             }
 
             .card-title {
@@ -842,17 +855,6 @@
             .app-option img {
                 width: 20px !important;
                 height: 20px !important;
-            }
-
-            .detail-row {
-                flex-direction: column !important;
-                align-items: flex-start !important;
-                gap: 8px !important;
-            }
-
-            .detail-value {
-                text-align: left !important;
-                width: 100% !important;
             }
         }
     </style>
