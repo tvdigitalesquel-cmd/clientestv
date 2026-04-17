@@ -39,6 +39,7 @@
             transition: all 0.3s ease;
             animation: slideIn 0.4s ease-out;
         }
+
         .stat-card:hover {
             border-color: rgba(59, 130, 246, 0.5);
             background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(99, 102, 241, 0.2) 100%);
@@ -270,6 +271,7 @@
         .tabla-reporte td {
             padding: 12px 15px;
             border-bottom: 1px solid rgba(107, 114, 128, 0.2);
+            font-size: 13px;
         }
 
         .tabla-reporte tbody tr:hover {
@@ -291,20 +293,222 @@
         .overflow-x-auto {
             overflow-x: auto;
         }
+
+        /* MOBILE STYLES */
+        @media (max-width: 768px) {
+            .header-modern .flex {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            .header-modern a, .header-modern button {
+                font-size: 10px;
+                padding: 8px 12px;
+            }
+
+            header {
+                flex-direction: column;
+                align-items: flex-start !important;
+            }
+
+            header h1 {
+                font-size: 24px !important;
+            }
+
+            header p {
+                font-size: 11px !important;
+            }
+
+            .stat-card {
+                padding: 16px !important;
+            }
+
+            .stat-card h2 {
+                font-size: 24px !important;
+            }
+
+            .stat-card p {
+                font-size: 10px !important;
+            }
+
+            .reporte-total {
+                font-size: 24px !important;
+            }
+
+            .reporte-label {
+                font-size: 10px !important;
+            }
+
+            .periodo-btn {
+                padding: 8px 12px;
+                font-size: 11px;
+            }
+
+            #rango-personalizado {
+                grid-template-columns: 1fr !important;
+                gap: 10px !important;
+            }
+
+            #rango-personalizado input {
+                font-size: 14px !important;
+                padding: 10px !important;
+            }
+
+            .export-btn, .btn-primary {
+                padding: 12px !important;
+                font-size: 12px !important;
+                width: 100%;
+            }
+
+            .tabla-reporte th {
+                padding: 10px;
+                font-size: 10px;
+            }
+
+            .tabla-reporte td {
+                padding: 8px 10px;
+                font-size: 12px;
+            }
+
+            .overflow-x-auto {
+                -webkit-overflow-scrolling: touch;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding-left: 8px !important;
+                padding-right: 8px !important;
+            }
+
+            header {
+                padding: 16px 8px !important;
+            }
+
+            header h1 {
+                font-size: 20px !important;
+            }
+
+            header p {
+                font-size: 10px !important;
+            }
+
+            .stat-card {
+                padding: 12px !important;
+            }
+
+            .stat-card h2 {
+                font-size: 20px !important;
+            }
+
+            .stat-card p {
+                font-size: 9px !important;
+            }
+
+            .reporte-total {
+                font-size: 20px !important;
+            }
+
+            .reporte-label {
+                font-size: 9px !important;
+            }
+
+            .periodo-btn {
+                padding: 6px 10px;
+                font-size: 10px;
+                flex: 1;
+            }
+
+            .periodo-btn-container {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 6px;
+            }
+
+            #rango-personalizado {
+                padding: 12px !important;
+                grid-template-columns: 1fr !important;
+                gap: 8px !important;
+            }
+
+            #rango-personalizado input {
+                font-size: 13px !important;
+                padding: 8px !important;
+                border-radius: 6px !important;
+            }
+
+            #rango-personalizado button {
+                padding: 8px !important;
+                font-size: 11px !important;
+            }
+
+            .export-btn, .btn-primary {
+                padding: 10px !important;
+                font-size: 11px !important;
+                width: 100%;
+            }
+
+            .btn-container {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .tabla-reporte {
+                font-size: 12px;
+            }
+
+            .tabla-reporte th {
+                padding: 8px 5px;
+                font-size: 9px;
+            }
+
+            .tabla-reporte td {
+                padding: 6px 5px;
+                font-size: 11px;
+            }
+
+            .overflow-x-auto {
+                margin: 0 -8px;
+                padding: 0 8px;
+            }
+        }
+
+        @media print {
+            .header-modern, .btn-container, .periodo-btn-container, #rango-personalizado {
+                display: none !important;
+            }
+
+            .tabla-reporte {
+                border-collapse: collapse;
+                width: 100%;
+            }
+
+            .tabla-reporte th, .tabla-reporte td {
+                border: 1px solid #ccc;
+                padding: 8px;
+                text-align: left;
+            }
+
+            .stat-card {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+        }
     </style>
 </head>
 <body id="body-app" class="bg-gray-950 text-white font-sans min-h-screen pb-20 transition-all duration-300">
 
     <!-- NAVBAR -->
     <nav class="header-modern sticky top-0 z-40 backdrop-blur-xl bg-opacity-90">
-        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-            <div class="flex gap-8">
-                <a href="index.html" class="py-4 font-bold uppercase text-sm hover:text-blue-400 transition">Mis Clientes</a>
-                <a href="equipo.html" id="link-equipos" class="py-4 font-bold uppercase text-sm hidden hover:text-blue-400 transition">Gestionar Equipo</a>
-                <a href="reporte.html" class="py-4 font-bold uppercase text-sm border-b-2 border-blue-500 text-blue-500 hover:text-blue-400 transition">Reportes</a>
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center flex-wrap gap-2">
+            <div class="flex gap-4 sm:gap-8 flex-wrap">
+                <a href="index.html" class="py-4 font-bold uppercase text-xs sm:text-sm hover:text-blue-400 transition">Mis Clientes</a>
+                <a href="equipo.html" id="link-equipos" class="py-4 font-bold uppercase text-xs sm:text-sm hidden hover:text-blue-400 transition">Equipo</a>
+                <button class="py-4 font-bold uppercase text-xs sm:text-sm border-b-2 border-blue-500 text-blue-500">Reportes</button>
             </div>
             <div class="flex items-center gap-4">
-                <span id="info-sesion" class="text-xs text-gray-400 font-semibold"></span>
+                <span id="info-sesion" class="text-[10px] sm:text-xs text-gray-400 font-semibold hidden sm:inline"></span>
                 
                 <!-- THEME TOGGLE -->
                 <button onclick="toggleTheme()" class="theme-toggle" title="Cambiar tema">
@@ -312,7 +516,7 @@
                     <span class="light-icon">☀️</span>
                 </button>
                 
-                <button onclick="logout()" class="text-red-400 font-bold text-xs uppercase border border-red-500/50 px-4 py-2 rounded-xl hover:bg-red-500/10 transition">Salir</button>
+                <button onclick="logout()" class="text-red-400 font-bold text-xs uppercase border border-red-500/50 px-2 sm:px-4 py-2 rounded-xl hover:bg-red-500/10 transition">Salir</button>
             </div>
         </div>
     </nav>
@@ -320,69 +524,69 @@
     <div class="container mx-auto px-4 py-8">
         <!-- HEADER -->
         <header class="mb-10">
-            <h1 class="text-4xl font-black text-blue-400 uppercase tracking-tight">Reportes de Ingresos</h1>
-            <p class="text-sm text-gray-500 mt-2">Analiza lo facturado por período</p>
+            <h1 class="text-3xl sm:text-4xl font-black text-blue-400 uppercase tracking-tight">Reportes de Ingresos</h1>
+            <p class="text-xs sm:text-sm text-gray-500 mt-2">Analiza lo facturado por período</p>
         </header>
 
         <!-- SELECTOR DE PERÍODO -->
-        <div class="bg-gray-800 border border-gray-700 p-8 rounded-3xl mb-8 shadow-lg">
-            <h2 class="text-2xl font-black text-blue-400 uppercase mb-6 tracking-tight">📊 Selecciona un Período</h2>
+        <div class="bg-gray-800 border border-gray-700 p-4 sm:p-8 rounded-3xl mb-8 shadow-lg">
+            <h2 class="text-xl sm:text-2xl font-black text-blue-400 uppercase mb-6 tracking-tight">📊 Selecciona un Período</h2>
             
-            <div class="flex gap-3 flex-wrap">
-                <button onclick="cambiarPeriodoReporte('semana')" class="periodo-btn active" id="btn-semana">📅 Esta Semana</button>
-                <button onclick="cambiarPeriodoReporte('mes')" class="periodo-btn" id="btn-mes">📆 Este Mes</button>
-                <button onclick="cambiarPeriodoReporte('año')" class="periodo-btn" id="btn-año">📈 Este Año</button>
+            <div class="periodo-btn-container">
+                <button onclick="cambiarPeriodoReporte('semana')" class="periodo-btn active" id="btn-semana">📅 Semana</button>
+                <button onclick="cambiarPeriodoReporte('mes')" class="periodo-btn" id="btn-mes">📆 Mes</button>
+                <button onclick="cambiarPeriodoReporte('año')" class="periodo-btn" id="btn-año">📈 Año</button>
                 <button onclick="cambiarPeriodoReporte('personalizado')" class="periodo-btn" id="btn-personalizado">🗓️ Personalizado</button>
             </div>
 
             <!-- RANGO PERSONALIZADO -->
             <div id="rango-personalizado" class="hidden mt-6 p-4 bg-gray-900 rounded-2xl border border-gray-700">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="text-xs font-bold text-blue-400 uppercase block mb-2">Desde</label>
-                        <input type="date" id="fecha-desde" class="input-modern w-full p-3 rounded-xl outline-none text-sm">
+                        <input type="date" id="fecha-desde" class="input-modern w-full p-3 sm:p-4 rounded-xl outline-none text-sm">
                     </div>
                     <div>
                         <label class="text-xs font-bold text-blue-400 uppercase block mb-2">Hasta</label>
-                        <input type="date" id="fecha-hasta" class="input-modern w-full p-3 rounded-xl outline-none text-sm">
+                        <input type="date" id="fecha-hasta" class="input-modern w-full p-3 sm:p-4 rounded-xl outline-none text-sm">
                     </div>
                 </div>
-                <button onclick="aplicarRangoPersonalizado()" class="btn-primary px-6 py-2 rounded-xl font-bold text-sm uppercase mt-4">Aplicar</button>
+                <button onclick="aplicarRangoPersonalizado()" class="btn-primary px-6 py-2 rounded-xl font-bold text-sm uppercase mt-4 w-full sm:w-auto">Aplicar</button>
             </div>
         </div>
 
         <!-- ESTADÍSTICAS -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-            <div class="reporte-card p-6 rounded-2xl">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-4 mb-8">
+            <div class="reporte-card p-6 sm:p-6 rounded-2xl">
                 <p class="reporte-label mb-2">Total Facturado</p>
                 <p class="reporte-total">$<span id="reporte-total">0.00</span></p>
             </div>
-            <div class="reporte-card p-6 rounded-2xl">
+            <div class="reporte-card p-6 sm:p-6 rounded-2xl">
                 <p class="reporte-label mb-2">Clientes Facturados</p>
                 <p class="reporte-total"><span id="reporte-clientes">0</span></p>
             </div>
-            <div class="reporte-card p-6 rounded-2xl">
+            <div class="reporte-card p-6 sm:p-6 rounded-2xl">
                 <p class="reporte-label mb-2">Promedio por Cliente</p>
                 <p class="reporte-total">$<span id="reporte-promedio">0.00</span></p>
             </div>
         </div>
 
-        <!-- BOTÓN DESCARGAR -->
-        <div class="mb-8 flex gap-4 flex-wrap">
-            <button onclick="descargarExcel()" class="export-btn px-8 py-4 rounded-2xl font-bold text-white text-sm uppercase flex items-center gap-2 shadow-lg">
-                📥 Descargar en Excel
+        <!-- BOTONES DESCARGAR -->
+        <div class="btn-container mb-8">
+            <button onclick="descargarExcel()" class="export-btn px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-bold text-white text-xs sm:text-sm uppercase flex items-center justify-center gap-2 shadow-lg">
+                📥 Descargar Excel
             </button>
-            <button onclick="imprimirReporte()" class="btn-primary px-8 py-4 rounded-2xl font-bold text-white text-sm uppercase flex items-center gap-2 shadow-lg">
+            <button onclick="imprimirReporte()" class="btn-primary px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-bold text-white text-xs sm:text-sm uppercase flex items-center justify-center gap-2 shadow-lg">
                 🖨️ Imprimir
             </button>
         </div>
 
         <!-- TABLA DE DATOS -->
-        <div class="bg-gray-800 border border-gray-700 rounded-3xl p-8 shadow-lg overflow-x-auto">
-            <h2 class="text-2xl font-black text-blue-400 uppercase mb-6 tracking-tight">Detalle de Facturación</h2>
-            <div id="tabla-contenedor">
+        <div class="bg-gray-800 border border-gray-700 rounded-3xl p-4 sm:p-8 shadow-lg">
+            <h2 class="text-xl sm:text-2xl font-black text-blue-400 uppercase mb-6 tracking-tight">Detalle de Facturación</h2>
+            <div id="tabla-contenedor" class="overflow-x-auto">
                 <div class="empty-state">
-                    <p class="text-xl font-bold mb-2">Cargando datos...</p>
+                    <p class="text-lg sm:text-xl font-bold mb-2">Cargando datos...</p>
                 </div>
             </div>
         </div>
@@ -433,7 +637,7 @@
         }
 
         async function cargarClientes() {
-            const { data } = await supabaseClient.from('clientes').select('*').eq('creado_por', currentUser.id).order('fecha_vencimiento', { ascending: true });
+            const { data } = await supabaseClient.from('clientes').select('*').eq('creado_por', currentUser.id).order('fecha_pago', { ascending: false });
             todosLosClientes = data || [];
             actualizarReporte();
         }
@@ -493,8 +697,9 @@
             let clientesFacturados = new Set();
 
             todosLosClientes.forEach(c => {
-                const fechaVencimiento = new Date(c.fecha_vencimiento);
-                if (fechaVencimiento >= fechaInicio && fechaVencimiento <= fechaFin) {
+                const fechaPago = new Date(c.fecha_pago || c.fecha_vencimiento);
+                
+                if (fechaPago >= fechaInicio && fechaPago <= fechaFin) {
                     const precio = parseFloat(c.precio) || 0;
                     totalFacturado += precio;
                     clientesFacturados.add(c.id);
@@ -506,23 +711,21 @@
                         ciudad: c.ciudad,
                         telefono: c.celular,
                         precio: precio,
-                        fecha: c.fecha_vencimiento
+                        fechaPago: c.fecha_pago || 'Sin registrar',
+                        fechaVencimiento: c.fecha_vencimiento
                     });
                 }
             });
 
-            // Ordenar por fecha descendente
-            datosReporte.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+            datosReporte.sort((a, b) => new Date(b.fechaPago) - new Date(a.fechaPago));
 
             const cantidadClientes = clientesFacturados.size;
             const promedio = cantidadClientes > 0 ? (totalFacturado / cantidadClientes).toFixed(2) : 0;
 
-            // Actualizar estadísticas
             document.getElementById('reporte-total').innerText = totalFacturado.toFixed(2);
             document.getElementById('reporte-clientes').innerText = cantidadClientes;
             document.getElementById('reporte-promedio').innerText = promedio;
 
-            // Generar tabla
             generarTabla(datosReporte, totalFacturado);
         }
 
@@ -532,28 +735,28 @@
             if (datos.length === 0) {
                 contenedor.innerHTML = `
                     <div class="empty-state">
-                        <p class="text-xl font-bold mb-2">No hay datos para mostrar</p>
-                        <p class="text-sm">No hay clientes facturados en este período</p>
+                        <p class="text-lg sm:text-xl font-bold mb-2">No hay datos</p>
+                        <p class="text-xs sm:text-sm">No hay clientes pagados en este período</p>
                     </div>
                 `;
                 return;
             }
 
             let html = `
-                <div class="overflow-x-auto">
-                    <table class="tabla-reporte">
-                        <thead>
-                            <tr>
-                                <th>Cliente</th>
-                                <th>Aplicación</th>
-                                <th>Usuario</th>
-                                <th>Ciudad</th>
-                                <th>Teléfono</th>
-                                <th>Precio ($)</th>
-                                <th>Fecha Vencimiento</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+                <table class="tabla-reporte">
+                    <thead>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Aplicación</th>
+                            <th>Usuario</th>
+                            <th class="hidden sm:table-cell">Ciudad</th>
+                            <th class="hidden md:table-cell">Teléfono</th>
+                            <th>Precio ($)</th>
+                            <th class="hidden sm:table-cell">Fecha Pago</th>
+                            <th class="hidden lg:table-cell">Vencimiento</th>
+                        </tr>
+                    </thead>
+                    <tbody>
             `;
 
             datos.forEach(d => {
@@ -562,23 +765,24 @@
                         <td>${d.nombre}</td>
                         <td>${d.app}</td>
                         <td>${d.usuario}</td>
-                        <td>${d.ciudad}</td>
-                        <td>${d.telefono}</td>
+                        <td class="hidden sm:table-cell">${d.ciudad}</td>
+                        <td class="hidden md:table-cell">${d.telefono}</td>
                         <td>$${d.precio.toFixed(2)}</td>
-                        <td>${d.fecha}</td>
+                        <td class="hidden sm:table-cell">${d.fechaPago}</td>
+                        <td class="hidden lg:table-cell">${d.fechaVencimiento}</td>
                     </tr>
                 `;
             });
 
             html += `
-                            <tr>
-                                <td colspan="5" style="text-align: right;">TOTAL</td>
-                                <td>$${total.toFixed(2)}</td>
-                                <td></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                        <tr>
+                            <td colspan="5" style="text-align: right;">TOTAL</td>
+                            <td>$${total.toFixed(2)}</td>
+                            <td class="hidden sm:table-cell"></td>
+                            <td class="hidden lg:table-cell"></td>
+                        </tr>
+                    </tbody>
+                </table>
             `;
 
             contenedor.innerHTML = html;
@@ -591,8 +795,8 @@
             let totalFacturado = 0;
 
             todosLosClientes.forEach(c => {
-                const fechaVencimiento = new Date(c.fecha_vencimiento);
-                if (fechaVencimiento >= fechaInicio && fechaVencimiento <= fechaFin) {
+                const fechaPago = new Date(c.fecha_pago || c.fecha_vencimiento);
+                if (fechaPago >= fechaInicio && fechaPago <= fechaFin) {
                     const precio = parseFloat(c.precio) || 0;
                     totalFacturado += precio;
                     
@@ -603,12 +807,12 @@
                         'Ciudad': c.ciudad,
                         'Teléfono': c.celular,
                         'Precio ($)': precio.toFixed(2),
+                        'Fecha Pago': c.fecha_pago || 'Sin registrar',
                         'Fecha Vencimiento': c.fecha_vencimiento
                     });
                 }
             });
 
-            // Agregar fila de total
             datosExcel.push({
                 'Nombre Cliente': '',
                 'Aplicación': '',
@@ -616,6 +820,7 @@
                 'Ciudad': 'TOTAL',
                 'Teléfono': '',
                 'Precio ($)': totalFacturado.toFixed(2),
+                'Fecha Pago': '',
                 'Fecha Vencimiento': ''
             });
 
@@ -623,7 +828,6 @@
             const workbook = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(workbook, worksheet, 'Reporte');
 
-            // Estilos
             worksheet['!cols'] = [
                 { wch: 20 },
                 { wch: 15 },
@@ -631,6 +835,7 @@
                 { wch: 15 },
                 { wch: 15 },
                 { wch: 12 },
+                { wch: 15 },
                 { wch: 18 }
             ];
 
