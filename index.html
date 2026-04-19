@@ -27,10 +27,10 @@
         }
         
         .alerta-vencimiento { animation: pulse-red 2s infinite; border-width: 2px; }
-        .filtro-activo { border-color: white !important; background: linear-gradient(135deg, rgba(59, 130, 246, 0.85) 0%, rgba(37, 99, 235, 0.65) 100%); box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.4); }
+        .filtro-activo { border-color: white !important; background: linear-gradient(135deg, rgba(59, 130, 246, 0.8) 0%, rgba(37, 99, 235, 0.6) 100%); box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.4); }
         
         .app-filter {
-            border: 2px solid #1d4ed8;
+            border: 2px solid #1e3a8a;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
             filter: grayscale(0.8);
@@ -63,7 +63,7 @@
         }
         
         .app-option {
-            border: 2px solid #1d4ed8;
+            border: 2px solid #1e3a8a;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
             filter: grayscale(1);
@@ -85,7 +85,7 @@
             position: relative;
             overflow: hidden;
             cursor: pointer;
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.94) 0%, rgba(29, 78, 216, 0.88) 100%);
+            background: linear-gradient(135deg, rgba(51, 65, 85, 0.8) 0%, rgba(30, 41, 59, 0.9) 100%);
             border: 1px solid rgba(148, 163, 184, 0.3);
             border-radius: 16px;
             padding: 0;
@@ -100,7 +100,7 @@
             left: 0;
             right: 0;
             height: 4px;
-            background: linear-gradient(90deg, #60a5fa, #2563eb);
+            background: linear-gradient(90deg, #8b5cf6, #7c3aed);
             opacity: 0;
             transition: opacity 0.3s ease;
         }
@@ -108,8 +108,8 @@
         .card-cliente:hover {
             transform: translateY(-8px);
             border-color: rgba(148, 163, 184, 0.5);
-            box-shadow: 0 25px 50px rgba(37, 99, 235, 0.32);
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.98) 0%, rgba(37, 99, 235, 1) 100%);
+            box-shadow: 0 25px 50px rgba(139, 92, 246, 0.3);
+            background: linear-gradient(135deg, rgba(51, 65, 85, 0.95) 0%, rgba(30, 41, 59, 1) 100%);
         }
 
         .card-cliente:hover::before {
@@ -118,7 +118,7 @@
 
         .card-cliente.alerta-vencimiento {
             border-color: #ef4444;
-            background: linear-gradient(135deg, rgba(120, 53, 15, 0.35) 0%, rgba(15, 23, 42, 0.84) 100%);
+            background: linear-gradient(135deg, rgba(127, 29, 29, 0.4) 0%, rgba(30, 41, 59, 0.8) 100%);
         }
 
         .card-cliente.alerta-vencimiento::before {
@@ -140,8 +140,8 @@
             width: 80px;
             height: 80px;
             border-radius: 12px;
-            background: linear-gradient(135deg, rgba(96, 165, 250, 0.3) 0%, rgba(37, 99, 235, 0.2) 100%);
-            border: 1px solid rgba(96, 165, 250, 0.4);
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.3) 0%, rgba(124, 58, 237, 0.2) 100%);
+            border: 1px solid rgba(139, 92, 246, 0.4);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -170,7 +170,7 @@
 
         .card-subtitle {
             font-size: 12px;
-            color: #dbeafe;
+            color: #cbd5e1;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -179,7 +179,7 @@
 
         .card-meta {
             font-size: 11px;
-            color: #bfdbfe;
+            color: #a1a5b0;
             display: flex;
             align-items: center;
             gap: 6px;
@@ -218,8 +218,8 @@
         .card-dias {
             text-align: center;
             padding: 8px;
-            background: rgba(59, 130, 246, 0.12);
-            border-left: 1px solid rgba(59, 130, 246, 0.22);
+            background: rgba(139, 92, 246, 0.1);
+            border-left: 1px solid rgba(139, 92, 246, 0.2);
         }
 
         .card-dias-numero {
@@ -230,7 +230,7 @@
 
         .card-dias-texto {
             font-size: 10px;
-            color: #dbeafe;
+            color: #cbd5e1;
             margin-top: 4px;
             text-transform: uppercase;
         }
@@ -271,15 +271,15 @@
         }
 
         .btn-edit {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(15, 118, 110, 0.1) 100%);
-            color: #bfdbfe;
-            border: 1px solid rgba(59, 130, 246, 0.3);
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(124, 58, 237, 0.1) 100%);
+            color: #c4b5fd;
+            border: 1px solid rgba(139, 92, 246, 0.3);
         }
 
         .btn-edit:hover {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.4) 0%, rgba(15, 118, 110, 0.2) 100%);
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.4) 0%, rgba(124, 58, 237, 0.2) 100%);
             transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(59, 130, 246, 0.2);
+            box-shadow: 0 8px 16px rgba(139, 92, 246, 0.2);
         }
 
         .btn-delete {
@@ -306,14 +306,14 @@
         }
         
         .header-modern {
-            background: linear-gradient(135deg, #1f2937 0%, #374151 50%, #4b5563 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #0c4a6e 100%);
             backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(148, 163, 184, 0.28);
+            border-bottom: 1px solid rgba(59, 130, 246, 0.2);
         }
         
         html.light-mode .header-modern {
-            background: linear-gradient(135deg, #e5e7eb 0%, #cbd5e1 50%, #9ca3af 100%);
-            border-bottom: 1px solid rgba(107, 114, 128, 0.35);
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 50%, #1e40af 100%);
+            border-bottom: 1px solid rgba(59, 130, 246, 0.3);
         }
         
         /* ESTADÍSTICAS - Cambio de estilos */
@@ -399,12 +399,12 @@
         }
         
         html.light-mode .stat-card {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(6, 182, 212, 0.08) 100%);
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(99, 102, 241, 0.08) 100%);
             border: 1px solid rgba(59, 130, 246, 0.3);
         }
         
         html.light-mode .stat-card:hover {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(96, 165, 250, 0.15) 100%);
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(99, 102, 241, 0.15) 100%);
         }
         
         .btn-primary {
@@ -419,7 +419,7 @@
         .btn-primary:active { transform: scale(0.98); }
         
         .input-modern {
-            background: rgba(31, 41, 55, 0.4);
+            background: rgba(51, 65, 85, 0.3);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(148, 163, 184, 0.3);
             transition: all 0.3s ease;
@@ -427,12 +427,12 @@
         }
         .input-modern:focus {
             border-color: rgba(139, 92, 246, 0.6);
-            background: rgba(6, 78, 59, 0.45);
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+            background: rgba(51, 65, 85, 0.5);
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
         }
         
         .input-modern::placeholder {
-            color: #dbeafe;
+            color: #cbd5e1;
         }
         
         html.light-mode .input-modern {
@@ -453,7 +453,7 @@
         .empty-state {
             text-align: center;
             padding: 60px 20px;
-            color: #dbeafe;
+            color: #cbd5e1;
         }
         
         .dialog-confirmar {
@@ -464,8 +464,8 @@
             cursor: pointer;
             width: 50px;
             height: 28px;
-            background: rgba(236, 253, 245, 0.12);
-            border: 1px solid rgba(204, 251, 241, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 14px;
             display: flex;
             align-items: center;
@@ -518,32 +518,32 @@
 
         /* LIGHT MODE BODY */
         html.light-mode {
-            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 50%, #d1d5db 100%);
+            background: linear-gradient(135deg, #e0f2fe 0%, #f0f4f8 50%, #e8ecf1 100%);
             color: #1f2937;
         }
         
         html.light-mode body {
-            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 50%, #d1d5db 100%) !important;
+            background: linear-gradient(135deg, #e0f2fe 0%, #f0f4f8 50%, #e8ecf1 100%) !important;
             color: #1f2937 !important;
         }
 
         /* LIGHT MODE CARDS */
         html.light-mode .card-cliente {
-            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
             border: 1px solid rgba(59, 130, 246, 0.2);
         }
 
         html.light-mode .card-cliente:hover {
             border-color: rgba(59, 130, 246, 0.4);
-            box-shadow: 0 25px 50px rgba(59, 130, 246, 0.16);
+            box-shadow: 0 25px 50px rgba(59, 130, 246, 0.15);
         }
 
         html.light-mode .card-header {
-            border-bottom: 1px solid rgba(59, 130, 246, 0.12);
+            border-bottom: 1px solid rgba(59, 130, 246, 0.1);
         }
 
         html.light-mode .card-title {
-            color: #1d4ed8;
+            color: #1e3a8a;
         }
 
         html.light-mode .card-subtitle {
@@ -556,7 +556,7 @@
 
         html.light-mode .card-dias {
             background: rgba(59, 130, 246, 0.08);
-            border-left: 1px solid rgba(59, 130, 246, 0.22);
+            border-left: 1px solid rgba(59, 130, 246, 0.2);
         }
 
         html.light-mode .card-dias-texto {
@@ -568,13 +568,13 @@
         }
 
         html.light-mode .card-icon {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(6, 182, 212, 0.08) 100%);
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(99, 102, 241, 0.08) 100%);
             border: 1px solid rgba(59, 130, 246, 0.2);
         }
 
         /* LIGHT MODE MODAL */
         html.light-mode .modal-detail-bg {
-            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
             border: 1px solid rgba(59, 130, 246, 0.2);
         }
 
@@ -584,7 +584,7 @@
         }
 
         html.light-mode .detail-label {
-            color: #1d4ed8;
+            color: #1e40af;
         }
 
         html.light-mode .detail-value {
@@ -602,7 +602,7 @@
 
         /* DARK MODE BACKGROUND */
         body {
-            background: linear-gradient(135deg, #111827 0%, #374151 50%, #4b5563 100%);
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #1e40af 100%);
         }
 
         /* MODAL DETALLE CLIENTE */
@@ -612,12 +612,12 @@
         }
 
         .modal-detail-bg {
-            background: linear-gradient(135deg, rgba(30, 58, 138, 0.96) 0%, rgba(30, 64, 175, 0.96) 100%);
-            border: 1px solid rgba(96, 165, 250, 0.3);
+            background: linear-gradient(135deg, rgba(48, 42, 85, 0.95) 0%, rgba(24, 18, 54, 0.95) 100%);
+            border: 1px solid rgba(139, 92, 246, 0.3);
         }
 
         .detail-section {
-            border-bottom: 1px solid rgba(148, 163, 184, 0.28);
+            border-bottom: 1px solid rgba(139, 92, 246, 0.2);
             padding: 20px 0;
         }
 
@@ -629,7 +629,7 @@
             font-size: 12px;
             font-weight: 700;
             text-transform: uppercase;
-            color: #bfdbfe;
+            color: #c4b5fd;
             letter-spacing: 1px;
             margin-bottom: 12px;
             display: flex;
@@ -643,15 +643,15 @@
             align-items: center;
             margin-bottom: 10px;
             padding: 10px;
-            background: rgba(59, 130, 246, 0.15);
+            background: rgba(139, 92, 246, 0.15);
             border-radius: 8px;
-            border: 1px solid rgba(59, 130, 246, 0.2);
+            border: 1px solid rgba(139, 92, 246, 0.2);
         }
 
         .detail-label {
             font-size: 12px;
             font-weight: 600;
-            color: #dbeafe;
+            color: #cbd5e1;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
@@ -665,9 +665,9 @@
 
         .detail-copy-btn {
             padding: 4px 8px;
-            background: rgba(59, 130, 246, 0.2);
-            border: 1px solid rgba(59, 130, 246, 0.3);
-            color: #bfdbfe;
+            background: rgba(139, 92, 246, 0.2);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            color: #c4b5fd;
             border-radius: 6px;
             font-size: 11px;
             cursor: pointer;
@@ -676,12 +676,12 @@
         }
 
         .detail-copy-btn:hover {
-            background: rgba(59, 130, 246, 0.4);
+            background: rgba(139, 92, 246, 0.4);
             transform: scale(1.05);
         }
 
         .btn-reporte {
-            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
             transition: all 0.3s ease;
         }
         .btn-reporte:hover {
@@ -994,9 +994,9 @@
     <nav class="header-modern sticky top-0 z-40 backdrop-blur-xl bg-opacity-90">
         <div class="container mx-auto px-4 py-4 flex justify-between items-center">
             <div class="flex gap-8">
-                <a href="index.html" class="py-4 font-bold uppercase text-sm border-b-2 border-blue-500 text-blue-400 hover:text-blue-300 transition">Mis Clientes</a>
-                <a href="equipo.html" id="link-equipos" class="py-4 font-bold uppercase text-sm hidden hover:text-slate-300 transition">Gestionar Equipo</a>
-                <a href="reporte.html" class="py-4 font-bold uppercase text-sm hover:text-slate-300 transition">Reportes</a>
+                <a href="index.html" class="py-4 font-bold uppercase text-sm border-b-2 border-blue-500 text-blue-500 hover:text-blue-400 transition">Mis Clientes</a>
+                <a href="equipo.html" id="link-equipos" class="py-4 font-bold uppercase text-sm hidden hover:text-blue-400 transition">Gestionar Equipo</a>
+                <a href="reporte.html" class="py-4 font-bold uppercase text-sm hover:text-blue-400 transition">Reportes</a>
             </div>
             <div class="flex items-center gap-4">
                 <span id="info-sesion" class="text-xs text-gray-400 font-semibold"></span>
@@ -1006,7 +1006,7 @@
                     <span class="light-icon">☀️</span>
                 </button>
                 
-                <button onclick="logout()" class="text-rose-400 font-bold text-xs uppercase border border-rose-500/50 px-4 py-2 rounded-xl hover:bg-rose-500/10 transition">Salir</button>
+                <button onclick="logout()" class="text-red-400 font-bold text-xs uppercase border border-red-500/50 px-4 py-2 rounded-xl hover:bg-red-500/10 transition">Salir</button>
             </div>
         </div>
     </nav>
@@ -1016,7 +1016,7 @@
         <header class="flex justify-between items-center mb-10">
             <div>
                 <h1 class="text-4xl font-black text-blue-300 dark:text-blue-300 uppercase tracking-tight" style="color: inherit;">Gestor de Clientes</h1>
-                <p class="text-sm dark:text-slate-200 text-slate-700 mt-2">Administra todos tus clientes en un solo lugar</p>
+                <p class="text-sm dark:text-blue-200 text-blue-700 mt-2">Administra todos tus clientes en un solo lugar</p>
             </div>
             <div class="flex gap-4">
                 <a href="reporte.html" class="btn-reporte px-8 py-4 rounded-2xl font-bold shadow-lg text-sm active:scale-95 transition-transform text-white hidden md:block">
@@ -1058,15 +1058,15 @@
     <div id="modalCliente" class="fixed inset-0 bg-black/80 modal-backdrop hidden flex items-center justify-center p-4 z-50">
         <div class="modal-detail-bg rounded-3xl p-8 shadow-2xl overflow-y-auto max-h-[95vh] modal-content w-full max-w-2xl">
             <div class="flex justify-between items-center mb-8">
-                <h3 id="modal-titulo" class="text-3xl font-black uppercase text-blue-300 tracking-tight">Nuevo Cliente</h3>
-                <button onclick="cerrarModal()" class="text-blue-300 hover:text-white text-3xl transition">✕</button>
+                <h3 id="modal-titulo" class="text-3xl font-black uppercase text-purple-300 tracking-tight">Nuevo Cliente</h3>
+                <button onclick="cerrarModal()" class="text-purple-300 hover:text-white text-3xl transition">✕</button>
             </div>
             
             <form id="form-cliente" class="space-y-6 text-left">
                 <input type="hidden" id="cliente-id">
 
                 <div class="space-y-4">
-                    <p class="text-xs font-bold text-blue-300 uppercase tracking-wider">📋 Datos de Contacto</p>
+                    <p class="text-xs font-bold text-purple-300 uppercase tracking-wider">📋 Datos de Contacto</p>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <input type="text" id="nombre-apellido" placeholder="Nombre completo" class="input-modern p-4 rounded-2xl outline-none text-sm col-span-2" required>
                         <input type="text" id="celular-cliente" placeholder="WhatsApp (ej: 2946123456)" class="input-modern p-4 rounded-2xl outline-none text-sm" required>
@@ -1075,7 +1075,7 @@
                 </div>
 
                 <div class="space-y-4">
-                    <p class="text-xs font-bold text-blue-300 uppercase tracking-wider">🔐 Credenciales de Servicio</p>
+                    <p class="text-xs font-bold text-purple-300 uppercase tracking-wider">🔐 Credenciales de Servicio</p>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <input type="text" id="usuario-tv" placeholder="Usuario TV" class="input-modern p-4 rounded-2xl outline-none text-sm" required>
                         <input type="text" id="clave-tv" placeholder="Contraseña TV" class="input-modern p-4 rounded-2xl outline-none text-sm" required>
@@ -1083,25 +1083,25 @@
                 </div>
 
                 <div class="space-y-4">
-                    <p class="text-xs font-bold text-blue-300 uppercase tracking-wider">💰 Información de Pago</p>
-                    <input type="number" id="precio-servicio" placeholder="Precio ($)" min="0" step="0.01" class="w-full input-modern p-4 rounded-2xl outline-none text-sm font-bold text-emerald-400" required>
+                    <p class="text-xs font-bold text-purple-300 uppercase tracking-wider">💰 Información de Pago</p>
+                    <input type="number" id="precio-servicio" placeholder="Precio ($)" min="0" step="0.01" class="w-full input-modern p-4 rounded-2xl outline-none text-sm font-bold text-green-400" required>
                 </div>
 
                 <div class="space-y-4">
-                    <p class="text-xs font-bold text-blue-300 uppercase tracking-wider">📺 Seleccionar Aplicación</p>
+                    <p class="text-xs font-bold text-purple-300 uppercase tracking-wider">📺 Seleccionar Aplicación</p>
                     <div id="app-selector" class="grid grid-cols-4 md:grid-cols-7 gap-3"></div>
                     <input type="hidden" id="app-seleccionada" required>
                 </div>
 
                 <div class="space-y-4">
-                    <p class="text-xs font-bold text-blue-300 uppercase tracking-wider">📅 Fechas</p>
+                    <p class="text-xs font-bold text-purple-300 uppercase tracking-wider">📅 Fechas</p>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label class="text-xs font-bold text-emerald-400 block mb-1">Fecha de Pago</label>
+                            <label class="text-xs font-bold text-green-400 block mb-1">Fecha de Pago</label>
                             <input type="date" id="fecha-pago" class="w-full input-modern p-4 rounded-2xl outline-none text-sm" required>
                         </div>
                         <div>
-                            <label class="text-xs font-bold text-rose-400 block mb-1">Vencimiento</label>
+                            <label class="text-xs font-bold text-red-400 block mb-1">Vencimiento</label>
                             <input type="date" id="vencimiento-cliente" class="w-full input-modern p-4 rounded-2xl outline-none text-sm" required>
                         </div>
                     </div>
@@ -1111,7 +1111,7 @@
                     <button type="submit" class="flex-1 btn-primary py-4 rounded-2xl font-bold uppercase tracking-wider shadow-lg transition">
                         ✓ GUARDAR
                     </button>
-                    <button type="button" onclick="cerrarModal()" class="flex-1 bg-blue-700 hover:bg-blue-600 py-4 rounded-2xl font-bold uppercase tracking-wider transition text-white">
+                    <button type="button" onclick="cerrarModal()" class="flex-1 bg-purple-700 hover:bg-purple-600 py-4 rounded-2xl font-bold uppercase tracking-wider transition text-white">
                         CANCELAR
                     </button>
                 </div>
@@ -1122,12 +1122,12 @@
     <!-- MODAL VER DETALLES CLIENTE -->
     <div id="modalDetalles" class="fixed inset-0 bg-black/80 modal-backdrop hidden flex items-center justify-center p-4 z-50">
         <div class="modal-detail-bg rounded-3xl shadow-2xl modal-content modal-detail w-full max-w-2xl">
-            <div class="sticky top-0 px-8 py-6 flex justify-between items-center border-b border-blue-500/30">
+            <div class="sticky top-0 px-8 py-6 flex justify-between items-center border-b border-purple-500/30">
                 <div>
-                    <h3 id="detail-titulo" class="text-2xl font-black uppercase text-blue-300 tracking-tight">Detalles del Cliente</h3>
-                    <p id="detail-status" class="text-xs text-blue-200 mt-2"></p>
+                    <h3 id="detail-titulo" class="text-2xl font-black uppercase text-purple-300 tracking-tight">Detalles del Cliente</h3>
+                    <p id="detail-status" class="text-xs text-purple-200 mt-2"></p>
                 </div>
-                <button onclick="cerrarDetalles()" class="text-blue-300 hover:text-white text-3xl transition">✕</button>
+                <button onclick="cerrarDetalles()" class="text-purple-300 hover:text-white text-3xl transition">✕</button>
             </div>
 
             <div class="px-8 py-6">
@@ -1202,14 +1202,14 @@
                 </div>
 
                 <!-- BOTONES DE ACCIÓN -->
-                <div class="flex gap-4 pt-6 border-t border-blue-500/30">
-                    <button onclick="abrirModalEditarDeDetalles()" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white py-3 rounded-xl font-bold uppercase text-sm transition">
+                <div class="flex gap-4 pt-6 border-t border-purple-500/30">
+                    <button onclick="abrirModalEditarDeDetalles()" class="flex-1 bg-purple-600 hover:bg-purple-500 text-white py-3 rounded-xl font-bold uppercase text-sm transition">
                         ✏️ Editar Cliente
                     </button>
                     <button onclick="abrirWhatsAppDeDetalles()" class="flex-1 bg-green-600 hover:bg-green-500 text-white py-3 rounded-xl font-bold uppercase text-sm transition">
                         📱 Enviar WhatsApp
                     </button>
-                    <button onclick="abrirEliminarDeDetalles()" class="flex-1 bg-rose-600 hover:bg-rose-500 text-white py-3 rounded-xl font-bold uppercase text-sm transition">
+                    <button onclick="abrirEliminarDeDetalles()" class="flex-1 bg-red-600 hover:bg-red-500 text-white py-3 rounded-xl font-bold uppercase text-sm transition">
                         🗑️ Eliminar
                     </button>
                 </div>
@@ -1220,11 +1220,11 @@
     <!-- MODAL CONFIRMAR ELIMINACIÓN -->
     <div id="modalConfirmar" class="fixed inset-0 bg-black/80 dialog-confirmar hidden flex items-center justify-center p-4 z-50">
         <div class="modal-detail-bg rounded-3xl p-8 shadow-2xl modal-content max-w-sm w-full">
-            <h3 class="text-2xl font-bold text-rose-400 mb-4">⚠️ Confirmar Eliminación</h3>
-            <p class="text-blue-200 mb-6">¿Estás seguro de que deseas eliminar a <span id="nombre-cliente-confirmar" class="font-bold text-white"></span>? Esta acción no se puede deshacer.</p>
+            <h3 class="text-2xl font-bold text-red-400 mb-4">⚠️ Confirmar Eliminación</h3>
+            <p class="text-purple-200 mb-6">¿Estás seguro de que deseas eliminar a <span id="nombre-cliente-confirmar" class="font-bold text-white"></span>? Esta acción no se puede deshacer.</p>
             <div class="flex gap-4">
-                <button onclick="confirmarEliminar()" class="flex-1 bg-rose-600 hover:bg-rose-500 py-3 rounded-xl font-bold uppercase text-white">ELIMINAR</button>
-                <button onclick="cerrarConfirmar()" class="flex-1 bg-blue-700 hover:bg-blue-600 py-3 rounded-xl font-bold uppercase text-white">CANCELAR</button>
+                <button onclick="confirmarEliminar()" class="flex-1 bg-red-600 hover:bg-red-500 py-3 rounded-xl font-bold uppercase text-white">ELIMINAR</button>
+                <button onclick="cerrarConfirmar()" class="flex-1 bg-purple-700 hover:bg-purple-600 py-3 rounded-xl font-bold uppercase text-white">CANCELAR</button>
             </div>
         </div>
     </div>
@@ -1243,13 +1243,13 @@
         let clienteDetalle = null;
         
         const configApps = {
-            'LUMIX TV': { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/lumixtv.png', color: '#3b82f6' },
+            'LUMIX TV': { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/lumixtv.png', color: '#2563eb' },
             'FEMON TV': { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/femontv.png', color: '#dc2626' },
             'TV PLUS 2': { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/tvplus2.png', color: '#16a34a' },
             'ZYRON TV': { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/zyrontv.png', color: '#ca8a04' },
             'ZYRON TUBE': { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/zyrontube.png', color: '#ea580c' },
-            'POWER SIGNALS': { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/powersignals.png', color: '#2563eb' },
-            'CAELUM': { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/caelum.png', color: '#2563eb' }
+            'POWER SIGNALS': { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/powersignals.png', color: '#4f46e5' },
+            'CAELUM': { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/caelum.png', color: '#0891b2' }
         };
 
         function toggleTheme() {
@@ -1299,9 +1299,9 @@
             let html = '';
             for (const [name, config] of Object.entries(configApps)) {
                 html += `
-                    <div onclick="seleccionarAppModal('${name}', this)" class="app-option bg-blue-900/30 p-3 rounded-xl flex flex-col items-center gap-2 text-center">
+                    <div onclick="seleccionarAppModal('${name}', this)" class="app-option bg-purple-900/30 p-3 rounded-xl flex flex-col items-center gap-2 text-center">
                         <img src="${config.logo}" class="w-8 h-8 object-contain">
-                        <span class="text-[7px] font-black uppercase leading-tight text-blue-200">${name}</span>
+                        <span class="text-[7px] font-black uppercase leading-tight text-purple-200">${name}</span>
                     </div>
                 `;
             }
@@ -1519,8 +1519,8 @@
                     statusIcon = '⏰';
                 }
 
-                let diasColor = 'text-blue-300';
-                if (d <= 0) diasColor = 'text-rose-500';
+                let diasColor = 'text-green-400';
+                if (d <= 0) diasColor = 'text-red-500';
                 else if (d <= 7) diasColor = 'text-yellow-400';
                 
                 cont.innerHTML += `
