@@ -311,9 +311,9 @@
             border-bottom: 1px solid rgba(59, 130, 246, 0.2);
         }
         
-        html.light-mode .header-modern {
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 50%, #1e40af 100%);
-            border-bottom: 1px solid rgba(59, 130, 246, 0.3);
+        html.dark-mode .header-modern {
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #1e40af 100%);
+            border-bottom: 1px solid rgba(59, 130, 246, 0.2);
         }
         
         /* ESTADÍSTICAS - Cambio de estilos */
@@ -398,13 +398,15 @@
             text-shadow: 0 0 20px rgba(234, 179, 8, 0.5);
         }
         
-        html.light-mode .stat-card {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(99, 102, 241, 0.08) 100%);
-            border: 1px solid rgba(59, 130, 246, 0.3);
+        html.dark-mode .stat-card {
+            background: linear-gradient(135deg, rgba(51, 65, 85, 0.4) 0%, rgba(30, 41, 59, 0.6) 100%);
+            border: 1px solid rgba(148, 163, 184, 0.3);
         }
         
-        html.light-mode .stat-card:hover {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(99, 102, 241, 0.15) 100%);
+        html.dark-mode .stat-card:hover {
+            border-color: rgba(148, 163, 184, 0.6);
+            background: linear-gradient(135deg, rgba(51, 65, 85, 0.6) 0%, rgba(30, 41, 59, 0.8) 100%);
+            transform: translateY(-2px);
         }
         
         .btn-primary {
@@ -419,40 +421,45 @@
         .btn-primary:active { transform: scale(0.98); }
         
         .input-modern {
-            background: rgba(51, 65, 85, 0.3);
+            background: rgba(229, 231, 235, 0.8);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(148, 163, 184, 0.3);
+            border: 1px solid rgba(209, 213, 219, 0.5);
             transition: all 0.3s ease;
-            color: #e2e8f0;
+            color: #1f2937;
         }
         .input-modern:focus {
+            border-color: rgba(59, 130, 246, 0.6);
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
+        }
+        
+        .input-modern::placeholder {
+            color: #9ca3af;
+        }
+        
+        html.dark-mode .input-modern {
+            background: rgba(51, 65, 85, 0.3);
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            color: #e2e8f0;
+        }
+        
+        html.dark-mode .input-modern:focus {
             border-color: rgba(139, 92, 246, 0.6);
             background: rgba(51, 65, 85, 0.5);
             box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
         }
-        
-        .input-modern::placeholder {
-            color: #cbd5e1;
-        }
-        
-        html.light-mode .input-modern {
-            background: rgba(249, 250, 251, 0.9);
-            border: 1px solid rgba(59, 130, 246, 0.3);
-            color: #1f2937;
-        }
-        
-        html.light-mode .input-modern:focus {
-            border-color: rgba(59, 130, 246, 0.6);
-            background: rgba(255, 255, 255, 0.95);
-        }
 
-        html.light-mode .input-modern::placeholder {
-            color: #9ca3af;
+        html.dark-mode .input-modern::placeholder {
+            color: #cbd5e1;
         }
         
         .empty-state {
             text-align: center;
             padding: 60px 20px;
+            color: #9ca3af;
+        }
+        
+        html.dark-mode .empty-state {
             color: #cbd5e1;
         }
         
@@ -516,93 +523,121 @@
             opacity: 0.3;
         }
 
-        /* LIGHT MODE BODY */
-        html.light-mode {
-            background: linear-gradient(135deg, #e0f2fe 0%, #f0f4f8 50%, #e8ecf1 100%);
+        /* LIGHT MODE - Fondo Blanco */
+        body {
+            background: #ffffff;
             color: #1f2937;
         }
+
+        html.dark-mode {
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #1e40af 100%);
+            color: #e0e7ff;
+        }
         
-        html.light-mode body {
-            background: linear-gradient(135deg, #e0f2fe 0%, #f0f4f8 50%, #e8ecf1 100%) !important;
-            color: #1f2937 !important;
+        html.dark-mode body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #1e40af 100%) !important;
+            color: #e0e7ff !important;
         }
 
-        /* LIGHT MODE CARDS */
-        html.light-mode .card-cliente {
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-            border: 1px solid rgba(59, 130, 246, 0.2);
+        /* LIGHT MODE CARDS - Gris claro */
+        .card-cliente {
+            background: linear-gradient(135deg, #f3f4f6 0%, #f9fafb 100%);
+            border: 1px solid rgba(209, 213, 219, 0.4);
         }
 
-        html.light-mode .card-cliente:hover {
-            border-color: rgba(59, 130, 246, 0.4);
-            box-shadow: 0 25px 50px rgba(59, 130, 246, 0.15);
+        .card-cliente:hover {
+            border-color: rgba(59, 130, 246, 0.3);
+            box-shadow: 0 25px 50px rgba(59, 130, 246, 0.1);
+            background: linear-gradient(135deg, #ffffff 0%, #f3f4f6 100%);
         }
 
-        html.light-mode .card-header {
-            border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+        .card-header {
+            border-bottom: 1px solid rgba(209, 213, 219, 0.2);
         }
 
-        html.light-mode .card-title {
+        .card-title {
             color: #1e3a8a;
         }
 
-        html.light-mode .card-subtitle {
+        .card-subtitle {
             color: #3b82f6;
         }
 
-        html.light-mode .card-meta {
+        .card-meta {
             color: #60a5fa;
         }
 
-        html.light-mode .card-dias {
-            background: rgba(59, 130, 246, 0.08);
-            border-left: 1px solid rgba(59, 130, 246, 0.2);
+        .card-dias {
+            background: rgba(59, 130, 246, 0.05);
+            border-left: 1px solid rgba(59, 130, 246, 0.15);
         }
 
-        html.light-mode .card-dias-texto {
+        .card-dias-texto {
             color: #64748b;
         }
 
-        html.light-mode .card-footer {
-            border-top: 1px solid rgba(59, 130, 246, 0.1);
+        .card-footer {
+            border-top: 1px solid rgba(209, 213, 219, 0.2);
         }
 
-        html.light-mode .card-icon {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(99, 102, 241, 0.08) 100%);
-            border: 1px solid rgba(59, 130, 246, 0.2);
+        .card-icon {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(99, 102, 241, 0.06) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.15);
         }
 
-        /* LIGHT MODE MODAL */
-        html.light-mode .modal-detail-bg {
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-            border: 1px solid rgba(59, 130, 246, 0.2);
+        /* LIGHT MODE MODAL - Color de barra superior */
+        .modal-detail-bg {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #0c4a6e 100%);
+            border: 1px solid rgba(59, 130, 246, 0.3);
         }
 
-        html.light-mode .detail-row {
+        html.dark-mode .modal-detail-bg {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #0c4a6e 100%);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .detail-row {
             background: rgba(59, 130, 246, 0.05);
-            border: 1px solid rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(209, 213, 219, 0.2);
         }
 
-        html.light-mode .detail-label {
+        html.dark-mode .detail-row {
+            background: rgba(139, 92, 246, 0.15);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+        }
+
+        .detail-label {
             color: #1e40af;
         }
 
-        html.light-mode .detail-value {
+        html.dark-mode .detail-label {
+            color: #cbd5e1;
+        }
+
+        .detail-value {
             color: #1f2937;
         }
 
-        html.light-mode .detail-title {
-            color: #2563eb;
+        html.dark-mode .detail-value {
+            color: #ffffff;
         }
 
-        html.light-mode .modal-content {
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important;
-            border: 1px solid rgba(59, 130, 246, 0.2) !important;
+        .detail-title {
+            color: #1e40af;
         }
 
-        /* DARK MODE BACKGROUND */
-        body {
-            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #1e40af 100%);
+        html.dark-mode .detail-title {
+            color: #c4b5fd;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #0c4a6e 100%) !important;
+            border: 1px solid rgba(59, 130, 246, 0.3) !important;
+        }
+
+        html.dark-mode .modal-content {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #0c4a6e 100%) !important;
+            border: 1px solid rgba(59, 130, 246, 0.3) !important;
         }
 
         /* MODAL DETALLE CLIENTE */
@@ -611,63 +646,25 @@
             overflow-y: auto;
         }
 
-        .modal-detail-bg {
-            background: linear-gradient(135deg, rgba(48, 42, 85, 0.95) 0%, rgba(24, 18, 54, 0.95) 100%);
-            border: 1px solid rgba(139, 92, 246, 0.3);
+        .detail-section {
+            border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+            padding: 20px 0;
+            color: #ffffff;
         }
 
-        .detail-section {
+        html.dark-mode .detail-section {
             border-bottom: 1px solid rgba(139, 92, 246, 0.2);
-            padding: 20px 0;
         }
 
         .detail-section:last-child {
             border-bottom: none;
         }
 
-        .detail-title {
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            color: #c4b5fd;
-            letter-spacing: 1px;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .detail-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-            padding: 10px;
-            background: rgba(139, 92, 246, 0.15);
-            border-radius: 8px;
-            border: 1px solid rgba(139, 92, 246, 0.2);
-        }
-
-        .detail-label {
-            font-size: 12px;
-            font-weight: 600;
-            color: #cbd5e1;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .detail-value {
-            font-size: 14px;
-            font-weight: 700;
-            color: #ffffff;
-            text-align: right;
-        }
-
         .detail-copy-btn {
             padding: 4px 8px;
-            background: rgba(139, 92, 246, 0.2);
-            border: 1px solid rgba(139, 92, 246, 0.3);
-            color: #c4b5fd;
+            background: rgba(59, 130, 246, 0.2);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #ffffff;
             border-radius: 6px;
             font-size: 11px;
             cursor: pointer;
@@ -675,8 +672,14 @@
             margin-left: 8px;
         }
 
+        html.dark-mode .detail-copy-btn {
+            background: rgba(139, 92, 246, 0.2);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            color: #c4b5fd;
+        }
+
         .detail-copy-btn:hover {
-            background: rgba(139, 92, 246, 0.4);
+            background: rgba(59, 130, 246, 0.4);
             transform: scale(1.05);
         }
 
@@ -687,6 +690,22 @@
         .btn-reporte:hover {
             box-shadow: 0 15px 35px -5px rgba(245, 158, 11, 0.4);
             transform: translateY(-2px);
+        }
+
+        header h1 {
+            color: #1e3a8a;
+        }
+
+        header p {
+            color: #4b5563;
+        }
+
+        html.dark-mode header h1 {
+            color: #93c5fd;
+        }
+
+        html.dark-mode header p {
+            color: #cbd5e1;
         }
 
         /* MOBILE STYLES */
@@ -1015,8 +1034,8 @@
         <!-- HEADER -->
         <header class="flex justify-between items-center mb-10">
             <div>
-                <h1 class="text-4xl font-black text-blue-300 dark:text-blue-300 uppercase tracking-tight" style="color: inherit;">Gestor de Clientes</h1>
-                <p class="text-sm dark:text-blue-200 text-blue-700 mt-2">Administra todos tus clientes en un solo lugar</p>
+                <h1 class="text-4xl font-black uppercase tracking-tight">Gestor de Clientes</h1>
+                <p class="text-sm mt-2">Administra todos tus clientes en un solo lugar</p>
             </div>
             <div class="flex gap-4">
                 <a href="reporte.html" class="btn-reporte px-8 py-4 rounded-2xl font-bold shadow-lg text-sm active:scale-95 transition-transform text-white hidden md:block">
@@ -1058,15 +1077,15 @@
     <div id="modalCliente" class="fixed inset-0 bg-black/80 modal-backdrop hidden flex items-center justify-center p-4 z-50">
         <div class="modal-detail-bg rounded-3xl p-8 shadow-2xl overflow-y-auto max-h-[95vh] modal-content w-full max-w-2xl">
             <div class="flex justify-between items-center mb-8">
-                <h3 id="modal-titulo" class="text-3xl font-black uppercase text-purple-300 tracking-tight">Nuevo Cliente</h3>
-                <button onclick="cerrarModal()" class="text-purple-300 hover:text-white text-3xl transition">✕</button>
+                <h3 id="modal-titulo" class="text-3xl font-black uppercase text-white tracking-tight">Nuevo Cliente</h3>
+                <button onclick="cerrarModal()" class="text-white hover:text-gray-300 text-3xl transition">✕</button>
             </div>
             
             <form id="form-cliente" class="space-y-6 text-left">
                 <input type="hidden" id="cliente-id">
 
                 <div class="space-y-4">
-                    <p class="text-xs font-bold text-purple-300 uppercase tracking-wider">📋 Datos de Contacto</p>
+                    <p class="text-xs font-bold text-white uppercase tracking-wider">📋 Datos de Contacto</p>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <input type="text" id="nombre-apellido" placeholder="Nombre completo" class="input-modern p-4 rounded-2xl outline-none text-sm col-span-2" required>
                         <input type="text" id="celular-cliente" placeholder="WhatsApp (ej: 2946123456)" class="input-modern p-4 rounded-2xl outline-none text-sm" required>
@@ -1075,7 +1094,7 @@
                 </div>
 
                 <div class="space-y-4">
-                    <p class="text-xs font-bold text-purple-300 uppercase tracking-wider">🔐 Credenciales de Servicio</p>
+                    <p class="text-xs font-bold text-white uppercase tracking-wider">🔐 Credenciales de Servicio</p>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <input type="text" id="usuario-tv" placeholder="Usuario TV" class="input-modern p-4 rounded-2xl outline-none text-sm" required>
                         <input type="text" id="clave-tv" placeholder="Contraseña TV" class="input-modern p-4 rounded-2xl outline-none text-sm" required>
@@ -1083,25 +1102,25 @@
                 </div>
 
                 <div class="space-y-4">
-                    <p class="text-xs font-bold text-purple-300 uppercase tracking-wider">💰 Información de Pago</p>
-                    <input type="number" id="precio-servicio" placeholder="Precio ($)" min="0" step="0.01" class="w-full input-modern p-4 rounded-2xl outline-none text-sm font-bold text-green-400" required>
+                    <p class="text-xs font-bold text-white uppercase tracking-wider">💰 Información de Pago</p>
+                    <input type="number" id="precio-servicio" placeholder="Precio ($)" min="0" step="0.01" class="w-full input-modern p-4 rounded-2xl outline-none text-sm font-bold text-green-600" required>
                 </div>
 
                 <div class="space-y-4">
-                    <p class="text-xs font-bold text-purple-300 uppercase tracking-wider">📺 Seleccionar Aplicación</p>
+                    <p class="text-xs font-bold text-white uppercase tracking-wider">📺 Seleccionar Aplicación</p>
                     <div id="app-selector" class="grid grid-cols-4 md:grid-cols-7 gap-3"></div>
                     <input type="hidden" id="app-seleccionada" required>
                 </div>
 
                 <div class="space-y-4">
-                    <p class="text-xs font-bold text-purple-300 uppercase tracking-wider">📅 Fechas</p>
+                    <p class="text-xs font-bold text-white uppercase tracking-wider">📅 Fechas</p>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label class="text-xs font-bold text-green-400 block mb-1">Fecha de Pago</label>
+                            <label class="text-xs font-bold text-green-500 block mb-1">Fecha de Pago</label>
                             <input type="date" id="fecha-pago" class="w-full input-modern p-4 rounded-2xl outline-none text-sm" required>
                         </div>
                         <div>
-                            <label class="text-xs font-bold text-red-400 block mb-1">Vencimiento</label>
+                            <label class="text-xs font-bold text-red-500 block mb-1">Vencimiento</label>
                             <input type="date" id="vencimiento-cliente" class="w-full input-modern p-4 rounded-2xl outline-none text-sm" required>
                         </div>
                     </div>
@@ -1111,7 +1130,7 @@
                     <button type="submit" class="flex-1 btn-primary py-4 rounded-2xl font-bold uppercase tracking-wider shadow-lg transition">
                         ✓ GUARDAR
                     </button>
-                    <button type="button" onclick="cerrarModal()" class="flex-1 bg-purple-700 hover:bg-purple-600 py-4 rounded-2xl font-bold uppercase tracking-wider transition text-white">
+                    <button type="button" onclick="cerrarModal()" class="flex-1 bg-blue-800 hover:bg-blue-700 py-4 rounded-2xl font-bold uppercase tracking-wider transition text-white">
                         CANCELAR
                     </button>
                 </div>
@@ -1122,12 +1141,12 @@
     <!-- MODAL VER DETALLES CLIENTE -->
     <div id="modalDetalles" class="fixed inset-0 bg-black/80 modal-backdrop hidden flex items-center justify-center p-4 z-50">
         <div class="modal-detail-bg rounded-3xl shadow-2xl modal-content modal-detail w-full max-w-2xl">
-            <div class="sticky top-0 px-8 py-6 flex justify-between items-center border-b border-purple-500/30">
+            <div class="sticky top-0 px-8 py-6 flex justify-between items-center border-b border-blue-400/30">
                 <div>
-                    <h3 id="detail-titulo" class="text-2xl font-black uppercase text-purple-300 tracking-tight">Detalles del Cliente</h3>
-                    <p id="detail-status" class="text-xs text-purple-200 mt-2"></p>
+                    <h3 id="detail-titulo" class="text-2xl font-black uppercase text-white tracking-tight">Detalles del Cliente</h3>
+                    <p id="detail-status" class="text-xs text-blue-200 mt-2"></p>
                 </div>
-                <button onclick="cerrarDetalles()" class="text-purple-300 hover:text-white text-3xl transition">✕</button>
+                <button onclick="cerrarDetalles()" class="text-white hover:text-gray-300 text-3xl transition">✕</button>
             </div>
 
             <div class="px-8 py-6">
@@ -1202,8 +1221,8 @@
                 </div>
 
                 <!-- BOTONES DE ACCIÓN -->
-                <div class="flex gap-4 pt-6 border-t border-purple-500/30">
-                    <button onclick="abrirModalEditarDeDetalles()" class="flex-1 bg-purple-600 hover:bg-purple-500 text-white py-3 rounded-xl font-bold uppercase text-sm transition">
+                <div class="flex gap-4 pt-6 border-t border-blue-400/30">
+                    <button onclick="abrirModalEditarDeDetalles()" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white py-3 rounded-xl font-bold uppercase text-sm transition">
                         ✏️ Editar Cliente
                     </button>
                     <button onclick="abrirWhatsAppDeDetalles()" class="flex-1 bg-green-600 hover:bg-green-500 text-white py-3 rounded-xl font-bold uppercase text-sm transition">
@@ -1221,10 +1240,10 @@
     <div id="modalConfirmar" class="fixed inset-0 bg-black/80 dialog-confirmar hidden flex items-center justify-center p-4 z-50">
         <div class="modal-detail-bg rounded-3xl p-8 shadow-2xl modal-content max-w-sm w-full">
             <h3 class="text-2xl font-bold text-red-400 mb-4">⚠️ Confirmar Eliminación</h3>
-            <p class="text-purple-200 mb-6">¿Estás seguro de que deseas eliminar a <span id="nombre-cliente-confirmar" class="font-bold text-white"></span>? Esta acción no se puede deshacer.</p>
+            <p class="text-white mb-6">¿Estás seguro de que deseas eliminar a <span id="nombre-cliente-confirmar" class="font-bold"></span>? Esta acción no se puede deshacer.</p>
             <div class="flex gap-4">
                 <button onclick="confirmarEliminar()" class="flex-1 bg-red-600 hover:bg-red-500 py-3 rounded-xl font-bold uppercase text-white">ELIMINAR</button>
-                <button onclick="cerrarConfirmar()" class="flex-1 bg-purple-700 hover:bg-purple-600 py-3 rounded-xl font-bold uppercase text-white">CANCELAR</button>
+                <button onclick="cerrarConfirmar()" class="flex-1 bg-blue-800 hover:bg-blue-700 py-3 rounded-xl font-bold uppercase text-white">CANCELAR</button>
             </div>
         </div>
     </div>
@@ -1254,20 +1273,20 @@
 
         function toggleTheme() {
             const html = document.documentElement;
-            const isLightMode = html.classList.contains('light-mode');
-            if (isLightMode) {
-                html.classList.remove('light-mode');
-                localStorage.setItem('theme', 'dark');
-            } else {
-                html.classList.add('light-mode');
+            const isDarkMode = html.classList.contains('dark-mode');
+            if (isDarkMode) {
+                html.classList.remove('dark-mode');
                 localStorage.setItem('theme', 'light');
+            } else {
+                html.classList.add('dark-mode');
+                localStorage.setItem('theme', 'dark');
             }
         }
 
         function checkSession() {
-            const savedTheme = localStorage.getItem('theme') || 'dark';
-            if (savedTheme === 'light') {
-                document.documentElement.classList.add('light-mode');
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            if (savedTheme === 'dark') {
+                document.documentElement.classList.add('dark-mode');
             }
             
             if (!currentUser) { window.location.href = 'logueo.html'; return; }
@@ -1299,9 +1318,9 @@
             let html = '';
             for (const [name, config] of Object.entries(configApps)) {
                 html += `
-                    <div onclick="seleccionarAppModal('${name}', this)" class="app-option bg-purple-900/30 p-3 rounded-xl flex flex-col items-center gap-2 text-center">
+                    <div onclick="seleccionarAppModal('${name}', this)" class="app-option bg-blue-900/30 p-3 rounded-xl flex flex-col items-center gap-2 text-center">
                         <img src="${config.logo}" class="w-8 h-8 object-contain">
-                        <span class="text-[7px] font-black uppercase leading-tight text-purple-200">${name}</span>
+                        <span class="text-[7px] font-black uppercase leading-tight text-white">${name}</span>
                     </div>
                 `;
             }
