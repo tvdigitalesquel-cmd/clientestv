@@ -30,7 +30,7 @@
         .filtro-activo { border-color: white !important; background: linear-gradient(135deg, rgba(59, 130, 246, 0.8) 0%, rgba(37, 99, 235, 0.6) 100%); box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.4); }
         
         .app-filter {
-            border: 2px solid #1e3a8a;
+            border: 2px solid #e5e7eb;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
             filter: grayscale(0.8);
@@ -41,10 +41,11 @@
             flex-direction: column;
             align-items: center;
             gap: 8px;
+            background: #ffffff;
         }
         .app-filter.filtro-activo {
             border-color: #3b82f6;
-            background-color: rgba(59, 130, 246, 0.15);
+            background-color: rgba(59, 130, 246, 0.1);
             filter: grayscale(0);
             opacity: 1;
             transform: scale(1.08);
@@ -60,18 +61,20 @@
             font-weight: bold;
             text-align: center;
             text-transform: uppercase;
+            color: #374151;
         }
         
         .app-option {
-            border: 2px solid #1e3a8a;
+            border: 2px solid #e5e7eb;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
             filter: grayscale(1);
             opacity: 0.6;
+            background: #ffffff;
         }
         .app-option.selected {
             border-color: #3b82f6;
-            background-color: rgba(59, 130, 246, 0.2);
+            background-color: rgba(59, 130, 246, 0.1);
             transform: scale(1.1);
             filter: grayscale(0);
             opacity: 1;
@@ -85,12 +88,13 @@
             position: relative;
             overflow: hidden;
             cursor: pointer;
-            background: linear-gradient(135deg, rgba(51, 65, 85, 0.8) 0%, rgba(30, 41, 59, 0.9) 100%);
-            border: 1px solid rgba(148, 163, 184, 0.3);
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
             border-radius: 16px;
             padding: 0;
             display: flex;
             flex-direction: column;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         }
 
         .card-cliente::before {
@@ -100,16 +104,16 @@
             left: 0;
             right: 0;
             height: 4px;
-            background: linear-gradient(90deg, #8b5cf6, #7c3aed);
+            background: linear-gradient(90deg, #3b82f6, #2563eb);
             opacity: 0;
             transition: opacity 0.3s ease;
         }
 
         .card-cliente:hover {
-            transform: translateY(-8px);
-            border-color: rgba(148, 163, 184, 0.5);
-            box-shadow: 0 25px 50px rgba(139, 92, 246, 0.3);
-            background: linear-gradient(135deg, rgba(51, 65, 85, 0.95) 0%, rgba(30, 41, 59, 1) 100%);
+            transform: translateY(-4px);
+            border-color: #bfdbfe;
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.1);
+            background: #ffffff;
         }
 
         .card-cliente:hover::before {
@@ -118,7 +122,7 @@
 
         .card-cliente.alerta-vencimiento {
             border-color: #ef4444;
-            background: linear-gradient(135deg, rgba(127, 29, 29, 0.4) 0%, rgba(30, 41, 59, 0.8) 100%);
+            background: #fef2f2;
         }
 
         .card-cliente.alerta-vencimiento::before {
@@ -130,7 +134,7 @@
         /* CONTENIDO DE LA TARJETA */
         .card-header {
             padding: 20px;
-            border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+            border-bottom: 1px solid #f3f4f6;
             display: flex;
             align-items: center;
             gap: 16px;
@@ -140,8 +144,8 @@
             width: 80px;
             height: 80px;
             border-radius: 12px;
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.3) 0%, rgba(124, 58, 237, 0.2) 100%);
-            border: 1px solid rgba(139, 92, 246, 0.4);
+            background: #f0f9ff;
+            border: 1px solid #bfdbfe;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -162,7 +166,7 @@
         .card-title {
             font-size: 15px;
             font-weight: 700;
-            color: #ffffff;
+            color: #1e3a8a;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin-bottom: 4px;
@@ -170,7 +174,7 @@
 
         .card-subtitle {
             font-size: 12px;
-            color: #cbd5e1;
+            color: #3b82f6;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -179,7 +183,7 @@
 
         .card-meta {
             font-size: 11px;
-            color: #a1a5b0;
+            color: #60a5fa;
             display: flex;
             align-items: center;
             gap: 6px;
@@ -198,46 +202,47 @@
         }
 
         .status-activo {
-            background-color: rgba(34, 197, 94, 0.15);
+            background-color: rgba(34, 197, 94, 0.1);
             color: #22c55e;
             border: 1px solid rgba(34, 197, 94, 0.3);
         }
 
         .status-pronto {
-            background-color: rgba(234, 179, 8, 0.15);
+            background-color: rgba(234, 179, 8, 0.1);
             color: #eab308;
             border: 1px solid rgba(234, 179, 8, 0.3);
         }
 
         .status-vencido {
-            background-color: rgba(239, 68, 68, 0.15);
+            background-color: rgba(239, 68, 68, 0.1);
             color: #ef4444;
             border: 1px solid rgba(239, 68, 68, 0.3);
         }
 
         .card-dias {
             text-align: center;
-            padding: 8px;
-            background: rgba(139, 92, 246, 0.1);
-            border-left: 1px solid rgba(139, 92, 246, 0.2);
+            padding: 12px;
+            background: #f0f9ff;
+            border-left: 1px solid #bfdbfe;
         }
 
         .card-dias-numero {
-            font-size: 24px;
+            font-size: 28px;
             font-weight: 900;
             line-height: 1;
+            color: #1e40af;
         }
 
         .card-dias-texto {
             font-size: 10px;
-            color: #cbd5e1;
+            color: #64748b;
             margin-top: 4px;
             text-transform: uppercase;
         }
 
         .card-footer {
             padding: 12px 16px;
-            border-top: 1px solid rgba(148, 163, 184, 0.2);
+            border-top: 1px solid #f3f4f6;
             display: flex;
             gap: 6px;
         }
@@ -259,39 +264,39 @@
         }
 
         .btn-whatsapp {
-            background: linear-gradient(135deg, rgba(37, 211, 102, 0.2) 0%, rgba(32, 186, 94, 0.1) 100%);
-            color: #25d366;
-            border: 1px solid rgba(37, 211, 102, 0.3);
+            background: rgba(34, 197, 94, 0.1);
+            color: #22c55e;
+            border: 1px solid rgba(34, 197, 94, 0.3);
         }
 
         .btn-whatsapp:hover {
-            background: linear-gradient(135deg, rgba(37, 211, 102, 0.4) 0%, rgba(32, 186, 94, 0.2) 100%);
+            background: rgba(34, 197, 94, 0.2);
             transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(37, 211, 102, 0.2);
+            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.15);
         }
 
         .btn-edit {
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(124, 58, 237, 0.1) 100%);
-            color: #c4b5fd;
-            border: 1px solid rgba(139, 92, 246, 0.3);
+            background: rgba(59, 130, 246, 0.1);
+            color: #2563eb;
+            border: 1px solid rgba(59, 130, 246, 0.3);
         }
 
         .btn-edit:hover {
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.4) 0%, rgba(124, 58, 237, 0.2) 100%);
+            background: rgba(59, 130, 246, 0.2);
             transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(139, 92, 246, 0.2);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
         }
 
         .btn-delete {
-            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(220, 38, 38, 0.1) 100%);
-            color: #f87171;
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
             border: 1px solid rgba(239, 68, 68, 0.3);
         }
 
         .btn-delete:hover {
-            background: linear-gradient(135deg, rgba(239, 68, 68, 0.4) 0%, rgba(220, 38, 38, 0.2) 100%);
+            background: rgba(239, 68, 68, 0.2);
             transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(239, 68, 68, 0.2);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15);
         }
 
         .btn-card-action:active {
@@ -323,24 +328,24 @@
             border-radius: 16px;
             padding: 24px;
             text-align: center;
-            background: #f3f4f6;
+            background: #ffffff;
             border: 1px solid #e5e7eb;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         }
 
         .stat-card:hover {
             transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
         }
 
         /* STAT CARD ACTIVOS - Verde */
         .stat-card:nth-child(1) {
-            background: linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(22, 163, 74, 0.08) 100%);
+            background: #f0fdf4;
             border: 2px solid #22c55e;
-            box-shadow: 0 0 20px rgba(34, 197, 94, 0.15);
         }
 
         .stat-card:nth-child(1):hover {
-            background: linear-gradient(135deg, rgba(34, 197, 94, 0.25) 0%, rgba(22, 163, 74, 0.15) 100%);
-            box-shadow: 0 0 30px rgba(34, 197, 94, 0.3);
+            box-shadow: 0 10px 25px rgba(34, 197, 94, 0.15);
         }
 
         .stat-card:nth-child(1) p {
@@ -355,19 +360,16 @@
 
         .stat-card:nth-child(1) h2 {
             color: #22c55e !important;
-            text-shadow: 0 0 10px rgba(34, 197, 94, 0.3);
         }
 
         /* STAT CARD VENCIDOS - Rojo */
         .stat-card:nth-child(2) {
-            background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(220, 38, 38, 0.08) 100%);
+            background: #fef2f2;
             border: 2px solid #ef4444;
-            box-shadow: 0 0 20px rgba(239, 68, 68, 0.15);
         }
 
         .stat-card:nth-child(2):hover {
-            background: linear-gradient(135deg, rgba(239, 68, 68, 0.25) 0%, rgba(220, 38, 38, 0.15) 100%);
-            box-shadow: 0 0 30px rgba(239, 68, 68, 0.3);
+            box-shadow: 0 10px 25px rgba(239, 68, 68, 0.15);
         }
 
         .stat-card:nth-child(2) p {
@@ -382,19 +384,16 @@
 
         .stat-card:nth-child(2) h2 {
             color: #ef4444 !important;
-            text-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
         }
 
         /* STAT CARD PRONTO - Amarillo */
         .stat-card:nth-child(3) {
-            background: linear-gradient(135deg, rgba(234, 179, 8, 0.15) 0%, rgba(202, 138, 4, 0.08) 100%);
+            background: #fefce8;
             border: 2px solid #eab308;
-            box-shadow: 0 0 20px rgba(234, 179, 8, 0.15);
         }
 
         .stat-card:nth-child(3):hover {
-            background: linear-gradient(135deg, rgba(234, 179, 8, 0.25) 0%, rgba(202, 138, 4, 0.15) 100%);
-            box-shadow: 0 0 30px rgba(234, 179, 8, 0.3);
+            box-shadow: 0 10px 25px rgba(234, 179, 8, 0.15);
         }
 
         .stat-card:nth-child(3) p {
@@ -409,7 +408,6 @@
 
         .stat-card:nth-child(3) h2 {
             color: #eab308 !important;
-            text-shadow: 0 0 10px rgba(234, 179, 8, 0.3);
         }
         
         html.dark-mode .stat-card {
@@ -431,6 +429,8 @@
             background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
             box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.3);
             transition: all 0.3s ease;
+            color: #ffffff;
+            border: none;
         }
         .btn-primary:hover {
             box-shadow: 0 15px 35px -5px rgba(59, 130, 246, 0.4);
@@ -440,15 +440,14 @@
         
         .input-modern {
             background: #ffffff;
-            backdrop-filter: blur(10px);
             border: 1px solid #d1d5db;
             transition: all 0.3s ease;
             color: #1f2937;
         }
         .input-modern:focus {
-            border-color: rgba(59, 130, 246, 0.6);
+            border-color: #3b82f6;
             background: #ffffff;
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.15);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
         
         .input-modern::placeholder {
@@ -474,7 +473,7 @@
         .empty-state {
             text-align: center;
             padding: 60px 20px;
-            color: #6b7280;
+            color: #9ca3af;
         }
         
         html.dark-mode .empty-state {
@@ -541,9 +540,9 @@
             opacity: 0.3;
         }
 
-        /* LIGHT MODE - Fondo Blanco Limpio */
+        /* LIGHT MODE - Fondo blanco mate */
         body {
-            background: #ffffff;
+            background: #f8f9fa;
             color: #1f2937;
         }
 
@@ -557,52 +556,6 @@
             color: #e0e7ff !important;
         }
 
-        /* LIGHT MODE CARDS - Gris claro limpio */
-        .card-cliente {
-            background: linear-gradient(135deg, #f3f4f6 0%, #f9fafb 100%);
-            border: 1px solid #e5e7eb;
-        }
-
-        .card-cliente:hover {
-            border-color: #bfdbfe;
-            box-shadow: 0 25px 50px rgba(59, 130, 246, 0.08);
-            background: linear-gradient(135deg, #ffffff 0%, #f3f4f6 100%);
-        }
-
-        .card-header {
-            border-bottom: 1px solid #e5e7eb;
-        }
-
-        .card-title {
-            color: #1e3a8a;
-        }
-
-        .card-subtitle {
-            color: #3b82f6;
-        }
-
-        .card-meta {
-            color: #60a5fa;
-        }
-
-        .card-dias {
-            background: #f0f9ff;
-            border-left: 1px solid #bfdbfe;
-        }
-
-        .card-dias-texto {
-            color: #64748b;
-        }
-
-        .card-footer {
-            border-top: 1px solid #e5e7eb;
-        }
-
-        .card-icon {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(99, 102, 241, 0.06) 100%);
-            border: 1px solid #dbeafe;
-        }
-
         html.dark-mode .card-cliente {
             background: linear-gradient(135deg, rgba(51, 65, 85, 0.8) 0%, rgba(30, 41, 59, 0.9) 100%);
             border: 1px solid rgba(148, 163, 184, 0.3);
@@ -614,6 +567,10 @@
 
         html.dark-mode .card-subtitle {
             color: #cbd5e1;
+        }
+
+        html.dark-mode .card-meta {
+            color: #a1a5b0;
         }
 
         /* LIGHT MODE MODAL - Color de barra superior */
@@ -717,6 +674,8 @@
         .btn-reporte {
             background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
             transition: all 0.3s ease;
+            color: #ffffff;
+            border: none;
         }
         .btn-reporte:hover {
             box-shadow: 0 15px 35px -5px rgba(245, 158, 11, 0.4);
@@ -1069,7 +1028,7 @@
                 <p class="text-sm mt-2">Administra todos tus clientes en un solo lugar</p>
             </div>
             <div class="flex gap-4">
-                <a href="reporte.html" class="btn-reporte px-8 py-4 rounded-2xl font-bold shadow-lg text-sm active:scale-95 transition-transform text-white hidden md:block">
+                <a href="reporte.html" class="btn-reporte px-8 py-4 rounded-2xl font-bold shadow-lg text-sm active:scale-95 transition-transform">
                     📊 Ver Reportes
                 </a>
                 <button onclick="abrirModalNuevo()" id="btn-nuevo-cliente" class="btn-primary px-8 py-4 rounded-2xl font-bold shadow-lg text-sm active:scale-95 transition-transform">
@@ -1147,11 +1106,11 @@
                     <p class="text-xs font-bold text-white uppercase tracking-wider">📅 Fechas</p>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label class="text-xs font-bold text-green-500 block mb-1">Fecha de Pago</label>
+                            <label class="text-xs font-bold text-green-400 block mb-1">Fecha de Pago</label>
                             <input type="date" id="fecha-pago" class="w-full input-modern p-4 rounded-2xl outline-none text-sm" required>
                         </div>
                         <div>
-                            <label class="text-xs font-bold text-red-500 block mb-1">Vencimiento</label>
+                            <label class="text-xs font-bold text-red-400 block mb-1">Vencimiento</label>
                             <input type="date" id="vencimiento-cliente" class="w-full input-modern p-4 rounded-2xl outline-none text-sm" required>
                         </div>
                     </div>
@@ -1349,9 +1308,9 @@
             let html = '';
             for (const [name, config] of Object.entries(configApps)) {
                 html += `
-                    <div onclick="seleccionarAppModal('${name}', this)" class="app-option bg-blue-900/30 p-3 rounded-xl flex flex-col items-center gap-2 text-center">
+                    <div onclick="seleccionarAppModal('${name}', this)" class="app-option p-3 rounded-xl flex flex-col items-center gap-2 text-center">
                         <img src="${config.logo}" class="w-8 h-8 object-contain">
-                        <span class="text-[7px] font-black uppercase leading-tight text-white">${name}</span>
+                        <span class="text-[7px] font-black uppercase leading-tight text-gray-700">${name}</span>
                     </div>
                 `;
             }
@@ -1569,9 +1528,9 @@
                     statusIcon = '⏰';
                 }
 
-                let diasColor = 'text-green-400';
-                if (d <= 0) diasColor = 'text-red-500';
-                else if (d <= 7) diasColor = 'text-yellow-400';
+                let diasColor = 'text-green-600';
+                if (d <= 0) diasColor = 'text-red-600';
+                else if (d <= 7) diasColor = 'text-yellow-600';
                 
                 cont.innerHTML += `
                     <div class="card-cliente ${d <= 2 && d > 0 ? 'alerta-vencimiento' : ''}" onclick="abrirDetalles(${JSON.stringify(c).replace(/"/g, '&quot;')})">
