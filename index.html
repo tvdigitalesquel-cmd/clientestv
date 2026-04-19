@@ -10,7 +10,7 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        html.dark-mode { color-scheme: dark; }
+        html.light-mode { color-scheme: light; }
         input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(var(--tw-date-invert, 1)); }
         
         @keyframes pulse-red {
@@ -30,7 +30,7 @@
         .filtro-activo { border-color: white !important; background: linear-gradient(135deg, rgba(59, 130, 246, 0.8) 0%, rgba(37, 99, 235, 0.6) 100%); box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.4); }
         
         .app-filter {
-            border: 2px solid #e5e7eb;
+            border: 2px solid #1e3a8a;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
             filter: grayscale(0.8);
@@ -41,11 +41,10 @@
             flex-direction: column;
             align-items: center;
             gap: 8px;
-            background: #ffffff;
         }
         .app-filter.filtro-activo {
             border-color: #3b82f6;
-            background-color: rgba(59, 130, 246, 0.1);
+            background-color: rgba(59, 130, 246, 0.15);
             filter: grayscale(0);
             opacity: 1;
             transform: scale(1.08);
@@ -61,20 +60,18 @@
             font-weight: bold;
             text-align: center;
             text-transform: uppercase;
-            color: #374151;
         }
         
         .app-option {
-            border: 2px solid #e5e7eb;
+            border: 2px solid #1e3a8a;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
             filter: grayscale(1);
             opacity: 0.6;
-            background: #ffffff;
         }
         .app-option.selected {
             border-color: #3b82f6;
-            background-color: rgba(59, 130, 246, 0.1);
+            background-color: rgba(59, 130, 246, 0.2);
             transform: scale(1.1);
             filter: grayscale(0);
             opacity: 1;
@@ -88,13 +85,12 @@
             position: relative;
             overflow: hidden;
             cursor: pointer;
-            background: #ffffff;
-            border: 1px solid #e5e7eb;
+            background: linear-gradient(135deg, rgba(51, 65, 85, 0.8) 0%, rgba(30, 41, 59, 0.9) 100%);
+            border: 1px solid rgba(148, 163, 184, 0.3);
             border-radius: 16px;
             padding: 0;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         }
 
         .card-cliente::before {
@@ -104,16 +100,16 @@
             left: 0;
             right: 0;
             height: 4px;
-            background: linear-gradient(90deg, #3b82f6, #2563eb);
+            background: linear-gradient(90deg, #8b5cf6, #7c3aed);
             opacity: 0;
             transition: opacity 0.3s ease;
         }
 
         .card-cliente:hover {
-            transform: translateY(-4px);
-            border-color: #bfdbfe;
-            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.1);
-            background: #ffffff;
+            transform: translateY(-8px);
+            border-color: rgba(148, 163, 184, 0.5);
+            box-shadow: 0 25px 50px rgba(139, 92, 246, 0.3);
+            background: linear-gradient(135deg, rgba(51, 65, 85, 0.95) 0%, rgba(30, 41, 59, 1) 100%);
         }
 
         .card-cliente:hover::before {
@@ -122,7 +118,7 @@
 
         .card-cliente.alerta-vencimiento {
             border-color: #ef4444;
-            background: #fef2f2;
+            background: linear-gradient(135deg, rgba(127, 29, 29, 0.4) 0%, rgba(30, 41, 59, 0.8) 100%);
         }
 
         .card-cliente.alerta-vencimiento::before {
@@ -134,7 +130,7 @@
         /* CONTENIDO DE LA TARJETA */
         .card-header {
             padding: 20px;
-            border-bottom: 1px solid #f3f4f6;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.2);
             display: flex;
             align-items: center;
             gap: 16px;
@@ -144,8 +140,8 @@
             width: 80px;
             height: 80px;
             border-radius: 12px;
-            background: #f0f9ff;
-            border: 1px solid #bfdbfe;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.3) 0%, rgba(124, 58, 237, 0.2) 100%);
+            border: 1px solid rgba(139, 92, 246, 0.4);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -166,7 +162,7 @@
         .card-title {
             font-size: 15px;
             font-weight: 700;
-            color: #1e3a8a;
+            color: #ffffff;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin-bottom: 4px;
@@ -174,7 +170,7 @@
 
         .card-subtitle {
             font-size: 12px;
-            color: #3b82f6;
+            color: #cbd5e1;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -183,7 +179,7 @@
 
         .card-meta {
             font-size: 11px;
-            color: #60a5fa;
+            color: #a1a5b0;
             display: flex;
             align-items: center;
             gap: 6px;
@@ -202,47 +198,46 @@
         }
 
         .status-activo {
-            background-color: rgba(34, 197, 94, 0.1);
+            background-color: rgba(34, 197, 94, 0.15);
             color: #22c55e;
             border: 1px solid rgba(34, 197, 94, 0.3);
         }
 
         .status-pronto {
-            background-color: rgba(234, 179, 8, 0.1);
+            background-color: rgba(234, 179, 8, 0.15);
             color: #eab308;
             border: 1px solid rgba(234, 179, 8, 0.3);
         }
 
         .status-vencido {
-            background-color: rgba(239, 68, 68, 0.1);
+            background-color: rgba(239, 68, 68, 0.15);
             color: #ef4444;
             border: 1px solid rgba(239, 68, 68, 0.3);
         }
 
         .card-dias {
             text-align: center;
-            padding: 12px;
-            background: #f0f9ff;
-            border-left: 1px solid #bfdbfe;
+            padding: 8px;
+            background: rgba(139, 92, 246, 0.1);
+            border-left: 1px solid rgba(139, 92, 246, 0.2);
         }
 
         .card-dias-numero {
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 900;
             line-height: 1;
-            color: #1e40af;
         }
 
         .card-dias-texto {
             font-size: 10px;
-            color: #64748b;
+            color: #cbd5e1;
             margin-top: 4px;
             text-transform: uppercase;
         }
 
         .card-footer {
             padding: 12px 16px;
-            border-top: 1px solid #f3f4f6;
+            border-top: 1px solid rgba(148, 163, 184, 0.2);
             display: flex;
             gap: 6px;
         }
@@ -264,39 +259,39 @@
         }
 
         .btn-whatsapp {
-            background: rgba(34, 197, 94, 0.1);
-            color: #22c55e;
-            border: 1px solid rgba(34, 197, 94, 0.3);
+            background: linear-gradient(135deg, rgba(37, 211, 102, 0.2) 0%, rgba(32, 186, 94, 0.1) 100%);
+            color: #25d366;
+            border: 1px solid rgba(37, 211, 102, 0.3);
         }
 
         .btn-whatsapp:hover {
-            background: rgba(34, 197, 94, 0.2);
+            background: linear-gradient(135deg, rgba(37, 211, 102, 0.4) 0%, rgba(32, 186, 94, 0.2) 100%);
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.15);
+            box-shadow: 0 8px 16px rgba(37, 211, 102, 0.2);
         }
 
         .btn-edit {
-            background: rgba(59, 130, 246, 0.1);
-            color: #2563eb;
-            border: 1px solid rgba(59, 130, 246, 0.3);
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(124, 58, 237, 0.1) 100%);
+            color: #c4b5fd;
+            border: 1px solid rgba(139, 92, 246, 0.3);
         }
 
         .btn-edit:hover {
-            background: rgba(59, 130, 246, 0.2);
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.4) 0%, rgba(124, 58, 237, 0.2) 100%);
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+            box-shadow: 0 8px 16px rgba(139, 92, 246, 0.2);
         }
 
         .btn-delete {
-            background: rgba(239, 68, 68, 0.1);
-            color: #ef4444;
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(220, 38, 38, 0.1) 100%);
+            color: #f87171;
             border: 1px solid rgba(239, 68, 68, 0.3);
         }
 
         .btn-delete:hover {
-            background: rgba(239, 68, 68, 0.2);
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.4) 0%, rgba(220, 38, 38, 0.2) 100%);
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15);
+            box-shadow: 0 8px 16px rgba(239, 68, 68, 0.2);
         }
 
         .btn-card-action:active {
@@ -316,9 +311,9 @@
             border-bottom: 1px solid rgba(59, 130, 246, 0.2);
         }
         
-        html.dark-mode .header-modern {
-            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #0c4a6e 100%);
-            border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+        html.light-mode .header-modern {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 50%, #1e40af 100%);
+            border-bottom: 1px solid rgba(59, 130, 246, 0.3);
         }
         
         /* ESTADÍSTICAS - Cambio de estilos */
@@ -328,109 +323,94 @@
             border-radius: 16px;
             padding: 24px;
             text-align: center;
-            background: #ffffff;
-            border: 1px solid #e5e7eb;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         }
 
         .stat-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
         }
 
         /* STAT CARD ACTIVOS - Verde */
         .stat-card:nth-child(1) {
-            background: #f0fdf4;
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.25) 0%, rgba(22, 163, 74, 0.15) 100%);
             border: 2px solid #22c55e;
+            box-shadow: 0 0 20px rgba(34, 197, 94, 0.2);
         }
 
         .stat-card:nth-child(1):hover {
-            box-shadow: 0 10px 25px rgba(34, 197, 94, 0.15);
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.35) 0%, rgba(22, 163, 74, 0.25) 100%);
+            box-shadow: 0 0 30px rgba(34, 197, 94, 0.4);
         }
 
         .stat-card:nth-child(1) p {
             color: #ffffff !important;
             font-weight: 700;
             font-size: 12px;
-            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
         }
 
         .stat-card:nth-child(1) h2 {
             color: #22c55e !important;
+            text-shadow: 0 0 20px rgba(34, 197, 94, 0.5);
         }
 
         /* STAT CARD VENCIDOS - Rojo */
         .stat-card:nth-child(2) {
-            background: #fef2f2;
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.25) 0%, rgba(220, 38, 38, 0.15) 100%);
             border: 2px solid #ef4444;
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);
         }
 
         .stat-card:nth-child(2):hover {
-            box-shadow: 0 10px 25px rgba(239, 68, 68, 0.15);
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.35) 0%, rgba(220, 38, 38, 0.25) 100%);
+            box-shadow: 0 0 30px rgba(239, 68, 68, 0.4);
         }
 
         .stat-card:nth-child(2) p {
             color: #ffffff !important;
             font-weight: 700;
             font-size: 12px;
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
         }
 
         .stat-card:nth-child(2) h2 {
             color: #ef4444 !important;
+            text-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
         }
 
         /* STAT CARD PRONTO - Amarillo */
         .stat-card:nth-child(3) {
-            background: #fefce8;
+            background: linear-gradient(135deg, rgba(234, 179, 8, 0.25) 0%, rgba(202, 138, 4, 0.15) 100%);
             border: 2px solid #eab308;
+            box-shadow: 0 0 20px rgba(234, 179, 8, 0.2);
         }
 
         .stat-card:nth-child(3):hover {
-            box-shadow: 0 10px 25px rgba(234, 179, 8, 0.15);
+            background: linear-gradient(135deg, rgba(234, 179, 8, 0.35) 0%, rgba(202, 138, 4, 0.25) 100%);
+            box-shadow: 0 0 30px rgba(234, 179, 8, 0.4);
         }
 
         .stat-card:nth-child(3) p {
             color: #ffffff !important;
             font-weight: 700;
             font-size: 12px;
-            background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
         }
 
         .stat-card:nth-child(3) h2 {
             color: #eab308 !important;
+            text-shadow: 0 0 20px rgba(234, 179, 8, 0.5);
         }
         
-        html.dark-mode .stat-card {
-            background: linear-gradient(135deg, rgba(51, 65, 85, 0.4) 0%, rgba(30, 41, 59, 0.6) 100%);
-            border: 1px solid rgba(148, 163, 184, 0.3);
+        html.light-mode .stat-card {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(99, 102, 241, 0.08) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.3);
         }
         
-        html.dark-mode .stat-card:hover {
-            border-color: rgba(148, 163, 184, 0.6);
-            background: linear-gradient(135deg, rgba(51, 65, 85, 0.6) 0%, rgba(30, 41, 59, 0.8) 100%);
-            transform: translateY(-2px);
-        }
-
-        html.dark-mode .stat-card p {
-            color: #ffffff !important;
+        html.light-mode .stat-card:hover {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(99, 102, 241, 0.15) 100%);
         }
         
         .btn-primary {
             background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
             box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.3);
             transition: all 0.3s ease;
-            color: #ffffff;
-            border: none;
         }
         .btn-primary:hover {
             box-shadow: 0 15px 35px -5px rgba(59, 130, 246, 0.4);
@@ -439,44 +419,40 @@
         .btn-primary:active { transform: scale(0.98); }
         
         .input-modern {
-            background: #ffffff;
-            border: 1px solid #d1d5db;
-            transition: all 0.3s ease;
-            color: #1f2937;
-        }
-        .input-modern:focus {
-            border-color: #3b82f6;
-            background: #ffffff;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
-        
-        .input-modern::placeholder {
-            color: #9ca3af;
-        }
-        
-        html.dark-mode .input-modern {
             background: rgba(51, 65, 85, 0.3);
+            backdrop-filter: blur(10px);
             border: 1px solid rgba(148, 163, 184, 0.3);
+            transition: all 0.3s ease;
             color: #e2e8f0;
         }
-        
-        html.dark-mode .input-modern:focus {
+        .input-modern:focus {
             border-color: rgba(139, 92, 246, 0.6);
             background: rgba(51, 65, 85, 0.5);
             box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
         }
-
-        html.dark-mode .input-modern::placeholder {
+        
+        .input-modern::placeholder {
             color: #cbd5e1;
+        }
+        
+        html.light-mode .input-modern {
+            background: rgba(249, 250, 251, 0.9);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #1f2937;
+        }
+        
+        html.light-mode .input-modern:focus {
+            border-color: rgba(59, 130, 246, 0.6);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        html.light-mode .input-modern::placeholder {
+            color: #9ca3af;
         }
         
         .empty-state {
             text-align: center;
             padding: 60px 20px;
-            color: #9ca3af;
-        }
-        
-        html.dark-mode .empty-state {
             color: #cbd5e1;
         }
         
@@ -540,92 +516,93 @@
             opacity: 0.3;
         }
 
-        /* LIGHT MODE - Fondo blanco mate */
-        body {
-            background: #f8f9fa;
+        /* LIGHT MODE BODY */
+        html.light-mode {
+            background: linear-gradient(135deg, #e0f2fe 0%, #f0f4f8 50%, #e8ecf1 100%);
             color: #1f2937;
-        }
-
-        html.dark-mode {
-            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #1e40af 100%);
-            color: #e0e7ff;
         }
         
-        html.dark-mode body {
-            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #1e40af 100%) !important;
-            color: #e0e7ff !important;
+        html.light-mode body {
+            background: linear-gradient(135deg, #e0f2fe 0%, #f0f4f8 50%, #e8ecf1 100%) !important;
+            color: #1f2937 !important;
         }
 
-        html.dark-mode .card-cliente {
-            background: linear-gradient(135deg, rgba(51, 65, 85, 0.8) 0%, rgba(30, 41, 59, 0.9) 100%);
-            border: 1px solid rgba(148, 163, 184, 0.3);
+        /* LIGHT MODE CARDS */
+        html.light-mode .card-cliente {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid rgba(59, 130, 246, 0.2);
         }
 
-        html.dark-mode .card-title {
-            color: #ffffff;
+        html.light-mode .card-cliente:hover {
+            border-color: rgba(59, 130, 246, 0.4);
+            box-shadow: 0 25px 50px rgba(59, 130, 246, 0.15);
         }
 
-        html.dark-mode .card-subtitle {
-            color: #cbd5e1;
+        html.light-mode .card-header {
+            border-bottom: 1px solid rgba(59, 130, 246, 0.1);
         }
 
-        html.dark-mode .card-meta {
-            color: #a1a5b0;
+        html.light-mode .card-title {
+            color: #1e3a8a;
         }
 
-        /* LIGHT MODE MODAL - Color de barra superior */
-        .modal-detail-bg {
-            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #0c4a6e 100%);
-            border: 1px solid rgba(59, 130, 246, 0.3);
+        html.light-mode .card-subtitle {
+            color: #3b82f6;
         }
 
-        html.dark-mode .modal-detail-bg {
-            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #0c4a6e 100%);
-            border: 1px solid rgba(59, 130, 246, 0.3);
+        html.light-mode .card-meta {
+            color: #60a5fa;
         }
 
-        .detail-row {
-            background: #f0f9ff;
-            border: 1px solid #bfdbfe;
+        html.light-mode .card-dias {
+            background: rgba(59, 130, 246, 0.08);
+            border-left: 1px solid rgba(59, 130, 246, 0.2);
         }
 
-        html.dark-mode .detail-row {
-            background: rgba(139, 92, 246, 0.15);
-            border: 1px solid rgba(139, 92, 246, 0.2);
+        html.light-mode .card-dias-texto {
+            color: #64748b;
         }
 
-        .detail-label {
+        html.light-mode .card-footer {
+            border-top: 1px solid rgba(59, 130, 246, 0.1);
+        }
+
+        html.light-mode .card-icon {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(99, 102, 241, 0.08) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        /* LIGHT MODE MODAL */
+        html.light-mode .modal-detail-bg {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        html.light-mode .detail-row {
+            background: rgba(59, 130, 246, 0.05);
+            border: 1px solid rgba(59, 130, 246, 0.1);
+        }
+
+        html.light-mode .detail-label {
             color: #1e40af;
         }
 
-        html.dark-mode .detail-label {
-            color: #cbd5e1;
-        }
-
-        .detail-value {
+        html.light-mode .detail-value {
             color: #1f2937;
         }
 
-        html.dark-mode .detail-value {
-            color: #ffffff;
+        html.light-mode .detail-title {
+            color: #2563eb;
         }
 
-        .detail-title {
-            color: #1e40af;
+        html.light-mode .modal-content {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important;
+            border: 1px solid rgba(59, 130, 246, 0.2) !important;
         }
 
-        html.dark-mode .detail-title {
-            color: #c4b5fd;
-        }
-
-        .modal-content {
-            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #0c4a6e 100%) !important;
-            border: 1px solid rgba(59, 130, 246, 0.3) !important;
-        }
-
-        html.dark-mode .modal-content {
-            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #0c4a6e 100%) !important;
-            border: 1px solid rgba(59, 130, 246, 0.3) !important;
+        /* DARK MODE BACKGROUND */
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #1e40af 100%);
         }
 
         /* MODAL DETALLE CLIENTE */
@@ -634,25 +611,63 @@
             overflow-y: auto;
         }
 
-        .detail-section {
-            border-bottom: 1px solid rgba(59, 130, 246, 0.2);
-            padding: 20px 0;
-            color: #ffffff;
+        .modal-detail-bg {
+            background: linear-gradient(135deg, rgba(48, 42, 85, 0.95) 0%, rgba(24, 18, 54, 0.95) 100%);
+            border: 1px solid rgba(139, 92, 246, 0.3);
         }
 
-        html.dark-mode .detail-section {
+        .detail-section {
             border-bottom: 1px solid rgba(139, 92, 246, 0.2);
+            padding: 20px 0;
         }
 
         .detail-section:last-child {
             border-bottom: none;
         }
 
+        .detail-title {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #c4b5fd;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: rgba(139, 92, 246, 0.15);
+            border-radius: 8px;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+        }
+
+        .detail-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #cbd5e1;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .detail-value {
+            font-size: 14px;
+            font-weight: 700;
+            color: #ffffff;
+            text-align: right;
+        }
+
         .detail-copy-btn {
             padding: 4px 8px;
-            background: rgba(59, 130, 246, 0.2);
-            border: 1px solid rgba(59, 130, 246, 0.3);
-            color: #ffffff;
+            background: rgba(139, 92, 246, 0.2);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            color: #c4b5fd;
             border-radius: 6px;
             font-size: 11px;
             cursor: pointer;
@@ -660,42 +675,18 @@
             margin-left: 8px;
         }
 
-        html.dark-mode .detail-copy-btn {
-            background: rgba(139, 92, 246, 0.2);
-            border: 1px solid rgba(139, 92, 246, 0.3);
-            color: #c4b5fd;
-        }
-
         .detail-copy-btn:hover {
-            background: rgba(59, 130, 246, 0.4);
+            background: rgba(139, 92, 246, 0.4);
             transform: scale(1.05);
         }
 
         .btn-reporte {
             background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
             transition: all 0.3s ease;
-            color: #ffffff;
-            border: none;
         }
         .btn-reporte:hover {
             box-shadow: 0 15px 35px -5px rgba(245, 158, 11, 0.4);
             transform: translateY(-2px);
-        }
-
-        header h1 {
-            color: #1f2937;
-        }
-
-        header p {
-            color: #6b7280;
-        }
-
-        html.dark-mode header h1 {
-            color: #93c5fd;
-        }
-
-        html.dark-mode header p {
-            color: #cbd5e1;
         }
 
         /* MOBILE STYLES */
@@ -1024,11 +1015,11 @@
         <!-- HEADER -->
         <header class="flex justify-between items-center mb-10">
             <div>
-                <h1 class="text-4xl font-black uppercase tracking-tight">Gestor de Clientes</h1>
-                <p class="text-sm mt-2">Administra todos tus clientes en un solo lugar</p>
+                <h1 class="text-4xl font-black text-blue-300 dark:text-blue-300 uppercase tracking-tight" style="color: inherit;">Gestor de Clientes</h1>
+                <p class="text-sm dark:text-blue-200 text-blue-700 mt-2">Administra todos tus clientes en un solo lugar</p>
             </div>
             <div class="flex gap-4">
-                <a href="reporte.html" class="btn-reporte px-8 py-4 rounded-2xl font-bold shadow-lg text-sm active:scale-95 transition-transform">
+                <a href="reporte.html" class="btn-reporte px-8 py-4 rounded-2xl font-bold shadow-lg text-sm active:scale-95 transition-transform text-white hidden md:block">
                     📊 Ver Reportes
                 </a>
                 <button onclick="abrirModalNuevo()" id="btn-nuevo-cliente" class="btn-primary px-8 py-4 rounded-2xl font-bold shadow-lg text-sm active:scale-95 transition-transform">
@@ -1067,15 +1058,15 @@
     <div id="modalCliente" class="fixed inset-0 bg-black/80 modal-backdrop hidden flex items-center justify-center p-4 z-50">
         <div class="modal-detail-bg rounded-3xl p-8 shadow-2xl overflow-y-auto max-h-[95vh] modal-content w-full max-w-2xl">
             <div class="flex justify-between items-center mb-8">
-                <h3 id="modal-titulo" class="text-3xl font-black uppercase text-white tracking-tight">Nuevo Cliente</h3>
-                <button onclick="cerrarModal()" class="text-white hover:text-gray-300 text-3xl transition">✕</button>
+                <h3 id="modal-titulo" class="text-3xl font-black uppercase text-purple-300 tracking-tight">Nuevo Cliente</h3>
+                <button onclick="cerrarModal()" class="text-purple-300 hover:text-white text-3xl transition">✕</button>
             </div>
             
             <form id="form-cliente" class="space-y-6 text-left">
                 <input type="hidden" id="cliente-id">
 
                 <div class="space-y-4">
-                    <p class="text-xs font-bold text-white uppercase tracking-wider">📋 Datos de Contacto</p>
+                    <p class="text-xs font-bold text-purple-300 uppercase tracking-wider">📋 Datos de Contacto</p>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <input type="text" id="nombre-apellido" placeholder="Nombre completo" class="input-modern p-4 rounded-2xl outline-none text-sm col-span-2" required>
                         <input type="text" id="celular-cliente" placeholder="WhatsApp (ej: 2946123456)" class="input-modern p-4 rounded-2xl outline-none text-sm" required>
@@ -1084,7 +1075,7 @@
                 </div>
 
                 <div class="space-y-4">
-                    <p class="text-xs font-bold text-white uppercase tracking-wider">🔐 Credenciales de Servicio</p>
+                    <p class="text-xs font-bold text-purple-300 uppercase tracking-wider">🔐 Credenciales de Servicio</p>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <input type="text" id="usuario-tv" placeholder="Usuario TV" class="input-modern p-4 rounded-2xl outline-none text-sm" required>
                         <input type="text" id="clave-tv" placeholder="Contraseña TV" class="input-modern p-4 rounded-2xl outline-none text-sm" required>
@@ -1092,18 +1083,18 @@
                 </div>
 
                 <div class="space-y-4">
-                    <p class="text-xs font-bold text-white uppercase tracking-wider">💰 Información de Pago</p>
-                    <input type="number" id="precio-servicio" placeholder="Precio ($)" min="0" step="0.01" class="w-full input-modern p-4 rounded-2xl outline-none text-sm font-bold text-green-600" required>
+                    <p class="text-xs font-bold text-purple-300 uppercase tracking-wider">💰 Información de Pago</p>
+                    <input type="number" id="precio-servicio" placeholder="Precio ($)" min="0" step="0.01" class="w-full input-modern p-4 rounded-2xl outline-none text-sm font-bold text-green-400" required>
                 </div>
 
                 <div class="space-y-4">
-                    <p class="text-xs font-bold text-white uppercase tracking-wider">📺 Seleccionar Aplicación</p>
+                    <p class="text-xs font-bold text-purple-300 uppercase tracking-wider">📺 Seleccionar Aplicación</p>
                     <div id="app-selector" class="grid grid-cols-4 md:grid-cols-7 gap-3"></div>
                     <input type="hidden" id="app-seleccionada" required>
                 </div>
 
                 <div class="space-y-4">
-                    <p class="text-xs font-bold text-white uppercase tracking-wider">📅 Fechas</p>
+                    <p class="text-xs font-bold text-purple-300 uppercase tracking-wider">📅 Fechas</p>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="text-xs font-bold text-green-400 block mb-1">Fecha de Pago</label>
@@ -1120,7 +1111,7 @@
                     <button type="submit" class="flex-1 btn-primary py-4 rounded-2xl font-bold uppercase tracking-wider shadow-lg transition">
                         ✓ GUARDAR
                     </button>
-                    <button type="button" onclick="cerrarModal()" class="flex-1 bg-blue-800 hover:bg-blue-700 py-4 rounded-2xl font-bold uppercase tracking-wider transition text-white">
+                    <button type="button" onclick="cerrarModal()" class="flex-1 bg-purple-700 hover:bg-purple-600 py-4 rounded-2xl font-bold uppercase tracking-wider transition text-white">
                         CANCELAR
                     </button>
                 </div>
@@ -1131,12 +1122,12 @@
     <!-- MODAL VER DETALLES CLIENTE -->
     <div id="modalDetalles" class="fixed inset-0 bg-black/80 modal-backdrop hidden flex items-center justify-center p-4 z-50">
         <div class="modal-detail-bg rounded-3xl shadow-2xl modal-content modal-detail w-full max-w-2xl">
-            <div class="sticky top-0 px-8 py-6 flex justify-between items-center border-b border-blue-400/30">
+            <div class="sticky top-0 px-8 py-6 flex justify-between items-center border-b border-purple-500/30">
                 <div>
-                    <h3 id="detail-titulo" class="text-2xl font-black uppercase text-white tracking-tight">Detalles del Cliente</h3>
-                    <p id="detail-status" class="text-xs text-blue-200 mt-2"></p>
+                    <h3 id="detail-titulo" class="text-2xl font-black uppercase text-purple-300 tracking-tight">Detalles del Cliente</h3>
+                    <p id="detail-status" class="text-xs text-purple-200 mt-2"></p>
                 </div>
-                <button onclick="cerrarDetalles()" class="text-white hover:text-gray-300 text-3xl transition">✕</button>
+                <button onclick="cerrarDetalles()" class="text-purple-300 hover:text-white text-3xl transition">✕</button>
             </div>
 
             <div class="px-8 py-6">
@@ -1211,8 +1202,8 @@
                 </div>
 
                 <!-- BOTONES DE ACCIÓN -->
-                <div class="flex gap-4 pt-6 border-t border-blue-400/30">
-                    <button onclick="abrirModalEditarDeDetalles()" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white py-3 rounded-xl font-bold uppercase text-sm transition">
+                <div class="flex gap-4 pt-6 border-t border-purple-500/30">
+                    <button onclick="abrirModalEditarDeDetalles()" class="flex-1 bg-purple-600 hover:bg-purple-500 text-white py-3 rounded-xl font-bold uppercase text-sm transition">
                         ✏️ Editar Cliente
                     </button>
                     <button onclick="abrirWhatsAppDeDetalles()" class="flex-1 bg-green-600 hover:bg-green-500 text-white py-3 rounded-xl font-bold uppercase text-sm transition">
@@ -1230,10 +1221,10 @@
     <div id="modalConfirmar" class="fixed inset-0 bg-black/80 dialog-confirmar hidden flex items-center justify-center p-4 z-50">
         <div class="modal-detail-bg rounded-3xl p-8 shadow-2xl modal-content max-w-sm w-full">
             <h3 class="text-2xl font-bold text-red-400 mb-4">⚠️ Confirmar Eliminación</h3>
-            <p class="text-white mb-6">¿Estás seguro de que deseas eliminar a <span id="nombre-cliente-confirmar" class="font-bold"></span>? Esta acción no se puede deshacer.</p>
+            <p class="text-purple-200 mb-6">¿Estás seguro de que deseas eliminar a <span id="nombre-cliente-confirmar" class="font-bold text-white"></span>? Esta acción no se puede deshacer.</p>
             <div class="flex gap-4">
                 <button onclick="confirmarEliminar()" class="flex-1 bg-red-600 hover:bg-red-500 py-3 rounded-xl font-bold uppercase text-white">ELIMINAR</button>
-                <button onclick="cerrarConfirmar()" class="flex-1 bg-blue-800 hover:bg-blue-700 py-3 rounded-xl font-bold uppercase text-white">CANCELAR</button>
+                <button onclick="cerrarConfirmar()" class="flex-1 bg-purple-700 hover:bg-purple-600 py-3 rounded-xl font-bold uppercase text-white">CANCELAR</button>
             </div>
         </div>
     </div>
@@ -1263,20 +1254,20 @@
 
         function toggleTheme() {
             const html = document.documentElement;
-            const isDarkMode = html.classList.contains('dark-mode');
-            if (isDarkMode) {
-                html.classList.remove('dark-mode');
-                localStorage.setItem('theme', 'light');
-            } else {
-                html.classList.add('dark-mode');
+            const isLightMode = html.classList.contains('light-mode');
+            if (isLightMode) {
+                html.classList.remove('light-mode');
                 localStorage.setItem('theme', 'dark');
+            } else {
+                html.classList.add('light-mode');
+                localStorage.setItem('theme', 'light');
             }
         }
 
         function checkSession() {
-            const savedTheme = localStorage.getItem('theme') || 'light';
-            if (savedTheme === 'dark') {
-                document.documentElement.classList.add('dark-mode');
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            if (savedTheme === 'light') {
+                document.documentElement.classList.add('light-mode');
             }
             
             if (!currentUser) { window.location.href = 'logueo.html'; return; }
@@ -1308,9 +1299,9 @@
             let html = '';
             for (const [name, config] of Object.entries(configApps)) {
                 html += `
-                    <div onclick="seleccionarAppModal('${name}', this)" class="app-option p-3 rounded-xl flex flex-col items-center gap-2 text-center">
+                    <div onclick="seleccionarAppModal('${name}', this)" class="app-option bg-purple-900/30 p-3 rounded-xl flex flex-col items-center gap-2 text-center">
                         <img src="${config.logo}" class="w-8 h-8 object-contain">
-                        <span class="text-[7px] font-black uppercase leading-tight text-gray-700">${name}</span>
+                        <span class="text-[7px] font-black uppercase leading-tight text-purple-200">${name}</span>
                     </div>
                 `;
             }
@@ -1528,9 +1519,9 @@
                     statusIcon = '⏰';
                 }
 
-                let diasColor = 'text-green-600';
-                if (d <= 0) diasColor = 'text-red-600';
-                else if (d <= 7) diasColor = 'text-yellow-600';
+                let diasColor = 'text-green-400';
+                if (d <= 0) diasColor = 'text-red-500';
+                else if (d <= 7) diasColor = 'text-yellow-400';
                 
                 cont.innerHTML += `
                     <div class="card-cliente ${d <= 2 && d > 0 ? 'alerta-vencimiento' : ''}" onclick="abrirDetalles(${JSON.stringify(c).replace(/"/g, '&quot;')})">
