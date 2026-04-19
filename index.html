@@ -8,1348 +8,1132 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script>tailwind.config = { darkMode: 'class' }</script>
     <style>
-
-        :root {
-            --bg: #0f172a;
-            --bg-soft: #111827;
-            --panel: rgba(15, 23, 42, 0.82);
-            --panel-strong: rgba(17, 24, 39, 0.94);
-            --panel-muted: rgba(30, 41, 59, 0.72);
-            --border: rgba(148, 163, 184, 0.18);
-            --border-strong: rgba(96, 165, 250, 0.28);
-            --text: #e5eefc;
-            --muted: #94a3b8;
-            --heading: #f8fafc;
-            --primary: #3b82f6;
-            --primary-strong: #1d4ed8;
-            --primary-soft: rgba(59, 130, 246, 0.12);
-            --success: #22c55e;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --shadow: 0 24px 60px rgba(2, 6, 23, 0.42);
-            --radius-xl: 28px;
-            --radius-lg: 20px;
-            --radius-md: 14px;
-        }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        html {
-            color-scheme: dark;
-            background:
-                radial-gradient(circle at top left, rgba(59, 130, 246, 0.16), transparent 28%),
-                radial-gradient(circle at top right, rgba(14, 165, 233, 0.1), transparent 30%),
-                linear-gradient(180deg, #0b1120 0%, #0f172a 46%, #111827 100%);
-            min-height: 100%;
-        }
-
-        html.light-mode {
-            color-scheme: light;
-            background:
-                radial-gradient(circle at top left, rgba(59, 130, 246, 0.06), transparent 28%),
-                linear-gradient(180deg, #eff6ff 0%, #f8fafc 54%, #eef2ff 100%);
-        }
-
-        body {
-            min-height: 100vh;
-            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: var(--text);
-            background: transparent;
-            letter-spacing: -0.01em;
-        }
-
-        html.light-mode body {
-            color: #0f172a;
-        }
-
-        input[type="date"]::-webkit-calendar-picker-indicator {
-            filter: invert(var(--tw-date-invert, 1));
-        }
-
-        html.light-mode input[type="date"]::-webkit-calendar-picker-indicator {
-            filter: invert(0);
-        }
-
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        html.light-mode { color-scheme: light; }
+        input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(var(--tw-date-invert, 1)); }
+        
         @keyframes pulse-red {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.2); }
-            50% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            0%, 100% { background-color: rgba(220, 38, 38, 0.1); border-color: #ef4444; }
+            50% { background-color: rgba(220, 38, 38, 0.3); border-color: #f87171; }
         }
-
         @keyframes slideIn {
-            from { transform: translateY(16px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
-
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
         }
-
-        .page-shell {
-            position: relative;
-            z-index: 1;
-        }
-
-        .header-modern {
-            position: sticky;
-            top: 0;
-            z-index: 40;
-            backdrop-filter: blur(20px);
-            background: rgba(10, 15, 29, 0.76);
-            border-bottom: 1px solid rgba(148, 163, 184, 0.12);
-            box-shadow: 0 10px 35px rgba(2, 6, 23, 0.25);
-        }
-
-        html.light-mode .header-modern {
-            background: rgba(255, 255, 255, 0.82);
-            border-bottom-color: rgba(148, 163, 184, 0.18);
-            box-shadow: 0 10px 30px rgba(148, 163, 184, 0.12);
-        }
-
-        .nav-shell {
-            min-height: 78px;
-            gap: 18px;
-        }
-
-        .nav-brand {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-
-        .nav-brand-mark {
-            width: 42px;
-            height: 42px;
-            border-radius: 14px;
-            display: grid;
-            place-items: center;
-            font-size: 13px;
-            font-weight: 800;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            color: white;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-strong) 100%);
-            box-shadow: 0 16px 30px rgba(29, 78, 216, 0.32);
-        }
-
-        .nav-brand-title {
-            font-size: 14px;
-            font-weight: 800;
-            color: var(--heading);
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-        }
-
-        .nav-brand-subtitle {
-            font-size: 12px;
-            color: var(--muted);
-        }
-
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .nav-link {
-            color: #cbd5e1;
-            padding: 10px 16px;
-            border-radius: 999px;
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            transition: all 0.25s ease;
-            border: 1px solid transparent;
-        }
-
-        .nav-link:hover {
-            color: white;
-            background: rgba(255, 255, 255, 0.06);
-            border-color: rgba(148, 163, 184, 0.18);
-        }
-
-        .nav-link-active {
-            color: white;
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.22) 0%, rgba(29, 78, 216, 0.28) 100%);
-            border-color: rgba(96, 165, 250, 0.28);
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
-        }
-
-        html.light-mode .nav-link {
-            color: #475569;
-        }
-
-        html.light-mode .nav-link:hover {
-            color: #0f172a;
-            background: rgba(59, 130, 246, 0.08);
-            border-color: rgba(59, 130, 246, 0.12);
-        }
-
-        html.light-mode .nav-link-active {
-            color: #1d4ed8;
-            background: rgba(59, 130, 246, 0.1);
-            border-color: rgba(59, 130, 246, 0.16);
-        }
-
-        .hero-panel,
-        .surface-panel,
-        .clientes-section {
-            position: relative;
-            overflow: hidden;
-            border-radius: var(--radius-xl);
-            border: 1px solid var(--border);
-            background:
-                linear-gradient(180deg, rgba(15, 23, 42, 0.9) 0%, rgba(15, 23, 42, 0.74) 100%);
-            box-shadow: var(--shadow);
-        }
-
-        .hero-panel::before,
-        .surface-panel::before,
-        .clientes-section::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-            background: linear-gradient(135deg, rgba(255,255,255,0.05), transparent 26%, transparent 70%, rgba(59, 130, 246, 0.08));
-        }
-
-        html.light-mode .hero-panel,
-        html.light-mode .surface-panel,
-        html.light-mode .clientes-section {
-            background: rgba(255, 255, 255, 0.92);
-            border-color: rgba(148, 163, 184, 0.16);
-            box-shadow: 0 18px 40px rgba(148, 163, 184, 0.16);
-        }
-
-        .hero-panel {
-            padding: 34px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 24px;
-            margin-bottom: 22px;
-        }
-
-        .eyebrow {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 14px;
-            border-radius: 999px;
-            font-size: 11px;
-            font-weight: 800;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            color: #dbeafe;
-            background: rgba(59, 130, 246, 0.12);
-            border: 1px solid rgba(96, 165, 250, 0.18);
-            margin-bottom: 16px;
-        }
-
-        html.light-mode .eyebrow {
-            color: #1d4ed8;
-            background: rgba(59, 130, 246, 0.08);
-            border-color: rgba(59, 130, 246, 0.14);
-        }
-
-        .page-heading {
-            font-size: clamp(2rem, 3vw, 3rem);
-            font-weight: 900;
-            color: var(--heading);
-            line-height: 1.02;
-            letter-spacing: -0.04em;
-            margin-bottom: 12px;
-        }
-
-        .page-subtitle {
-            max-width: 640px;
-            font-size: 15px;
-            line-height: 1.7;
-            color: var(--muted);
-        }
-
-        .hero-actions {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            flex-wrap: wrap;
-            justify-content: flex-end;
-        }
-
-        .btn-primary,
-        .btn-secondary,
-        .btn-ghost,
-        .btn-reporte {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            border-radius: 16px;
-            font-weight: 800;
-            letter-spacing: 0.04em;
-            transition: all 0.25s ease;
-            border: 1px solid transparent;
-        }
-
-        .btn-primary {
-            color: white;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-strong) 100%);
-            box-shadow: 0 18px 30px rgba(29, 78, 216, 0.32);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 22px 40px rgba(29, 78, 216, 0.38);
-        }
-
-        .btn-secondary,
-        .btn-reporte {
-            color: #dbeafe;
-            background: rgba(255, 255, 255, 0.04);
-            border-color: rgba(148, 163, 184, 0.16);
-        }
-
-        .btn-secondary:hover,
-        .btn-reporte:hover {
-            transform: translateY(-2px);
-            background: rgba(59, 130, 246, 0.12);
-            border-color: rgba(96, 165, 250, 0.22);
-        }
-
-        html.light-mode .btn-secondary,
-        html.light-mode .btn-reporte {
-            color: #1e293b;
-            background: rgba(15, 23, 42, 0.03);
-            border-color: rgba(148, 163, 184, 0.14);
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 16px;
-            margin-bottom: 22px;
-        }
-
-        .stat-card {
-            position: relative;
-            overflow: hidden;
-            border-radius: var(--radius-lg);
-            padding: 24px;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            border: 1px solid rgba(148, 163, 184, 0.14);
-            background: linear-gradient(180deg, rgba(15, 23, 42, 0.94) 0%, rgba(15, 23, 42, 0.76) 100%);
-            box-shadow: 0 18px 40px rgba(2, 6, 23, 0.24);
-            text-align: left;
-        }
-
-        .stat-card::after {
-            content: "";
-            position: absolute;
-            inset: auto 20px 0 auto;
-            width: 90px;
-            height: 90px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.03);
-            transform: translate(16px, 18px);
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .stat-card p {
-            font-size: 12px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: #cbd5e1 !important;
-            margin-bottom: 10px;
-        }
-
-        .stat-card h2 {
-            font-size: 44px;
-            font-weight: 900;
-            line-height: 1;
-        }
-
-        .stat-card:nth-child(1) {
-            border-color: rgba(34, 197, 94, 0.18);
-            background: linear-gradient(180deg, rgba(12, 30, 23, 0.98), rgba(17, 24, 39, 0.88));
-        }
-
-        .stat-card:nth-child(1) h2 { color: #4ade80 !important; }
-
-        .stat-card:nth-child(2) {
-            border-color: rgba(239, 68, 68, 0.18);
-            background: linear-gradient(180deg, rgba(42, 15, 15, 0.98), rgba(17, 24, 39, 0.88));
-        }
-
-        .stat-card:nth-child(2) h2 { color: #f87171 !important; }
-
-        .stat-card:nth-child(3) {
-            border-color: rgba(245, 158, 11, 0.18);
-            background: linear-gradient(180deg, rgba(51, 31, 6, 0.98), rgba(17, 24, 39, 0.88));
-        }
-
-        .stat-card:nth-child(3) h2 { color: #fbbf24 !important; }
-
-        html.light-mode .stat-card {
-            background: rgba(255, 255, 255, 0.96);
-            border-color: rgba(148, 163, 184, 0.14);
-            box-shadow: 0 16px 35px rgba(148, 163, 184, 0.15);
-        }
-
-        html.light-mode .stat-card p {
-            color: #475569 !important;
-        }
-
-        .surface-panel {
-            padding: 24px;
-            margin-bottom: 22px;
-        }
-
-        .panel-title {
-            font-size: 16px;
-            font-weight: 800;
-            color: var(--heading);
-            margin-bottom: 4px;
-            letter-spacing: -0.02em;
-        }
-
-        .panel-subtitle {
-            font-size: 13px;
-            color: var(--muted);
-            margin-bottom: 18px;
-        }
-
-        .filter-panel {
-            padding-bottom: 20px;
-        }
-
-        .input-modern {
-            width: 100%;
-            border-radius: 18px;
-            border: 1px solid rgba(148, 163, 184, 0.16);
-            background: rgba(15, 23, 42, 0.7);
-            color: var(--text);
-            padding: 16px 18px;
-            font-size: 14px;
-            outline: none;
-            transition: all 0.25s ease;
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
-        }
-
-        .input-modern:focus {
-            border-color: rgba(96, 165, 250, 0.3);
-            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
-            background: rgba(15, 23, 42, 0.9);
-        }
-
-        .input-modern::placeholder {
-            color: #94a3b8;
-        }
-
-        html.light-mode .input-modern {
-            background: rgba(248, 250, 252, 0.95);
-            color: #0f172a;
-            border-color: rgba(148, 163, 184, 0.18);
-        }
-
-        html.light-mode .input-modern:focus {
-            background: white;
-        }
-
-        .filters-wrap {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-
+        
+        .alerta-vencimiento { animation: pulse-red 2s infinite; border-width: 2px; }
+        .filtro-activo { border-color: white !important; background: linear-gradient(135deg, rgba(59, 130, 246, 0.8) 0%, rgba(37, 99, 235, 0.6) 100%); box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.4); }
+        
         .app-filter {
-            border: 1px solid rgba(148, 163, 184, 0.16);
-            transition: all 0.25s ease;
+            border: 2px solid #1e3a8a;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
-            background: rgba(255, 255, 255, 0.03);
+            filter: grayscale(0.8);
+            opacity: 0.7;
             padding: 12px 16px;
-            border-radius: 18px;
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            min-height: 62px;
-            color: #e2e8f0;
-        }
-
-        .app-filter small {
-            display: block;
-            font-size: 11px;
-            color: #94a3b8;
-            font-weight: 600;
-            margin-top: 2px;
-        }
-
-        .app-filter img {
-            width: 34px;
-            height: 34px;
-            object-fit: contain;
-            flex-shrink: 0;
-        }
-
-        .app-filter span {
-            font-size: 11px;
-            font-weight: 800;
-            text-align: left;
-            text-transform: uppercase;
-            line-height: 1.2;
-            display: block;
-            letter-spacing: 0.05em;
-        }
-
-        .app-filter:hover {
-            transform: translateY(-2px);
-            border-color: rgba(96, 165, 250, 0.24);
-            background: rgba(59, 130, 246, 0.08);
-        }
-
-        .filtro-activo {
-            border-color: rgba(96, 165, 250, 0.28) !important;
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(29, 78, 216, 0.16) 100%);
-            box-shadow: 0 16px 30px rgba(29, 78, 216, 0.22);
-        }
-
-        .clientes-section {
-            padding: 24px;
-        }
-
-        .section-heading {
-            margin-bottom: 18px;
-        }
-
-        #contenedor-clientes {
-            align-items: stretch;
-        }
-
-        .card-cliente {
-            animation: slideIn 0.32s ease-out;
-            position: relative;
-            overflow: hidden;
-            cursor: pointer;
-            border-radius: 24px;
-            border: 1px solid rgba(148, 163, 184, 0.16);
-            background: linear-gradient(180deg, rgba(15, 23, 42, 0.98), rgba(15, 23, 42, 0.82));
-            box-shadow: 0 18px 40px rgba(2, 6, 23, 0.24);
+            border-radius: 16px;
             display: flex;
             flex-direction: column;
-            min-height: 100%;
-            transition: all 0.28s ease;
-        }
-
-        .card-cliente::before {
-            content: "";
-            position: absolute;
-            inset: 0 0 auto 0;
-            height: 4px;
-            background: linear-gradient(90deg, #60a5fa 0%, #2563eb 100%);
-        }
-
-        .card-cliente:hover {
-            transform: translateY(-7px);
-            border-color: rgba(96, 165, 250, 0.24);
-            box-shadow: 0 24px 50px rgba(29, 78, 216, 0.24);
-        }
-
-        .card-cliente.alerta-vencimiento {
-            border-color: rgba(239, 68, 68, 0.26);
-            animation: pulse-red 1.9s infinite;
-        }
-
-        html.light-mode .card-cliente {
-            background: rgba(255, 255, 255, 0.96);
-            box-shadow: 0 16px 35px rgba(148, 163, 184, 0.18);
-            border-color: rgba(148, 163, 184, 0.14);
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            gap: 14px;
-            padding: 22px 22px 16px;
-        }
-
-        .card-identity {
-            display: flex;
-            gap: 14px;
-            min-width: 0;
-            flex: 1;
-        }
-
-        .card-icon {
-            width: 62px;
-            height: 62px;
-            border-radius: 18px;
-            display: flex;
             align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            background: rgba(59, 130, 246, 0.1);
-            border: 1px solid rgba(96, 165, 250, 0.18);
+            gap: 8px;
         }
-
-        .card-icon img {
+        .app-filter.filtro-activo {
+            border-color: #3b82f6;
+            background-color: rgba(59, 130, 246, 0.15);
+            filter: grayscale(0);
+            opacity: 1;
+            transform: scale(1.08);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+        }
+        .app-filter img {
             width: 40px;
             height: 40px;
             object-fit: contain;
         }
-
-        .card-header-info {
-            min-width: 0;
-            flex: 1;
+        .app-filter span {
+            font-size: 11px;
+            font-weight: bold;
+            text-align: center;
+            text-transform: uppercase;
+        }
+        
+        .app-option {
+            border: 2px solid #1e3a8a;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            filter: grayscale(1);
+            opacity: 0.6;
+        }
+        .app-option.selected {
+            border-color: #3b82f6;
+            background-color: rgba(59, 130, 246, 0.2);
+            transform: scale(1.1);
+            filter: grayscale(0);
+            opacity: 1;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+        }
+        
+        /* DISEÑO PROFESIONAL DE TARJETAS */
+        .card-cliente {
+            animation: slideIn 0.4s ease-out;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            background: linear-gradient(135deg, rgba(51, 65, 85, 0.8) 0%, rgba(30, 41, 59, 0.9) 100%);
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            border-radius: 16px;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
         }
 
-        .card-title-row {
+        .card-cliente::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #8b5cf6, #7c3aed);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .card-cliente:hover {
+            transform: translateY(-8px);
+            border-color: rgba(148, 163, 184, 0.5);
+            box-shadow: 0 25px 50px rgba(139, 92, 246, 0.3);
+            background: linear-gradient(135deg, rgba(51, 65, 85, 0.95) 0%, rgba(30, 41, 59, 1) 100%);
+        }
+
+        .card-cliente:hover::before {
+            opacity: 1;
+        }
+
+        .card-cliente.alerta-vencimiento {
+            border-color: #ef4444;
+            background: linear-gradient(135deg, rgba(127, 29, 29, 0.4) 0%, rgba(30, 41, 59, 0.8) 100%);
+        }
+
+        .card-cliente.alerta-vencimiento::before {
+            background: linear-gradient(90deg, #ef4444, #dc2626);
+            opacity: 1;
+            animation: pulse-red 2s infinite;
+        }
+
+        /* CONTENIDO DE LA TARJETA */
+        .card-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.2);
             display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 10px;
-            margin-bottom: 8px;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .card-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.3) 0%, rgba(124, 58, 237, 0.2) 100%);
+            border: 1px solid rgba(139, 92, 246, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .card-icon img {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+        }
+
+        .card-header-info {
+            flex: 1;
+            min-width: 0;
         }
 
         .card-title {
-            font-size: 16px;
-            font-weight: 800;
-            color: #f8fafc;
-            line-height: 1.15;
-            letter-spacing: -0.02em;
+            font-size: 15px;
+            font-weight: 700;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
         }
 
         .card-subtitle {
             font-size: 12px;
-            color: #93c5fd;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            font-weight: 700;
-            margin-bottom: 6px;
-        }
-
-        .card-meta-group {
-            display: grid;
-            gap: 6px;
-        }
-
-        .card-meta {
-            font-size: 13px;
             color: #cbd5e1;
             display: flex;
             align-items: center;
-            gap: 7px;
+            gap: 8px;
+            margin-bottom: 3px;
+        }
+
+        .card-meta {
+            font-size: 11px;
+            color: #a1a5b0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .card-status-badge {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            padding: 8px 11px;
-            border-radius: 999px;
-            font-size: 10px;
-            font-weight: 800;
+            gap: 4px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.08em;
-            white-space: nowrap;
+            letter-spacing: 0.3px;
         }
 
         .status-activo {
-            color: #86efac;
-            background: rgba(34, 197, 94, 0.12);
-            border: 1px solid rgba(34, 197, 94, 0.24);
+            background-color: rgba(34, 197, 94, 0.15);
+            color: #22c55e;
+            border: 1px solid rgba(34, 197, 94, 0.3);
         }
 
         .status-pronto {
-            color: #fde68a;
-            background: rgba(245, 158, 11, 0.12);
-            border: 1px solid rgba(245, 158, 11, 0.24);
+            background-color: rgba(234, 179, 8, 0.15);
+            color: #eab308;
+            border: 1px solid rgba(234, 179, 8, 0.3);
         }
 
         .status-vencido {
-            color: #fda4af;
-            background: rgba(239, 68, 68, 0.12);
-            border: 1px solid rgba(239, 68, 68, 0.24);
+            background-color: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
         }
 
         .card-dias {
-            width: 82px;
-            flex-shrink: 0;
-            border-radius: 18px;
-            padding: 14px 12px;
             text-align: center;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(148, 163, 184, 0.14);
-            align-self: flex-start;
+            padding: 8px;
+            background: rgba(139, 92, 246, 0.1);
+            border-left: 1px solid rgba(139, 92, 246, 0.2);
         }
 
         .card-dias-numero {
-            font-size: 32px;
-            line-height: 1;
+            font-size: 24px;
             font-weight: 900;
-            letter-spacing: -0.06em;
+            line-height: 1;
         }
-
-        .dias-activo { color: #60a5fa; }
-        .dias-pronto { color: #fbbf24; }
-        .dias-vencido { color: #fb7185; }
 
         .card-dias-texto {
-            margin-top: 6px;
             font-size: 10px;
-            letter-spacing: 0.08em;
+            color: #cbd5e1;
+            margin-top: 4px;
             text-transform: uppercase;
-            color: #94a3b8;
-            font-weight: 700;
-        }
-
-        .card-body {
-            display: grid;
-            gap: 10px;
-            padding: 0 22px 18px;
-        }
-
-        .card-info-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 10px;
-        }
-
-        .card-info-item {
-            border-radius: 16px;
-            padding: 12px 14px;
-            border: 1px solid rgba(148, 163, 184, 0.12);
-            background: rgba(255, 255, 255, 0.03);
-        }
-
-        .card-info-item span {
-            display: block;
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: #94a3b8;
-            font-weight: 700;
-            margin-bottom: 6px;
-        }
-
-        .card-info-item strong {
-            display: block;
-            font-size: 14px;
-            color: #f8fafc;
-            font-weight: 700;
-            line-height: 1.25;
-            word-break: break-word;
-        }
-
-        html.light-mode .card-title,
-        html.light-mode .card-info-item strong {
-            color: #0f172a;
-        }
-
-        html.light-mode .card-meta {
-            color: #475569;
-        }
-
-        html.light-mode .card-subtitle {
-            color: #2563eb;
-        }
-
-        html.light-mode .card-info-item {
-            background: rgba(248, 250, 252, 0.9);
-            border-color: rgba(148, 163, 184, 0.16);
         }
 
         .card-footer {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 10px;
-            padding: 0 22px 22px;
-            margin-top: auto;
+            padding: 12px 16px;
+            border-top: 1px solid rgba(148, 163, 184, 0.2);
+            display: flex;
+            gap: 6px;
         }
 
         .btn-card-action {
-            border-radius: 14px;
-            padding: 12px 10px;
-            font-size: 11px;
-            font-weight: 800;
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.06em;
-            border: 1px solid transparent;
-            transition: all 0.25s ease;
-            display: inline-flex;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
             align-items: center;
             justify-content: center;
-            gap: 7px;
-        }
-
-        .btn-card-action:hover {
-            transform: translateY(-2px);
+            gap: 4px;
         }
 
         .btn-whatsapp {
-            background: rgba(34, 197, 94, 0.1);
-            color: #86efac;
-            border-color: rgba(34, 197, 94, 0.18);
+            background: linear-gradient(135deg, rgba(37, 211, 102, 0.2) 0%, rgba(32, 186, 94, 0.1) 100%);
+            color: #25d366;
+            border: 1px solid rgba(37, 211, 102, 0.3);
+        }
+
+        .btn-whatsapp:hover {
+            background: linear-gradient(135deg, rgba(37, 211, 102, 0.4) 0%, rgba(32, 186, 94, 0.2) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(37, 211, 102, 0.2);
         }
 
         .btn-edit {
-            background: rgba(59, 130, 246, 0.1);
-            color: #93c5fd;
-            border-color: rgba(59, 130, 246, 0.18);
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(124, 58, 237, 0.1) 100%);
+            color: #c4b5fd;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+
+        .btn-edit:hover {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.4) 0%, rgba(124, 58, 237, 0.2) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(139, 92, 246, 0.2);
         }
 
         .btn-delete {
-            background: rgba(239, 68, 68, 0.1);
-            color: #fda4af;
-            border-color: rgba(239, 68, 68, 0.18);
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(220, 38, 38, 0.1) 100%);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.3);
         }
 
-        .empty-state {
-            border-radius: 24px;
-            border: 1px dashed rgba(148, 163, 184, 0.24);
-            background: rgba(255,255,255,0.03);
-            padding: 60px 20px;
-            text-align: center;
-            color: #cbd5e1;
+        .btn-delete:hover {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.4) 0%, rgba(220, 38, 38, 0.2) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(239, 68, 68, 0.2);
         }
 
-        .modal-backdrop,
-        .dialog-confirmar {
-            animation: fadeIn 0.22s ease-out;
+        .btn-card-action:active {
+            transform: scale(0.95);
         }
-
+        
+        .modal-backdrop {
+            animation: fadeIn 0.3s ease-out;
+        }
         .modal-content {
-            animation: slideIn 0.24s ease-out;
+            animation: slideIn 0.4s ease-out;
+        }
+        
+        .header-modern {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #0c4a6e 100%);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+        }
+        
+        html.light-mode .header-modern {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 50%, #1e40af 100%);
+            border-bottom: 1px solid rgba(59, 130, 246, 0.3);
+        }
+        
+        /* ESTADÍSTICAS - Cambio de estilos */
+        .stat-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
         }
 
-        .modal-detail-bg,
-        .modal-shell {
-            border-radius: 28px;
-            border: 1px solid rgba(148, 163, 184, 0.14);
-            background: linear-gradient(180deg, rgba(15, 23, 42, 0.98), rgba(15, 23, 42, 0.88));
-            box-shadow: 0 30px 70px rgba(2, 6, 23, 0.44);
+        .stat-card:hover {
+            transform: translateY(-4px);
         }
 
-        html.light-mode .modal-detail-bg,
-        html.light-mode .modal-shell {
-            background: rgba(255, 255, 255, 0.98);
-            box-shadow: 0 22px 50px rgba(148, 163, 184, 0.22);
+        /* STAT CARD ACTIVOS - Verde */
+        .stat-card:nth-child(1) {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.25) 0%, rgba(22, 163, 74, 0.15) 100%);
+            border: 2px solid #22c55e;
+            box-shadow: 0 0 20px rgba(34, 197, 94, 0.2);
         }
 
-        .modal-title {
-            font-size: 28px;
-            font-weight: 900;
-            letter-spacing: -0.04em;
-            color: #f8fafc;
+        .stat-card:nth-child(1):hover {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.35) 0%, rgba(22, 163, 74, 0.25) 100%);
+            box-shadow: 0 0 30px rgba(34, 197, 94, 0.4);
         }
 
-        html.light-mode .modal-title {
-            color: #0f172a;
-        }
-
-        .modal-subtitle {
-            color: #94a3b8;
-            font-size: 13px;
-            margin-top: 6px;
-        }
-
-        .modal-close {
-            width: 42px;
-            height: 42px;
-            border-radius: 14px;
-            display: grid;
-            place-items: center;
-            color: #cbd5e1;
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(148, 163, 184, 0.12);
-            transition: all 0.25s ease;
-        }
-
-        .modal-close:hover {
-            color: white;
-            transform: rotate(90deg);
-            background: rgba(59, 130, 246, 0.12);
-        }
-
-        .form-section-title,
-        .detail-title {
+        .stat-card:nth-child(1) p {
+            color: #ffffff !important;
+            font-weight: 700;
             font-size: 12px;
-            font-weight: 800;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            color: #93c5fd;
-            margin-bottom: 12px;
         }
 
-        html.light-mode .form-section-title,
+        .stat-card:nth-child(1) h2 {
+            color: #22c55e !important;
+            text-shadow: 0 0 20px rgba(34, 197, 94, 0.5);
+        }
+
+        /* STAT CARD VENCIDOS - Rojo */
+        .stat-card:nth-child(2) {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.25) 0%, rgba(220, 38, 38, 0.15) 100%);
+            border: 2px solid #ef4444;
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);
+        }
+
+        .stat-card:nth-child(2):hover {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.35) 0%, rgba(220, 38, 38, 0.25) 100%);
+            box-shadow: 0 0 30px rgba(239, 68, 68, 0.4);
+        }
+
+        .stat-card:nth-child(2) p {
+            color: #ffffff !important;
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        .stat-card:nth-child(2) h2 {
+            color: #ef4444 !important;
+            text-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+        }
+
+        /* STAT CARD PRONTO - Amarillo */
+        .stat-card:nth-child(3) {
+            background: linear-gradient(135deg, rgba(234, 179, 8, 0.25) 0%, rgba(202, 138, 4, 0.15) 100%);
+            border: 2px solid #eab308;
+            box-shadow: 0 0 20px rgba(234, 179, 8, 0.2);
+        }
+
+        .stat-card:nth-child(3):hover {
+            background: linear-gradient(135deg, rgba(234, 179, 8, 0.35) 0%, rgba(202, 138, 4, 0.25) 100%);
+            box-shadow: 0 0 30px rgba(234, 179, 8, 0.4);
+        }
+
+        .stat-card:nth-child(3) p {
+            color: #ffffff !important;
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        .stat-card:nth-child(3) h2 {
+            color: #eab308 !important;
+            text-shadow: 0 0 20px rgba(234, 179, 8, 0.5);
+        }
+        
+        html.light-mode .stat-card {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(99, 102, 241, 0.08) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+        
+        html.light-mode .stat-card:hover {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(99, 102, 241, 0.15) 100%);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.3);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            box-shadow: 0 15px 35px -5px rgba(59, 130, 246, 0.4);
+            transform: translateY(-2px);
+        }
+        .btn-primary:active { transform: scale(0.98); }
+        
+        .input-modern {
+            background: rgba(51, 65, 85, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            transition: all 0.3s ease;
+            color: #e2e8f0;
+        }
+        .input-modern:focus {
+            border-color: rgba(139, 92, 246, 0.6);
+            background: rgba(51, 65, 85, 0.5);
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+        }
+        
+        .input-modern::placeholder {
+            color: #cbd5e1;
+        }
+        
+        html.light-mode .input-modern {
+            background: rgba(249, 250, 251, 0.9);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #1f2937;
+        }
+        
+        html.light-mode .input-modern:focus {
+            border-color: rgba(59, 130, 246, 0.6);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        html.light-mode .input-modern::placeholder {
+            color: #9ca3af;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #cbd5e1;
+        }
+        
+        .dialog-confirmar {
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        .theme-toggle {
+            cursor: pointer;
+            width: 50px;
+            height: 28px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            padding: 2px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .theme-toggle.active {
+            background: rgba(59, 130, 246, 0.3);
+            border-color: rgba(59, 130, 246, 0.5);
+        }
+        
+        .theme-toggle span {
+            width: 24px;
+            height: 24px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        
+        .theme-toggle .dark-icon {
+            position: absolute;
+            left: 2px;
+        }
+        
+        .theme-toggle .light-icon {
+            position: absolute;
+            right: 2px;
+        }
+        
+        .theme-toggle.active .dark-icon {
+            opacity: 0.3;
+        }
+        
+        .theme-toggle.active .light-icon {
+            opacity: 1;
+        }
+        
+        .theme-toggle:not(.active) .dark-icon {
+            opacity: 1;
+        }
+        
+        .theme-toggle:not(.active) .light-icon {
+            opacity: 0.3;
+        }
+
+        /* LIGHT MODE BODY */
+        html.light-mode {
+            background: linear-gradient(135deg, #e0f2fe 0%, #f0f4f8 50%, #e8ecf1 100%);
+            color: #1f2937;
+        }
+        
+        html.light-mode body {
+            background: linear-gradient(135deg, #e0f2fe 0%, #f0f4f8 50%, #e8ecf1 100%) !important;
+            color: #1f2937 !important;
+        }
+
+        /* LIGHT MODE CARDS */
+        html.light-mode .card-cliente {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        html.light-mode .card-cliente:hover {
+            border-color: rgba(59, 130, 246, 0.4);
+            box-shadow: 0 25px 50px rgba(59, 130, 246, 0.15);
+        }
+
+        html.light-mode .card-header {
+            border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+        }
+
+        html.light-mode .card-title {
+            color: #1e3a8a;
+        }
+
+        html.light-mode .card-subtitle {
+            color: #3b82f6;
+        }
+
+        html.light-mode .card-meta {
+            color: #60a5fa;
+        }
+
+        html.light-mode .card-dias {
+            background: rgba(59, 130, 246, 0.08);
+            border-left: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        html.light-mode .card-dias-texto {
+            color: #64748b;
+        }
+
+        html.light-mode .card-footer {
+            border-top: 1px solid rgba(59, 130, 246, 0.1);
+        }
+
+        html.light-mode .card-icon {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(99, 102, 241, 0.08) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        /* LIGHT MODE MODAL */
+        html.light-mode .modal-detail-bg {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        html.light-mode .detail-row {
+            background: rgba(59, 130, 246, 0.05);
+            border: 1px solid rgba(59, 130, 246, 0.1);
+        }
+
+        html.light-mode .detail-label {
+            color: #1e40af;
+        }
+
+        html.light-mode .detail-value {
+            color: #1f2937;
+        }
+
         html.light-mode .detail-title {
             color: #2563eb;
         }
 
+        html.light-mode .modal-content {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important;
+            border: 1px solid rgba(59, 130, 246, 0.2) !important;
+        }
+
+        /* DARK MODE BACKGROUND */
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #1e40af 100%);
+        }
+
+        /* MODAL DETALLE CLIENTE */
+        .modal-detail {
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-detail-bg {
+            background: linear-gradient(135deg, rgba(48, 42, 85, 0.95) 0%, rgba(24, 18, 54, 0.95) 100%);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+
         .detail-section {
+            border-bottom: 1px solid rgba(139, 92, 246, 0.2);
             padding: 20px 0;
-            border-bottom: 1px solid rgba(148, 163, 184, 0.12);
         }
 
         .detail-section:last-child {
             border-bottom: none;
         }
 
+        .detail-title {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #c4b5fd;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
         .detail-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 16px;
-            border-radius: 16px;
-            border: 1px solid rgba(148, 163, 184, 0.12);
-            background: rgba(255, 255, 255, 0.03);
-            padding: 13px 15px;
             margin-bottom: 10px;
+            padding: 10px;
+            background: rgba(139, 92, 246, 0.15);
+            border-radius: 8px;
+            border: 1px solid rgba(139, 92, 246, 0.2);
         }
 
         .detail-label {
-            font-size: 11px;
-            color: #94a3b8;
-            font-weight: 800;
+            font-size: 12px;
+            font-weight: 600;
+            color: #cbd5e1;
             text-transform: uppercase;
-            letter-spacing: 0.08em;
+            letter-spacing: 0.5px;
         }
 
         .detail-value {
             font-size: 14px;
-            color: #f8fafc;
             font-weight: 700;
+            color: #ffffff;
             text-align: right;
-            word-break: break-word;
-        }
-
-        html.light-mode .detail-value {
-            color: #0f172a;
         }
 
         .detail-copy-btn {
-            padding: 7px 10px;
-            border-radius: 10px;
-            background: rgba(59, 130, 246, 0.12);
-            border: 1px solid rgba(59, 130, 246, 0.18);
-            color: #dbeafe;
+            padding: 4px 8px;
+            background: rgba(139, 92, 246, 0.2);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            color: #c4b5fd;
+            border-radius: 6px;
             font-size: 11px;
-            font-weight: 700;
-            transition: all 0.25s ease;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-left: 8px;
         }
 
         .detail-copy-btn:hover {
-            transform: translateY(-1px);
-            background: rgba(59, 130, 246, 0.2);
+            background: rgba(139, 92, 246, 0.4);
+            transform: scale(1.05);
         }
 
-        .app-option {
-            border-radius: 18px;
-            border: 1px solid rgba(148, 163, 184, 0.14);
-            background: rgba(255, 255, 255, 0.03);
-            padding: 14px 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-            min-height: 112px;
-            transition: all 0.25s ease;
-            cursor: pointer;
+        .btn-reporte {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            transition: all 0.3s ease;
         }
-
-        .app-option:hover {
+        .btn-reporte:hover {
+            box-shadow: 0 15px 35px -5px rgba(245, 158, 11, 0.4);
             transform: translateY(-2px);
-            border-color: rgba(96, 165, 250, 0.22);
         }
 
-        .app-option.selected {
-            border-color: rgba(96, 165, 250, 0.3);
-            background: rgba(59, 130, 246, 0.14);
-            box-shadow: 0 14px 28px rgba(29, 78, 216, 0.2);
-        }
-
-        .app-option-media {
-            width: 54px;
-            height: 54px;
-            border-radius: 16px;
-            display: grid;
-            place-items: center;
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(148, 163, 184, 0.12);
-        }
-
-        .app-option img {
-            width: 32px;
-            height: 32px;
-            object-fit: contain;
-        }
-
-        .app-option span {
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            text-align: center;
-            color: #e2e8f0;
-            font-weight: 800;
-            line-height: 1.3;
-        }
-
-        html.light-mode .app-option span {
-            color: #334155;
-        }
-
-        .theme-toggle {
-            cursor: pointer;
-            width: 58px;
-            height: 34px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(148, 163, 184, 0.16);
-            border-radius: 999px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 6px;
-            position: relative;
-            transition: all 0.25s ease;
-        }
-
-        .theme-toggle::before {
-            content: "";
-            position: absolute;
-            top: 4px;
-            left: 4px;
-            width: 24px;
-            height: 24px;
-            border-radius: 999px;
-            background: linear-gradient(135deg, #ffffff, #dbeafe);
-            box-shadow: 0 5px 10px rgba(2, 6, 23, 0.2);
-            transition: transform 0.25s ease;
-        }
-
-        .theme-toggle.active::before {
-            transform: translateX(24px);
-        }
-
-        .theme-toggle span {
-            position: relative;
-            z-index: 1;
-            font-size: 13px;
-            opacity: 0.75;
-        }
-
-        .theme-toggle.active .light-icon,
-        .theme-toggle:not(.active) .dark-icon {
-            opacity: 1;
-        }
-
-        .theme-toggle.active .dark-icon,
-        .theme-toggle:not(.active) .light-icon {
-            opacity: 0.35;
-        }
-
-        #info-sesion {
-            color: #94a3b8 !important;
-            font-size: 12px;
-        }
-
-        .logout-btn {
-            color: #fda4af;
-            font-weight: 800;
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            border: 1px solid rgba(244, 63, 94, 0.18);
-            padding: 10px 14px;
-            border-radius: 14px;
-            background: rgba(244, 63, 94, 0.06);
-            transition: all 0.25s ease;
-        }
-
-        .logout-btn:hover {
-            background: rgba(244, 63, 94, 0.12);
-            transform: translateY(-1px);
-        }
-
+        /* MOBILE STYLES */
         @media (max-width: 1024px) {
-            .hero-panel {
-                flex-direction: column;
-                align-items: flex-start;
+            .header-modern .flex:first-child {
+                gap: 4px !important;
             }
 
-            .hero-actions {
-                width: 100%;
-                justify-content: flex-start;
+            .header-modern a {
+                padding: 4px 12px !important;
+                font-size: 10px !important;
             }
         }
 
         @media (max-width: 768px) {
-            .nav-shell {
-                flex-direction: column;
-                align-items: flex-start !important;
-                padding-top: 14px;
-                padding-bottom: 14px;
+            .header-modern .container {
+                flex-direction: column !important;
+                gap: 8px !important;
             }
 
-            .nav-brand {
-                width: 100%;
-                justify-content: space-between;
+            .header-modern .flex {
+                width: 100% !important;
+                gap: 4px !important;
             }
 
-            .nav-links {
-                width: 100%;
+            .header-modern a {
+                padding: 6px 8px !important;
+                font-size: 9px !important;
+                flex: 1 !important;
             }
 
-            .stats-grid {
-                grid-template-columns: 1fr;
+            .header-modern > div:last-child {
+                width: 100% !important;
+                gap: 6px !important;
             }
 
-            .hero-panel,
-            .surface-panel,
-            .clientes-section {
-                border-radius: 24px;
+            #info-sesion {
+                display: none !important;
             }
 
-            .card-header {
-                flex-direction: column;
+            header {
+                flex-direction: column !important;
+                gap: 12px !important;
             }
 
-            .card-dias {
-                width: 100%;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
+            header > div:first-child {
+                width: 100% !important;
             }
 
-            .card-info-grid,
-            .card-footer {
-                grid-template-columns: 1fr;
+            header > div:last-child {
+                width: 100% !important;
+                flex-direction: column !important;
+                gap: 8px !important;
+            }
+
+            header h1 {
+                font-size: 28px !important;
+            }
+
+            header p {
+                font-size: 11px !important;
+            }
+
+            header button, header a {
+                width: 100% !important;
+                font-size: 11px !important;
+                padding: 10px !important;
+            }
+
+            .stat-card {
+                padding: 16px !important;
+            }
+
+            .stat-card p {
+                font-size: 9px !important;
+            }
+
+            .stat-card h2 {
+                font-size: 24px !important;
+            }
+
+            .app-filter {
+                padding: 8px 12px !important;
+                gap: 4px !important;
+            }
+
+            .app-filter img {
+                width: 30px !important;
+                height: 30px !important;
+            }
+
+            .app-filter span {
+                font-size: 8px !important;
+            }
+
+            #inputBusqueda {
+                font-size: 13px !important;
+            }
+
+            .modal-content {
+                padding: 16px !important;
+                max-width: 95vw !important;
+            }
+
+            .modal-content h3 {
+                font-size: 20px !important;
+            }
+
+            .modal-content form {
+                gap: 12px !important;
+            }
+
+            .modal-content input, .modal-content select {
+                padding: 12px !important;
+                font-size: 14px !important;
+            }
+
+            .modal-content button {
+                padding: 12px !important;
+                font-size: 12px !important;
+            }
+
+            .app-option {
+                padding: 8px !important;
+            }
+
+            .app-option img {
+                width: 24px !important;
+                height: 24px !important;
+            }
+
+            .app-option span {
+                font-size: 7px !important;
+            }
+
+            .card-title {
+                font-size: 13px !important;
+            }
+
+            .card-subtitle {
+                font-size: 11px !important;
+            }
+
+            .btn-card-action {
+                font-size: 10px !important;
+            }
+
+            .card-icon {
+                width: 60px !important;
+                height: 60px !important;
+            }
+
+            .card-icon img {
+                width: 40px !important;
+                height: 40px !important;
             }
 
             .detail-row {
-                flex-direction: column;
-                align-items: flex-start;
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 8px !important;
             }
 
             .detail-value {
-                text-align: left;
-                width: 100%;
-            }
-
-            .modal-title {
-                font-size: 24px;
+                text-align: left !important;
+                width: 100% !important;
             }
         }
 
         @media (max-width: 480px) {
             .container {
-                padding-left: 12px !important;
-                padding-right: 12px !important;
+                padding: 0 8px !important;
             }
 
-            .hero-panel,
-            .surface-panel,
-            .clientes-section {
-                padding: 18px;
+            .header-modern {
+                padding: 8px 4px !important;
             }
 
-            .page-heading {
-                font-size: 30px;
+            .header-modern a {
+                padding: 4px 6px !important;
+                font-size: 8px !important;
             }
 
-            .nav-link {
-                width: 100%;
-                justify-content: center;
+            header {
+                padding: 12px 0 !important;
             }
 
-            .btn-primary,
-            .btn-secondary,
-            .btn-reporte {
-                width: 100%;
+            header h1 {
+                font-size: 22px !important;
+            }
+
+            header p {
+                font-size: 10px !important;
+            }
+
+            header button {
+                padding: 8px !important;
+                font-size: 10px !important;
+            }
+
+            .stat-card {
+                padding: 12px !important;
+                gap: 4px !important;
+            }
+
+            .stat-card h2 {
+                font-size: 20px !important;
+            }
+
+            .stat-card p {
+                font-size: 8px !important;
+            }
+
+            .app-filter {
+                padding: 6px 10px !important;
+                gap: 3px !important;
+            }
+
+            .app-filter img {
+                width: 24px !important;
+                height: 24px !important;
+            }
+
+            .app-filter span {
+                font-size: 7px !important;
+            }
+
+            .card-header {
+                padding: 12px !important;
+            }
+
+            .card-icon {
+                width: 50px !important;
+                height: 50px !important;
+            }
+
+            .card-icon img {
+                width: 32px !important;
+                height: 32px !important;
+            }
+
+            .card-title {
+                font-size: 12px !important;
+            }
+
+            .card-subtitle {
+                font-size: 10px !important;
+            }
+
+            .card-footer {
+                padding: 8px !important;
+                gap: 4px !important;
+            }
+
+            .btn-card-action {
+                padding: 6px !important;
+                font-size: 9px !important;
+            }
+
+            .modal-content {
+                padding: 12px !important;
+                border-radius: 20px !important;
+            }
+
+            .modal-content h3 {
+                font-size: 18px !important;
+                margin-bottom: 12px !important;
+            }
+
+            .modal-content form {
+                gap: 10px !important;
+            }
+
+            .modal-content > div {
+                gap: 8px !important;
+            }
+
+            .modal-content input, .modal-content select {
+                padding: 10px !important;
+                font-size: 13px !important;
+                border-radius: 8px !important;
+            }
+
+            .modal-content button {
+                padding: 10px !important;
+                font-size: 11px !important;
+                border-radius: 12px !important;
+            }
+
+            .app-option {
+                padding: 6px !important;
+                border-radius: 8px !important;
+            }
+
+            .app-option img {
+                width: 20px !important;
+                height: 20px !important;
             }
         }
-
     </style>
 </head>
+<body id="body-app" class="font-sans min-h-screen pb-20 transition-all duration-300">
 
-<body id="body-app" class="font-sans min-h-screen pb-16 transition-all duration-300">
-
-    <nav class="header-modern">
-        <div class="container mx-auto px-4 nav-shell flex justify-between items-center">
-            <div class="nav-brand">
-                <div class="flex items-center gap-4">
-                    <div class="nav-brand-mark">TV</div>
-                    <div>
-                        <div class="nav-brand-title">Gestor Pro</div>
-                        <div class="nav-brand-subtitle">Administración profesional de clientes</div>
-                    </div>
-                </div>
-
-                <div class="flex items-center gap-3 md:hidden">
-                    <button onclick="toggleTheme()" class="theme-toggle" title="Cambiar tema">
-                        <span class="dark-icon">🌙</span>
-                        <span class="light-icon">☀️</span>
-                    </button>
-                </div>
+    <!-- NAVBAR -->
+    <nav class="header-modern sticky top-0 z-40 backdrop-blur-xl bg-opacity-90">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex gap-8">
+                <a href="index.html" class="py-4 font-bold uppercase text-sm border-b-2 border-blue-500 text-blue-500 hover:text-blue-400 transition">Mis Clientes</a>
+                <a href="equipo.html" id="link-equipos" class="py-4 font-bold uppercase text-sm hidden hover:text-blue-400 transition">Gestionar Equipo</a>
+                <a href="reporte.html" class="py-4 font-bold uppercase text-sm hover:text-blue-400 transition">Reportes</a>
             </div>
-
-            <div class="nav-links">
-                <a href="index.html" class="nav-link nav-link-active">Mis Clientes</a>
-                <a href="equipo.html" id="link-equipos" class="nav-link hidden">Gestionar Equipo</a>
-                <a href="reporte.html" class="nav-link">Reportes</a>
-            </div>
-
-            <div class="flex md:hidden w-full items-center justify-between gap-3">
-                <span id="info-sesion-mobile" class="text-xs text-slate-400 font-semibold"></span>
-                <button onclick="logout()" class="logout-btn">Salir</button>
-            </div>
-
-            <div class="hidden md:flex items-center gap-4">
-                <span id="info-sesion" class="font-semibold"></span>
-
+            <div class="flex items-center gap-4">
+                <span id="info-sesion" class="text-xs text-gray-400 font-semibold"></span>
+                
                 <button onclick="toggleTheme()" class="theme-toggle" title="Cambiar tema">
                     <span class="dark-icon">🌙</span>
                     <span class="light-icon">☀️</span>
                 </button>
-
-                <button onclick="logout()" class="logout-btn">Salir</button>
+                
+                <button onclick="logout()" class="text-red-400 font-bold text-xs uppercase border border-red-500/50 px-4 py-2 rounded-xl hover:bg-red-500/10 transition">Salir</button>
             </div>
         </div>
     </nav>
 
-    <div class="container mx-auto px-4 py-8 page-shell">
-        <section class="hero-panel">
+    <div class="container mx-auto px-4 py-8">
+        <!-- HEADER -->
+        <header class="flex justify-between items-center mb-10">
             <div>
-                <div class="eyebrow">Panel principal</div>
-                <h1 class="page-heading">Gestor de Clientes</h1>
-                <p class="page-subtitle">Centraliza vencimientos, credenciales, seguimiento y comunicación con una interfaz mucho más clara, moderna y profesional.</p>
+                <h1 class="text-4xl font-black text-blue-300 dark:text-blue-300 uppercase tracking-tight" style="color: inherit;">Gestor de Clientes</h1>
+                <p class="text-sm dark:text-blue-200 text-blue-700 mt-2">Administra todos tus clientes en un solo lugar</p>
             </div>
-
-            <div class="hero-actions">
-                <a href="reporte.html" class="btn-reporte px-6 py-4 text-sm text-white hidden md:inline-flex">
-                    📊 Ver reportes
+            <div class="flex gap-4">
+                <a href="reporte.html" class="btn-reporte px-8 py-4 rounded-2xl font-bold shadow-lg text-sm active:scale-95 transition-transform text-white hidden md:block">
+                    📊 Ver Reportes
                 </a>
-                <button onclick="abrirModalNuevo()" id="btn-nuevo-cliente" class="btn-primary px-6 py-4 text-sm text-white">
-                    ✨ Nuevo cliente
+                <button onclick="abrirModalNuevo()" id="btn-nuevo-cliente" class="btn-primary px-8 py-4 rounded-2xl font-bold shadow-lg text-sm active:scale-95 transition-transform">
+                    ✨ NUEVO CLIENTE
                 </button>
             </div>
-        </section>
+        </header>
 
-        <section class="stats-grid">
-            <div onclick="cambiarFiltroEstado('ACTIVOS')" class="stat-card">
-                <p>Clientes activos</p>
-                <h2 id="count-activos">0</h2>
+        <!-- ESTADÍSTICAS -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <div onclick="cambiarFiltroEstado('ACTIVOS')" class="stat-card cursor-pointer">
+                <p class="text-sm uppercase font-bold mb-2">✓ Clientes Activos</p>
+                <h2 id="count-activos" class="text-5xl font-black">0</h2>
             </div>
-            <div onclick="cambiarFiltroEstado('VENCIDOS')" class="stat-card">
-                <p>Vencidos</p>
-                <h2 id="count-vencidos">0</h2>
+            <div onclick="cambiarFiltroEstado('VENCIDOS')" class="stat-card cursor-pointer">
+                <p class="text-sm uppercase font-bold mb-2">✕ Vencidos</p>
+                <h2 id="count-vencidos" class="text-5xl font-black">0</h2>
             </div>
-            <div onclick="cambiarFiltroEstado('PRONTO')" class="stat-card">
-                <p>Próximos a vencer</p>
-                <h2 id="count-pronto">0</h2>
+            <div onclick="cambiarFiltroEstado('PRONTO')" class="stat-card cursor-pointer">
+                <p class="text-sm uppercase font-bold mb-2">⏰ Próximos a Vencer</p>
+                <h2 id="count-pronto" class="text-5xl font-black">0</h2>
             </div>
-        </section>
+        </div>
 
-        <section class="surface-panel filter-panel">
-            <div class="panel-title">Buscar y filtrar</div>
-            <div class="panel-subtitle">Localiza clientes por nombre, usuario o ciudad. También puedes filtrar por aplicación.</div>
-            <input type="text" id="inputBusqueda" onkeyup="filtrarClientes()" placeholder="Buscar por nombre, usuario o ciudad..." class="input-modern mb-5">
-            <div id="contenedor-filtros-apps" class="filters-wrap"></div>
-        </section>
+        <!-- BÚSQUEDA Y FILTROS -->
+        <div class="mb-8">
+            <input type="text" id="inputBusqueda" onkeyup="filtrarClientes()" placeholder="🔍 Buscar por nombre, usuario o ciudad..." class="w-full input-modern p-4 rounded-2xl outline-none text-sm mb-6">
+            <div id="contenedor-filtros-apps" class="flex flex-wrap gap-3"></div>
+        </div>
 
-        <section class="clientes-section">
-            <div class="section-heading">
-                <div class="panel-title">Listado de clientes</div>
-                <div class="panel-subtitle">Vista optimizada para revisar estado, servicio, pago y acciones rápidas.</div>
-            </div>
-            <div id="contenedor-clientes" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"></div>
-        </section>
+        <!-- CLIENTES -->
+        <div id="contenedor-clientes" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
     </div>
 
-    <div id="modalCliente" class="fixed inset-0 bg-black/70 modal-backdrop hidden flex items-center justify-center p-4 z-50">
-        <div class="modal-shell modal-detail-bg p-8 overflow-y-auto max-h-[95vh] modal-content w-full max-w-3xl">
-            <div class="flex justify-between items-start gap-4 mb-8">
-                <div>
-                    <h3 id="modal-titulo" class="modal-title">Nuevo Cliente</h3>
-                    <p class="modal-subtitle">Completa la información para registrar o editar un cliente.</p>
-                </div>
-                <button onclick="cerrarModal()" class="modal-close text-2xl">✕</button>
+    <!-- MODAL CREAR/EDITAR CLIENTE -->
+    <div id="modalCliente" class="fixed inset-0 bg-black/80 modal-backdrop hidden flex items-center justify-center p-4 z-50">
+        <div class="modal-detail-bg rounded-3xl p-8 shadow-2xl overflow-y-auto max-h-[95vh] modal-content w-full max-w-2xl">
+            <div class="flex justify-between items-center mb-8">
+                <h3 id="modal-titulo" class="text-3xl font-black uppercase text-purple-300 tracking-tight">Nuevo Cliente</h3>
+                <button onclick="cerrarModal()" class="text-purple-300 hover:text-white text-3xl transition">✕</button>
             </div>
-
-            <form id="form-cliente" class="space-y-7 text-left">
+            
+            <form id="form-cliente" class="space-y-6 text-left">
                 <input type="hidden" id="cliente-id">
 
-                <div>
-                    <p class="form-section-title">Datos de contacto</p>
+                <div class="space-y-4">
+                    <p class="text-xs font-bold text-purple-300 uppercase tracking-wider">📋 Datos de Contacto</p>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <input type="text" id="nombre-apellido" placeholder="Nombre completo" class="input-modern md:col-span-2" required>
-                        <input type="text" id="celular-cliente" placeholder="WhatsApp (ej: 2946123456)" class="input-modern" required>
-                        <input type="text" id="ciudad-cliente" placeholder="Ciudad" class="input-modern" required>
+                        <input type="text" id="nombre-apellido" placeholder="Nombre completo" class="input-modern p-4 rounded-2xl outline-none text-sm col-span-2" required>
+                        <input type="text" id="celular-cliente" placeholder="WhatsApp (ej: 2946123456)" class="input-modern p-4 rounded-2xl outline-none text-sm" required>
+                        <input type="text" id="ciudad-cliente" placeholder="Ciudad" class="input-modern p-4 rounded-2xl outline-none text-sm" required>
                     </div>
                 </div>
 
-                <div>
-                    <p class="form-section-title">Credenciales de servicio</p>
+                <div class="space-y-4">
+                    <p class="text-xs font-bold text-purple-300 uppercase tracking-wider">🔐 Credenciales de Servicio</p>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <input type="text" id="usuario-tv" placeholder="Usuario TV" class="input-modern" required>
-                        <input type="text" id="clave-tv" placeholder="Contraseña TV" class="input-modern" required>
+                        <input type="text" id="usuario-tv" placeholder="Usuario TV" class="input-modern p-4 rounded-2xl outline-none text-sm" required>
+                        <input type="text" id="clave-tv" placeholder="Contraseña TV" class="input-modern p-4 rounded-2xl outline-none text-sm" required>
                     </div>
                 </div>
 
-                <div>
-                    <p class="form-section-title">Información de pago</p>
-                    <input type="number" id="precio-servicio" placeholder="Precio ($)" min="0" step="0.01" class="input-modern font-bold" required>
+                <div class="space-y-4">
+                    <p class="text-xs font-bold text-purple-300 uppercase tracking-wider">💰 Información de Pago</p>
+                    <input type="number" id="precio-servicio" placeholder="Precio ($)" min="0" step="0.01" class="w-full input-modern p-4 rounded-2xl outline-none text-sm font-bold text-green-400" required>
                 </div>
 
-                <div>
-                    <p class="form-section-title">Seleccionar aplicación</p>
-                    <div id="app-selector" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-7 gap-3"></div>
+                <div class="space-y-4">
+                    <p class="text-xs font-bold text-purple-300 uppercase tracking-wider">📺 Seleccionar Aplicación</p>
+                    <div id="app-selector" class="grid grid-cols-4 md:grid-cols-7 gap-3"></div>
                     <input type="hidden" id="app-seleccionada" required>
                 </div>
 
-                <div>
-                    <p class="form-section-title">Fechas</p>
+                <div class="space-y-4">
+                    <p class="text-xs font-bold text-purple-300 uppercase tracking-wider">📅 Fechas</p>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label class="text-xs font-bold text-emerald-400 block mb-2 uppercase tracking-wider">Fecha de pago</label>
-                            <input type="date" id="fecha-pago" class="input-modern" required>
+                            <label class="text-xs font-bold text-green-400 block mb-1">Fecha de Pago</label>
+                            <input type="date" id="fecha-pago" class="w-full input-modern p-4 rounded-2xl outline-none text-sm" required>
                         </div>
                         <div>
-                            <label class="text-xs font-bold text-rose-400 block mb-2 uppercase tracking-wider">Vencimiento</label>
-                            <input type="date" id="vencimiento-cliente" class="input-modern" required>
+                            <label class="text-xs font-bold text-red-400 block mb-1">Vencimiento</label>
+                            <input type="date" id="vencimiento-cliente" class="w-full input-modern p-4 rounded-2xl outline-none text-sm" required>
                         </div>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-                    <button type="submit" class="btn-primary py-4 rounded-2xl text-white uppercase">
-                        Guardar cliente
+                <div class="flex gap-4 pt-4">
+                    <button type="submit" class="flex-1 btn-primary py-4 rounded-2xl font-bold uppercase tracking-wider shadow-lg transition">
+                        ✓ GUARDAR
                     </button>
-                    <button type="button" onclick="cerrarModal()" class="btn-secondary py-4 rounded-2xl uppercase">
-                        Cancelar
+                    <button type="button" onclick="cerrarModal()" class="flex-1 bg-purple-700 hover:bg-purple-600 py-4 rounded-2xl font-bold uppercase tracking-wider transition text-white">
+                        CANCELAR
                     </button>
                 </div>
             </form>
         </div>
     </div>
 
-    <div id="modalDetalles" class="fixed inset-0 bg-black/70 modal-backdrop hidden flex items-center justify-center p-4 z-50">
-        <div class="modal-shell modal-detail-bg modal-content modal-detail w-full max-w-3xl">
-            <div class="sticky top-0 px-8 py-6 flex justify-between items-start gap-4 border-b border-slate-700/60 bg-transparent">
+    <!-- MODAL VER DETALLES CLIENTE -->
+    <div id="modalDetalles" class="fixed inset-0 bg-black/80 modal-backdrop hidden flex items-center justify-center p-4 z-50">
+        <div class="modal-detail-bg rounded-3xl shadow-2xl modal-content modal-detail w-full max-w-2xl">
+            <div class="sticky top-0 px-8 py-6 flex justify-between items-center border-b border-purple-500/30">
                 <div>
-                    <h3 id="detail-titulo" class="modal-title !text-3xl">Detalles del Cliente</h3>
-                    <p id="detail-status" class="modal-subtitle"></p>
+                    <h3 id="detail-titulo" class="text-2xl font-black uppercase text-purple-300 tracking-tight">Detalles del Cliente</h3>
+                    <p id="detail-status" class="text-xs text-purple-200 mt-2"></p>
                 </div>
-                <button onclick="cerrarDetalles()" class="modal-close text-2xl">✕</button>
+                <button onclick="cerrarDetalles()" class="text-purple-300 hover:text-white text-3xl transition">✕</button>
             </div>
 
             <div class="px-8 py-6">
+                <!-- INFORMACIÓN PRINCIPAL -->
                 <div class="detail-section">
-                    <div class="detail-title">Información de contacto</div>
+                    <div class="detail-title">👤 Información de Contacto</div>
                     <div class="detail-row">
                         <span class="detail-label">Nombre</span>
                         <span class="detail-value" id="detail-nombre"></span>
@@ -1364,46 +1148,49 @@
                     </div>
                 </div>
 
+                <!-- CREDENCIALES -->
                 <div class="detail-section">
-                    <div class="detail-title">Credenciales del servicio</div>
+                    <div class="detail-title">🔐 Credenciales del Servicio</div>
                     <div class="detail-row">
                         <span class="detail-label">Aplicación</span>
                         <span class="detail-value" id="detail-app"></span>
                     </div>
                     <div class="detail-row">
                         <span class="detail-label">Usuario</span>
-                        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end;">
-                            <span class="detail-value" id="detail-usuario" style="margin:0;"></span>
+                        <div style="display: flex; align-items: center; gap: 4px;">
+                            <span class="detail-value" id="detail-usuario" style="margin: 0;"></span>
                             <button class="detail-copy-btn" onclick="copiarAlPortapapeles(document.getElementById('detail-usuario').innerText)">Copiar</button>
                         </div>
                     </div>
                     <div class="detail-row">
                         <span class="detail-label">Contraseña</span>
-                        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end;">
-                            <span class="detail-value" id="detail-clave" style="margin:0;"></span>
+                        <div style="display: flex; align-items: center; gap: 4px;">
+                            <span class="detail-value" id="detail-clave" style="margin: 0;"></span>
                             <button class="detail-copy-btn" onclick="copiarAlPortapapeles(document.getElementById('detail-clave').innerText)">Copiar</button>
                         </div>
                     </div>
                 </div>
 
+                <!-- INFORMACIÓN ECONÓMICA -->
                 <div class="detail-section">
-                    <div class="detail-title">Información de pago</div>
+                    <div class="detail-title">💰 Información de Pago</div>
                     <div class="detail-row">
-                        <span class="detail-label">Precio mensual</span>
+                        <span class="detail-label">Precio Mensual</span>
                         <span class="detail-value" id="detail-precio"></span>
                     </div>
                     <div class="detail-row">
-                        <span class="detail-label">Fecha de pago</span>
+                        <span class="detail-label">Fecha de Pago</span>
                         <span class="detail-value" id="detail-fecha-pago"></span>
                     </div>
                     <div class="detail-row">
-                        <span class="detail-label">Fecha de vencimiento</span>
+                        <span class="detail-label">Fecha de Vencimiento</span>
                         <span class="detail-value" id="detail-vencimiento"></span>
                     </div>
                 </div>
 
+                <!-- INFORMACIÓN DE SEGUIMIENTO -->
                 <div class="detail-section">
-                    <div class="detail-title">Seguimiento</div>
+                    <div class="detail-title">📅 Información de Seguimiento</div>
                     <div class="detail-row">
                         <span class="detail-label">Vendedor</span>
                         <span class="detail-value" id="detail-vendedor"></span>
@@ -1414,14 +1201,15 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-6">
-                    <button onclick="abrirModalEditarDeDetalles()" class="btn-secondary py-3 rounded-2xl text-white">
-                        ✏️ Editar cliente
+                <!-- BOTONES DE ACCIÓN -->
+                <div class="flex gap-4 pt-6 border-t border-purple-500/30">
+                    <button onclick="abrirModalEditarDeDetalles()" class="flex-1 bg-purple-600 hover:bg-purple-500 text-white py-3 rounded-xl font-bold uppercase text-sm transition">
+                        ✏️ Editar Cliente
                     </button>
-                    <button onclick="abrirWhatsAppDeDetalles()" class="btn-secondary py-3 rounded-2xl text-white">
+                    <button onclick="abrirWhatsAppDeDetalles()" class="flex-1 bg-green-600 hover:bg-green-500 text-white py-3 rounded-xl font-bold uppercase text-sm transition">
                         📱 Enviar WhatsApp
                     </button>
-                    <button onclick="abrirEliminarDeDetalles()" class="logout-btn !text-center !rounded-2xl !py-3">
+                    <button onclick="abrirEliminarDeDetalles()" class="flex-1 bg-red-600 hover:bg-red-500 text-white py-3 rounded-xl font-bold uppercase text-sm transition">
                         🗑️ Eliminar
                     </button>
                 </div>
@@ -1429,13 +1217,14 @@
         </div>
     </div>
 
-    <div id="modalConfirmar" class="fixed inset-0 bg-black/70 dialog-confirmar hidden flex items-center justify-center p-4 z-50">
-        <div class="modal-shell modal-detail-bg p-8 modal-content max-w-md w-full">
-            <h3 class="modal-title !text-2xl mb-3">Confirmar eliminación</h3>
-            <p class="modal-subtitle !mt-0 !mb-6">¿Seguro que deseas eliminar a <span id="nombre-cliente-confirmar" class="font-bold text-white"></span>? Esta acción no se puede deshacer.</p>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <button onclick="confirmarEliminar()" class="logout-btn !rounded-2xl !py-4 !text-center !text-white !bg-rose-600 !border-rose-500/30">Eliminar</button>
-                <button onclick="cerrarConfirmar()" class="btn-secondary py-4 rounded-2xl">Cancelar</button>
+    <!-- MODAL CONFIRMAR ELIMINACIÓN -->
+    <div id="modalConfirmar" class="fixed inset-0 bg-black/80 dialog-confirmar hidden flex items-center justify-center p-4 z-50">
+        <div class="modal-detail-bg rounded-3xl p-8 shadow-2xl modal-content max-w-sm w-full">
+            <h3 class="text-2xl font-bold text-red-400 mb-4">⚠️ Confirmar Eliminación</h3>
+            <p class="text-purple-200 mb-6">¿Estás seguro de que deseas eliminar a <span id="nombre-cliente-confirmar" class="font-bold text-white"></span>? Esta acción no se puede deshacer.</p>
+            <div class="flex gap-4">
+                <button onclick="confirmarEliminar()" class="flex-1 bg-red-600 hover:bg-red-500 py-3 rounded-xl font-bold uppercase text-white">ELIMINAR</button>
+                <button onclick="cerrarConfirmar()" class="flex-1 bg-purple-700 hover:bg-purple-600 py-3 rounded-xl font-bold uppercase text-white">CANCELAR</button>
             </div>
         </div>
     </div>
@@ -1454,13 +1243,13 @@
         let clienteDetalle = null;
         
         const configApps = {
-            'LUMIX TV': { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/lumixtv.png', color: '#3b82f6' },
+            'LUMIX TV': { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/lumixtv.png', color: '#2563eb' },
             'FEMON TV': { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/femontv.png', color: '#dc2626' },
             'TV PLUS 2': { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/tvplus2.png', color: '#16a34a' },
             'ZYRON TV': { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/zyrontv.png', color: '#ca8a04' },
             'ZYRON TUBE': { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/zyrontube.png', color: '#ea580c' },
-            'POWER SIGNALS': { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/powersignals.png', color: '#2563eb' },
-            'CAELUM': { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/caelum.png', color: '#2563eb' }
+            'POWER SIGNALS': { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/powersignals.png', color: '#4f46e5' },
+            'CAELUM': { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/caelum.png', color: '#0891b2' }
         };
 
         function toggleTheme() {
@@ -1473,9 +1262,6 @@
                 html.classList.add('light-mode');
                 localStorage.setItem('theme', 'light');
             }
-            document.querySelectorAll('.theme-toggle').forEach(btn => {
-                btn.classList.toggle('active', html.classList.contains('light-mode'));
-            });
         }
 
         function checkSession() {
@@ -1483,9 +1269,6 @@
             if (savedTheme === 'light') {
                 document.documentElement.classList.add('light-mode');
             }
-            document.querySelectorAll('.theme-toggle').forEach(btn => {
-                btn.classList.toggle('active', savedTheme === 'light');
-            });
             
             if (!currentUser) { window.location.href = 'logueo.html'; return; }
             if (currentUser.rol === 'admin' || currentUser.rol === 'revendedor') document.getElementById('link-equipos').classList.remove('hidden');
@@ -1498,8 +1281,6 @@
                 infoText += ` | 📅 ${diasRestantes > 0 ? diasRestantes + ' días' : 'Vencido'}`;
             }
             document.getElementById('info-sesion').innerText = infoText;
-            const infoSesionMobile = document.getElementById('info-sesion-mobile');
-            if (infoSesionMobile) infoSesionMobile.innerText = infoText;
             
             cargarClientes();
             generarSelectorAppsModal();
@@ -1518,12 +1299,10 @@
             let html = '';
             for (const [name, config] of Object.entries(configApps)) {
                 html += `
-                    <button type="button" onclick="seleccionarAppModal('${name}', this)" class="app-option">
-                        <div class="app-option-media">
-                            <img src="${config.logo}" alt="${name}">
-                        </div>
-                        <span>${name}</span>
-                    </button>
+                    <div onclick="seleccionarAppModal('${name}', this)" class="app-option bg-purple-900/30 p-3 rounded-xl flex flex-col items-center gap-2 text-center">
+                        <img src="${config.logo}" class="w-8 h-8 object-contain">
+                        <span class="text-[7px] font-black uppercase leading-tight text-purple-200">${name}</span>
+                    </div>
                 `;
             }
             container.innerHTML = html;
@@ -1690,35 +1469,13 @@
         function generarFiltrosApps(clientes) {
             const contenedor = document.getElementById('contenedor-filtros-apps');
             const appsEnUso = [...new Set(clientes.map(c => c.app_instalada))];
-            const conteoApps = clientes.reduce((acc, cliente) => {
-                acc[cliente.app_instalada] = (acc[cliente.app_instalada] || 0) + 1;
-                return acc;
-            }, {});
-
-            let html = `
-                <button onclick="cambiarFiltroApp('TODOS', this)" class="app-filter filtro-activo">
-                    <div>
-                        <span>Todos</span>
-                        <small>${clientes.length} clientes</small>
-                    </div>
-                </button>
-            `;
-
+            let html = `<button onclick="cambiarFiltroApp('TODOS', this)" class="app-filter filtro-activo"><span>✓ TODAS</span></button>`;
             appsEnUso.forEach(app => {
                 const config = configApps[app];
                 if (config) {
-                    html += `
-                        <button onclick="cambiarFiltroApp('${app}', this)" class="app-filter">
-                            <img src="${config.logo}" alt="${app}">
-                            <div>
-                                <span>${app}</span>
-                                <small>${conteoApps[app]} clientes</small>
-                            </div>
-                        </button>
-                    `;
+                    html += `<button onclick="cambiarFiltroApp('${app}', this)" class="app-filter" style="color: ${config.color};"><img src="${config.logo}" class="w-10 h-10 object-contain"><span>${app}</span></button>`;
                 }
             });
-
             contenedor.innerHTML = html;
         }
 
@@ -1726,7 +1483,6 @@
             const bus = document.getElementById('inputBusqueda').value.toLowerCase();
             const cont = document.getElementById('contenedor-clientes');
             const hoy = new Date();
-
             const filtrados = todosLosClientes.filter(c => {
                 const d = Math.ceil((new Date(c.fecha_vencimiento) - hoy) / (1000 * 60 * 60 * 24));
                 const cBus = c.nombre_apellido.toLowerCase().includes(bus) || c.usuario.toLowerCase().includes(bus) || c.ciudad.toLowerCase().includes(bus);
@@ -1737,92 +1493,56 @@
                 if (filtroEstadoActual === 'PRONTO') cEst = (d > 0 && d <= 7);
                 return cBus && cApp && cEst;
             });
-
+            
             if (filtrados.length === 0) {
                 cont.innerHTML = `
                     <div class="empty-state col-span-full">
                         <p class="text-xl font-bold mb-2">No hay clientes para mostrar</p>
-                        <p class="text-sm">Prueba con otros filtros o registra un nuevo cliente.</p>
+                        <p class="text-sm">Intenta cambiar los filtros o crea un nuevo cliente</p>
                     </div>
                 `;
                 return;
             }
-
+            
             cont.innerHTML = '';
             filtrados.forEach(c => {
                 const d = Math.ceil((new Date(c.fecha_vencimiento) - hoy) / (1000 * 60 * 60 * 24));
                 const config = configApps[c.app_instalada];
-                const precio = isNaN(parseFloat(c.precio)) ? c.precio : parseFloat(c.precio).toFixed(2);
-                const fechaPago = c.fecha_pago || 'Sin fecha';
-                const diasVisual = d <= 0 ? Math.abs(d) : d;
-
+                
                 let statusClass = 'status-activo';
                 let statusIcon = '✓';
-                let statusText = 'Activo';
-                let diasClass = 'dias-activo';
-                let diasLabel = d === 1 ? 'Día' : 'Días';
-
                 if (d <= 0) {
                     statusClass = 'status-vencido';
                     statusIcon = '❌';
-                    statusText = 'Vencido';
-                    diasClass = 'dias-vencido';
-                    diasLabel = 'Atrasado';
                 } else if (d <= 7) {
                     statusClass = 'status-pronto';
                     statusIcon = '⏰';
-                    statusText = 'Por vencer';
-                    diasClass = 'dias-pronto';
                 }
 
+                let diasColor = 'text-green-400';
+                if (d <= 0) diasColor = 'text-red-500';
+                else if (d <= 7) diasColor = 'text-yellow-400';
+                
                 cont.innerHTML += `
                     <div class="card-cliente ${d <= 2 && d > 0 ? 'alerta-vencimiento' : ''}" onclick="abrirDetalles(${JSON.stringify(c).replace(/"/g, '&quot;')})">
                         <div class="card-header">
-                            <div class="card-identity">
-                                <div class="card-icon">
-                                    <img src="${config ? config.logo : ''}" alt="${c.app_instalada}">
-                                </div>
-
-                                <div class="card-header-info">
-                                    <div class="card-title-row">
-                                        <div class="card-title">${c.nombre_apellido}</div>
-                                        <span class="card-status-badge ${statusClass}">${statusIcon} ${statusText}</span>
-                                    </div>
-
-                                    <div class="card-subtitle">${c.app_instalada}</div>
-
-                                    <div class="card-meta-group">
-                                        <div class="card-meta">👤 ${c.usuario}</div>
-                                        <div class="card-meta">📍 ${c.ciudad}</div>
-                                    </div>
-                                </div>
+                            <div class="card-icon">
+                                <img src="${config ? config.logo : ''}" alt="${c.app_instalada}">
                             </div>
-
-                            <div class="card-dias">
-                                <div class="card-dias-numero ${diasClass}">${diasVisual}</div>
-                                <div class="card-dias-texto">${diasLabel}</div>
+                            <div class="card-header-info">
+                                <div class="card-title">${c.nombre_apellido}</div>
+                                <div class="card-subtitle">
+                                    📺 ${c.app_instalada}
+                                </div>
+                                <div class="card-meta">
+                                    👤 ${c.usuario}
+                                </div>
                             </div>
                         </div>
 
-                        <div class="card-body">
-                            <div class="card-info-grid">
-                                <div class="card-info-item">
-                                    <span>WhatsApp</span>
-                                    <strong>${c.celular}</strong>
-                                </div>
-                                <div class="card-info-item">
-                                    <span>Precio</span>
-                                    <strong>$${precio}</strong>
-                                </div>
-                                <div class="card-info-item">
-                                    <span>Fecha de pago</span>
-                                    <strong>${fechaPago}</strong>
-                                </div>
-                                <div class="card-info-item">
-                                    <span>Vencimiento</span>
-                                    <strong>${c.fecha_vencimiento}</strong>
-                                </div>
-                            </div>
+                        <div class="card-dias">
+                            <div class="card-dias-numero ${diasColor}">${d}</div>
+                            <div class="card-dias-texto">${d <= 0 ? 'Vencido' : d === 1 ? 'Día' : 'Días'}</div>
                         </div>
 
                         <div class="card-footer">
