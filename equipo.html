@@ -916,16 +916,40 @@
             const vencimiento = document.getElementById('edit-vencimiento').value;
             const activo = document.getElementById('edit-activo').checked;
 
-            const updateData = { vencimiento_acceso: vencimiento, activo: activo };
+            const updateData = { vencimiento_acceso: vencimiento || null, activo: activo };
             if (password) updateData.password = password;
 
             const { error } = await supabaseClient.from('usuarios_sistema').update(updateData).eq('id', id);
 
             if (error) {
                 alert("Error al actualizar: " + error.message);
+                return;
+            }
+
+            const esUsuarioConEquipo = usuarioEnEdicion && (usuarioEnEdicion.rol === 'revendedor' || usuarioEnEdicion.rol === 'admin');
+
+            if (esUsuarioConEquipo) {
+                const { error: cascadeError } = await supabaseClient
+                    .from('usuarios_sistema')
+                    .update({ activo: activo })
+                    .eq('padre_id', id);
+
+                if (cascadeError) {
+                    alert("El usuario se actualizó, pero hubo un problema al actualizar su equipo: " + cascadeError.message);
+                    cerrarModalEditar();
+                    cargarUsuariosSistema();
+                    return;
+                }
+            }
+
+            cerrarModalEditar();
+            cargarUsuariosSistema();
+
+            if (esUsuarioConEquipo) {
+                alert(activo
+                    ? "Usuario y equipo reactivados ✓"
+                    : "Usuario y equipo deshabilitados ✓");
             } else {
-                cerrarModalEditar();
-                cargarUsuariosSistema();
                 alert("Usuario actualizado ✓");
             }
         };
