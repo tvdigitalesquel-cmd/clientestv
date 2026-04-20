@@ -5,259 +5,512 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Acceso - Tv Digital</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
+        :root {
+            --bg-1: #07111f;
+            --bg-2: #0b1729;
+            --panel: rgba(12, 22, 38, 0.84);
+            --panel-solid: #0f1c31;
+            --border: rgba(148, 163, 184, 0.16);
+            --border-strong: rgba(59, 130, 246, 0.34);
+            --text: #e5eefb;
+            --muted: #8ea2bf;
+            --accent: #3b82f6;
+            --accent-2: #2563eb;
+            --danger: #ef4444;
+            --danger-bg: rgba(239, 68, 68, 0.12);
+            --success: #22c55e;
+            --radius-xl: 28px;
+            --radius-lg: 18px;
+            --radius-md: 14px;
+            --shadow: 0 30px 80px rgba(0,0,0,0.45);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 25%, #1e3a8a 50%, #1e1b4b 75%, #0f172a 100%);
-            background-size: 400% 400%;
-            animation: gradient 15s ease infinite;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             min-height: 100vh;
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at top left, rgba(59,130,246,0.20), transparent 30%),
+                radial-gradient(circle at bottom right, rgba(37,99,235,0.18), transparent 28%),
+                linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 48%, #050b14 100%);
+            overflow: hidden;
         }
 
-        @keyframes gradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        .bg-grid,
+        .bg-orb,
+        .bg-orb-2 {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
         }
 
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .bg-grid {
+            background-image:
+                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 44px 44px;
+            mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
         }
 
-        @keyframes glow {
-            0%, 100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.3), 0 0 40px rgba(59, 130, 246, 0.1); }
-            50% { box-shadow: 0 0 30px rgba(59, 130, 246, 0.5), 0 0 60px rgba(59, 130, 246, 0.2); }
+        .bg-orb::before,
+        .bg-orb::after,
+        .bg-orb-2::before {
+            content: "";
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: .28;
         }
 
-        .glass-card {
-            background: rgba(15, 23, 42, 0.5);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(59, 130, 246, 0.2);
-            animation: slideUp 0.8s ease-out, glow 3s ease-in-out infinite;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        .bg-orb::before {
+            width: 360px; height: 360px;
+            background: #2563eb;
+            top: -80px; left: -100px;
         }
 
-        .logo-box {
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-            box-shadow: 0 15px 35px rgba(59, 130, 246, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
-            animation: slideUp 0.8s ease-out 0.1s both;
+        .bg-orb::after {
+            width: 280px; height: 280px;
+            background: #1d4ed8;
+            right: 8%; top: 10%;
+        }
+
+        .bg-orb-2::before {
+            width: 420px; height: 420px;
+            background: #0ea5e9;
+            bottom: -180px; right: -120px;
+        }
+
+        .page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .shell {
+            width: 100%;
+            max-width: 1080px;
+            display: grid;
+            grid-template-columns: 1.05fr 0.95fr;
+            background: rgba(8, 15, 27, 0.72);
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(22px);
+            border-radius: 32px;
+            overflow: hidden;
+        }
+
+        .brand-side {
+            position: relative;
+            padding: 56px;
+            background:
+                linear-gradient(180deg, rgba(59,130,246,0.18), rgba(59,130,246,0.04)),
+                linear-gradient(145deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
+            border-right: 1px solid rgba(255,255,255,0.06);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 680px;
+        }
+
+        .brand-top {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .brand-badge {
+            width: 72px;
+            height: 72px;
+            border-radius: 22px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            display: grid;
+            place-items: center;
+            font-size: 32px;
+            font-weight: 900;
+            font-style: italic;
+            letter-spacing: -0.06em;
+            box-shadow: 0 18px 40px rgba(37, 99, 235, 0.34);
+        }
+
+        .brand-name h1 {
+            font-size: 38px;
+            font-weight: 900;
+            letter-spacing: -0.05em;
+            text-transform: uppercase;
+        }
+
+        .brand-name p {
+            margin-top: 6px;
+            color: var(--muted);
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: .18em;
+            font-weight: 700;
+        }
+
+        .hero-copy {
+            max-width: 430px;
+        }
+
+        .hero-copy .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            color: #93c5fd;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: rgba(59,130,246,0.10);
+            border: 1px solid rgba(59,130,246,0.18);
+            margin-bottom: 18px;
+        }
+
+        .hero-copy h2 {
+            font-size: 46px;
+            line-height: 1.02;
+            letter-spacing: -0.05em;
+            font-weight: 900;
+            margin-bottom: 18px;
+        }
+
+        .hero-copy p {
+            color: #b4c4da;
+            font-size: 15px;
+            line-height: 1.7;
+            max-width: 420px;
+        }
+
+        .feature-list {
+            display: grid;
+            gap: 14px;
+            margin-top: 34px;
+        }
+
+        .feature {
+            padding: 16px 18px;
+            border-radius: 18px;
+            border: 1px solid rgba(255,255,255,0.06);
+            background: rgba(255,255,255,0.03);
+        }
+
+        .feature strong {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .feature span {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .brand-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            color: #7890ae;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: .14em;
+            font-weight: 700;
+        }
+
+        .form-side {
+            padding: 56px 46px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(180deg, rgba(12,22,38,0.92), rgba(7,13,24,0.92));
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 390px;
+        }
+
+        .login-card h3 {
+            font-size: 30px;
+            font-weight: 900;
+            letter-spacing: -0.04em;
+            margin-bottom: 8px;
+        }
+
+        .login-card .intro {
+            color: var(--muted);
+            line-height: 1.6;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        .field {
+            margin-bottom: 18px;
+        }
+
+        .field label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 11px;
+            font-weight: 800;
+            color: #93c5fd;
+            text-transform: uppercase;
+            letter-spacing: .14em;
+        }
+
+        .input-wrap {
+            position: relative;
+        }
+
+        .input-wrap span {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #7e91ab;
+            font-size: 16px;
         }
 
         .input-style {
-            background: rgba(15, 23, 42, 0.8);
-            border: 1px solid rgba(107, 114, 128, 0.3);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            animation: slideUp 0.8s ease-out both;
+            width: 100%;
+            height: 56px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,0.03);
+            color: var(--text);
+            padding: 0 16px 0 46px;
+            outline: none;
+            font-size: 15px;
+            transition: .22s ease;
         }
 
-        .input-style:nth-of-type(1) { animation-delay: 0.2s; }
-        .input-style:nth-of-type(2) { animation-delay: 0.3s; }
-
+        .input-style::placeholder { color: #69809d; }
         .input-style:focus {
-            border-color: rgba(59, 130, 246, 0.8);
-            background: rgba(15, 23, 42, 0.9);
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
-            transform: translateY(-2px);
+            border-color: var(--border-strong);
+            background: rgba(255,255,255,0.05);
+            box-shadow: 0 0 0 4px rgba(59,130,246,0.12);
         }
 
-        .input-style::placeholder {
-            color: rgba(156, 163, 175, 0.5);
+        .helper-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin: 4px 0 22px;
+            color: var(--muted);
+            font-size: 12px;
         }
 
-        .btn-submit {
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            animation: slideUp 0.8s ease-out 0.4s both;
-        }
-
-        .btn-submit:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(59, 130, 246, 0.4);
-        }
-
-        .btn-submit:active {
-            transform: scale(0.98);
-        }
-
-        .error-message {
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            color: #fca5a5;
-            animation: slideUp 0.3s ease-out;
-        }
-
-        .loading {
-            pointer-events: none;
-            opacity: 0.7;
-        }
-
-        .spinner {
-            border: 2px solid rgba(59, 130, 246, 0.2);
-            border-top: 2px solid #3b82f6;
+        .helper-dot {
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            animation: spin 0.8s linear infinite;
+            background: var(--success);
+            box-shadow: 0 0 0 6px rgba(34,197,94,0.10);
             display: inline-block;
             margin-right: 8px;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .title {
-            animation: slideUp 0.8s ease-out 0.05s both;
-        }
-
-        .subtitle {
-            animation: slideUp 0.8s ease-out 0.1s both;
-        }
-
-        .form-container {
-            animation: slideUp 0.8s ease-out 0.15s both;
-        }
-
-        .footer-text {
-            animation: slideUp 0.8s ease-out 0.5s both;
-        }
-
-        /* Decorative elements */
-        .blob {
-            position: fixed;
-            border-radius: 50%;
-            opacity: 0.05;
-            z-index: -1;
-            filter: blur(40px);
-        }
-
-        .blob-1 {
-            width: 300px;
-            height: 300px;
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
-            top: -100px;
-            left: -100px;
-            animation: float 20s infinite;
-        }
-
-        .blob-2 {
-            width: 400px;
-            height: 400px;
-            background: linear-gradient(135deg, #2563eb, #1e40af);
-            bottom: -150px;
-            right: -100px;
-            animation: float 25s infinite reverse;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translate(0, 0); }
-            25% { transform: translate(20px, -20px); }
-            50% { transform: translate(0, 20px); }
-            75% { transform: translate(-20px, -10px); }
-        }
-
-        .divider {
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.3), transparent);
-            animation: slideUp 0.8s ease-out 0.35s both;
-        }
-
-        .label-text {
-            font-size: 11px;
-            font-weight: 700;
-            color: #60a5fa;
+        .btn-submit {
+            width: 100%;
+            height: 56px;
+            border: none;
+            border-radius: 16px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            color: white;
+            font-weight: 900;
+            font-size: 13px;
+            letter-spacing: .12em;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            cursor: pointer;
+            transition: .22s ease;
+            box-shadow: 0 16px 36px rgba(37,99,235,0.34);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-submit:hover { transform: translateY(-2px); }
+        .btn-submit:active { transform: translateY(0); }
+
+        .loading {
+            pointer-events: none;
+            opacity: .82;
+        }
+
+        .spinner {
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255,255,255,0.28);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin .8s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .error-message {
+            margin-top: 18px;
+            padding: 14px 16px;
+            border-radius: 14px;
+            background: var(--danger-bg);
+            border: 1px solid rgba(239,68,68,0.26);
+            color: #fecaca;
+            font-size: 13px;
+            font-weight: 700;
+            line-height: 1.45;
+        }
+
+        .hidden { display: none; }
+
+        .bottom-note {
+            margin-top: 24px;
+            color: #7288a3;
+            font-size: 11px;
+            line-height: 1.7;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: .12em;
+            font-weight: 700;
+        }
+
+        @media (max-width: 920px) {
+            body { overflow: auto; }
+            .page { padding: 16px; }
+            .shell {
+                grid-template-columns: 1fr;
+                max-width: 540px;
+            }
+            .brand-side {
+                min-height: auto;
+                padding: 36px 28px;
+            }
+            .hero-copy h2 { font-size: 34px; }
+            .form-side { padding: 34px 28px 38px; }
+            .brand-footer { flex-direction: column; align-items: flex-start; }
+        }
+
+        @media (max-width: 560px) {
+            .brand-top { align-items: flex-start; }
+            .brand-badge { width: 62px; height: 62px; font-size: 28px; }
+            .brand-name h1 { font-size: 30px; }
+            .hero-copy h2 { font-size: 28px; }
+            .login-card h3 { font-size: 26px; }
         }
     </style>
 </head>
-<body class="flex flex-col items-center justify-center min-h-screen p-4">
+<body>
+    <div class="bg-grid"></div>
+    <div class="bg-orb"></div>
+    <div class="bg-orb-2"></div>
 
-    <!-- Decorative blobs -->
-    <div class="blob blob-1"></div>
-    <div class="blob blob-2"></div>
-
-    <div class="w-full max-w-md">
-        <!-- LOGO & TITLE -->
-        <div class="text-center mb-10">
-            <div class="logo-box inline-flex items-center justify-center w-24 h-24 rounded-3xl shadow-lg mb-6 transform hover:scale-105 transition-transform duration-300">
-                <span class="text-white text-5xl font-black italic">TV</span>
-            </div>
-            <h1 class="title text-4xl font-black text-white uppercase tracking-tighter italic">Tv Digital</h1>
-            <p class="subtitle text-blue-300 text-sm font-bold mt-3 uppercase tracking-widest">Gestor de Clientes Profesional</p>
-        </div>
-
-        <!-- FORM CARD -->
-        <div class="glass-card p-10 rounded-3xl">
-            <form id="formLogin" class="form-container space-y-6">
-                <!-- USERNAME FIELD -->
+    <main class="page">
+        <section class="shell">
+            <aside class="brand-side">
                 <div>
-                    <label class="label-text block mb-3">👤 Usuario</label>
-                    <input 
-                        type="text" 
-                        id="loginUser" 
-                        class="input-style w-full p-4 rounded-2xl border text-white outline-none placeholder-gray-600"
-                        placeholder="Ingresa tu usuario"
-                        required
-                        autocomplete="username"
-                    >
+                    <div class="brand-top">
+                        <div class="brand-badge">TV</div>
+                        <div class="brand-name">
+                            <h1>Tv Digital</h1>
+                            <p>Gestor Profesional</p>
+                        </div>
+                    </div>
+
+                    <div class="hero-copy" style="margin-top: 54px;">
+                        <div class="eyebrow">● Plataforma segura</div>
+                        <h2>Controlá clientes, accesos y facturación desde un solo lugar.</h2>
+                        <p>Ingresá con tu cuenta para administrar clientes, supervisar el equipo y mantener la operación ordenada, segura y actualizada.</p>
+
+                        <div class="feature-list">
+                            <div class="feature">
+                                <strong>Acceso controlado</strong>
+                                <span>Los usuarios deshabilitados o vencidos no pueden ingresar al sistema.</span>
+                            </div>
+                            <div class="feature">
+                                <strong>Gestión centralizada</strong>
+                                <span>Clientes, vendedores y reportes disponibles en una sola plataforma.</span>
+                            </div>
+                            <div class="feature">
+                                <strong>Operación profesional</strong>
+                                <span>Interfaz limpia, rápida y preparada para el trabajo diario.</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- PASSWORD FIELD -->
-                <div>
-                    <label class="label-text block mb-3">🔐 Contraseña</label>
-                    <input 
-                        type="password" 
-                        id="loginPass" 
-                        class="input-style w-full p-4 rounded-2xl border text-white outline-none placeholder-gray-600"
-                        placeholder="••••••••"
-                        required
-                        autocomplete="current-password"
-                    >
+                <div class="brand-footer">
+                    <span>© 2026 Tv Digital</span>
+                    <span>Todos los derechos reservados</span>
                 </div>
+            </aside>
 
-                <!-- DIVIDER -->
-                <div class="divider my-2"></div>
+            <section class="form-side">
+                <div class="login-card">
+                    <h3>Iniciar sesión</h3>
+                    <p class="intro">Accedé con tus credenciales para ingresar al panel de gestión.</p>
 
-                <!-- SUBMIT BUTTON -->
-                <button 
-                    type="submit" 
-                    class="btn-submit w-full bg-blue-600 text-white font-bold py-4 px-6 rounded-2xl uppercase tracking-wider text-sm flex items-center justify-center gap-2 transition-all duration-300"
-                >
-                    <span id="btn-text">🚀 Entrar al Sistema</span>
-                </button>
+                    <form id="formLogin">
+                        <div class="field">
+                            <label for="loginUser">Usuario</label>
+                            <div class="input-wrap">
+                                <span>👤</span>
+                                <input
+                                    type="text"
+                                    id="loginUser"
+                                    class="input-style"
+                                    placeholder="Ingresá tu usuario"
+                                    required
+                                    autocomplete="username"
+                                >
+                            </div>
+                        </div>
 
-                <!-- ERROR MESSAGE -->
-                <p id="loginError" class="hidden error-message text-sm text-center font-bold uppercase py-3 px-4 rounded-xl">
-                    ⚠️ Credenciales incorrectas o acceso vencido
-                </p>
-            </form>
-        </div>
+                        <div class="field">
+                            <label for="loginPass">Contraseña</label>
+                            <div class="input-wrap">
+                                <span>🔒</span>
+                                <input
+                                    type="password"
+                                    id="loginPass"
+                                    class="input-style"
+                                    placeholder="••••••••"
+                                    required
+                                    autocomplete="current-password"
+                                >
+                            </div>
+                        </div>
 
-        <!-- INFO TEXT -->
-        <div class="footer-text text-center mt-10">
-            <p class="text-gray-500 text-xs font-semibold uppercase tracking-widest">
-                Plataforma Segura de Gestión
-            </p>
-            <p class="text-gray-600 text-[10px] font-bold uppercase tracking-widest mt-3">
-                &#169; 2026 Tv Digital - Todos los Derechos Reservados
-            </p>
-            <p class="text-gray-700 text-[9px] mt-4 font-medium">
-                
-            </p>
-        </div>
-    </div>
+                        <div class="helper-row">
+                            <div><span class="helper-dot"></span>Validación de acceso activa</div>
+                            <div>Seguridad habilitada</div>
+                        </div>
+
+                        <button type="submit" class="btn-submit">
+                            <span id="btn-text">Ingresar al sistema</span>
+                        </button>
+
+                        <p id="loginError" class="hidden error-message">⚠️ Credenciales incorrectas o acceso vencido</p>
+                    </form>
+
+                    <div class="bottom-note">
+                        Plataforma segura de gestión<br>
+                        Uso interno autorizado
+                    </div>
+                </div>
+            </section>
+        </section>
+    </main>
 
     <script>
         const SUPABASE_URL = 'https://vjbdhbbxbvoigbidquya.supabase.co';
@@ -273,13 +526,12 @@
 
         form.onsubmit = async (e) => {
             e.preventDefault();
-            
+
             const username = userInput.value.trim();
             const password = passInput.value;
 
-            // Mostrar loading
             submitBtn.classList.add('loading');
-            btnText.innerHTML = '<span class="spinner"></span>Validando...';
+            btnText.innerHTML = '<span class="spinner"></span>Validando acceso...';
             errorMsg.classList.add('hidden');
 
             try {
@@ -291,50 +543,51 @@
                     .single();
 
                 if (error || !data) {
-                    mostrarError("Credenciales incorrectas");
+                    mostrarError('Credenciales incorrectas.');
                     return;
                 }
 
-                // Verificar vencimiento
+                if (data.activo === false) {
+                    mostrarError('Acceso deshabilitado. Contactá al administrador.');
+                    return;
+                }
+
                 const hoy = new Date();
-                const venci = data.vencimiento_acceso ? new Date(data.vencimiento_acceso) : null;
-                
+                const venci = data.vencimiento_acceso ? new Date(data.vencimiento_acceso + 'T23:59:59') : null;
                 if (venci && venci < hoy) {
-                    mostrarError("Acceso vencido. Contacta al soporte.");
+                    mostrarError('Acceso vencido. Contactá al administrador.');
                     return;
                 }
 
-                // Login exitoso
                 localStorage.setItem('session_tvdigital', JSON.stringify(data));
-                btnText.innerHTML = '✓ Acceso Concedido';
+                btnText.textContent = 'Acceso concedido';
                 submitBtn.style.background = 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)';
-                
+
                 setTimeout(() => {
                     window.location.href = 'index.html';
-                }, 800);
+                }, 650);
 
             } catch (err) {
-                mostrarError("Error de conexión. Intenta de nuevo.");
                 console.error(err);
+                mostrarError('Error de conexión. Intentá de nuevo.');
             } finally {
                 if (!localStorage.getItem('session_tvdigital')) {
                     submitBtn.classList.remove('loading');
-                    btnText.innerText = '🚀 Entrar al Sistema';
+                    btnText.textContent = 'Ingresar al sistema';
                     submitBtn.style.background = '';
                 }
             }
         };
 
         function mostrarError(mensaje) {
-            errorMsg.innerText = "⚠️ " + mensaje;
+            errorMsg.textContent = '⚠️ ' + mensaje;
             errorMsg.classList.remove('hidden');
             submitBtn.classList.remove('loading');
-            btnText.innerText = '🚀 Entrar al Sistema';
+            btnText.textContent = 'Ingresar al sistema';
             submitBtn.style.background = '';
             userInput.focus();
         }
 
-        // Auto-focus en campo de usuario
         window.addEventListener('load', () => {
             userInput.focus();
         });
