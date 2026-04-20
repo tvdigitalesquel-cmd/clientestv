@@ -123,7 +123,8 @@
         #info-sesion {
             font-size: 12px;
             color: var(--text-muted);
-            font-family: 'DM Mono', monospace;
+            font-family: 'DM Sans', sans-serif;
+            font-variant-numeric: tabular-nums;
         }
 
         /* ─── THEME TOGGLE ─── */
@@ -344,7 +345,8 @@
             font-weight: 700;
             color: var(--green);
             letter-spacing: -0.03em;
-            font-family: 'DM Mono', monospace;
+            font-family: 'DM Sans', sans-serif;
+            font-variant-numeric: tabular-nums;
             line-height: 1;
         }
 
@@ -443,7 +445,8 @@
             font-weight: 700;
             color: var(--green);
             background: var(--green-dim);
-            font-family: 'DM Mono', monospace;
+            font-family: 'DM Sans', sans-serif;
+            font-variant-numeric: tabular-nums;
         }
 
         /* ─── EMPTY STATE ─── */
@@ -591,6 +594,7 @@
         let currentUser = JSON.parse(localStorage.getItem('session_tvdigital'));
         let fechaDesdePersonalizado = null;
         let fechaHastaPersonalizado = null;
+        let ultimoReporteGenerado = { datos: [], totalFacturado: 0, usuariosSinPrecio: 0, cantidadClientes: 0, promedio: '0.00' };
 
         function toggleTheme() {
             const html = document.documentElement;
@@ -703,7 +707,14 @@
             return !isNaN(n) && n > 0;
         }
 
-        function actualizarReporte() {
+        function obtenerNombrePeriodoActual() {
+            if (periodoReporte === 'semana') return 'semanal';
+            if (periodoReporte === 'mes') return 'mensual';
+            if (periodoReporte === 'año') return 'anual';
+            return 'personalizado';
+        }
+
+        function construirReporteActual() {
             const { fechaInicio, fechaFin } = obtenerFechasReporte();
 
             let datosReporte = [];
@@ -746,13 +757,19 @@
             const cantidadClientes = clientesFacturados.size;
             const promedio = cantidadClientes > 0 ? (totalFacturado / cantidadClientes).toFixed(2) : '0.00';
 
-            document.getElementById('reporte-total').innerText = totalFacturado.toFixed(2);
-            document.getElementById('reporte-clientes').innerText = cantidadClientes;
-            document.getElementById('reporte-promedio').innerText = promedio;
-            document.getElementById('reporte-sin-precio').innerText = usuariosSinPrecio;
-            document.getElementById('nota-usuarios-sin-precio').innerText = usuariosSinPrecio;
+            return { datos: datosReporte, totalFacturado, usuariosSinPrecio, cantidadClientes, promedio, fechaInicio, fechaFin };
+        }
 
-            generarTabla(datosReporte, totalFacturado, usuariosSinPrecio);
+        function actualizarReporte() {
+            ultimoReporteGenerado = construirReporteActual();
+
+            document.getElementById('reporte-total').innerText = ultimoReporteGenerado.totalFacturado.toFixed(2);
+            document.getElementById('reporte-clientes').innerText = ultimoReporteGenerado.cantidadClientes;
+            document.getElementById('reporte-promedio').innerText = ultimoReporteGenerado.promedio;
+            document.getElementById('reporte-sin-precio').innerText = ultimoReporteGenerado.usuariosSinPrecio;
+            document.getElementById('nota-usuarios-sin-precio').innerText = ultimoReporteGenerado.usuariosSinPrecio;
+
+            generarTabla(ultimoReporteGenerado.datos, ultimoReporteGenerado.totalFacturado, ultimoReporteGenerado.usuariosSinPrecio);
         }
 
         function generarTabla(datos, total, usuariosSinPrecio) {
@@ -790,10 +807,10 @@
                     <tr>
                         <td>${d.nombre}</td>
                         <td>${d.app}</td>
-                        <td style="font-family:'DM Mono',monospace; font-size:12px;">${d.usuario}</td>
+                        <td style="font-family:'DM Sans',sans-serif; font-variant-numeric: tabular-nums; font-size:12px;">${d.usuario}</td>
                         <td>${d.ciudad}</td>
-                        <td style="font-family:'DM Mono',monospace; font-size:12px;">${d.telefono}</td>
-                        <td style="font-family:'DM Mono',monospace; font-weight:600;">${d.sinPrecio ? 'Sin precio' : '$' + d.precio.toFixed(2)}</td>
+                        <td style="font-family:'DM Sans',sans-serif; font-variant-numeric: tabular-nums; font-size:12px;">${d.telefono}</td>
+                        <td style="font-family:'DM Sans',sans-serif; font-variant-numeric: tabular-nums; font-weight:700;">${d.sinPrecio ? 'Sin precio' : '$' + d.precio.toFixed(2)}</td>
                         <td>${d.fechaPago}</td>
                         <td>${d.fechaVencimiento}</td>
                     </tr>`;
@@ -820,55 +837,41 @@
         }
 
         function descargarExcel() {
-            const { fechaInicio, fechaFin } = obtenerFechasReporte();
+            if (!ultimoReporteGenerado || !ultimoReporteGenerado.datos) {
+                ultimoReporteGenerado = construirReporteActual();
+            }
 
-            let datosExcel = [];
-            let totalFacturado = 0;
-            let usuariosSinPrecio = 0;
-
-            todosLosClientes.forEach(c => {
-                const fechaReferencia = obtenerFechaReferencia(c);
-                if (!fechaReferencia) return;
-
-                if (fechaReferencia >= fechaInicio && fechaReferencia <= fechaFin) {
-                    const precioValido = tienePrecioValido(c.precio);
-                    const precio = precioValido ? parseFloat(c.precio) : null;
-
-                    if (precioValido) totalFacturado += precio;
-                    else usuariosSinPrecio++;
-
-                    datosExcel.push({
-                        'Nombre Cliente': c.nombre_apellido || '',
-                        'Aplicación': c.app_instalada || '',
-                        'Usuario': c.usuario || '',
-                        'Ciudad': c.ciudad || '',
-                        'Teléfono': c.celular || '',
-                        'Precio ($)': precioValido ? precio.toFixed(2) : 'Sin precio',
-                        'Fecha Pago': c.fecha_pago || 'Sin registrar',
-                        'Fecha Vencimiento': c.fecha_vencimiento || 'Sin registrar'
-                    });
-                }
-            });
+            const datosExcel = ultimoReporteGenerado.datos.map(d => ({
+                'Nombre Cliente': d.nombre === '—' ? '' : d.nombre,
+                'Aplicación': d.app === '—' ? '' : d.app,
+                'Usuario': d.usuario === '—' ? '' : d.usuario,
+                'Ciudad': d.ciudad === '—' ? '' : d.ciudad,
+                'Teléfono': d.telefono === '—' ? '' : d.telefono,
+                'Precio ($)': d.sinPrecio ? 'Sin precio' : d.precio.toFixed(2),
+                'Fecha Pago': d.fechaPago,
+                'Fecha Vencimiento': d.fechaVencimiento
+            }));
 
             datosExcel.push({
                 'Nombre Cliente': '', 'Aplicación': '', 'Usuario': '', 'Ciudad': 'TOTAL',
-                'Teléfono': '', 'Precio ($)': totalFacturado.toFixed(2),
+                'Teléfono': '', 'Precio ($)': ultimoReporteGenerado.totalFacturado.toFixed(2),
                 'Fecha Pago': '', 'Fecha Vencimiento': ''
             });
 
             datosExcel.push({
                 'Nombre Cliente': '', 'Aplicación': '', 'Usuario': '', 'Ciudad': 'USUARIOS SIN PRECIO',
-                'Teléfono': '', 'Precio ($)': usuariosSinPrecio,
+                'Teléfono': '', 'Precio ($)': ultimoReporteGenerado.usuariosSinPrecio,
                 'Fecha Pago': '', 'Fecha Vencimiento': ''
             });
 
             const worksheet = XLSX.utils.json_to_sheet(datosExcel);
             const workbook = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(workbook, worksheet, 'Reporte');
-            worksheet['!cols'] = [{ wch: 20 }, { wch: 15 }, { wch: 15 }, { wch: 18 }, { wch: 15 }, { wch: 14 }, { wch: 15 }, { wch: 18 }];
+            worksheet['!cols'] = [{ wch: 22 }, { wch: 18 }, { wch: 18 }, { wch: 18 }, { wch: 16 }, { wch: 14 }, { wch: 16 }, { wch: 18 }];
 
             const fecha = new Date().toLocaleDateString('es-ES').replace(/\//g, '-');
-            XLSX.writeFile(workbook, `Reporte_${periodoReporte}_${fecha}.xlsx`);
+            const nombrePeriodo = obtenerNombrePeriodoActual();
+            XLSX.writeFile(workbook, `Reporte_${nombrePeriodo}_${fecha}.xlsx`);
         }
 
         function imprimirReporte() { window.print(); }
