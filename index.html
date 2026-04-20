@@ -4,8 +4,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tv Digital - Clientes</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+function renovar30Dias(id, fechaActual){
+    let fecha = fechaActual ? new Date(fechaActual) : new Date();
+    fecha.setDate(fecha.getDate() + 30);
+    const nueva = fecha.toISOString().split('T')[0];
+
+    supabaseClient.from('clientes')
+    .update({fecha_vencimiento: nueva})
+    .eq('id', id)
+    .then(()=> cargarClientes());
+}
+
+function copiarDatos(cliente){
+    const texto = `Usuario: ${cliente.usuario} | Clave: ${cliente.clave} | App: ${cliente.app_instalada}`;
+    navigator.clipboard.writeText(texto).then(()=>{
+        alert('Datos copiados');
+    });
+}
+
+</script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js">
+function renovar30Dias(id, fechaActual){
+    let fecha = fechaActual ? new Date(fechaActual) : new Date();
+    fecha.setDate(fecha.getDate() + 30);
+    const nueva = fecha.toISOString().split('T')[0];
+
+    supabaseClient.from('clientes')
+    .update({fecha_vencimiento: nueva})
+    .eq('id', id)
+    .then(()=> cargarClientes());
+}
+
+function copiarDatos(cliente){
+    const texto = `Usuario: ${cliente.usuario} | Clave: ${cliente.clave} | App: ${cliente.app_instalada}`;
+    navigator.clipboard.writeText(texto).then(()=>{
+        alert('Datos copiados');
+    });
+}
+
+</script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -990,7 +1028,25 @@
             .form-grid { grid-template-columns: 1fr; }
             .modal-box { padding: 20px 16px; border-radius: var(--radius-lg); }
         }
-    </style>
+    
+.logo-container{
+width:60px;
+height:60px;
+overflow:hidden;
+border-radius:10px;
+background:#0f172a;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+.logo-app{
+width:100%;
+height:100%;
+object-fit:contain;
+padding:6px;
+}
+</style>
 </head>
 <body>
 
@@ -1260,7 +1316,26 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+function renovar30Dias(id, fechaActual){
+    let fecha = fechaActual ? new Date(fechaActual) : new Date();
+    fecha.setDate(fecha.getDate() + 30);
+    const nueva = fecha.toISOString().split('T')[0];
+
+    supabaseClient.from('clientes')
+    .update({fecha_vencimiento: nueva})
+    .eq('id', id)
+    .then(()=> cargarClientes());
+}
+
+function copiarDatos(cliente){
+    const texto = `Usuario: ${cliente.usuario} | Clave: ${cliente.clave} | App: ${cliente.app_instalada}`;
+    navigator.clipboard.writeText(texto).then(()=>{
+        alert('Datos copiados');
+    });
+}
+
+</script>
     <script>
         const SUPABASE_URL = 'https://vjbdhbbxbvoigbidquya.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_4ogrbtxBrBWBFj-NRJOrbg_XnpmO4pS';
@@ -1336,7 +1411,7 @@
             let html = '';
             for (const [name, config] of Object.entries(configApps)) {
                 html += `<div class="app-option" onclick="seleccionarApp('${name}', this)">
-                    <img src="${config.logo}" alt="${name}">
+                    <img class="logo-app" src="${config.logo}" alt="${name}">
                     <span>${name}</span>
                 </div>`;
             }
@@ -1517,7 +1592,7 @@
             appsEnUso.forEach(app => {
                 const config = configApps[app];
                 if (config) {
-                    html += `<button onclick="cambiarFiltroApp('${app}', this)" class="app-filter"><img src="${config.logo}" alt="${app}"><span>${app}</span></button>`;
+                    html += `<button onclick="cambiarFiltroApp('${app}', this)" class="app-filter"><img class="logo-app" src="${config.logo}" alt="${app}"><span>${app}</span></button>`;
                 }
             });
             contenedor.innerHTML = html;
@@ -1574,7 +1649,7 @@
                         <div class="card-top-bar"></div>
                         <div class="card-body">
                             <div class="card-icon">
-                                ${config ? `<img src="${config.logo}" alt="${c.app_instalada}">` : `<div style="font-size:20px;">📺</div>`}
+                                ${config ? `<img class="logo-app" src="${config.logo}" alt="${c.app_instalada}">` : `<div style="font-size:20px;">📺</div>`}
                             </div>
                             <div class="card-info">
                                 <div class="card-name">${c.nombre_apellido}</div>
@@ -1888,6 +1963,25 @@
 
         function logout() { localStorage.removeItem('session_tvdigital'); window.location.href = 'logueo.html'; }
         window.onload = checkSession;
-    </script>
+    
+function renovar30Dias(id, fechaActual){
+    let fecha = fechaActual ? new Date(fechaActual) : new Date();
+    fecha.setDate(fecha.getDate() + 30);
+    const nueva = fecha.toISOString().split('T')[0];
+
+    supabaseClient.from('clientes')
+    .update({fecha_vencimiento: nueva})
+    .eq('id', id)
+    .then(()=> cargarClientes());
+}
+
+function copiarDatos(cliente){
+    const texto = `Usuario: ${cliente.usuario} | Clave: ${cliente.clave} | App: ${cliente.app_instalada}`;
+    navigator.clipboard.writeText(texto).then(()=>{
+        alert('Datos copiados');
+    });
+}
+
+</script>
 </body>
 </html>
