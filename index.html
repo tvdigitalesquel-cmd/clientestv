@@ -1025,6 +1025,9 @@
                 <a href="reporte.html" class="btn-amber">
                     📊 Reportes
                 </a>
+                <button onclick="descargarPlantillaExcel()" class="btn-secondary">
+                    📄 Plantilla Excel
+                </button>
                 <button onclick="exportarClientesExcel()" class="btn-secondary">
                     ⬇️ Exportar Excel
                 </button>
@@ -1645,7 +1648,15 @@
         }
 
         function normalizarFechaExcel(valor) {
-            if (!valor) return '';
+            if (valor === null || valor === undefined || valor === '') return '';
+
+            if (valor instanceof Date && !isNaN(valor)) {
+                const yyyy = valor.getFullYear();
+                const mm = String(valor.getMonth() + 1).padStart(2, '0');
+                const dd = String(valor.getDate()).padStart(2, '0');
+                return `${yyyy}-${mm}-${dd}`;
+            }
+
             if (typeof valor === 'number') {
                 const fecha = XLSX.SSF.parse_date_code(valor);
                 if (!fecha) return '';
@@ -1654,20 +1665,90 @@
                 const dd = String(fecha.d).padStart(2, '0');
                 return `${yyyy}-${mm}-${dd}`;
             }
+
             if (typeof valor === 'string') {
                 const limpio = valor.trim();
                 if (!limpio) return '';
+
                 if (/^\d{4}-\d{2}-\d{2}$/.test(limpio)) return limpio;
-                const partes = limpio.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})$/);
-                if (partes) {
-                    let [, d, m, y] = partes;
+
+                const matchLatino = limpio.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})$/);
+                if (matchLatino) {
+                    let [, d, m, y] = matchLatino;
                     if (y.length === 2) y = '20' + y;
                     return `${y.padStart(4, '0')}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
                 }
+
+                const matchUsa = limpio.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})\s+\d{1,2}:\d{2}:\d{2}$/);
+                if (matchUsa) {
+                    let [, m, d, y] = matchUsa;
+                    return `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
+                }
+
                 const fecha = new Date(limpio);
-                if (!isNaN(fecha)) return fecha.toISOString().slice(0, 10);
+                if (!isNaN(fecha)) {
+                    const yyyy = fecha.getFullYear();
+                    const mm = String(fecha.getMonth() + 1).padStart(2, '0');
+                    const dd = String(fecha.getDate()).padStart(2, '0');
+                    return `${yyyy}-${mm}-${dd}`;
+                }
             }
+
             return '';
+        }
+
+        function crearCeldaFechaExcel(valorIso) {
+            if (!valorIso) return { t: 's', v: '' };
+            const [y, m, d] = String(valorIso).split('-').map(Number);
+            if (!y || !m || !d) return { t: 's', v: String(valorIso) };
+            const fecha = new Date(y, m - 1, d);
+            return { t: 'd', v: fecha, z: 'dd/mm/yyyy' };
+        }
+
+        function aplicarFormatoFechasHoja(hoja, columnas, filaInicio = 2, filaFin = 300) {
+            columnas.forEach(col => {
+                for (let fila = filaInicio; fila <= filaFin; fila++) {
+                    const ref = `${col}${fila}`;
+                    if (!hoja[ref]) {
+                        hoja[ref] = { t: 'z', z: 'dd/mm/yyyy' };
+                    } else {
+                        hoja[ref].z = 'dd/mm/yyyy';
+                    }
+                }
+            });
+        }
+
+        function descargarPlantillaExcel() {
+            const encabezados = [[
+                'Nombre y Apellido',
+                'Celular',
+                'Ciudad',
+                'Usuario',
+                'Contraseña',
+                'Precio',
+                'Aplicación',
+                'Fecha de Pago',
+                'Fecha de Vencimiento'
+            ]];
+
+            const hoja = XLSX.utils.aoa_to_sheet(encabezados);
+            hoja['!cols'] = [
+                { wch: 28 },
+                { wch: 18 },
+                { wch: 18 },
+                { wch: 18 },
+                { wch: 18 },
+                { wch: 12 },
+                { wch: 20 },
+                { wch: 18 },
+                { wch: 22 }
+            ];
+
+            aplicarFormatoFechasHoja(hoja, ['H', 'I'], 2, 300);
+
+            const libro = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(libro, hoja, 'Plantilla Clientes');
+            XLSX.writeFile(libro, 'plantilla_clientes.xlsx');
         }
 
         function exportarClientesExcel() {
@@ -1676,20 +1757,53 @@
                 return;
             }
 
-            const filas = todosLosClientes.map(cliente => ({
-                'Nombre y Apellido': cliente.nombre_apellido || '',
-                'Celular': cliente.celular || '',
-                'Ciudad': cliente.ciudad || '',
-                'Usuario': cliente.usuario || '',
-                'Contraseña': cliente.clave || '',
-                'Precio': cliente.precio || '',
-                'Aplicación': cliente.app_instalada || '',
-                'Fecha de Pago': cliente.fecha_pago || '',
-                'Fecha de Vencimiento': cliente.fecha_vencimiento || '',
-                'Vendedor': cliente.vendedor_name || ''
-            }));
+            const encabezados = [[
+                'Nombre y Apellido',
+                'Celular',
+                'Ciudad',
+                'Usuario',
+                'Contraseña',
+                'Precio',
+                'Aplicación',
+                'Fecha de Pago',
+                'Fecha de Vencimiento',
+                'Vendedor'
+            ]];
 
-            const hoja = XLSX.utils.json_to_sheet(filas);
+            const filas = todosLosClientes.map(cliente => ([
+                cliente.nombre_apellido || '',
+                cliente.celular || '',
+                cliente.ciudad || '',
+                cliente.usuario || '',
+                cliente.clave || '',
+                cliente.precio || '',
+                cliente.app_instalada || '',
+                '',
+                '',
+                cliente.vendedor_name || ''
+            ]));
+
+            const hoja = XLSX.utils.aoa_to_sheet(encabezados.concat(filas));
+
+            todosLosClientes.forEach((cliente, index) => {
+                const row = index + 2;
+                hoja[`H${row}`] = crearCeldaFechaExcel(cliente.fecha_pago || '');
+                hoja[`I${row}`] = crearCeldaFechaExcel(cliente.fecha_vencimiento || '');
+            });
+
+            hoja['!cols'] = [
+                { wch: 28 },
+                { wch: 18 },
+                { wch: 18 },
+                { wch: 18 },
+                { wch: 18 },
+                { wch: 12 },
+                { wch: 20 },
+                { wch: 18 },
+                { wch: 22 },
+                { wch: 18 }
+            ];
+
             const libro = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(libro, hoja, 'Clientes');
             XLSX.writeFile(libro, 'clientes.xlsx');
@@ -1701,9 +1815,9 @@
 
             try {
                 const data = await archivo.arrayBuffer();
-                const workbook = XLSX.read(data, { type: 'array' });
+                const workbook = XLSX.read(data, { type: 'array', cellDates: true });
                 const hoja = workbook.Sheets[workbook.SheetNames[0]];
-                const filas = XLSX.utils.sheet_to_json(hoja, { defval: '' });
+                const filas = XLSX.utils.sheet_to_json(hoja, { defval: '', raw: false });
 
                 if (!filas.length) {
                     alert('El Excel está vacío.');
@@ -1715,6 +1829,7 @@
                     const nombre = fila['Nombre y Apellido'] || fila['Nombre completo'] || fila['Nombre'] || '';
                     const usuario = fila['Usuario'] || fila['Usuario TV'] || '';
                     const clave = fila['Contraseña'] || fila['Clave'] || fila['Contraseña TV'] || '';
+
                     return {
                         nombre_apellido: String(nombre).trim(),
                         celular: limpiarTextoInput(fila['Celular'] || fila['WhatsApp'] || ''),
@@ -1723,8 +1838,8 @@
                         clave: String(clave).trim(),
                         precio: limpiarNumeroInput(fila['Precio'] || fila['Precio Mensual'] || ''),
                         app_instalada: limpiarTextoInput(fila['Aplicación'] || fila['App'] || ''),
-                        fecha_pago: limpiarTextoInput(normalizarFechaExcel(fila['Fecha de Pago'] || fila['Pago'])),
-                        fecha_vencimiento: limpiarTextoInput(normalizarFechaExcel(fila['Fecha de Vencimiento'] || fila['Vencimiento'])),
+                        fecha_pago: limpiarTextoInput(normalizarFechaExcel(fila['Fecha de Pago'] || fila['Pago'] || '')),
+                        fecha_vencimiento: limpiarTextoInput(normalizarFechaExcel(fila['Fecha de Vencimiento'] || fila['Vencimiento'] || '')),
                         vendedor_name: currentUser.username,
                         creado_por: currentUser.id
                     };
