@@ -3,716 +3,600 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tv Digital - Gestión de Equipo</title>
+    <title>Tv Digital - Equipo</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>tailwind.config = { darkMode: 'class' }</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
     <style>
+        :root {
+            --bg-primary: #0a0d14;
+            --bg-secondary: #0f1520;
+            --bg-card: #131b28;
+            --bg-card-hover: #1a2235;
+            --bg-surface: #1c2740;
+            --border: rgba(255,255,255,0.07);
+            --border-hover: rgba(255,255,255,0.14);
+            --accent: #3b7ff5;
+            --accent-dim: rgba(59,127,245,0.12);
+            --accent-glow: rgba(59,127,245,0.25);
+            --green: #22c55e;
+            --green-dim: rgba(34,197,94,0.12);
+            --red: #ef4444;
+            --red-dim: rgba(239,68,68,0.12);
+            --yellow: #f59e0b;
+            --yellow-dim: rgba(245,158,11,0.12);
+            --purple: #a855f7;
+            --purple-dim: rgba(168,85,247,0.12);
+            --text-primary: #e8edf5;
+            --text-secondary: #7a8a9e;
+            --text-muted: #4a5568;
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+        }
+
+        html.light-mode {
+            --bg-primary: #f0f4fa;
+            --bg-secondary: #111318;
+            --bg-card: #ffffff;
+            --bg-card-hover: #f7faff;
+            --bg-surface: #e8eef7;
+            --border: rgba(0,0,0,0.08);
+            --border-hover: rgba(59,127,245,0.25);
+            --accent-dim: rgba(59,127,245,0.08);
+            --text-primary: #1a2235;
+            --text-secondary: #5a6a82;
+            --text-muted: #9aa5b4;
+        }
+
+        html.light-mode nav .nav-links a { color: rgba(255,255,255,0.55); }
+        html.light-mode nav .nav-links a:hover { background: rgba(255,255,255,0.08); color: #fff; }
+        html.light-mode nav .nav-links a.active { background: rgba(59,127,245,0.2); color: #6eaaff; }
+        html.light-mode #info-sesion { color: rgba(255,255,255,0.35); }
+        html.light-mode .theme-toggle { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.15); }
+        html.light-mode .btn-logout { color: #f87171; border-color: rgba(239,68,68,0.35); }
+        html.light-mode .btn-logout:hover { background: rgba(239,68,68,0.15); }
+        html.light-mode .input-modern { background: #e4ecf9; border-color: rgba(59,127,245,0.2); color: #1a2235; }
+        html.light-mode .input-modern:focus { background: #fff; border-color: var(--accent); }
+        html.light-mode .modal-box { background: #edf2fc; border-color: rgba(59,127,245,0.2); }
+        html.light-mode .toggle-row { background: var(--bg-surface); }
+        html.light-mode input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0); }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        html.light-mode { color-scheme: light; }
-        input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(var(--tw-date-invert, 1)); }
-        
-        @keyframes slideIn {
-            from { transform: translateX(-100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        /* ─── ANIMATIONS ─── */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(14px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
         }
-        
+
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border-hover); border-radius: 10px; }
+
+        /* ─── NAV ─── */
+        nav {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            position: sticky; top: 0; z-index: 50;
+            backdrop-filter: blur(12px);
+        }
+        .nav-inner {
+            max-width: 1280px; margin: 0 auto;
+            padding: 0 24px; height: 60px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .nav-links { display: flex; gap: 4px; }
+        .nav-links a {
+            text-decoration: none; font-size: 13px; font-weight: 500;
+            color: var(--text-secondary); padding: 7px 14px;
+            border-radius: var(--radius-sm); transition: all 0.2s;
+        }
+        .nav-links a:hover { background: var(--border); color: var(--text-primary); }
+        .nav-links a.active { background: var(--accent-dim); color: var(--accent); }
+        .nav-right { display: flex; align-items: center; gap: 12px; }
+        #info-sesion { font-size: 12px; color: var(--text-muted); font-family: 'DM Mono', monospace; }
+
+        /* ─── THEME TOGGLE ─── */
+        .theme-toggle {
+            cursor: pointer; width: 44px; height: 24px;
+            background: var(--bg-surface); border: 1px solid var(--border);
+            border-radius: 12px; display: flex; align-items: center;
+            padding: 2px; transition: all 0.3s; position: relative;
+        }
+        .theme-toggle span {
+            width: 20px; height: 20px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 12px; transition: all 0.3s; position: absolute;
+        }
+        .theme-toggle .dark-icon { left: 2px; }
+        .theme-toggle .light-icon { right: 2px; }
+        .theme-toggle.active .dark-icon { opacity: 0.3; }
+        .theme-toggle.active .light-icon { opacity: 1; }
+        .theme-toggle:not(.active) .dark-icon { opacity: 1; }
+        .theme-toggle:not(.active) .light-icon { opacity: 0.3; }
+
+        /* ─── BTN LOGOUT ─── */
+        .btn-logout {
+            font-size: 12px; font-weight: 600; color: #ef4444;
+            background: transparent; border: 1px solid rgba(239,68,68,0.25);
+            padding: 6px 14px; border-radius: var(--radius-sm);
+            cursor: pointer; transition: all 0.2s; font-family: 'DM Sans', sans-serif;
+        }
+        .btn-logout:hover { background: rgba(239,68,68,0.12); }
+
+        /* ─── CONTAINER ─── */
+        .container { max-width: 1280px; margin: 0 auto; padding: 32px 24px 80px; }
+
+        /* ─── PAGE HEADER ─── */
+        .page-header { margin-bottom: 28px; }
+        .page-header h1 { font-size: 26px; font-weight: 700; color: var(--text-primary); letter-spacing: -0.02em; }
+        .page-header p { font-size: 13px; color: var(--text-secondary); margin-top: 4px; }
+
+        /* ─── SECTION TITLE ─── */
+        .section-title {
+            font-size: 11px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 14px;
+        }
+
+        /* ─── BUTTONS ─── */
+        .btn-primary {
+            background: var(--accent); color: #fff; border: none;
+            padding: 10px 20px; border-radius: var(--radius-md);
+            font-size: 13px; font-weight: 600; cursor: pointer;
+            transition: all 0.2s; font-family: 'DM Sans', sans-serif;
+            display: flex; align-items: center; gap: 7px; text-decoration: none;
+        }
+        .btn-primary:hover { background: #2d6fd4; transform: translateY(-1px); box-shadow: 0 6px 20px var(--accent-glow); }
+        .btn-primary:active { transform: scale(0.98); }
+
+        .btn-back {
+            display: inline-flex; align-items: center; gap: 7px;
+            font-size: 12px; font-weight: 600; color: var(--text-secondary);
+            background: var(--bg-surface); border: 1px solid var(--border);
+            padding: 8px 16px; border-radius: var(--radius-md);
+            cursor: pointer; transition: all 0.2s; font-family: 'DM Sans', sans-serif;
+            margin-bottom: 16px;
+        }
+        .btn-back:hover { background: var(--border); color: var(--text-primary); }
+
+        /* ─── STAT CARDS ─── */
+        .stats-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 14px; margin-bottom: 20px;
+        }
+        .stat-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: var(--radius-lg); padding: 20px 24px;
+            display: flex; align-items: center; gap: 14px;
+            position: relative; overflow: hidden; animation: fadeUp 0.35s ease-out;
+        }
+        .stat-card::before {
+            content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+            width: 3px; border-radius: 0 3px 3px 0;
+        }
+        .stat-card.stat-blue::before { background: var(--accent); }
+        .stat-card.stat-purple::before { background: var(--purple); }
+        .stat-card.stat-green::before { background: var(--green); }
+        .stat-icon {
+            width: 40px; height: 40px; border-radius: var(--radius-md);
+            display: flex; align-items: center; justify-content: center; font-size: 18px;
+        }
+        .stat-blue .stat-icon { background: var(--accent-dim); }
+        .stat-purple .stat-icon { background: var(--purple-dim); }
+        .stat-green .stat-icon { background: var(--green-dim); }
+        .stat-info p { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 3px; }
+        .stat-info h2 { font-size: 26px; font-weight: 700; line-height: 1; letter-spacing: -0.03em; font-family: 'DM Mono', monospace; }
+        .stat-blue .stat-info h2 { color: var(--accent); }
+        .stat-purple .stat-info h2 { color: var(--purple); }
+        .stat-green .stat-info h2 { color: var(--green); }
+
+        /* ─── FORM SECTION ─── */
+        .card-surface {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+        }
+        .form-section { padding: 22px 24px; margin-bottom: 20px; }
+
+        .form-grid-5 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr auto;
+            gap: 12px; align-items: flex-end;
+        }
+
+        .input-label {
+            display: block; font-size: 11px; font-weight: 600;
+            color: var(--text-secondary); margin-bottom: 5px; letter-spacing: 0.02em;
+        }
+
+        .input-modern {
+            width: 100%; background: var(--bg-surface);
+            border: 1px solid var(--border); color: var(--text-primary);
+            padding: 10px 14px; border-radius: var(--radius-md);
+            font-size: 13px; font-family: 'DM Sans', sans-serif;
+            outline: none; transition: all 0.2s;
+        }
+        .input-modern:focus { border-color: var(--accent); background: var(--bg-card); }
+        .input-modern::placeholder { color: var(--text-muted); }
+        .input-modern:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* ─── USER CARDS ─── */
+        .users-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 14px;
+        }
+
         .card-usuario {
-            animation: slideIn 0.4s ease-out;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            cursor: pointer;
-        }
-        .card-usuario::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-            transition: left 0.5s;
-        }
-        .card-usuario:hover::before { left: 100%; }
-        .card-usuario:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(59, 130, 246, 0.2); }
-        
-        .card-cliente {
-            animation: slideIn 0.4s ease-out;
-            transition: all 0.3s ease;
-        }
-        .card-cliente:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(59, 130, 246, 0.15); }
-        
-        .modal-backdrop {
-            animation: fadeIn 0.3s ease-out;
-        }
-        .modal-content {
-            animation: slideIn 0.4s ease-out;
-        }
-        
-        .delete-btn {
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-            transition: all 0.3s ease;
-        }
-        .delete-btn:hover {
-            box-shadow: 0 10px 25px -5px rgba(239, 68, 68, 0.4);
-            transform: scale(1.05);
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: var(--radius-lg); padding: 18px;
+            cursor: pointer; transition: all 0.22s;
+            animation: fadeUp 0.35s ease-out;
+            display: flex; flex-direction: column; gap: 14px;
+            position: relative; overflow: hidden;
         }
 
-        .edit-btn {
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-            transition: all 0.3s ease;
+        .card-usuario:hover {
+            background: var(--bg-card-hover); border-color: var(--border-hover);
+            transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,0.3);
         }
-        .edit-btn:hover {
-            box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.4);
-            transform: scale(1.05);
-        }
-        
-        .btn-action {
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-        }
-        .btn-action:active { transform: scale(0.95); }
-        
-        .rol-admin { background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(220, 38, 38, 0.1) 100%); border-left: 4px solid #ef4444; }
-        .rol-revendedor { background: linear-gradient(135deg, rgba(168, 85, 247, 0.2) 0%, rgba(147, 51, 234, 0.1) 100%); border-left: 4px solid #a855f7; }
-        .rol-vendedor { background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(37, 99, 235, 0.1) 100%); border-left: 4px solid #3b82f6; }
 
-        .user-disabled {
-            opacity: 0.6;
-            border: 2px solid rgba(239, 68, 68, 0.3) !important;
+        .card-usuario.user-disabled { opacity: 0.55; border-color: rgba(239,68,68,0.3); }
+
+        .card-usuario-top { display: flex; align-items: flex-start; gap: 14px; }
+
+        .user-avatar {
+            width: 46px; height: 46px; border-radius: var(--radius-md);
+            background: var(--bg-surface); border: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px; flex-shrink: 0;
         }
+
+        .user-info { flex: 1; min-width: 0; }
+
+        .user-name {
+            font-size: 14px; font-weight: 700; color: var(--text-primary);
+            text-transform: uppercase; letter-spacing: 0.02em;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            margin-bottom: 6px;
+        }
+
+        .user-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+
+        .role-badge {
+            display: inline-flex; align-items: center;
+            padding: 3px 10px; border-radius: 100px;
+            font-size: 10px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.04em;
+        }
+
+        .role-admin { background: var(--red-dim); color: var(--red); }
+        .role-revendedor { background: var(--purple-dim); color: var(--purple); }
+        .role-vendedor { background: var(--accent-dim); color: var(--accent); }
 
         .disabled-badge {
-            background-color: rgba(239, 68, 68, 0.2);
-            color: #fca5a5;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 10px;
-            font-weight: bold;
-            text-transform: uppercase;
-            display: inline-block;
-        }
-        
-        .header-modern {
-            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #0c4a6e 100%);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(59, 130, 246, 0.2);
-        }
-        
-        html.light-mode .header-modern {
-            background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 50%, #f0f4ff 100%);
-            border-bottom: 1px solid rgba(59, 130, 246, 0.3);
-        }
-        
-        .stat-card {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(99, 102, 241, 0.1) 100%);
-            border: 1px solid rgba(59, 130, 246, 0.2);
-            transition: all 0.3s ease;
-        }
-        .stat-card:hover {
-            border-color: rgba(59, 130, 246, 0.5);
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(99, 102, 241, 0.2) 100%);
-            transform: translateY(-2px);
-        }
-        
-        html.light-mode .stat-card {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(99, 102, 241, 0.05) 100%);
-            border: 1px solid rgba(59, 130, 246, 0.3);
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-            box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.3);
-            transition: all 0.3s ease;
-        }
-        .btn-primary:hover {
-            box-shadow: 0 15px 35px -5px rgba(59, 130, 246, 0.4);
-            transform: translateY(-2px);
-        }
-        .btn-primary:active { transform: scale(0.98); }
-        
-        .input-modern {
-            background: rgba(31, 41, 55, 0.6);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(107, 114, 128, 0.3);
-            transition: all 0.3s ease;
-        }
-        .input-modern:focus {
-            border-color: rgba(59, 130, 246, 0.6);
-            background: rgba(31, 41, 55, 0.8);
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
-        }
-        
-        html.light-mode .input-modern {
-            background: rgba(249, 250, 251, 0.8);
-            border: 1px solid rgba(59, 130, 246, 0.2);
-            color: #1f2937;
-        }
-        
-        html.light-mode .input-modern:focus {
-            border-color: rgba(59, 130, 246, 0.6);
-            background: rgba(255, 255, 255, 0.9);
-        }
-        
-        .theme-toggle {
-            cursor: pointer;
-            width: 50px;
-            height: 28px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            padding: 2px;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-        
-        .theme-toggle.active {
-            background: rgba(59, 130, 246, 0.3);
-            border-color: rgba(59, 130, 246, 0.5);
-        }
-        
-        .theme-toggle span {
-            width: 24px;
-            height: 24px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            font-size: 14px;
-        }
-        
-        .theme-toggle .dark-icon {
-            position: absolute;
-            left: 2px;
-        }
-        
-        .theme-toggle .light-icon {
-            position: absolute;
-            right: 2px;
-        }
-        
-        .theme-toggle.active .dark-icon {
-            opacity: 0.3;
-        }
-        
-        .theme-toggle.active .light-icon {
-            opacity: 1;
-        }
-        
-        .theme-toggle:not(.active) .dark-icon {
-            opacity: 1;
-        }
-        
-        .theme-toggle:not(.active) .light-icon {
-            opacity: 0.3;
+            display: inline-flex; align-items: center;
+            padding: 3px 10px; border-radius: 100px;
+            font-size: 10px; font-weight: 700;
+            background: var(--red-dim); color: var(--red);
         }
 
-        html.light-mode {
-            background-color: #f3f4f6;
-            color: #1f2937;
-        }
-        
-        html.light-mode body {
-            background-color: #f3f4f6 !important;
-            color: #1f2937 !important;
-        }
-        
-        html.light-mode .bg-gray-950 {
-            background-color: #f3f4f6 !important;
-        }
-        
-        html.light-mode .bg-gray-900 {
-            background-color: #ffffff !important;
-        }
-        
-        html.light-mode .bg-gray-800 {
-            background-color: #f9fafb !important;
-        }
-        
-        html.light-mode .border-gray-700 {
-            border-color: rgba(59, 130, 246, 0.1) !important;
-        }
-        
-        html.light-mode .text-white {
-            color: #1f2937 !important;
-        }
-        
-        html.light-mode .text-gray-300 {
-            color: #4b5563 !important;
-        }
-        
-        html.light-mode .text-gray-400 {
-            color: #6b7280 !important;
-        }
-        
-        html.light-mode .text-gray-500 {
-            color: #9ca3af !important;
-        }
-        
-        html.light-mode .text-blue-400 {
-            color: #2563eb !important;
+        .user-meta {
+            font-size: 11px; color: var(--text-muted); margin-top: 6px;
+            display: flex; flex-direction: column; gap: 2px;
         }
 
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: #9ca3af;
+        .card-usuario-actions { display: flex; gap: 7px; }
+
+        .btn-card {
+            flex: 1; padding: 8px 6px;
+            border: 1px solid var(--border); border-radius: var(--radius-sm);
+            font-size: 11px; font-weight: 600; cursor: pointer;
+            background: transparent; color: var(--text-secondary);
+            transition: all 0.2s; font-family: 'DM Sans', sans-serif;
+            text-transform: uppercase; letter-spacing: 0.04em;
+            display: flex; align-items: center; justify-content: center; gap: 5px;
+        }
+        .btn-card:hover { background: var(--border); color: var(--text-primary); }
+        .btn-card:active { transform: scale(0.96); }
+        .btn-card.btn-edit:hover { background: var(--accent-dim); color: var(--accent); border-color: rgba(59,127,245,0.3); }
+        .btn-card.btn-delete:hover { background: var(--red-dim); color: var(--red); border-color: rgba(239,68,68,0.3); }
+
+        /* ─── CLIENT CARDS (inside seller view) ─── */
+        .clients-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 12px;
         }
 
-        .dialog-confirmar {
-            animation: fadeIn 0.3s ease-out;
+        .card-cliente {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: var(--radius-lg); padding: 14px 16px;
+            display: flex; justify-content: space-between; align-items: center;
+            gap: 12px; animation: fadeUp 0.3s ease-out;
+            transition: all 0.2s;
         }
+        .card-cliente:hover { background: var(--bg-card-hover); border-color: var(--border-hover); }
 
-        .toggle-switch {
-            position: relative;
-            display: inline-block;
-            width: 50px;
-            height: 24px;
+        .client-left { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; }
+
+        .client-app-icon {
+            width: 38px; height: 38px; border-radius: var(--radius-sm);
+            background: var(--bg-surface); border: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
         }
+        .client-app-icon img { width: 24px; height: 24px; object-fit: contain; }
 
-        .toggle-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
+        .client-info { flex: 1; min-width: 0; }
+        .client-name {
+            font-size: 13px; font-weight: 700; color: var(--text-primary);
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            text-transform: uppercase; margin-bottom: 3px;
         }
+        .client-meta { font-size: 10px; color: var(--text-muted); }
 
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #374151;
-            transition: 0.3s;
-            border-radius: 24px;
-        }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 18px;
-            width: 18px;
-            left: 3px;
-            bottom: 3px;
-            background-color: white;
-            transition: 0.3s;
-            border-radius: 50%;
-        }
-
-        input:checked + .slider {
-            background-color: #22c55e;
-        }
-
-        input:checked + .slider:before {
-            transform: translateX(26px);
+        .client-right { text-align: right; flex-shrink: 0; }
+        .client-days {
+            font-size: 20px; font-weight: 800; line-height: 1;
+            font-family: 'DM Mono', monospace;
         }
 
         .estado-badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 16px;
-            font-size: 9px;
-            font-weight: bold;
-            text-transform: uppercase;
+            display: inline-block; padding: 2px 8px; border-radius: 100px;
+            font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
+            margin-top: 3px;
         }
-        .estado-activo { background-color: rgba(34, 197, 94, 0.2); color: #22c55e; }
-        .estado-vencido { background-color: rgba(239, 68, 68, 0.2); color: #ef4444; }
-        .estado-pronto { background-color: rgba(234, 179, 8, 0.2); color: #eab308; }
+        .estado-activo { background: var(--green-dim); color: var(--green); }
+        .estado-vencido { background: var(--red-dim); color: var(--red); }
+        .estado-pronto { background: var(--yellow-dim); color: var(--yellow); }
 
-        .back-btn {
-            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-            transition: all 0.3s ease;
-            font-weight: bold;
-            padding: 10px 20px;
-            border-radius: 10px;
-            border: none;
-            color: white;
-            cursor: pointer;
+        /* ─── SEARCH ─── */
+        .search-wrapper { position: relative; margin-bottom: 16px; }
+        .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 14px; pointer-events: none; }
+        #buscar-cliente { padding-left: 40px; }
+
+        /* ─── EMPTY STATE ─── */
+        .empty-state { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+        .empty-state .empty-icon { font-size: 40px; margin-bottom: 12px; opacity: 0.4; }
+        .empty-state p { font-size: 14px; }
+        .empty-state p.sub { font-size: 12px; margin-top: 5px; opacity: 0.7; }
+
+        /* ─── MODALS ─── */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(4px); display: flex;
+            align-items: center; justify-content: center;
+            padding: 16px; z-index: 100; animation: fadeIn 0.2s ease-out;
+        }
+        .modal-overlay.hidden { display: none; }
+
+        .modal-box {
+            background: var(--bg-card); border: 1px solid var(--border-hover);
+            border-radius: var(--radius-xl); padding: 28px;
+            width: 100%; max-width: 440px; max-height: 92vh;
+            overflow-y: auto; animation: fadeUp 0.25s ease-out;
         }
 
-        .back-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+        .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; }
+        .modal-header h3 { font-size: 17px; font-weight: 700; color: var(--text-primary); letter-spacing: -0.01em; }
+        .modal-close {
+            width: 32px; height: 32px; border-radius: var(--radius-sm);
+            background: var(--bg-surface); border: 1px solid var(--border);
+            color: var(--text-secondary); cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px; transition: all 0.2s;
         }
+        .modal-close:hover { background: var(--border-hover); color: var(--text-primary); }
 
-        /* MOBILE STYLES */
+        .form-field { margin-bottom: 14px; }
+
+        /* ─── TOGGLE SWITCH ─── */
+        .toggle-row {
+            display: flex; align-items: center; justify-content: space-between;
+            background: var(--bg-surface); border: 1px solid var(--border);
+            border-radius: var(--radius-md); padding: 12px 14px; margin-bottom: 14px;
+        }
+        .toggle-row-label p { font-size: 12px; font-weight: 600; color: var(--text-primary); }
+        .toggle-row-label span { font-size: 11px; color: var(--text-muted); }
+
+        .toggle-switch { position: relative; display: inline-block; width: 46px; height: 24px; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--bg-surface); border: 1px solid var(--border);
+            transition: 0.3s; border-radius: 24px;
+        }
+        .slider:before {
+            position: absolute; content: ""; height: 16px; width: 16px;
+            left: 3px; bottom: 3px; background-color: var(--text-muted);
+            transition: 0.3s; border-radius: 50%;
+        }
+        input:checked + .slider { background-color: var(--green); border-color: var(--green); }
+        input:checked + .slider:before { transform: translateX(22px); background: #fff; }
+
+        /* ─── FORM ACTIONS ─── */
+        .form-actions { display: flex; gap: 10px; margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--border); }
+        .form-actions .btn-primary { flex: 1; justify-content: center; padding: 11px; }
+        .form-actions .btn-cancel {
+            flex: 1; background: var(--bg-surface); border: 1px solid var(--border);
+            color: var(--text-secondary); padding: 11px; border-radius: var(--radius-md);
+            font-size: 13px; font-weight: 600; cursor: pointer;
+            font-family: 'DM Sans', sans-serif; transition: all 0.2s; text-align: center;
+        }
+        .form-actions .btn-cancel:hover { background: var(--border); color: var(--text-primary); }
+
+        /* ─── CONFIRM MODAL ─── */
+        .confirm-icon { width: 48px; height: 48px; border-radius: 50%; background: var(--red-dim); display: flex; align-items: center; justify-content: center; font-size: 22px; margin: 0 auto 14px; }
+        .confirm-title { text-align: center; font-size: 16px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
+        .confirm-text { text-align: center; font-size: 13px; color: var(--text-secondary); margin-bottom: 22px; line-height: 1.5; }
+        .confirm-actions { display: flex; gap: 10px; }
+        .btn-confirm-delete { flex: 1; padding: 11px; background: var(--red); color: #fff; border: none; border-radius: var(--radius-md); font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; text-transform: uppercase; }
+        .btn-confirm-delete:hover { background: #dc2626; }
+        .btn-confirm-cancel { flex: 1; padding: 11px; background: var(--bg-surface); color: var(--text-secondary); border: 1px solid var(--border); border-radius: var(--radius-md); font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; text-transform: uppercase; }
+        .btn-confirm-cancel:hover { background: var(--border); color: var(--text-primary); }
+
+        /* ─── RESPONSIVE ─── */
         @media (max-width: 768px) {
-            .header-modern .flex {
-                flex-wrap: wrap;
-                gap: 8px;
-            }
-
-            .header-modern a, .header-modern button {
-                font-size: 10px;
-                padding: 8px 12px;
-            }
-
-            header {
-                flex-direction: column;
-                align-items: flex-start !important;
-            }
-
-            header h1 {
-                font-size: 24px !important;
-            }
-
-            header p {
-                font-size: 11px !important;
-            }
-
-            .stat-card {
-                padding: 16px !important;
-            }
-
-            .stat-card h2 {
-                font-size: 24px !important;
-            }
-
-            .card-usuario {
-                padding: 16px !important;
-                flex-direction: column !important;
-            }
-
-            .card-usuario > div:first-child {
-                flex-direction: column !important;
-            }
-
-            .card-usuario .w-12 {
-                width: 40px !important;
-                height: 40px !important;
-            }
-
-            .card-usuario h3 {
-                font-size: 14px !important;
-            }
-
-            .card-usuario p {
-                font-size: 11px !important;
-            }
-
-            .card-usuario > div:last-child {
-                width: 100% !important;
-                flex-direction: column !important;
-                gap: 8px;
-            }
-
-            .card-usuario button {
-                width: 100% !important;
-                font-size: 12px !important;
-            }
-
-            #formNuevoUsuario {
-                grid-template-columns: 1fr !important;
-                gap: 12px !important;
-            }
-
-            #formNuevoUsuario input, #formNuevoUsuario select {
-                font-size: 14px !important;
-                padding: 12px !important;
-            }
-
-            #formNuevoUsuario button {
-                font-size: 12px !important;
-                padding: 12px !important;
-            }
-
-            .modal-content {
-                padding: 16px !important;
-            }
-
-            .modal-content h3 {
-                font-size: 18px !important;
-            }
-
-            .modal-content input, .modal-content select {
-                font-size: 14px !important;
-                padding: 12px !important;
-            }
-
-            .modal-content button {
-                padding: 12px !important;
-                font-size: 12px !important;
-            }
-
-            .dialog-confirmar h3 {
-                font-size: 18px !important;
-            }
-
-            .dialog-confirmar p {
-                font-size: 12px !important;
-            }
-
-            .dialog-confirmar button {
-                font-size: 12px !important;
-                padding: 12px !important;
-            }
-
-            .card-cliente {
-                padding: 12px !important;
-                font-size: 12px !important;
-            }
-
-            .card-cliente p {
-                font-size: 11px !important;
-            }
-
-            .estado-badge {
-                font-size: 9px !important;
-            }
-
-            .back-btn {
-                padding: 8px 16px;
-                font-size: 12px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                padding-left: 8px !important;
-                padding-right: 8px !important;
-            }
-
-            header {
-                padding: 16px 8px !important;
-            }
-
-            header h1 {
-                font-size: 20px !important;
-            }
-
-            .stat-card {
-                padding: 12px !important;
-            }
-
-            .stat-card h2 {
-                font-size: 20px !important;
-            }
-
-            .stat-card p {
-                font-size: 9px !important;
-            }
-
-            .card-usuario {
-                padding: 12px !important;
-            }
-
-            .card-usuario .w-12 {
-                width: 36px !important;
-                height: 36px !important;
-            }
-
-            .card-usuario h3 {
-                font-size: 13px !important;
-            }
-
-            .card-usuario p {
-                font-size: 10px !important;
-            }
-
-            #formNuevoUsuario {
-                grid-template-columns: 1fr !important;
-                gap: 10px !important;
-            }
-
-            #formNuevoUsuario input, #formNuevoUsuario select {
-                font-size: 13px !important;
-                padding: 10px !important;
-                border-radius: 8px !important;
-            }
-
-            #formNuevoUsuario button {
-                font-size: 11px !important;
-                padding: 10px !important;
-                border-radius: 10px !important;
-            }
-
-            .modal-content {
-                padding: 12px !important;
-                border-radius: 20px !important;
-            }
-
-            .modal-content h3 {
-                font-size: 16px !important;
-                margin-bottom: 12px !important;
-            }
-
-            .modal-content input, .modal-content select {
-                padding: 10px !important;
-                font-size: 13px !important;
-                border-radius: 8px !important;
-            }
-
-            .modal-content button {
-                padding: 10px !important;
-                font-size: 11px !important;
-                border-radius: 10px !important;
-            }
-
-            .dialog-confirmar {
-                padding: 16px !important;
-            }
-
-            .dialog-confirmar h3 {
-                font-size: 16px !important;
-                margin-bottom: 12px !important;
-            }
-
-            .dialog-confirmar p {
-                font-size: 11px !important;
-                margin-bottom: 12px !important;
-            }
-
-            .dialog-confirmar button {
-                font-size: 11px !important;
-                padding: 10px !important;
-                border-radius: 8px !important;
-            }
-
-            .back-btn {
-                padding: 6px 12px;
-                font-size: 11px;
-                margin-bottom: 12px;
-                width: 100%;
-            }
+            .nav-inner { padding: 0 14px; height: 54px; }
+            #info-sesion { display: none; }
+            .container { padding: 20px 14px 70px; }
+            .stats-grid { grid-template-columns: 1fr; gap: 10px; }
+            .form-grid-5 { grid-template-columns: 1fr; }
+            .users-grid { grid-template-columns: 1fr; }
+            .clients-grid { grid-template-columns: 1fr; }
+            .form-section { padding: 16px; }
         }
     </style>
 </head>
-<body id="body-app" class="bg-gray-950 text-white font-sans min-h-screen pb-20 transition-all duration-300">
+<body>
 
-    <!-- NAVBAR -->
-    <nav class="header-modern sticky top-0 z-40 backdrop-blur-xl bg-opacity-90">
-        <div class="container mx-auto px-4 py-4 flex justify-between items-center flex-wrap gap-2">
-            <div class="flex gap-4 sm:gap-8 flex-wrap">
-                <a href="index.html" class="py-4 font-bold uppercase text-xs sm:text-sm hover:text-blue-400 transition">Mis Clientes</a>
-                <button class="py-4 font-bold uppercase text-xs sm:text-sm border-b-2 border-blue-500 text-blue-500">Equipo</button>
-                <a href="reporte.html" class="py-4 font-bold uppercase text-xs sm:text-sm hover:text-blue-400 transition hidden sm:block">Reportes</a>
+    <!-- ─── NAVBAR ─── -->
+    <nav>
+        <div class="nav-inner">
+            <div class="nav-links">
+                <a href="index.html">Mis Clientes</a>
+                <a href="equipo.html" class="active">Equipo</a>
+                <a href="reporte.html">Reportes</a>
             </div>
-            <div class="flex items-center gap-4">
-                <span id="info-sesion" class="text-[10px] sm:text-xs text-gray-400 font-semibold hidden sm:inline"></span>
-                
-                <!-- THEME TOGGLE -->
+            <div class="nav-right">
+                <span id="info-sesion"></span>
                 <button onclick="toggleTheme()" class="theme-toggle" title="Cambiar tema">
                     <span class="dark-icon">🌙</span>
                     <span class="light-icon">☀️</span>
                 </button>
-                
-                <button onclick="logout()" class="text-red-400 font-bold text-xs uppercase border border-red-500/50 px-2 sm:px-4 py-2 rounded-xl hover:bg-red-500/10 transition">Salir</button>
+                <button onclick="logout()" class="btn-logout">Salir</button>
             </div>
         </div>
     </nav>
 
-    <div class="container mx-auto px-4 py-8">
-        <!-- HEADER PRINCIPAL -->
-        <header id="header-principal" class="mb-10">
-            <h1 id="titulo-gestion" class="text-3xl sm:text-4xl font-black text-blue-400 uppercase tracking-tight">Gestionar Equipo</h1>
-            <p class="text-xs sm:text-sm text-gray-500 mt-2">Administra los usuarios y vendedores de tu equipo</p>
-        </header>
+    <div class="container">
 
-        <!-- HEADER CLIENTES DEL VENDEDOR -->
-        <header id="header-clientes" class="mb-10 hidden">
-            <button onclick="volverAEquipo()" class="back-btn mb-4 w-full sm:w-auto">← VOLVER</button>
-            <h1 id="titulo-clientes-vendedor" class="text-3xl sm:text-4xl font-black text-blue-400 uppercase tracking-tight">Clientes</h1>
-            <p id="info-clientes-vendedor" class="text-xs sm:text-sm text-gray-500 mt-2"></p>
-        </header>
+        <!-- ─── HEADER PRINCIPAL ─── -->
+        <div id="header-principal" class="page-header">
+            <h1 id="titulo-gestion">Gestionar Equipo</h1>
+            <p>Administrá los usuarios y vendedores de tu equipo</p>
+        </div>
 
-        <!-- ESTADÍSTICAS -->
-        <div id="estadisticas" class="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-4 mb-8">
-            <div class="stat-card p-4 sm:p-6 rounded-2xl text-center">
-                <p class="text-xs uppercase font-bold text-blue-400 opacity-80 mb-2">Total de Usuarios</p>
-                <h2 id="count-total" class="text-3xl sm:text-4xl font-black text-blue-400">0</h2>
+        <!-- ─── HEADER CLIENTES DEL VENDEDOR ─── -->
+        <div id="header-clientes" style="display:none;" class="page-header">
+            <button onclick="volverAEquipo()" class="btn-back">← Volver al Equipo</button>
+            <h1 id="titulo-clientes-vendedor">Clientes</h1>
+            <p id="info-clientes-vendedor"></p>
+        </div>
+
+        <!-- ─── STATS ─── -->
+        <div id="estadisticas" class="stats-grid">
+            <div class="stat-card stat-blue">
+                <div class="stat-icon">👥</div>
+                <div class="stat-info">
+                    <p>Total Usuarios</p>
+                    <h2 id="count-total">0</h2>
+                </div>
             </div>
-            <div class="stat-card p-4 sm:p-6 rounded-2xl text-center">
-                <p class="text-xs uppercase font-bold text-purple-400 opacity-80 mb-2">Revendedores</p>
-                <h2 id="count-revendedores" class="text-3xl sm:text-4xl font-black text-purple-400">0</h2>
+            <div class="stat-card stat-purple">
+                <div class="stat-icon">🔷</div>
+                <div class="stat-info">
+                    <p>Revendedores</p>
+                    <h2 id="count-revendedores">0</h2>
+                </div>
             </div>
-            <div class="stat-card p-4 sm:p-6 rounded-2xl text-center">
-                <p class="text-xs uppercase font-bold text-green-400 opacity-80 mb-2">Vendedores</p>
-                <h2 id="count-vendedores" class="text-3xl sm:text-4xl font-black text-green-400">0</h2>
+            <div class="stat-card stat-green">
+                <div class="stat-icon">📊</div>
+                <div class="stat-info">
+                    <p>Vendedores</p>
+                    <h2 id="count-vendedores">0</h2>
+                </div>
             </div>
         </div>
 
-        <!-- FORMULARIO NUEVO USUARIO -->
-        <div class="bg-gray-800 border border-gray-700 p-4 sm:p-8 rounded-3xl mb-8 shadow-lg" id="seccion-form">
-            <h2 class="text-xl sm:text-2xl font-black text-blue-400 uppercase mb-6 tracking-tight">➕ Crear Nuevo Acceso</h2>
-            
-            <form id="formNuevoUsuario" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
-                <div>
-                    <label class="text-xs font-bold text-blue-400 uppercase block mb-2">Usuario</label>
-                    <input type="text" id="newUsername" placeholder="Nombre de usuario" class="input-modern w-full p-3 sm:p-4 rounded-2xl outline-none text-sm" required>
+        <!-- ─── FORM NUEVO USUARIO ─── -->
+        <div id="seccion-form" class="card-surface form-section">
+            <div class="section-title">Crear Nuevo Acceso</div>
+            <form id="formNuevoUsuario">
+                <div class="form-grid-5">
+                    <div>
+                        <label class="input-label">Usuario</label>
+                        <input type="text" id="newUsername" placeholder="Nombre de usuario" class="input-modern" required>
+                    </div>
+                    <div>
+                        <label class="input-label">Contraseña</label>
+                        <input type="password" id="newPassword" placeholder="Contraseña" class="input-modern" required>
+                    </div>
+                    <div>
+                        <label class="input-label">Rol</label>
+                        <select id="newRol" class="input-modern" required></select>
+                    </div>
+                    <div>
+                        <label class="input-label">Vencimiento</label>
+                        <input type="date" id="newVencimiento" class="input-modern" required>
+                    </div>
+                    <button type="submit" class="btn-primary" style="justify-content:center; white-space:nowrap;">+ Crear</button>
                 </div>
-                <div>
-                    <label class="text-xs font-bold text-blue-400 uppercase block mb-2">Contraseña</label>
-                    <input type="password" id="newPassword" placeholder="Contraseña" class="input-modern w-full p-3 sm:p-4 rounded-2xl outline-none text-sm" required>
-                </div>
-                <div>
-                    <label class="text-xs font-bold text-blue-400 uppercase block mb-2">Rol</label>
-                    <select id="newRol" class="input-modern w-full p-3 sm:p-4 rounded-2xl outline-none text-sm font-bold uppercase" required></select>
-                </div>
-                <div>
-                    <label class="text-xs font-bold text-blue-400 uppercase block mb-2">Vencimiento</label>
-                    <input type="date" id="newVencimiento" class="input-modern w-full p-3 sm:p-4 rounded-2xl outline-none text-sm" required>
-                </div>
-                <button type="submit" class="btn-primary font-bold rounded-2xl uppercase text-xs sm:text-sm self-end py-3 sm:py-4 shadow-lg transition-transform">
-                    ✓ Crear
-                </button>
             </form>
         </div>
 
-        <!-- LISTA DE USUARIOS -->
+        <!-- ─── LISTA DE USUARIOS ─── -->
         <div id="seccion-usuarios">
-            <h2 class="text-xl sm:text-2xl font-black text-blue-400 uppercase mb-6 tracking-tight">Equipo de Usuarios</h2>
-            <div id="lista-usuarios-sistema" class="grid gap-3 sm:gap-4"></div>
+            <div class="section-title" style="margin-bottom:16px;">Equipo de Usuarios</div>
+            <div id="lista-usuarios-sistema" class="users-grid"></div>
         </div>
 
-        <!-- LISTA DE CLIENTES DEL VENDEDOR -->
-        <div id="seccion-clientes-vendedor" class="hidden">
-            <h2 class="text-xl sm:text-2xl font-black text-blue-400 uppercase mb-6 tracking-tight">Clientes Registrados</h2>
-            <input type="text" id="buscar-cliente" placeholder="🔍 Buscar cliente..." class="w-full input-modern p-4 rounded-2xl outline-none text-sm mb-6">
-            <div id="lista-clientes-vendedor" class="grid gap-3 sm:gap-4"></div>
+        <!-- ─── CLIENTES DEL VENDEDOR ─── -->
+        <div id="seccion-clientes-vendedor" style="display:none;">
+            <div class="section-title" style="margin-bottom:12px;">Clientes Registrados</div>
+            <div class="search-wrapper">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="buscar-cliente" onkeyup="filtrarClientesVendedor()" placeholder="Buscar cliente..." class="input-modern">
+            </div>
+            <div id="lista-clientes-vendedor" class="clients-grid"></div>
         </div>
+
     </div>
 
-    <!-- MODAL EDITAR USUARIO -->
-    <div id="modalEditar" class="fixed inset-0 bg-black/80 modal-backdrop hidden flex items-center justify-center p-4 z-50">
-        <div class="bg-gray-800 border border-gray-700 w-full max-w-md rounded-3xl p-8 shadow-2xl overflow-y-auto max-h-[95vh] modal-content">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-xl sm:text-2xl font-black uppercase text-blue-400 tracking-tight">Editar Usuario</h3>
-                <button onclick="cerrarModalEditar()" class="text-gray-500 hover:text-white text-3xl transition">✕</button>
+    <!-- ─── MODAL EDITAR USUARIO ─── -->
+    <div id="modalEditar" class="modal-overlay hidden">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>Editar Usuario</h3>
+                <button onclick="cerrarModalEditar()" class="modal-close">✕</button>
             </div>
-            
-            <form id="formEditarUsuario" class="space-y-5">
+
+            <form id="formEditarUsuario">
                 <input type="hidden" id="edit-user-id">
 
-                <div>
-                    <label class="text-xs font-bold text-blue-400 uppercase block mb-2">Usuario</label>
-                    <input type="text" id="edit-username" class="input-modern w-full p-3 sm:p-4 rounded-2xl outline-none text-sm" disabled>
+                <div class="form-field">
+                    <label class="input-label">Usuario</label>
+                    <input type="text" id="edit-username" class="input-modern" disabled>
                 </div>
 
-                <div>
-                    <label class="text-xs font-bold text-blue-400 uppercase block mb-2">Nueva Contraseña</label>
-                    <input type="password" id="edit-password" class="input-modern w-full p-3 sm:p-4 rounded-2xl outline-none text-sm" placeholder="Dejar en blanco para no cambiar">
+                <div class="form-field">
+                    <label class="input-label">Nueva Contraseña</label>
+                    <input type="password" id="edit-password" class="input-modern" placeholder="Dejar vacío para no cambiar">
                 </div>
 
-                <div>
-                    <label class="text-xs font-bold text-blue-400 uppercase block mb-2">Vencimiento</label>
-                    <input type="date" id="edit-vencimiento" class="input-modern w-full p-3 sm:p-4 rounded-2xl outline-none text-sm">
+                <div class="form-field">
+                    <label class="input-label">Vencimiento</label>
+                    <input type="date" id="edit-vencimiento" class="input-modern">
                 </div>
 
-                <div class="flex items-center justify-between bg-gray-900 p-4 rounded-2xl border border-gray-700">
-                    <div>
-                        <p class="text-xs font-bold text-blue-400 uppercase">Estado del Acceso</p>
-                        <p class="text-xs text-gray-400 mt-1">Habilitar o deshabilitar</p>
+                <div class="toggle-row">
+                    <div class="toggle-row-label">
+                        <p>Estado del Acceso</p>
+                        <span>Habilitar o deshabilitar</span>
                     </div>
                     <label class="toggle-switch">
                         <input type="checkbox" id="edit-activo">
@@ -720,26 +604,25 @@
                     </label>
                 </div>
 
-                <div class="flex flex-col sm:flex-row gap-3 pt-4">
-                    <button type="submit" class="flex-1 btn-primary py-3 sm:py-4 rounded-2xl font-bold uppercase text-sm shadow-lg transition">
-                        ✓ GUARDAR
-                    </button>
-                    <button type="button" onclick="cerrarModalEditar()" class="flex-1 bg-gray-700 hover:bg-gray-600 py-3 sm:py-4 rounded-2xl font-bold uppercase text-sm">
-                        CANCELAR
-                    </button>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Guardar</button>
+                    <button type="button" onclick="cerrarModalEditar()" class="btn-cancel">Cancelar</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- MODAL CONFIRMAR ELIMINACIÓN -->
-    <div id="modalConfirmar" class="fixed inset-0 bg-black/80 dialog-confirmar hidden flex items-center justify-center p-4 z-50">
-        <div class="bg-gray-800 border border-gray-700 rounded-3xl p-8 shadow-2xl max-w-sm modal-content w-full">
-            <h3 class="text-xl sm:text-2xl font-bold text-red-400 mb-4">⚠️ Confirmar Eliminación</h3>
-            <p class="text-gray-300 mb-6 text-sm sm:text-base">¿Estás seguro de que deseas revocar acceso a <span id="nombre-usuario-confirmar" class="font-bold text-white"></span>?</p>
-            <div class="flex flex-col sm:flex-row gap-4">
-                <button onclick="confirmarEliminar()" class="flex-1 delete-btn py-3 rounded-xl font-bold uppercase text-white text-sm">REVOCAR</button>
-                <button onclick="cerrarConfirmar()" class="flex-1 bg-gray-700 hover:bg-gray-600 py-3 rounded-xl font-bold uppercase text-sm">CANCELAR</button>
+    <!-- ─── MODAL CONFIRMAR ELIMINACIÓN ─── -->
+    <div id="modalConfirmar" class="modal-overlay hidden">
+        <div class="modal-box" style="max-width:360px;">
+            <div class="confirm-icon">⚠️</div>
+            <div class="confirm-title">Confirmar Eliminación</div>
+            <div class="confirm-text">
+                ¿Estás seguro de que querés revocar el acceso a <strong id="nombre-usuario-confirmar" style="color:var(--text-primary);"></strong>?
+            </div>
+            <div class="confirm-actions">
+                <button onclick="confirmarEliminar()" class="btn-confirm-delete">Revocar</button>
+                <button onclick="cerrarConfirmar()" class="btn-confirm-cancel">Cancelar</button>
             </div>
         </div>
     </div>
@@ -756,12 +639,6 @@
         let todosLosClientes = [];
         let clientesVendedorActual = [];
 
-        const rolColors = {
-            'admin': { bg: 'bg-red-900/30', text: 'text-red-400', border: 'border-red-500/20', icon: '👑' },
-            'revendedor': { bg: 'bg-purple-900/30', text: 'text-purple-400', border: 'border-purple-500/20', icon: '🔷' },
-            'vendedor': { bg: 'bg-blue-900/30', text: 'text-blue-400', border: 'border-blue-500/20', icon: '📊' }
-        };
-
         const configApps = {
             'LUMIX TV': { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/lumixtv.png' },
             'FEMON TV': { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/femontv.png' },
@@ -774,13 +651,15 @@
 
         function toggleTheme() {
             const html = document.documentElement;
-            const isLightMode = html.classList.contains('light-mode');
-            if (isLightMode) {
+            const isLight = html.classList.contains('light-mode');
+            if (isLight) {
                 html.classList.remove('light-mode');
                 localStorage.setItem('theme', 'dark');
+                document.querySelector('.theme-toggle').classList.remove('active');
             } else {
                 html.classList.add('light-mode');
                 localStorage.setItem('theme', 'light');
+                document.querySelector('.theme-toggle').classList.add('active');
             }
         }
 
@@ -788,15 +667,13 @@
             const savedTheme = localStorage.getItem('theme') || 'dark';
             if (savedTheme === 'light') {
                 document.documentElement.classList.add('light-mode');
-            }
-            
-            if (!currentUser) {
-                window.location.href = 'logueo.html';
-                return;
+                document.querySelector('.theme-toggle').classList.add('active');
             }
 
-            document.getElementById('info-sesion').innerText = `${currentUser.rol.toUpperCase()} • ${currentUser.username}`;
-            
+            if (!currentUser) { window.location.href = 'logueo.html'; return; }
+
+            document.getElementById('info-sesion').innerText = `${currentUser.rol.toUpperCase()} · ${currentUser.username}`;
+
             const selRol = document.getElementById('newRol');
             if (currentUser.rol === 'admin') {
                 document.getElementById('titulo-gestion').innerText = 'Gestionar Equipo';
@@ -805,7 +682,7 @@
                 document.getElementById('titulo-gestion').innerText = 'Mis Vendedores';
                 selRol.innerHTML = '<option value="vendedor">VENDEDOR</option>';
             }
-            
+
             cargarUsuariosSistema();
             cargarTodosLosClientes();
         }
@@ -820,85 +697,81 @@
             if (currentUser.rol !== 'admin') {
                 query = query.eq('padre_id', currentUser.id);
             }
-            
+
             const { data } = await query;
             const cont = document.getElementById('lista-usuarios-sistema');
             cont.innerHTML = '';
-            
+
             let countTotal = 0, countRevendedores = 0, countVendedores = 0;
-            
+
             if (!data || data.length === 0) {
                 cont.innerHTML = `
-                    <div class="empty-state col-span-full">
-                        <p class="text-lg sm:text-xl font-bold mb-2">No hay usuarios</p>
-                        <p class="text-xs sm:text-sm">Crea un nuevo acceso para tu equipo</p>
-                    </div>
-                `;
+                    <div class="empty-state" style="grid-column:1/-1;">
+                        <div class="empty-icon">👥</div>
+                        <p>No hay usuarios en tu equipo</p>
+                        <p class="sub">Creá un nuevo acceso para tu equipo</p>
+                    </div>`;
                 actualizarEstadisticas(0, 0, 0);
                 return;
             }
-            
+
             (data || []).forEach(u => {
                 if (u.id === currentUser.id) return;
-                
+
                 countTotal++;
                 if (u.rol === 'revendedor') countRevendedores++;
                 if (u.rol === 'vendedor') countVendedores++;
-                
-                const config = rolColors[u.rol] || rolColors['vendedor'];
+
                 const isDisabled = u.activo === false;
                 const venciEn = u.vencimiento_acceso ? Math.ceil((new Date(u.vencimiento_acceso) - new Date()) / (1000 * 60 * 60 * 24)) : null;
-                const venciColor = venciEn !== null && venciEn <= 7 && venciEn > 0 ? 'text-yellow-400' : venciEn !== null && venciEn <= 0 ? 'text-red-400' : 'text-green-400';
-                
+                let venciColor = 'color:var(--green)';
+                if (venciEn !== null && venciEn <= 0) venciColor = 'color:var(--red)';
+                else if (venciEn !== null && venciEn <= 7) venciColor = 'color:var(--yellow)';
+
                 const clientesDelUsuario = todosLosClientes.filter(c => c.creado_por === u.id);
-                
+                const roleClass = u.rol === 'admin' ? 'role-admin' : u.rol === 'revendedor' ? 'role-revendedor' : 'role-vendedor';
+                const roleIcon = u.rol === 'admin' ? '👑' : u.rol === 'revendedor' ? '🔷' : '📊';
+
                 cont.innerHTML += `
-                    <div class="bg-gray-800 border border-gray-700 p-4 sm:p-6 rounded-2xl card-usuario shadow-lg hover:shadow-2xl ${isDisabled ? 'user-disabled' : ''}" onclick="verClientesVendedor(${JSON.stringify(u).replace(/"/g, '&quot;')})">
-                        <div class="flex items-start gap-3 sm:gap-4 flex-1 mb-4">
-                            <div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl bg-gray-900 border border-gray-700">
-                                ${config.icon}
-                            </div>
-                            <div class="flex-1">
-                                <h3 class="font-black text-sm sm:text-lg uppercase italic leading-tight">${u.username}</h3>
-                                <div class="space-y-2 mt-2">
-                                    <span class="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase ${config.bg} ${config.text}">
-                                        ${u.rol}
-                                    </span>
-                                    ${isDisabled ? '<span class="disabled-badge ml-2">🔒 Deshabilitado</span>' : ''}
-                                    <p class="text-xs text-gray-400 mt-1">📅 Vence: <span class="${venciColor}">${u.vencimiento_acceso ? u.vencimiento_acceso + ' (' + venciEn + 'd)' : 'Sin fecha'}</span></p>
-                                    <p class="text-xs text-blue-400 font-bold mt-1">👥 ${clientesDelUsuario.length} cliente${clientesDelUsuario.length !== 1 ? 's' : ''}</p>
+                    <div class="card-usuario ${isDisabled ? 'user-disabled' : ''}" onclick="verClientesVendedor(${JSON.stringify(u).replace(/"/g, '&quot;')})">
+                        <div class="card-usuario-top">
+                            <div class="user-avatar">${roleIcon}</div>
+                            <div class="user-info">
+                                <div class="user-name">${u.username}</div>
+                                <div class="user-tags">
+                                    <span class="role-badge ${roleClass}">${u.rol}</span>
+                                    ${isDisabled ? '<span class="disabled-badge">🔒 Deshabilitado</span>' : ''}
+                                </div>
+                                <div class="user-meta">
+                                    <span style="${venciColor}">📅 ${u.vencimiento_acceso ? u.vencimiento_acceso + (venciEn !== null ? ' (' + venciEn + 'd)' : '') : 'Sin fecha'}</span>
+                                    <span style="color:var(--accent);">👥 ${clientesDelUsuario.length} cliente${clientesDelUsuario.length !== 1 ? 's' : ''}</span>
                                 </div>
                             </div>
                         </div>
-                        <div class="flex flex-col sm:flex-row gap-2">
-                            <button onclick="event.stopPropagation(); abrirModalEditar(${JSON.stringify(u).replace(/"/g, '&quot;')})" class="btn-action edit-btn text-white py-2 px-3 rounded-xl font-bold text-sm transition-all flex-1" title="Editar usuario">
-                                ✏️ Editar
-                            </button>
-                            <button onclick="event.stopPropagation(); abrirConfirmarEliminar(${JSON.stringify(u).replace(/"/g, '&quot;')})" class="btn-action delete-btn text-white py-2 px-3 rounded-xl font-bold text-sm transition-all flex-1" title="Eliminar usuario">
-                                🗑️ Eliminar
-                            </button>
+                        <div class="card-usuario-actions">
+                            <button onclick="event.stopPropagation(); abrirModalEditar(${JSON.stringify(u).replace(/"/g, '&quot;')})" class="btn-card btn-edit">✏️ Editar</button>
+                            <button onclick="event.stopPropagation(); abrirConfirmarEliminar(${JSON.stringify(u).replace(/"/g, '&quot;')})" class="btn-card btn-delete">🗑️ Eliminar</button>
                         </div>
                     </div>`;
             });
-            
+
             actualizarEstadisticas(countTotal, countRevendedores, countVendedores);
         }
 
         function verClientesVendedor(usuario) {
             vendedorSeleccionado = usuario;
             clientesVendedorActual = todosLosClientes.filter(c => c.creado_por === usuario.id);
-            
-            document.getElementById('header-principal').classList.add('hidden');
-            document.getElementById('seccion-form').classList.add('hidden');
-            document.getElementById('seccion-usuarios').classList.add('hidden');
-            document.getElementById('estadisticas').classList.add('hidden');
-            
-            document.getElementById('header-clientes').classList.remove('hidden');
-            document.getElementById('seccion-clientes-vendedor').classList.remove('hidden');
-            
+
+            document.getElementById('header-principal').style.display = 'none';
+            document.getElementById('seccion-form').style.display = 'none';
+            document.getElementById('seccion-usuarios').style.display = 'none';
+            document.getElementById('estadisticas').style.display = 'none';
+            document.getElementById('header-clientes').style.display = 'block';
+            document.getElementById('seccion-clientes-vendedor').style.display = 'block';
+
             document.getElementById('titulo-clientes-vendedor').innerText = `Clientes de ${usuario.username}`;
             document.getElementById('info-clientes-vendedor').innerText = `Total: ${clientesVendedorActual.length} cliente${clientesVendedorActual.length !== 1 ? 's' : ''}`;
-            
+
             mostrarClientesVendedor();
             window.scrollTo(0, 0);
         }
@@ -907,61 +780,56 @@
             vendedorSeleccionado = null;
             clientesVendedorActual = [];
             document.getElementById('buscar-cliente').value = '';
-            
-            document.getElementById('header-principal').classList.remove('hidden');
-            document.getElementById('seccion-form').classList.remove('hidden');
-            document.getElementById('seccion-usuarios').classList.remove('hidden');
-            document.getElementById('estadisticas').classList.remove('hidden');
-            
-            document.getElementById('header-clientes').classList.add('hidden');
-            document.getElementById('seccion-clientes-vendedor').classList.add('hidden');
+
+            document.getElementById('header-principal').style.display = 'block';
+            document.getElementById('seccion-form').style.display = 'block';
+            document.getElementById('seccion-usuarios').style.display = 'block';
+            document.getElementById('estadisticas').style.display = 'grid';
+            document.getElementById('header-clientes').style.display = 'none';
+            document.getElementById('seccion-clientes-vendedor').style.display = 'none';
         }
 
         function mostrarClientesVendedor() {
             const cont = document.getElementById('lista-clientes-vendedor');
             const hoy = new Date();
-            
+
             if (clientesVendedorActual.length === 0) {
                 cont.innerHTML = `
-                    <div class="empty-state col-span-full">
-                        <p class="text-lg sm:text-xl font-bold mb-2">No hay clientes</p>
-                        <p class="text-xs sm:text-sm">Este vendedor aún no tiene clientes asignados</p>
-                    </div>
-                `;
+                    <div class="empty-state" style="grid-column:1/-1;">
+                        <div class="empty-icon">📭</div>
+                        <p>Este vendedor no tiene clientes</p>
+                        <p class="sub">Aún no hay clientes registrados</p>
+                    </div>`;
                 return;
             }
-            
+
             cont.innerHTML = '';
             clientesVendedorActual.forEach(c => {
                 const d = Math.ceil((new Date(c.fecha_vencimiento) - hoy) / (1000 * 60 * 60 * 24));
                 const config = configApps[c.app_instalada];
                 let estadoBadge = 'estado-activo';
-                
-                if (d <= 0) {
-                    estadoBadge = 'estado-vencido';
-                } else if (d <= 7) {
-                    estadoBadge = 'estado-pronto';
-                }
-                
+                if (d <= 0) estadoBadge = 'estado-vencido';
+                else if (d <= 7) estadoBadge = 'estado-pronto';
+
+                let diasColor = 'var(--green)';
+                if (d <= 0) diasColor = 'var(--red)';
+                else if (d <= 7) diasColor = 'var(--yellow)';
+
                 cont.innerHTML += `
-                    <div class="bg-gray-800 border border-gray-700 p-3 sm:p-4 rounded-2xl card-cliente shadow-lg">
-                        <div class="flex justify-between items-start gap-3">
-                            <div class="flex items-start gap-2 sm:gap-3 flex-1">
-                                <div class="w-10 h-10 bg-gray-900 rounded-lg flex items-center justify-center border border-gray-700 flex-shrink-0">
-                                    <img src="${config ? config.logo : ''}" class="w-5 h-5 object-contain">
-                                </div>
-                                <div class="flex-1 min-w-0">
-                                    <h3 class="font-bold text-sm uppercase truncate">${c.nombre_apellido}</h3>
-                                    <p class="text-[8px] sm:text-[9px] text-gray-400 mt-1 truncate">📱 ${c.usuario} • 📍 ${c.ciudad}</p>
-                                    <p class="text-[8px] sm:text-[9px] text-gray-500 mt-1">📺 ${c.app_instalada} • 💰 $${parseFloat(c.precio).toFixed(2)}</p>
-                                </div>
+                    <div class="card-cliente">
+                        <div class="client-left">
+                            <div class="client-app-icon">
+                                <img src="${config ? config.logo : ''}" alt="${c.app_instalada}">
                             </div>
-                            <div class="text-right flex-shrink-0">
-                                <div class="text-lg sm:text-xl font-black ${d <= 0 ? 'text-red-500' : d <= 7 ? 'text-yellow-400' : 'text-green-400'}">
-                                    ${d}
-                                </div>
-                                <span class="estado-badge ${estadoBadge}">${d <= 0 ? 'Venc' : d + 'd'}</span>
+                            <div class="client-info">
+                                <div class="client-name">${c.nombre_apellido}</div>
+                                <div class="client-meta">${c.app_instalada} · ${c.ciudad}</div>
+                                <div class="client-meta" style="font-family:'DM Mono',monospace;">$${parseFloat(c.precio).toFixed(2)}</div>
                             </div>
+                        </div>
+                        <div class="client-right">
+                            <div class="client-days" style="color:${diasColor};">${d}</div>
+                            <span class="estado-badge ${estadoBadge}">${d <= 0 ? 'Venc' : d + 'd'}</span>
                         </div>
                     </div>`;
             });
@@ -969,56 +837,51 @@
 
         function filtrarClientesVendedor() {
             const bus = document.getElementById('buscar-cliente').value.toLowerCase();
-            const filtrados = clientesVendedorActual.filter(c => 
-                c.nombre_apellido.toLowerCase().includes(bus) || 
+            const filtrados = clientesVendedorActual.filter(c =>
+                c.nombre_apellido.toLowerCase().includes(bus) ||
                 c.usuario.toLowerCase().includes(bus) ||
                 c.ciudad.toLowerCase().includes(bus)
             );
-            
+
             const cont = document.getElementById('lista-clientes-vendedor');
             const hoy = new Date();
-            
+
             if (filtrados.length === 0) {
                 cont.innerHTML = `
-                    <div class="empty-state col-span-full">
-                        <p class="text-lg sm:text-xl font-bold mb-2">No hay resultados</p>
-                        <p class="text-xs sm:text-sm">No se encontraron clientes</p>
-                    </div>
-                `;
+                    <div class="empty-state" style="grid-column:1/-1;">
+                        <div class="empty-icon">🔍</div>
+                        <p>No hay resultados</p>
+                    </div>`;
                 return;
             }
-            
+
             cont.innerHTML = '';
             filtrados.forEach(c => {
                 const d = Math.ceil((new Date(c.fecha_vencimiento) - hoy) / (1000 * 60 * 60 * 24));
                 const config = configApps[c.app_instalada];
                 let estadoBadge = 'estado-activo';
-                
-                if (d <= 0) {
-                    estadoBadge = 'estado-vencido';
-                } else if (d <= 7) {
-                    estadoBadge = 'estado-pronto';
-                }
-                
+                if (d <= 0) estadoBadge = 'estado-vencido';
+                else if (d <= 7) estadoBadge = 'estado-pronto';
+
+                let diasColor = 'var(--green)';
+                if (d <= 0) diasColor = 'var(--red)';
+                else if (d <= 7) diasColor = 'var(--yellow)';
+
                 cont.innerHTML += `
-                    <div class="bg-gray-800 border border-gray-700 p-3 sm:p-4 rounded-2xl card-cliente shadow-lg">
-                        <div class="flex justify-between items-start gap-3">
-                            <div class="flex items-start gap-2 sm:gap-3 flex-1">
-                                <div class="w-10 h-10 bg-gray-900 rounded-lg flex items-center justify-center border border-gray-700 flex-shrink-0">
-                                    <img src="${config ? config.logo : ''}" class="w-5 h-5 object-contain">
-                                </div>
-                                <div class="flex-1 min-w-0">
-                                    <h3 class="font-bold text-sm uppercase truncate">${c.nombre_apellido}</h3>
-                                    <p class="text-[8px] sm:text-[9px] text-gray-400 mt-1 truncate">📱 ${c.usuario} • 📍 ${c.ciudad}</p>
-                                    <p class="text-[8px] sm:text-[9px] text-gray-500 mt-1">📺 ${c.app_instalada} • 💰 $${parseFloat(c.precio).toFixed(2)}</p>
-                                </div>
+                    <div class="card-cliente">
+                        <div class="client-left">
+                            <div class="client-app-icon">
+                                <img src="${config ? config.logo : ''}" alt="${c.app_instalada}">
                             </div>
-                            <div class="text-right flex-shrink-0">
-                                <div class="text-lg sm:text-xl font-black ${d <= 0 ? 'text-red-500' : d <= 7 ? 'text-yellow-400' : 'text-green-400'}">
-                                    ${d}
-                                </div>
-                                <span class="estado-badge ${estadoBadge}">${d <= 0 ? 'Venc' : d + 'd'}</span>
+                            <div class="client-info">
+                                <div class="client-name">${c.nombre_apellido}</div>
+                                <div class="client-meta">${c.app_instalada} · ${c.ciudad}</div>
+                                <div class="client-meta" style="font-family:'DM Mono',monospace;">$${parseFloat(c.precio).toFixed(2)}</div>
                             </div>
+                        </div>
+                        <div class="client-right">
+                            <div class="client-days" style="color:${diasColor};">${d}</div>
+                            <span class="estado-badge ${estadoBadge}">${d <= 0 ? 'Venc' : d + 'd'}</span>
                         </div>
                     </div>`;
             });
@@ -1047,23 +910,17 @@
 
         document.getElementById('formEditarUsuario').onsubmit = async (e) => {
             e.preventDefault();
-            
+
             const id = document.getElementById('edit-user-id').value;
             const password = document.getElementById('edit-password').value;
             const vencimiento = document.getElementById('edit-vencimiento').value;
             const activo = document.getElementById('edit-activo').checked;
 
-            const updateData = {
-                vencimiento_acceso: vencimiento,
-                activo: activo
-            };
-
-            if (password) {
-                updateData.password = password;
-            }
+            const updateData = { vencimiento_acceso: vencimiento, activo: activo };
+            if (password) updateData.password = password;
 
             const { error } = await supabaseClient.from('usuarios_sistema').update(updateData).eq('id', id);
-            
+
             if (error) {
                 alert("Error al actualizar: " + error.message);
             } else {
@@ -1075,18 +932,18 @@
 
         document.getElementById('formNuevoUsuario').onsubmit = async (e) => {
             e.preventDefault();
-            
+
             const newUser = {
                 username: document.getElementById('newUsername').value,
                 password: document.getElementById('newPassword').value,
                 rol: document.getElementById('newRol').value,
-                vencimiento_acceso: document.getElementById('newVencimiento').value, 
+                vencimiento_acceso: document.getElementById('newVencimiento').value,
                 padre_id: currentUser.id,
                 activo: true
             };
 
             const { error } = await supabaseClient.from('usuarios_sistema').insert([newUser]);
-            
+
             if (error) {
                 alert("Error al crear: " + error.message);
             } else {
@@ -1118,11 +975,11 @@
             }
         }
 
-        function logout() { 
-            localStorage.removeItem('session_tvdigital'); 
-            window.location.href = 'logueo.html'; 
+        function logout() {
+            localStorage.removeItem('session_tvdigital');
+            window.location.href = 'logueo.html';
         }
-        
+
         window.onload = checkSession;
     </script>
 </body>
