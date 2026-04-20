@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tv Digital - Clientes</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -234,6 +235,7 @@
         .header-actions {
             display: flex;
             gap: 10px;
+            flex-wrap: wrap;
         }
 
         /* ─── BUTTONS ─── */
@@ -1015,6 +1017,13 @@
                 <a href="reporte.html" class="btn-amber">
                     📊 Reportes
                 </a>
+                <button onclick="exportarClientesExcel()" class="btn-secondary">
+                    ⬇️ Exportar Excel
+                </button>
+                <button onclick="document.getElementById('input-importar-excel').click()" class="btn-secondary">
+                    ⬆️ Importar Excel
+                </button>
+                <input type="file" id="input-importar-excel" accept=".xlsx,.xls" style="display:none;" onchange="importarClientesExcel(event)">
                 <button onclick="abrirModalNuevo()" id="btn-nuevo-cliente" class="btn-primary">
                     + Nuevo Cliente
                 </button>
@@ -1079,8 +1088,8 @@
                         </div>
                     </div>
                     <div class="form-grid">
-                        <input type="text" id="celular-cliente" placeholder="WhatsApp (ej: 2946123456)" class="input-modern" required>
-                        <input type="text" id="ciudad-cliente" placeholder="Ciudad" class="input-modern" required>
+                        <input type="text" id="celular-cliente" placeholder="WhatsApp (ej: 2946123456)" class="input-modern">
+                        <input type="text" id="ciudad-cliente" placeholder="Ciudad" class="input-modern">
                     </div>
                 </div>
 
@@ -1094,13 +1103,13 @@
 
                 <div class="form-section">
                     <span class="form-section-label">Información de Pago</span>
-                    <input type="number" id="precio-servicio" placeholder="Precio ($)" min="0" step="0.01" class="input-modern" required>
+                    <input type="number" id="precio-servicio" placeholder="Precio ($)" min="0" step="0.01" class="input-modern">
                 </div>
 
                 <div class="form-section">
                     <span class="form-section-label">Aplicación</span>
                     <div id="app-selector"></div>
-                    <input type="hidden" id="app-seleccionada" required>
+                    <input type="hidden" id="app-seleccionada">
                 </div>
 
                 <div class="form-section">
@@ -1108,11 +1117,11 @@
                     <div class="form-grid">
                         <div>
                             <label class="input-label">Fecha de Pago</label>
-                            <input type="date" id="fecha-pago" class="input-modern" required>
+                            <input type="date" id="fecha-pago" class="input-modern">
                         </div>
                         <div>
                             <label class="input-label">Vencimiento</label>
-                            <input type="date" id="vencimiento-cliente" class="input-modern" required>
+                            <input type="date" id="vencimiento-cliente" class="input-modern">
                         </div>
                     </div>
                 </div>
@@ -1357,14 +1366,14 @@
             let statusText = d > 0 ? `Vence en ${d} día${d !== 1 ? 's' : ''}` : 'Servicio vencido';
             document.getElementById('detail-status').innerText = statusText;
             document.getElementById('detail-nombre').innerText = cliente.nombre_apellido;
-            document.getElementById('detail-celular').innerText = cliente.celular;
-            document.getElementById('detail-ciudad').innerText = cliente.ciudad;
-            document.getElementById('detail-app').innerText = cliente.app_instalada;
-            document.getElementById('detail-usuario').innerText = cliente.usuario;
-            document.getElementById('detail-clave').innerText = cliente.clave;
-            document.getElementById('detail-precio').innerText = '$' + cliente.precio;
-            document.getElementById('detail-fecha-pago').innerText = new Date(cliente.fecha_pago + 'T12:00:00').toLocaleDateString('es-AR');
-            document.getElementById('detail-vencimiento').innerText = new Date(cliente.fecha_vencimiento + 'T12:00:00').toLocaleDateString('es-AR');
+            document.getElementById('detail-celular').innerText = valorSeguro(cliente.celular);
+            document.getElementById('detail-ciudad').innerText = valorSeguro(cliente.ciudad);
+            document.getElementById('detail-app').innerText = valorSeguro(cliente.app_instalada);
+            document.getElementById('detail-usuario').innerText = valorSeguro(cliente.usuario, '');
+            document.getElementById('detail-clave').innerText = valorSeguro(cliente.clave, '');
+            document.getElementById('detail-precio').innerText = cliente.precio ? '$' + cliente.precio : '—';
+            document.getElementById('detail-fecha-pago').innerText = cliente.fecha_pago ? new Date(cliente.fecha_pago + 'T12:00:00').toLocaleDateString('es-AR') : '—';
+            document.getElementById('detail-vencimiento').innerText = cliente.fecha_vencimiento ? new Date(cliente.fecha_vencimiento + 'T12:00:00').toLocaleDateString('es-AR') : '—';
             document.getElementById('detail-vendedor').innerText = cliente.vendedor_name || '—';
             document.getElementById('detail-creado').innerText = cliente.created_at ? new Date(cliente.created_at).toLocaleDateString('es-AR') : '—';
             
@@ -1429,7 +1438,6 @@
         document.getElementById('form-cliente').onsubmit = async (e) => {
             e.preventDefault();
             const app = document.getElementById('app-seleccionada').value;
-            if (!app) return alert("Por favor elegí una aplicación.");
 
             const datosCliente = {
                 nombre_apellido: document.getElementById('nombre-apellido').value,
@@ -1438,7 +1446,7 @@
                 clave: document.getElementById('clave-tv').value,
                 ciudad: document.getElementById('ciudad-cliente').value,
                 precio: document.getElementById('precio-servicio').value,
-                app_instalada: app,
+                app_instalada: app || '',
                 fecha_pago: document.getElementById('fecha-pago').value,
                 fecha_vencimiento: document.getElementById('vencimiento-cliente').value,
                 vendedor_name: currentUser.username
@@ -1474,8 +1482,11 @@
             const cont = document.getElementById('contenedor-clientes');
             const hoy = new Date();
             const filtrados = todosLosClientes.filter(c => {
-                const d = Math.ceil((new Date(c.fecha_vencimiento) - hoy) / (1000 * 60 * 60 * 24));
-                const cBus = c.nombre_apellido.toLowerCase().includes(bus) || c.usuario.toLowerCase().includes(bus) || c.ciudad.toLowerCase().includes(bus);
+                const d = c.fecha_vencimiento ? Math.ceil((new Date(c.fecha_vencimiento) - hoy) / (1000 * 60 * 60 * 24)) : 999999;
+                const nombre = (c.nombre_apellido || '').toLowerCase();
+                const usuario = (c.usuario || '').toLowerCase();
+                const ciudad = (c.ciudad || '').toLowerCase();
+                const cBus = nombre.includes(bus) || usuario.includes(bus) || ciudad.includes(bus);
                 const cApp = filtroAppActual === 'TODOS' || c.app_instalada === filtroAppActual;
                 let cEst = true;
                 if (filtroEstadoActual === 'ACTIVOS') cEst = d > 0;
@@ -1496,8 +1507,8 @@
             
             cont.innerHTML = '';
             filtrados.forEach(c => {
-                const d = Math.ceil((new Date(c.fecha_vencimiento) - hoy) / (1000 * 60 * 60 * 24));
-                const config = configApps[c.app_instalada];
+                const d = c.fecha_vencimiento ? Math.ceil((new Date(c.fecha_vencimiento) - hoy) / (1000 * 60 * 60 * 24)) : 999999;
+                const config = configApps[c.app_instalada] || null;
                 
                 let badgeClass = 'badge-activo';
                 let badgeText = 'Activo';
@@ -1515,12 +1526,12 @@
                         <div class="card-top-bar"></div>
                         <div class="card-body">
                             <div class="card-icon">
-                                <img src="${config ? config.logo : ''}" alt="${c.app_instalada}">
+                                ${config ? `<img src="${config.logo}" alt="${c.app_instalada}">` : `<div style="font-size:20px;">📺</div>`}
                             </div>
                             <div class="card-info">
                                 <div class="card-name">${c.nombre_apellido}</div>
-                                <div class="card-meta-row">📺 ${c.app_instalada}</div>
-                                <div class="card-meta-row">👤 ${c.usuario}</div>
+                                <div class="card-meta-row">📺 ${c.app_instalada || '—'}</div>
+                                <div class="card-meta-row">👤 ${c.usuario || '—'}</div>
                                 <div style="margin-top:6px;"><span class="card-badge ${badgeClass}">${badgeText}</span></div>
                             </div>
                             <div class="card-dias-wrapper">
@@ -1568,6 +1579,7 @@
         }
 
         function enviarWA(celular, nombre, dias) {
+            if (!celular) { alert('Este cliente no tiene celular cargado.'); return; }
             let numeroFormato = celular;
             if (!celular.startsWith('+')) {
                 numeroFormato = '+549' + celular;
@@ -1577,6 +1589,117 @@
                 : `Hola ${nombre}, tu servicio de TV vence en ${dias} día${dias !== 1 ? 's' : ''}. Asegúrate de renovar a tiempo.`;
             const url = `https://wa.me/${numeroFormato}?text=${encodeURIComponent(mensaje)}`;
             window.open(url, '_blank');
+        }
+
+        function valorSeguro(valor, fallback = '—') {
+            if (valor === null || valor === undefined || valor === '') return fallback;
+            return valor;
+        }
+
+        function normalizarFechaExcel(valor) {
+            if (!valor) return '';
+            if (typeof valor === 'number') {
+                const fecha = XLSX.SSF.parse_date_code(valor);
+                if (!fecha) return '';
+                const yyyy = fecha.y;
+                const mm = String(fecha.m).padStart(2, '0');
+                const dd = String(fecha.d).padStart(2, '0');
+                return `${yyyy}-${mm}-${dd}`;
+            }
+            if (typeof valor === 'string') {
+                const limpio = valor.trim();
+                if (!limpio) return '';
+                if (/^\d{4}-\d{2}-\d{2}$/.test(limpio)) return limpio;
+                const partes = limpio.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})$/);
+                if (partes) {
+                    let [, d, m, y] = partes;
+                    if (y.length === 2) y = '20' + y;
+                    return `${y.padStart(4, '0')}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
+                }
+                const fecha = new Date(limpio);
+                if (!isNaN(fecha)) return fecha.toISOString().slice(0, 10);
+            }
+            return '';
+        }
+
+        function exportarClientesExcel() {
+            if (!todosLosClientes.length) {
+                alert('No hay clientes para exportar.');
+                return;
+            }
+
+            const filas = todosLosClientes.map(cliente => ({
+                'Nombre y Apellido': cliente.nombre_apellido || '',
+                'Celular': cliente.celular || '',
+                'Ciudad': cliente.ciudad || '',
+                'Usuario': cliente.usuario || '',
+                'Contraseña': cliente.clave || '',
+                'Precio': cliente.precio || '',
+                'Aplicación': cliente.app_instalada || '',
+                'Fecha de Pago': cliente.fecha_pago || '',
+                'Fecha de Vencimiento': cliente.fecha_vencimiento || '',
+                'Vendedor': cliente.vendedor_name || ''
+            }));
+
+            const hoja = XLSX.utils.json_to_sheet(filas);
+            const libro = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(libro, hoja, 'Clientes');
+            XLSX.writeFile(libro, 'clientes.xlsx');
+        }
+
+        async function importarClientesExcel(event) {
+            const archivo = event.target.files?.[0];
+            if (!archivo) return;
+
+            try {
+                const data = await archivo.arrayBuffer();
+                const workbook = XLSX.read(data, { type: 'array' });
+                const hoja = workbook.Sheets[workbook.SheetNames[0]];
+                const filas = XLSX.utils.sheet_to_json(hoja, { defval: '' });
+
+                if (!filas.length) {
+                    alert('El Excel está vacío.');
+                    event.target.value = '';
+                    return;
+                }
+
+                const clientesImportados = filas.map(fila => {
+                    const nombre = fila['Nombre y Apellido'] || fila['Nombre completo'] || fila['Nombre'] || '';
+                    const usuario = fila['Usuario'] || fila['Usuario TV'] || '';
+                    const clave = fila['Contraseña'] || fila['Clave'] || fila['Contraseña TV'] || '';
+                    return {
+                        nombre_apellido: String(nombre).trim(),
+                        celular: String(fila['Celular'] || fila['WhatsApp'] || '').trim(),
+                        ciudad: String(fila['Ciudad'] || '').trim(),
+                        usuario: String(usuario).trim(),
+                        clave: String(clave).trim(),
+                        precio: fila['Precio'] || fila['Precio Mensual'] || '',
+                        app_instalada: String(fila['Aplicación'] || fila['App'] || '').trim(),
+                        fecha_pago: normalizarFechaExcel(fila['Fecha de Pago'] || fila['Pago']),
+                        fecha_vencimiento: normalizarFechaExcel(fila['Fecha de Vencimiento'] || fila['Vencimiento']),
+                        vendedor_name: currentUser.username,
+                        creado_por: currentUser.id
+                    };
+                }).filter(cliente => cliente.nombre_apellido && cliente.usuario && cliente.clave);
+
+                if (!clientesImportados.length) {
+                    alert('No se encontraron filas válidas. El Excel debe tener al menos: Nombre y Apellido, Usuario y Contraseña.');
+                    event.target.value = '';
+                    return;
+                }
+
+                const { error } = await supabaseClient.from('clientes').insert(clientesImportados);
+                if (error) {
+                    alert('Error al importar: ' + error.message);
+                } else {
+                    alert(`Se importaron ${clientesImportados.length} cliente(s) correctamente.`);
+                    cargarClientes();
+                }
+            } catch (err) {
+                alert('No se pudo importar el archivo: ' + err.message);
+            } finally {
+                event.target.value = '';
+            }
         }
 
         function logout() { localStorage.removeItem('session_tvdigital'); window.location.href = 'logueo.html'; }
