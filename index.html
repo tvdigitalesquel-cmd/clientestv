@@ -5,45 +5,107 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tv Digital - Clientes</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
-function renovar30Dias(id, fechaActual){
-    let fecha = fechaActual ? new Date(fechaActual) : new Date();
-    fecha.setDate(fecha.getDate() + 30);
-    const nueva = fecha.toISOString().split('T')[0];
+        function sumarDiasIso(fechaIso, dias) {
+            let base = fechaIso ? new Date(fechaIso + 'T12:00:00') : new Date();
+            if (isNaN(base)) base = new Date();
+            base.setDate(base.getDate() + dias);
+            const yyyy = base.getFullYear();
+            const mm = String(base.getMonth() + 1).padStart(2, '0');
+            const dd = String(base.getDate()).padStart(2, '0');
+            return `${yyyy}-${mm}-${dd}`;
+        }
 
-    supabaseClient.from('clientes')
-    .update({fecha_vencimiento: nueva})
-    .eq('id', id)
-    .then(()=> cargarClientes());
-}
+        async function renovar30Dias(clienteId, fechaActual) {
+            const nuevaFecha = sumarDiasIso(fechaActual, 30);
+            const { error } = await supabaseClient
+                .from('clientes')
+                .update({ fecha_vencimiento: nuevaFecha })
+                .eq('id', clienteId);
 
-function copiarDatos(cliente){
-    const texto = `Usuario: ${cliente.usuario} | Clave: ${cliente.clave} | App: ${cliente.app_instalada}`;
-    navigator.clipboard.writeText(texto).then(()=>{
-        alert('Datos copiados');
-    });
-}
+            if (error) {
+                alert('Error al renovar: ' + error.message);
+                return;
+            }
 
-</script>
+            if (clienteDetalle && clienteDetalle.id === clienteId) {
+                clienteDetalle.fecha_vencimiento = nuevaFecha;
+                abrirDetalles(clienteDetalle);
+            }
+
+            cargarClientes();
+        }
+
+        function textoCredenciales(cliente) {
+            return `👤 Usuario: ${cliente.usuario || '—'}\n🔑 Clave: ${cliente.clave || '—'}\n📱 App: ${cliente.app_instalada || '—'}`;
+        }
+
+        function copiarCredenciales(cliente) {
+            const texto = textoCredenciales(cliente);
+            navigator.clipboard.writeText(texto).then(() => {
+                alert('Credenciales copiadas');
+            }).catch(() => {
+                const el = document.createElement('textarea');
+                el.value = texto;
+                document.body.appendChild(el);
+                el.select();
+                document.execCommand('copy');
+                document.body.removeChild(el);
+                alert('Credenciales copiadas');
+            });
+        }
+
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js">
-function renovar30Dias(id, fechaActual){
-    let fecha = fechaActual ? new Date(fechaActual) : new Date();
-    fecha.setDate(fecha.getDate() + 30);
-    const nueva = fecha.toISOString().split('T')[0];
+        function sumarDiasIso(fechaIso, dias) {
+            let base = fechaIso ? new Date(fechaIso + 'T12:00:00') : new Date();
+            if (isNaN(base)) base = new Date();
+            base.setDate(base.getDate() + dias);
+            const yyyy = base.getFullYear();
+            const mm = String(base.getMonth() + 1).padStart(2, '0');
+            const dd = String(base.getDate()).padStart(2, '0');
+            return `${yyyy}-${mm}-${dd}`;
+        }
 
-    supabaseClient.from('clientes')
-    .update({fecha_vencimiento: nueva})
-    .eq('id', id)
-    .then(()=> cargarClientes());
-}
+        async function renovar30Dias(clienteId, fechaActual) {
+            const nuevaFecha = sumarDiasIso(fechaActual, 30);
+            const { error } = await supabaseClient
+                .from('clientes')
+                .update({ fecha_vencimiento: nuevaFecha })
+                .eq('id', clienteId);
 
-function copiarDatos(cliente){
-    const texto = `Usuario: ${cliente.usuario} | Clave: ${cliente.clave} | App: ${cliente.app_instalada}`;
-    navigator.clipboard.writeText(texto).then(()=>{
-        alert('Datos copiados');
-    });
-}
+            if (error) {
+                alert('Error al renovar: ' + error.message);
+                return;
+            }
 
-</script>
+            if (clienteDetalle && clienteDetalle.id === clienteId) {
+                clienteDetalle.fecha_vencimiento = nuevaFecha;
+                abrirDetalles(clienteDetalle);
+            }
+
+            cargarClientes();
+        }
+
+        function textoCredenciales(cliente) {
+            return `👤 Usuario: ${cliente.usuario || '—'}\n🔑 Clave: ${cliente.clave || '—'}\n📱 App: ${cliente.app_instalada || '—'}`;
+        }
+
+        function copiarCredenciales(cliente) {
+            const texto = textoCredenciales(cliente);
+            navigator.clipboard.writeText(texto).then(() => {
+                alert('Credenciales copiadas');
+            }).catch(() => {
+                const el = document.createElement('textarea');
+                el.value = texto;
+                document.body.appendChild(el);
+                el.select();
+                document.execCommand('copy');
+                document.body.removeChild(el);
+                alert('Credenciales copiadas');
+            });
+        }
+
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -935,6 +997,8 @@ function copiarDatos(cliente){
         .btn-detail-edit:hover { background: var(--accent); color: #fff; }
         .btn-detail-wa { background: var(--green-dim); color: var(--green); }
         .btn-detail-wa:hover { background: var(--green); color: #fff; }
+        .btn-detail-renew { background: var(--yellow-dim); color: var(--yellow); }
+        .btn-detail-renew:hover { background: var(--yellow); color: #fff; }
         .btn-detail-delete { background: var(--red-dim); color: var(--red); }
         .btn-detail-delete:hover { background: var(--red); color: #fff; }
 
@@ -1250,17 +1314,21 @@ padding:6px;
                     <span class="detail-value" id="detail-app"></span>
                 </div>
                 <div class="detail-row">
-                    <span class="detail-label">Usuario</span>
-                    <span class="detail-value">
-                        <span id="detail-usuario"></span>
-                        <button class="detail-copy-btn" onclick="copiarAlPortapapeles(document.getElementById('detail-usuario').innerText)">Copiar</button>
-                    </span>
+                    <span class="detail-label">👤 Usuario</span>
+                    <span class="detail-value"><span id="detail-usuario"></span></span>
                 </div>
                 <div class="detail-row">
-                    <span class="detail-label">Contraseña</span>
+                    <span class="detail-label">🔑 Contraseña</span>
+                    <span class="detail-value"><span id="detail-clave"></span></span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">📱 App</span>
+                    <span class="detail-value"><span id="detail-app-copy"></span></span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">📋 Credenciales</span>
                     <span class="detail-value">
-                        <span id="detail-clave"></span>
-                        <button class="detail-copy-btn" onclick="copiarAlPortapapeles(document.getElementById('detail-clave').innerText)">Copiar</button>
+                        <button class="detail-copy-btn" onclick="if(clienteDetalle) copiarCredenciales(clienteDetalle)">Copiar todo</button>
                     </span>
                 </div>
             </div>
@@ -1295,6 +1363,7 @@ padding:6px;
 
             <div class="detail-actions">
                 <button onclick="abrirModalEditarDeDetalles()" class="btn-detail-edit">✏️ Editar</button>
+                <button onclick="if(clienteDetalle) renovar30Dias(clienteDetalle.id, clienteDetalle.fecha_vencimiento)" class="btn-detail-edit btn-detail-renew">🔄 +30 días</button>
                 <button onclick="abrirWhatsAppDeDetalles()" class="btn-detail-wa">📱 WhatsApp</button>
                 <button onclick="abrirEliminarDeDetalles()" class="btn-detail-delete">🗑️ Eliminar</button>
             </div>
@@ -1317,25 +1386,56 @@ padding:6px;
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
-function renovar30Dias(id, fechaActual){
-    let fecha = fechaActual ? new Date(fechaActual) : new Date();
-    fecha.setDate(fecha.getDate() + 30);
-    const nueva = fecha.toISOString().split('T')[0];
+        function sumarDiasIso(fechaIso, dias) {
+            let base = fechaIso ? new Date(fechaIso + 'T12:00:00') : new Date();
+            if (isNaN(base)) base = new Date();
+            base.setDate(base.getDate() + dias);
+            const yyyy = base.getFullYear();
+            const mm = String(base.getMonth() + 1).padStart(2, '0');
+            const dd = String(base.getDate()).padStart(2, '0');
+            return `${yyyy}-${mm}-${dd}`;
+        }
 
-    supabaseClient.from('clientes')
-    .update({fecha_vencimiento: nueva})
-    .eq('id', id)
-    .then(()=> cargarClientes());
-}
+        async function renovar30Dias(clienteId, fechaActual) {
+            const nuevaFecha = sumarDiasIso(fechaActual, 30);
+            const { error } = await supabaseClient
+                .from('clientes')
+                .update({ fecha_vencimiento: nuevaFecha })
+                .eq('id', clienteId);
 
-function copiarDatos(cliente){
-    const texto = `Usuario: ${cliente.usuario} | Clave: ${cliente.clave} | App: ${cliente.app_instalada}`;
-    navigator.clipboard.writeText(texto).then(()=>{
-        alert('Datos copiados');
-    });
-}
+            if (error) {
+                alert('Error al renovar: ' + error.message);
+                return;
+            }
 
-</script>
+            if (clienteDetalle && clienteDetalle.id === clienteId) {
+                clienteDetalle.fecha_vencimiento = nuevaFecha;
+                abrirDetalles(clienteDetalle);
+            }
+
+            cargarClientes();
+        }
+
+        function textoCredenciales(cliente) {
+            return `👤 Usuario: ${cliente.usuario || '—'}\n🔑 Clave: ${cliente.clave || '—'}\n📱 App: ${cliente.app_instalada || '—'}`;
+        }
+
+        function copiarCredenciales(cliente) {
+            const texto = textoCredenciales(cliente);
+            navigator.clipboard.writeText(texto).then(() => {
+                alert('Credenciales copiadas');
+            }).catch(() => {
+                const el = document.createElement('textarea');
+                el.value = texto;
+                document.body.appendChild(el);
+                el.select();
+                document.execCommand('copy');
+                document.body.removeChild(el);
+                alert('Credenciales copiadas');
+            });
+        }
+
+    </script>
     <script>
         const SUPABASE_URL = 'https://vjbdhbbxbvoigbidquya.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_4ogrbtxBrBWBFj-NRJOrbg_XnpmO4pS';
@@ -1669,6 +1769,9 @@ function copiarDatos(cliente){
                             <button onclick="event.stopPropagation(); abrirModalEditar(${JSON.stringify(c).replace(/"/g, '&quot;')})" class="btn-card btn-edit">
                                 ✏️ Editar
                             </button>
+                            <button onclick="event.stopPropagation(); renovar30Dias('${c.id}', '${c.fecha_vencimiento || ''}')" class="btn-card btn-edit">
+                                🔄 +30 DÍAS
+                            </button>
                             <button onclick="event.stopPropagation(); abrirConfirmarEliminar(${JSON.stringify(c).replace(/"/g, '&quot;')})" class="btn-card btn-delete">
                                 🗑️ Eliminar
                             </button>
@@ -1964,24 +2067,55 @@ function copiarDatos(cliente){
         function logout() { localStorage.removeItem('session_tvdigital'); window.location.href = 'logueo.html'; }
         window.onload = checkSession;
     
-function renovar30Dias(id, fechaActual){
-    let fecha = fechaActual ? new Date(fechaActual) : new Date();
-    fecha.setDate(fecha.getDate() + 30);
-    const nueva = fecha.toISOString().split('T')[0];
+        function sumarDiasIso(fechaIso, dias) {
+            let base = fechaIso ? new Date(fechaIso + 'T12:00:00') : new Date();
+            if (isNaN(base)) base = new Date();
+            base.setDate(base.getDate() + dias);
+            const yyyy = base.getFullYear();
+            const mm = String(base.getMonth() + 1).padStart(2, '0');
+            const dd = String(base.getDate()).padStart(2, '0');
+            return `${yyyy}-${mm}-${dd}`;
+        }
 
-    supabaseClient.from('clientes')
-    .update({fecha_vencimiento: nueva})
-    .eq('id', id)
-    .then(()=> cargarClientes());
-}
+        async function renovar30Dias(clienteId, fechaActual) {
+            const nuevaFecha = sumarDiasIso(fechaActual, 30);
+            const { error } = await supabaseClient
+                .from('clientes')
+                .update({ fecha_vencimiento: nuevaFecha })
+                .eq('id', clienteId);
 
-function copiarDatos(cliente){
-    const texto = `Usuario: ${cliente.usuario} | Clave: ${cliente.clave} | App: ${cliente.app_instalada}`;
-    navigator.clipboard.writeText(texto).then(()=>{
-        alert('Datos copiados');
-    });
-}
+            if (error) {
+                alert('Error al renovar: ' + error.message);
+                return;
+            }
 
-</script>
+            if (clienteDetalle && clienteDetalle.id === clienteId) {
+                clienteDetalle.fecha_vencimiento = nuevaFecha;
+                abrirDetalles(clienteDetalle);
+            }
+
+            cargarClientes();
+        }
+
+        function textoCredenciales(cliente) {
+            return `👤 Usuario: ${cliente.usuario || '—'}\n🔑 Clave: ${cliente.clave || '—'}\n📱 App: ${cliente.app_instalada || '—'}`;
+        }
+
+        function copiarCredenciales(cliente) {
+            const texto = textoCredenciales(cliente);
+            navigator.clipboard.writeText(texto).then(() => {
+                alert('Credenciales copiadas');
+            }).catch(() => {
+                const el = document.createElement('textarea');
+                el.value = texto;
+                document.body.appendChild(el);
+                el.select();
+                document.execCommand('copy');
+                document.body.removeChild(el);
+                alert('Credenciales copiadas');
+            });
+        }
+
+    </script>
 </body>
 </html>
