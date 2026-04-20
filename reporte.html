@@ -280,9 +280,35 @@
         /* ─── STAT CARDS ─── */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 14px;
             margin-bottom: 20px;
+        }
+
+        .stats-grid.stats-grid-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .reporte-stat.stat-warning::before {
+            background: #f59e0b;
+        }
+
+        .reporte-stat.stat-warning .stat-value {
+            color: #f59e0b;
+        }
+
+        .reporte-nota {
+            margin-bottom: 20px;
+            padding: 14px 16px;
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(245,158,11,0.22);
+            background: rgba(245,158,11,0.10);
+            color: var(--text-primary);
+            font-size: 13px;
+        }
+
+        .reporte-nota strong {
+            color: #f59e0b;
         }
 
         .reporte-stat {
@@ -522,6 +548,14 @@
                 <div class="stat-label">Promedio por Cliente</div>
                 <div class="stat-value">$<span id="reporte-promedio">0.00</span></div>
             </div>
+            <div class="reporte-stat stat-warning">
+                <div class="stat-label">Usuarios sin Precio</div>
+                <div class="stat-value"><span id="reporte-sin-precio">0</span></div>
+            </div>
+        </div>
+
+        <div class="reporte-nota">
+            En este período hay <strong><span id="nota-usuarios-sin-precio">0</span> usuario(s) sin precio</strong>. Esos registros se muestran en el detalle, pero no se suman a la facturación.
         </div>
 
         <!-- ─── ACTION BUTTONS ─── -->
@@ -646,7 +680,27 @@
                 fechaFin = new Date(fechaHastaPersonalizado);
             }
 
+            fechaInicio.setHours(0, 0, 0, 0);
+            fechaFin.setHours(23, 59, 59, 999);
+
             return { fechaInicio, fechaFin };
+        }
+
+        function esFechaValida(fecha) {
+            return fecha instanceof Date && !isNaN(fecha.getTime());
+        }
+
+        function obtenerFechaReferencia(cliente) {
+            const valor = cliente.fecha_pago || cliente.fecha_vencimiento;
+            if (!valor) return null;
+            const fecha = new Date(valor);
+            return esFechaValida(fecha) ? fecha : null;
+        }
+
+        function tienePrecioValido(precio) {
+            if (precio === null || precio === undefined || precio === '') return false;
+            const n = parseFloat(precio);
+            return !isNaN(n) && n > 0;
         }
 
         function actualizarReporte() {
@@ -655,29 +709,39 @@
             let datosReporte = [];
             let totalFacturado = 0;
             let clientesFacturados = new Set();
+            let usuariosSinPrecio = 0;
 
             todosLosClientes.forEach(c => {
-                const fechaPago = new Date(c.fecha_pago || c.fecha_vencimiento);
+                const fechaReferencia = obtenerFechaReferencia(c);
+                if (!fechaReferencia) return;
 
-                if (fechaPago >= fechaInicio && fechaPago <= fechaFin) {
-                    const precio = parseFloat(c.precio) || 0;
-                    totalFacturado += precio;
-                    clientesFacturados.add(c.id);
+                if (fechaReferencia >= fechaInicio && fechaReferencia <= fechaFin) {
+                    const precioValido = tienePrecioValido(c.precio);
+                    const precio = precioValido ? parseFloat(c.precio) : null;
+
+                    if (precioValido) {
+                        totalFacturado += precio;
+                        clientesFacturados.add(c.id);
+                    } else {
+                        usuariosSinPrecio++;
+                    }
 
                     datosReporte.push({
-                        nombre: c.nombre_apellido,
-                        app: c.app_instalada,
-                        usuario: c.usuario,
-                        ciudad: c.ciudad,
-                        telefono: c.celular,
+                        nombre: c.nombre_apellido || '—',
+                        app: c.app_instalada || '—',
+                        usuario: c.usuario || '—',
+                        ciudad: c.ciudad || '—',
+                        telefono: c.celular || '—',
                         precio: precio,
                         fechaPago: c.fecha_pago || 'Sin registrar',
-                        fechaVencimiento: c.fecha_vencimiento
+                        fechaVencimiento: c.fecha_vencimiento || 'Sin registrar',
+                        fechaOrden: fechaReferencia,
+                        sinPrecio: !precioValido
                     });
                 }
             });
 
-            datosReporte.sort((a, b) => new Date(b.fechaPago) - new Date(a.fechaPago));
+            datosReporte.sort((a, b) => b.fechaOrden - a.fechaOrden);
 
             const cantidadClientes = clientesFacturados.size;
             const promedio = cantidadClientes > 0 ? (totalFacturado / cantidadClientes).toFixed(2) : '0.00';
@@ -685,11 +749,13 @@
             document.getElementById('reporte-total').innerText = totalFacturado.toFixed(2);
             document.getElementById('reporte-clientes').innerText = cantidadClientes;
             document.getElementById('reporte-promedio').innerText = promedio;
+            document.getElementById('reporte-sin-precio').innerText = usuariosSinPrecio;
+            document.getElementById('nota-usuarios-sin-precio').innerText = usuariosSinPrecio;
 
-            generarTabla(datosReporte, totalFacturado);
+            generarTabla(datosReporte, totalFacturado, usuariosSinPrecio);
         }
 
-        function generarTabla(datos, total) {
+        function generarTabla(datos, total, usuariosSinPrecio) {
             const contenedor = document.getElementById('tabla-contenedor');
 
             if (datos.length === 0) {
@@ -697,7 +763,7 @@
                     <div class="empty-state">
                         <div class="empty-icon">📭</div>
                         <p>Sin datos en este período</p>
-                        <p class="sub">No hay clientes pagados en el rango seleccionado</p>
+                        <p class="sub">No hay clientes cargados en el rango seleccionado</p>
                     </div>`;
                 return;
             }
@@ -727,7 +793,7 @@
                         <td style="font-family:'DM Mono',monospace; font-size:12px;">${d.usuario}</td>
                         <td>${d.ciudad}</td>
                         <td style="font-family:'DM Mono',monospace; font-size:12px;">${d.telefono}</td>
-                        <td style="font-family:'DM Mono',monospace; font-weight:600;">$${d.precio.toFixed(2)}</td>
+                        <td style="font-family:'DM Mono',monospace; font-weight:600;">${d.sinPrecio ? 'Sin precio' : '$' + d.precio.toFixed(2)}</td>
                         <td>${d.fechaPago}</td>
                         <td>${d.fechaVencimiento}</td>
                     </tr>`;
@@ -737,6 +803,12 @@
                         <tr class="total-row">
                             <td colspan="5" style="text-align:right; font-size:11px; letter-spacing:0.08em; text-transform:uppercase;">Total</td>
                             <td>$${total.toFixed(2)}</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr class="total-row">
+                            <td colspan="5" style="text-align:right; font-size:11px; letter-spacing:0.08em; text-transform:uppercase;">Usuarios sin precio</td>
+                            <td>${usuariosSinPrecio}</td>
                             <td></td>
                             <td></td>
                         </tr>
@@ -752,21 +824,28 @@
 
             let datosExcel = [];
             let totalFacturado = 0;
+            let usuariosSinPrecio = 0;
 
             todosLosClientes.forEach(c => {
-                const fechaPago = new Date(c.fecha_pago || c.fecha_vencimiento);
-                if (fechaPago >= fechaInicio && fechaPago <= fechaFin) {
-                    const precio = parseFloat(c.precio) || 0;
-                    totalFacturado += precio;
+                const fechaReferencia = obtenerFechaReferencia(c);
+                if (!fechaReferencia) return;
+
+                if (fechaReferencia >= fechaInicio && fechaReferencia <= fechaFin) {
+                    const precioValido = tienePrecioValido(c.precio);
+                    const precio = precioValido ? parseFloat(c.precio) : null;
+
+                    if (precioValido) totalFacturado += precio;
+                    else usuariosSinPrecio++;
+
                     datosExcel.push({
-                        'Nombre Cliente': c.nombre_apellido,
-                        'Aplicación': c.app_instalada,
-                        'Usuario': c.usuario,
-                        'Ciudad': c.ciudad,
-                        'Teléfono': c.celular,
-                        'Precio ($)': precio.toFixed(2),
+                        'Nombre Cliente': c.nombre_apellido || '',
+                        'Aplicación': c.app_instalada || '',
+                        'Usuario': c.usuario || '',
+                        'Ciudad': c.ciudad || '',
+                        'Teléfono': c.celular || '',
+                        'Precio ($)': precioValido ? precio.toFixed(2) : 'Sin precio',
                         'Fecha Pago': c.fecha_pago || 'Sin registrar',
-                        'Fecha Vencimiento': c.fecha_vencimiento
+                        'Fecha Vencimiento': c.fecha_vencimiento || 'Sin registrar'
                     });
                 }
             });
@@ -777,10 +856,16 @@
                 'Fecha Pago': '', 'Fecha Vencimiento': ''
             });
 
+            datosExcel.push({
+                'Nombre Cliente': '', 'Aplicación': '', 'Usuario': '', 'Ciudad': 'USUARIOS SIN PRECIO',
+                'Teléfono': '', 'Precio ($)': usuariosSinPrecio,
+                'Fecha Pago': '', 'Fecha Vencimiento': ''
+            });
+
             const worksheet = XLSX.utils.json_to_sheet(datosExcel);
             const workbook = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(workbook, worksheet, 'Reporte');
-            worksheet['!cols'] = [{ wch: 20 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 12 }, { wch: 15 }, { wch: 18 }];
+            worksheet['!cols'] = [{ wch: 20 }, { wch: 15 }, { wch: 15 }, { wch: 18 }, { wch: 15 }, { wch: 14 }, { wch: 15 }, { wch: 18 }];
 
             const fecha = new Date().toLocaleDateString('es-ES').replace(/\//g, '-');
             XLSX.writeFile(workbook, `Reporte_${periodoReporte}_${fecha}.xlsx`);
