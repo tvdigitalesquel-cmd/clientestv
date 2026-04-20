@@ -214,7 +214,7 @@
 
         .form-grid-5 {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr 1fr auto;
+            grid-template-columns: 1.1fr 1fr 1fr 1fr 1fr auto;
             gap: 12px; align-items: flex-end;
         }
 
@@ -544,7 +544,14 @@
                         <label class="input-label">Vencimiento</label>
                         <input type="date" id="newVencimiento" class="input-modern" required>
                     </div>
-                    <button type="submit" class="btn-primary" style="justify-content:center; white-space:nowrap;">+ Crear</button>
+                    <div id="campo-creditos-iniciales" style="display:none;">
+                        <label class="input-label">Créditos Iniciales</label>
+                        <input type="number" id="newCreditos" min="0" step="1" value="0" class="input-modern" placeholder="0">
+                    </div>
+                    <button type="submit" class="btn-primary" id="btn-crear-usuario" style="justify-content:center; white-space:nowrap;">+ Crear</button>
+                </div>
+                <div id="info-creditos-revendedor" style="display:none; margin-top:12px; font-size:12px; color:var(--text-secondary);">
+                    Créditos disponibles: <strong id="creditos-disponibles-label" style="color:var(--accent);">0</strong>
                 </div>
             </form>
         </div>
@@ -591,6 +598,18 @@
                 <div class="form-field">
                     <label class="input-label">Vencimiento</label>
                     <input type="date" id="edit-vencimiento" class="input-modern">
+                </div>
+
+                <div id="edit-creditos-box" style="display:none;">
+                    <div class="form-field">
+                        <label class="input-label">Créditos Disponibles</label>
+                        <input type="number" id="edit-creditos-actuales" class="input-modern" disabled>
+                    </div>
+
+                    <div class="form-field">
+                        <label class="input-label">Recargar Créditos</label>
+                        <input type="number" id="edit-recargar-creditos" class="input-modern" min="0" step="1" value="0" placeholder="0">
+                    </div>
                 </div>
 
                 <div class="toggle-row">
@@ -663,6 +682,43 @@
             }
         }
 
+        function normalizarCreditos(valor) {
+            const n = parseInt(valor, 10);
+            return Number.isFinite(n) && n > 0 ? n : 0;
+        }
+
+        function actualizarSesionLocal(nuevosDatos) {
+            currentUser = { ...currentUser, ...nuevosDatos };
+            localStorage.setItem('session_tvdigital', JSON.stringify(currentUser));
+            document.getElementById('info-sesion').innerText = `${currentUser.rol.toUpperCase()} · ${currentUser.username}`;
+            actualizarInfoCreditosRevendedor();
+        }
+
+        function actualizarInfoCreditosRevendedor() {
+            const infoBox = document.getElementById('info-creditos-revendedor');
+            const label = document.getElementById('creditos-disponibles-label');
+            if (currentUser.rol === 'revendedor') {
+                infoBox.style.display = '';
+                label.innerText = normalizarCreditos(currentUser.creditos_disponibles);
+            } else {
+                infoBox.style.display = 'none';
+            }
+        }
+
+        function mostrarCamposSegunRolSeleccionado() {
+            const selectRol = document.getElementById('newRol');
+            const creditosBox = document.getElementById('campo-creditos-iniciales');
+            const inputCreditos = document.getElementById('newCreditos');
+
+            if (currentUser.rol === 'admin' && selectRol.value === 'revendedor') {
+                creditosBox.style.display = '';
+                inputCreditos.value = inputCreditos.value || '0';
+            } else {
+                creditosBox.style.display = 'none';
+                inputCreditos.value = '0';
+            }
+        }
+
         function checkSession() {
             const savedTheme = localStorage.getItem('theme') || 'dark';
             if (savedTheme === 'light') {
@@ -683,6 +739,10 @@
                 selRol.innerHTML = '<option value="vendedor">VENDEDOR</option>';
             }
 
+            selRol.addEventListener('change', mostrarCamposSegunRolSeleccionado);
+            mostrarCamposSegunRolSeleccionado();
+            actualizarInfoCreditosRevendedor();
+
             cargarUsuariosSistema();
             cargarTodosLosClientes();
         }
@@ -690,6 +750,11 @@
         async function cargarTodosLosClientes() {
             const { data } = await supabaseClient.from('clientes').select('*');
             todosLosClientes = data || [];
+        }
+
+        function obtenerInfoCreditosUsuario(u) {
+            if (u.rol !== 'revendedor') return '';
+            return `<span style="color:var(--purple);">💳 ${normalizarCreditos(u.creditos_disponibles)} crédito${normalizarCreditos(u.creditos_disponibles) !== 1 ? 's' : ''}</span>`;
         }
 
         async function cargarUsuariosSistema() {
@@ -731,6 +796,7 @@
                 const clientesDelUsuario = todosLosClientes.filter(c => c.creado_por === u.id);
                 const roleClass = u.rol === 'admin' ? 'role-admin' : u.rol === 'revendedor' ? 'role-revendedor' : 'role-vendedor';
                 const roleIcon = u.rol === 'admin' ? '👑' : u.rol === 'revendedor' ? '🔷' : '📊';
+                const creditosInfo = obtenerInfoCreditosUsuario(u);
 
                 cont.innerHTML += `
                     <div class="card-usuario ${isDisabled ? 'user-disabled' : ''}" onclick="verClientesVendedor(${JSON.stringify(u).replace(/"/g, '&quot;')})">
@@ -745,6 +811,7 @@
                                 <div class="user-meta">
                                     <span style="${venciColor}">📅 ${u.vencimiento_acceso ? u.vencimiento_acceso + (venciEn !== null ? ' (' + venciEn + 'd)' : '') : 'Sin fecha'}</span>
                                     <span style="color:var(--accent);">👥 ${clientesDelUsuario.length} cliente${clientesDelUsuario.length !== 1 ? 's' : ''}</span>
+                                    ${creditosInfo}
                                 </div>
                             </div>
                         </div>
@@ -789,6 +856,43 @@
             document.getElementById('seccion-clientes-vendedor').style.display = 'none';
         }
 
+        function renderClienteCard(c, hoy) {
+            const tieneVencimiento = !!c.fecha_vencimiento;
+            const d = tieneVencimiento ? Math.ceil((new Date(c.fecha_vencimiento) - hoy) / (1000 * 60 * 60 * 24)) : null;
+            const config = configApps[c.app_instalada];
+            let estadoBadge = 'estado-activo';
+            if (d !== null && d <= 0) estadoBadge = 'estado-vencido';
+            else if (d !== null && d <= 7) estadoBadge = 'estado-pronto';
+
+            let diasColor = 'var(--green)';
+            if (d !== null && d <= 0) diasColor = 'var(--red)';
+            else if (d !== null && d <= 7) diasColor = 'var(--yellow)';
+
+            const precioTexto = c.precio !== null && c.precio !== undefined && c.precio !== '' ? `$${parseFloat(c.precio || 0).toFixed(2)}` : 'Sin precio';
+            const ciudadTexto = c.ciudad || 'Sin ciudad';
+            const appTexto = c.app_instalada || 'Sin app';
+            const diasTexto = d === null ? '—' : d;
+            const badgeTexto = d === null ? 'Sin fecha' : (d <= 0 ? 'Venc' : d + 'd');
+
+            return `
+                <div class="card-cliente">
+                    <div class="client-left">
+                        <div class="client-app-icon">
+                            <img src="${config ? config.logo : ''}" alt="${appTexto}">
+                        </div>
+                        <div class="client-info">
+                            <div class="client-name">${c.nombre_apellido}</div>
+                            <div class="client-meta">${appTexto} · ${ciudadTexto}</div>
+                            <div class="client-meta" style="font-family:'DM Mono',monospace;">${precioTexto}</div>
+                        </div>
+                    </div>
+                    <div class="client-right">
+                        <div class="client-days" style="color:${diasColor};">${diasTexto}</div>
+                        <span class="estado-badge ${estadoBadge}">${badgeTexto}</span>
+                    </div>
+                </div>`;
+        }
+
         function mostrarClientesVendedor() {
             const cont = document.getElementById('lista-clientes-vendedor');
             const hoy = new Date();
@@ -803,44 +907,15 @@
                 return;
             }
 
-            cont.innerHTML = '';
-            clientesVendedorActual.forEach(c => {
-                const d = Math.ceil((new Date(c.fecha_vencimiento) - hoy) / (1000 * 60 * 60 * 24));
-                const config = configApps[c.app_instalada];
-                let estadoBadge = 'estado-activo';
-                if (d <= 0) estadoBadge = 'estado-vencido';
-                else if (d <= 7) estadoBadge = 'estado-pronto';
-
-                let diasColor = 'var(--green)';
-                if (d <= 0) diasColor = 'var(--red)';
-                else if (d <= 7) diasColor = 'var(--yellow)';
-
-                cont.innerHTML += `
-                    <div class="card-cliente">
-                        <div class="client-left">
-                            <div class="client-app-icon">
-                                <img src="${config ? config.logo : ''}" alt="${c.app_instalada}">
-                            </div>
-                            <div class="client-info">
-                                <div class="client-name">${c.nombre_apellido}</div>
-                                <div class="client-meta">${c.app_instalada} · ${c.ciudad}</div>
-                                <div class="client-meta" style="font-family:'DM Mono',monospace;">$${parseFloat(c.precio).toFixed(2)}</div>
-                            </div>
-                        </div>
-                        <div class="client-right">
-                            <div class="client-days" style="color:${diasColor};">${d}</div>
-                            <span class="estado-badge ${estadoBadge}">${d <= 0 ? 'Venc' : d + 'd'}</span>
-                        </div>
-                    </div>`;
-            });
+            cont.innerHTML = clientesVendedorActual.map(c => renderClienteCard(c, hoy)).join('');
         }
 
         function filtrarClientesVendedor() {
             const bus = document.getElementById('buscar-cliente').value.toLowerCase();
             const filtrados = clientesVendedorActual.filter(c =>
-                c.nombre_apellido.toLowerCase().includes(bus) ||
-                c.usuario.toLowerCase().includes(bus) ||
-                c.ciudad.toLowerCase().includes(bus)
+                (c.nombre_apellido || '').toLowerCase().includes(bus) ||
+                (c.usuario || '').toLowerCase().includes(bus) ||
+                (c.ciudad || '').toLowerCase().includes(bus)
             );
 
             const cont = document.getElementById('lista-clientes-vendedor');
@@ -855,36 +930,7 @@
                 return;
             }
 
-            cont.innerHTML = '';
-            filtrados.forEach(c => {
-                const d = Math.ceil((new Date(c.fecha_vencimiento) - hoy) / (1000 * 60 * 60 * 24));
-                const config = configApps[c.app_instalada];
-                let estadoBadge = 'estado-activo';
-                if (d <= 0) estadoBadge = 'estado-vencido';
-                else if (d <= 7) estadoBadge = 'estado-pronto';
-
-                let diasColor = 'var(--green)';
-                if (d <= 0) diasColor = 'var(--red)';
-                else if (d <= 7) diasColor = 'var(--yellow)';
-
-                cont.innerHTML += `
-                    <div class="card-cliente">
-                        <div class="client-left">
-                            <div class="client-app-icon">
-                                <img src="${config ? config.logo : ''}" alt="${c.app_instalada}">
-                            </div>
-                            <div class="client-info">
-                                <div class="client-name">${c.nombre_apellido}</div>
-                                <div class="client-meta">${c.app_instalada} · ${c.ciudad}</div>
-                                <div class="client-meta" style="font-family:'DM Mono',monospace;">$${parseFloat(c.precio).toFixed(2)}</div>
-                            </div>
-                        </div>
-                        <div class="client-right">
-                            <div class="client-days" style="color:${diasColor};">${d}</div>
-                            <span class="estado-badge ${estadoBadge}">${d <= 0 ? 'Venc' : d + 'd'}</span>
-                        </div>
-                    </div>`;
-            });
+            cont.innerHTML = filtrados.map(c => renderClienteCard(c, hoy)).join('');
         }
 
         function actualizarEstadisticas(total, revendedores, vendedores) {
@@ -900,6 +946,21 @@
             document.getElementById('edit-password').value = '';
             document.getElementById('edit-vencimiento').value = usuario.vencimiento_acceso || '';
             document.getElementById('edit-activo').checked = usuario.activo !== false;
+
+            const creditosBox = document.getElementById('edit-creditos-box');
+            const creditosActuales = document.getElementById('edit-creditos-actuales');
+            const recarga = document.getElementById('edit-recargar-creditos');
+
+            if (currentUser.rol === 'admin' && usuario.rol === 'revendedor') {
+                creditosBox.style.display = '';
+                creditosActuales.value = normalizarCreditos(usuario.creditos_disponibles);
+                recarga.value = '0';
+            } else {
+                creditosBox.style.display = 'none';
+                creditosActuales.value = '';
+                recarga.value = '0';
+            }
+
             document.getElementById('modalEditar').classList.remove('hidden');
         }
 
@@ -908,16 +969,30 @@
             usuarioEnEdicion = null;
         }
 
+        async function actualizarEstadoHijos(padreId, activo) {
+            const { error } = await supabaseClient
+                .from('usuarios_sistema')
+                .update({ activo: activo })
+                .eq('padre_id', padreId);
+
+            if (error) throw error;
+        }
+
         document.getElementById('formEditarUsuario').onsubmit = async (e) => {
             e.preventDefault();
 
             const id = document.getElementById('edit-user-id').value;
             const password = document.getElementById('edit-password').value;
-            const vencimiento = document.getElementById('edit-vencimiento').value;
+            const vencimiento = document.getElementById('edit-vencimiento').value || null;
             const activo = document.getElementById('edit-activo').checked;
+            const recargaCreditos = normalizarCreditos(document.getElementById('edit-recargar-creditos').value);
 
-            const updateData = { vencimiento_acceso: vencimiento || null, activo: activo };
+            const updateData = { vencimiento_acceso: vencimiento, activo: activo };
             if (password) updateData.password = password;
+
+            if (currentUser.rol === 'admin' && usuarioEnEdicion && usuarioEnEdicion.rol === 'revendedor' && recargaCreditos > 0) {
+                updateData.creditos_disponibles = normalizarCreditos(usuarioEnEdicion.creditos_disponibles) + recargaCreditos;
+            }
 
             const { error } = await supabaseClient.from('usuarios_sistema').update(updateData).eq('id', id);
 
@@ -926,55 +1001,74 @@
                 return;
             }
 
-            const esUsuarioConEquipo = usuarioEnEdicion && (usuarioEnEdicion.rol === 'revendedor' || usuarioEnEdicion.rol === 'admin');
-
-            if (esUsuarioConEquipo) {
-                const { error: cascadeError } = await supabaseClient
-                    .from('usuarios_sistema')
-                    .update({ activo: activo })
-                    .eq('padre_id', id);
-
-                if (cascadeError) {
-                    alert("El usuario se actualizó, pero hubo un problema al actualizar su equipo: " + cascadeError.message);
-                    cerrarModalEditar();
-                    cargarUsuariosSistema();
-                    return;
+            if (usuarioEnEdicion && usuarioEnEdicion.rol === 'revendedor') {
+                try {
+                    await actualizarEstadoHijos(usuarioEnEdicion.id, activo);
+                } catch (cascadeError) {
+                    alert("Se actualizó el revendedor, pero falló la cascada: " + cascadeError.message);
                 }
             }
 
             cerrarModalEditar();
-            cargarUsuariosSistema();
-
-            if (esUsuarioConEquipo) {
-                alert(activo
-                    ? "Usuario y equipo reactivados ✓"
-                    : "Usuario y equipo deshabilitados ✓");
-            } else {
-                alert("Usuario actualizado ✓");
-            }
+            await cargarUsuariosSistema();
+            alert("Usuario actualizado ✓");
         };
 
         document.getElementById('formNuevoUsuario').onsubmit = async (e) => {
             e.preventDefault();
 
+            const username = document.getElementById('newUsername').value.trim();
+            const password = document.getElementById('newPassword').value;
+            const rol = document.getElementById('newRol').value;
+            const vencimiento = document.getElementById('newVencimiento').value || null;
+            const creditosIniciales = normalizarCreditos(document.getElementById('newCreditos').value);
+
+            if (currentUser.rol === 'revendedor') {
+                const creditosDisponibles = normalizarCreditos(currentUser.creditos_disponibles);
+                if (creditosDisponibles <= 0) {
+                    alert("No tenés créditos disponibles para crear usuarios.");
+                    return;
+                }
+            }
+
             const newUser = {
-                username: document.getElementById('newUsername').value,
-                password: document.getElementById('newPassword').value,
-                rol: document.getElementById('newRol').value,
-                vencimiento_acceso: document.getElementById('newVencimiento').value,
+                username: username,
+                password: password,
+                rol: rol,
+                vencimiento_acceso: vencimiento,
                 padre_id: currentUser.id,
                 activo: true
             };
 
-            const { error } = await supabaseClient.from('usuarios_sistema').insert([newUser]);
+            if (currentUser.rol === 'admin' && rol === 'revendedor') {
+                newUser.creditos_disponibles = creditosIniciales;
+            }
+
+            const { data, error } = await supabaseClient.from('usuarios_sistema').insert([newUser]).select();
 
             if (error) {
                 alert("Error al crear: " + error.message);
-            } else {
-                document.getElementById('formNuevoUsuario').reset();
-                cargarUsuariosSistema();
-                alert("Usuario creado ✓");
+                return;
             }
+
+            if (currentUser.rol === 'revendedor') {
+                const nuevosCreditos = Math.max(0, normalizarCreditos(currentUser.creditos_disponibles) - 1);
+                const { error: creditError } = await supabaseClient
+                    .from('usuarios_sistema')
+                    .update({ creditos_disponibles: nuevosCreditos })
+                    .eq('id', currentUser.id);
+
+                if (creditError) {
+                    alert("Usuario creado, pero no se pudo descontar el crédito: " + creditError.message);
+                } else {
+                    actualizarSesionLocal({ creditos_disponibles: nuevosCreditos });
+                }
+            }
+
+            document.getElementById('formNuevoUsuario').reset();
+            mostrarCamposSegunRolSeleccionado();
+            await cargarUsuariosSistema();
+            alert("Usuario creado ✓");
         };
 
         function abrirConfirmarEliminar(usuario) {
@@ -988,14 +1082,39 @@
             usuarioAEliminar = null;
         }
 
+        async function devolverCreditoAlPadreSiCorresponde(usuario) {
+            if (!usuario || !usuario.padre_id) return;
+
+            const { data: padre, error: padreError } = await supabaseClient
+                .from('usuarios_sistema')
+                .select('id, rol, creditos_disponibles')
+                .eq('id', usuario.padre_id)
+                .single();
+
+            if (padreError || !padre || padre.rol !== 'revendedor') return;
+
+            const nuevosCreditos = normalizarCreditos(padre.creditos_disponibles) + 1;
+            const { error: updateError } = await supabaseClient
+                .from('usuarios_sistema')
+                .update({ creditos_disponibles: nuevosCreditos })
+                .eq('id', padre.id);
+
+            if (!updateError && currentUser.id === padre.id) {
+                actualizarSesionLocal({ creditos_disponibles: nuevosCreditos });
+            }
+        }
+
         async function confirmarEliminar() {
             if (!usuarioAEliminar) return;
+
+            await devolverCreditoAlPadreSiCorresponde(usuarioAEliminar);
+
             const { error } = await supabaseClient.from('usuarios_sistema').delete().eq('id', usuarioAEliminar.id);
             if (error) {
                 alert('Error: ' + error.message);
             } else {
                 cerrarConfirmar();
-                cargarUsuariosSistema();
+                await cargarUsuariosSistema();
             }
         }
 
