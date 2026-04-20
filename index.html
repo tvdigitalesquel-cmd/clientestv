@@ -38,17 +38,36 @@
 
         html.light-mode {
             --bg-primary: #f0f4fa;
-            --bg-secondary: #e8eef7;
+            --bg-secondary: #111318;
             --bg-card: #ffffff;
             --bg-card-hover: #f7faff;
-            --bg-surface: #edf2fb;
-            --border: rgba(0,0,0,0.07);
+            --bg-surface: #e8eef7;
+            --border: rgba(0,0,0,0.08);
             --border-hover: rgba(59,127,245,0.25);
             --accent-dim: rgba(59,127,245,0.08);
             --text-primary: #1a2235;
             --text-secondary: #5a6a82;
             --text-muted: #9aa5b4;
         }
+
+        /* Nav text/buttons in light mode (dark bg nav) */
+        html.light-mode nav .nav-links a { color: rgba(255,255,255,0.55); }
+        html.light-mode nav .nav-links a:hover { background: rgba(255,255,255,0.08); color: #fff; }
+        html.light-mode nav .nav-links a.active { background: rgba(59,127,245,0.2); color: #6eaaff; }
+        html.light-mode #info-sesion { color: rgba(255,255,255,0.35); }
+        html.light-mode .theme-toggle { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.15); }
+        html.light-mode .btn-logout { color: #f87171; border-color: rgba(239,68,68,0.35); }
+        html.light-mode .btn-logout:hover { background: rgba(239,68,68,0.15); }
+
+        /* Modal cards with distinct surface color */
+        html.light-mode .modal-box { background: #edf2fc; border-color: rgba(59,127,245,0.2); }
+        html.light-mode .detail-row { background: #dce6f7; border: 1px solid rgba(59,127,245,0.12); }
+        html.light-mode .input-modern { background: #e4ecf9; border-color: rgba(59,127,245,0.2); color: #1a2235; }
+        html.light-mode .input-modern:focus { background: #fff; border-color: var(--accent); }
+        html.light-mode .app-option { background: #dce6f7; border-color: rgba(59,127,245,0.18); }
+        html.light-mode .app-option.selected { background: rgba(59,127,245,0.15); border-color: var(--accent); }
+        html.light-mode .form-actions .btn-cancel { background: #dce6f7; border-color: rgba(59,127,245,0.15); color: #5a6a82; }
+        html.light-mode .confirm-actions .btn-confirm-cancel { background: #dce6f7; color: #5a6a82; }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
