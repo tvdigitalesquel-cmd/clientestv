@@ -908,6 +908,50 @@ function copiarDatos(cliente){
 
         .detail-copy-btn:hover { background: var(--accent); color: #fff; }
 
+
+.detail-app-box{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.detail-app-logo{
+    width:44px;
+    height:44px;
+    border-radius:12px;
+    background:var(--bg-surface);
+    border:1px solid var(--border);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    flex-shrink:0;
+}
+
+.detail-app-logo img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    padding:4px;
+}
+
+.detail-app-text{
+    display:flex;
+    flex-direction:column;
+    line-height:1.1;
+}
+
+.detail-app-text strong{
+    font-size:13px;
+    color:var(--text-primary);
+}
+
+.detail-app-text span{
+    font-size:11px;
+    color:var(--text-secondary);
+}
+
+
         /* ─── DETAIL ACTIONS ─── */
         .detail-actions {
             display: flex;
@@ -1471,7 +1515,32 @@ function copiarDatos(cliente){
             document.getElementById('detail-nombre').innerText = cliente.nombre_apellido;
             document.getElementById('detail-celular').innerText = valorSeguro(cliente.celular);
             document.getElementById('detail-ciudad').innerText = valorSeguro(cliente.ciudad);
-            document.getElementById('detail-app').innerText = valorSeguro(cliente.app_instalada);
+            const appConfig = configApps[cliente.app_instalada];
+            const detailApp = document.getElementById('detail-app');
+
+            if (appConfig) {
+                detailApp.innerHTML = `
+                    <div class="detail-app-box">
+                        <div class="detail-app-logo">
+                            <img src="${appConfig.logo}" alt="${cliente.app_instalada}">
+                        </div>
+                        <div class="detail-app-text">
+                            <strong>${cliente.app_instalada}</strong>
+                            <span>Aplicación instalada</span>
+                        </div>
+                    </div>
+                `;
+            } else {
+                detailApp.innerHTML = `
+                    <div class="detail-app-box">
+                        <div class="detail-app-logo">📺</div>
+                        <div class="detail-app-text">
+                            <strong>${valorSeguro(cliente.app_instalada)}</strong>
+                            <span>Aplicación instalada</span>
+                        </div>
+                    </div>
+                `;
+            }
             document.getElementById('detail-usuario').innerText = valorSeguro(cliente.usuario, '');
             document.getElementById('detail-clave').innerText = valorSeguro(cliente.clave, '');
             document.getElementById('detail-precio').innerText = cliente.precio ? '$' + cliente.precio : '—';
