@@ -86,13 +86,13 @@ function copiarDatos(cliente){
         }
 
         html.light-mode {
-            --bg-primary: #f0f4fa;
+            --bg-primary: #eef2f7;
             --bg-secondary: #111318;
             --bg-card: #ffffff;
-            --bg-card-hover: #f7faff;
-            --bg-surface: #e8eef7;
-            --border: rgba(0,0,0,0.08);
-            --border-hover: rgba(59,127,245,0.25);
+            --bg-card-hover: #f8fbff;
+            --bg-surface: #e7eef8;
+            --border: rgba(15,23,42,0.08);
+            --border-hover: rgba(59,127,245,0.22);
             --accent-dim: rgba(59,127,245,0.08);
             --text-primary: #1a2235;
             --text-secondary: #5a6a82;
@@ -117,6 +117,49 @@ function copiarDatos(cliente){
         html.light-mode .app-option.selected { background: rgba(59,127,245,0.12); border-color: var(--accent); }
         html.light-mode .form-actions .btn-cancel { background: #d1d5db; border-color: rgba(100,116,139,0.18); color: #475569; }
         html.light-mode .confirm-actions .btn-confirm-cancel { background: #d1d5db; color: #475569; }
+
+        /* Cards that stand out from light background */
+        html.light-mode .card-cliente {
+            background: #ffffff;
+            border: 1px solid rgba(59,127,245,0.18);
+            box-shadow: 0 10px 24px rgba(15,23,42,0.08);
+        }
+
+        html.light-mode .card-cliente:hover {
+            background: #ffffff;
+            border-color: rgba(59,127,245,0.35);
+            box-shadow: 0 16px 34px rgba(59,127,245,0.14);
+        }
+
+        html.light-mode .card-body {
+            border-bottom: 1px solid rgba(15,23,42,0.08);
+        }
+
+        html.light-mode .card-footer {
+            background: #f8fafc;
+        }
+
+        html.light-mode .card-icon {
+            background: linear-gradient(180deg, #eef4fb 0%, #dde8f7 100%);
+            border-color: rgba(59,127,245,0.16);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.9);
+        }
+
+        html.light-mode .btn-card {
+            background: #ffffff;
+            border-color: rgba(15,23,42,0.1);
+            color: #4b5d78;
+        }
+
+        html.light-mode .btn-card:hover {
+            background: #eef4ff;
+            border-color: rgba(59,127,245,0.22);
+            color: #1a2235;
+        }
+
+        html.light-mode .card-top-bar {
+            opacity: 0.9;
+        }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -1107,6 +1150,14 @@ padding:6px;
 }
 </style>
 </head>
+
+<!--
+IMPORTANTE:
+Reemplazá estas rutas por las que agregaste en tu archivo:
+- clientestv/img/liketv.png
+- clientestv/img/TVHD.png
+-->
+
 <body>
 
     <!-- ─── NAVBAR ─── -->
@@ -1442,8 +1493,19 @@ function copiarDatos(cliente){
             'ZYRON TV': { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/zyrontv.png', color: '#ca8a04' },
             'ZYRON TUBE': { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/zyrontube.png', color: '#ea580c' },
             'POWER SIGNALS': { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/powersignals.png', color: '#4f46e5' },
-            'CAELUM': { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/caelum.png', color: '#0891b2' }
+            'CAELUM': { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/caelum.png', color: '#0891b2' },
+            'LIKE TV': { logo: 'clientestv/img/liketv.png', color: '#8b5cf6' },
+            'TV HD': { logo: 'clientestv/img/TVHD.png', color: '#0ea5e9' },
         };
+
+
+        function obtenerConfigApp(nombreApp) {
+            if (!nombreApp) return null;
+            return configApps[nombreApp]
+                || configApps[String(nombreApp).toUpperCase()]
+                || configApps[String(nombreApp).trim()]
+                || null;
+        }
 
         function toggleTheme() {
             const html = document.documentElement;
@@ -1557,7 +1619,7 @@ function copiarDatos(cliente){
             document.getElementById('detail-nombre').innerText = cliente.nombre_apellido;
             document.getElementById('detail-celular').innerText = valorSeguro(cliente.celular);
             document.getElementById('detail-ciudad').innerText = valorSeguro(cliente.ciudad);
-            const appConfig = configApps[cliente.app_instalada];
+            const appConfig = obtenerConfigApp(cliente.app_instalada);
             const detailApp = document.getElementById('detail-app');
 
             if (appConfig) {
@@ -1724,7 +1786,7 @@ function copiarDatos(cliente){
             const appsEnUso = [...new Set(clientes.map(c => c.app_instalada))];
             let html = `<button onclick="cambiarFiltroApp('TODOS', this)" class="app-filter filtro-activo"><span>Todas</span></button>`;
             appsEnUso.forEach(app => {
-                const config = configApps[app];
+                const config = obtenerConfigApp(app);
                 if (config) {
                     html += `<button onclick="cambiarFiltroApp('${app}', this)" class="app-filter"><img class="logo-app" src="${config.logo}" alt="${app}"><span>${app}</span></button>`;
                 }
@@ -1763,7 +1825,7 @@ function copiarDatos(cliente){
             cont.innerHTML = '';
             filtrados.forEach(c => {
                 const d = calcularDiasRestantes(c.fecha_vencimiento);
-                const config = configApps[c.app_instalada] || null;
+                const config = obtenerConfigApp(c.app_instalada);
                 
                 let badgeClass = 'badge-activo';
                 let badgeText = 'Activo';
