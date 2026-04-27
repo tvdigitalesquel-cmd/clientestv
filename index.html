@@ -1924,8 +1924,8 @@ function copiarDatos(cliente){
             const mensaje = dias === null
                 ? `Hola ${nombre}, te escribimos por tu servicio de TV.`
                 : dias <= 0 
-                    ? `Hola ${nombre}, tu servicio de TV ya venció. Por favor contacta para renovar.`
-                    : `Hola ${nombre}, tu servicio de TV vence en ${dias} día${dias !== 1 ? 's' : ''}. Asegúrate de renovar a tiempo.`;
+                    ? `Estimado ${nombre}, tu suscripción de TV Digital a vencido. Comuniquese con nosotros para renovar y seguir disfrutando de su contenido favorito.`
+                    : `Hola ${nombre}, tu servicio de TV vence en ${dias} día${dias !== 1 ? 's' : ''}. Asegúrate de renovar a tiempo y no perderse su contenido favorito.`;
             const url = `https://wa.me/${numeroFormato}?text=${encodeURIComponent(mensaje)}`;
             window.open(url, '_blank');
         }
