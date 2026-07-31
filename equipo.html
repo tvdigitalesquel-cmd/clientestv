@@ -214,7 +214,7 @@
 
         .form-grid-5 {
             display: grid;
-            grid-template-columns: 1.1fr 1fr 1fr 1fr 1fr auto;
+            grid-template-columns: 1.2fr 1.2fr 1fr auto;
             gap: 12px; align-items: flex-end;
         }
 
@@ -285,7 +285,6 @@
         }
 
         .role-admin { background: var(--red-dim); color: var(--red); }
-        .role-revendedor { background: var(--purple-dim); color: var(--purple); }
         .role-vendedor { background: var(--accent-dim); color: var(--accent); }
 
         .disabled-badge {
@@ -488,7 +487,7 @@
         <!-- ─── HEADER PRINCIPAL ─── -->
         <div id="header-principal" class="page-header">
             <h1 id="titulo-gestion">Gestionar Equipo</h1>
-            <p>Administrá los usuarios y vendedores de tu equipo</p>
+            <p>Administrá los accesos de tus vendedores</p>
         </div>
 
         <!-- ─── HEADER CLIENTES DEL VENDEDOR ─── -->
@@ -503,62 +502,51 @@
             <div class="stat-card stat-blue">
                 <div class="stat-icon">👥</div>
                 <div class="stat-info">
-                    <p>Total Usuarios</p>
+                    <p>Total Vendedores</p>
                     <h2 id="count-total">0</h2>
                 </div>
             </div>
-            <div class="stat-card stat-purple">
-                <div class="stat-icon">🔷</div>
+            <div class="stat-card stat-green">
+                <div class="stat-icon">✓</div>
                 <div class="stat-info">
-                    <p>Revendedores</p>
-                    <h2 id="count-revendedores">0</h2>
+                    <p>Activos</p>
+                    <h2 id="count-activos">0</h2>
                 </div>
             </div>
-            <div class="stat-card stat-green">
-                <div class="stat-icon">📊</div>
+            <div class="stat-card stat-purple">
+                <div class="stat-icon">🔒</div>
                 <div class="stat-info">
-                    <p>Vendedores</p>
-                    <h2 id="count-vendedores">0</h2>
+                    <p>Deshabilitados</p>
+                    <h2 id="count-deshabilitados">0</h2>
                 </div>
             </div>
         </div>
 
-        <!-- ─── FORM NUEVO USUARIO ─── -->
+        <!-- ─── FORM NUEVO VENDEDOR ─── -->
         <div id="seccion-form" class="card-surface form-section">
-            <div class="section-title">Crear Nuevo Acceso</div>
+            <div class="section-title">Crear Nuevo Vendedor</div>
             <form id="formNuevoUsuario">
                 <div class="form-grid-5">
                     <div>
                         <label class="input-label">Usuario</label>
-                        <input type="text" id="newUsername" placeholder="Nombre de usuario" class="input-modern" required>
+                        <input type="text" id="newUsername" placeholder="Nombre de usuario" class="input-modern" required autocomplete="off">
                     </div>
                     <div>
                         <label class="input-label">Contraseña</label>
-                        <input type="password" id="newPassword" placeholder="Contraseña" class="input-modern" required>
-                    </div>
-                    <div>
-                        <label class="input-label">Rol</label>
-                        <select id="newRol" class="input-modern" required></select>
+                        <input type="password" id="newPassword" placeholder="Contraseña" class="input-modern" required autocomplete="new-password">
                     </div>
                     <div>
                         <label class="input-label">Vencimiento</label>
                         <input type="date" id="newVencimiento" class="input-modern" required>
                     </div>
-                    <div id="campo-creditos-iniciales" style="display:none;">
-                        <label class="input-label">Créditos Iniciales</label>
-                        <input type="number" id="newCreditos" min="0" step="1" value="0" class="input-modern" placeholder="0">
-                    </div>
-                    <button type="submit" class="btn-primary" id="btn-crear-usuario" style="justify-content:center; white-space:nowrap;">+ Crear</button>
-                </div>
-                <div id="info-creditos-revendedor" style="display:none; margin-top:12px; font-size:12px; color:var(--text-secondary);">
-                    Créditos disponibles: <strong id="creditos-disponibles-label" style="color:var(--accent);">0</strong>
+                    <button type="submit" class="btn-primary" id="btn-crear-usuario" style="justify-content:center; white-space:nowrap;">+ Crear Vendedor</button>
                 </div>
             </form>
         </div>
 
-        <!-- ─── LISTA DE USUARIOS ─── -->
+        <!-- ─── LISTA DE VENDEDORES ─── -->
         <div id="seccion-usuarios">
-            <div class="section-title" style="margin-bottom:16px;">Equipo de Usuarios</div>
+            <div class="section-title" style="margin-bottom:16px;">Vendedores</div>
             <div id="lista-usuarios-sistema" class="users-grid"></div>
         </div>
 
@@ -574,11 +562,11 @@
 
     </div>
 
-    <!-- ─── MODAL EDITAR USUARIO ─── -->
+    <!-- ─── MODAL EDITAR VENDEDOR ─── -->
     <div id="modalEditar" class="modal-overlay hidden">
         <div class="modal-box">
             <div class="modal-header">
-                <h3>Editar Usuario</h3>
+                <h3>Editar Vendedor</h3>
                 <button onclick="cerrarModalEditar()" class="modal-close">✕</button>
             </div>
 
@@ -598,18 +586,6 @@
                 <div class="form-field">
                     <label class="input-label">Vencimiento</label>
                     <input type="date" id="edit-vencimiento" class="input-modern">
-                </div>
-
-                <div id="edit-creditos-box" style="display:none;">
-                    <div class="form-field">
-                        <label class="input-label">Créditos Disponibles</label>
-                        <input type="number" id="edit-creditos-actuales" class="input-modern" disabled>
-                    </div>
-
-                    <div class="form-field">
-                        <label class="input-label">Recargar Créditos</label>
-                        <input type="number" id="edit-recargar-creditos" class="input-modern" min="0" step="1" value="0" placeholder="0">
-                    </div>
                 </div>
 
                 <div class="toggle-row">
@@ -658,14 +634,27 @@
         let todosLosClientes = [];
         let clientesVendedorActual = [];
 
+        const LOGO_GENERICO = 'data:image/svg+xml,' + encodeURIComponent(
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">' +
+            '<rect width="256" height="256" rx="54" fill="#1c2740"/>' +
+            '<rect x="44" y="60" width="168" height="112" rx="16" fill="none" stroke="#3b7ff5" stroke-width="11"/>' +
+            '<path d="M116 96l44 24-44 24z" fill="#3b7ff5"/>' +
+            '<path d="M100 200h56" stroke="#3b7ff5" stroke-width="13" stroke-linecap="round"/>' +
+            '<path d="M128 172v28" stroke="#3b7ff5" stroke-width="13" stroke-linecap="round"/>' +
+            '</svg>'
+        );
+
         const configApps = {
-            'LUMIX TV': { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/lumixtv.png' },
-            'FEMON TV': { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/femontv.png' },
-            'TV PLUS 2': { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/tvplus2.png' },
-            'ZYRON TV': { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/zyrontv.png' },
-            'ZYRON TUBE': { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/zyrontube.png' },
-            'POWER SIGNALS': { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/powersignals.png' },
-            'CAELUM': { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/caelum.png' }
+            'TV PLUS 2':     { logo: LOGO_GENERICO },
+            'TV':            { logo: LOGO_GENERICO },
+            'FUTURE':        { logo: LOGO_GENERICO },
+            'ON PLAY':       { logo: LOGO_GENERICO },
+            'TV (EX LUMIX)': { logo: LOGO_GENERICO },
+            'KRATEN':        { logo: LOGO_GENERICO },
+            'TRY PLAY':      { logo: LOGO_GENERICO },
+            'STELLA':        { logo: LOGO_GENERICO },
+            'FLUJO TV':      { logo: LOGO_GENERICO },
+            'FEMON PLUS':    { logo: LOGO_GENERICO }
         };
 
         function toggleTheme() {
@@ -682,41 +671,8 @@
             }
         }
 
-        function normalizarCreditos(valor) {
-            const n = parseInt(valor, 10);
-            return Number.isFinite(n) && n > 0 ? n : 0;
-        }
-
-        function actualizarSesionLocal(nuevosDatos) {
-            currentUser = { ...currentUser, ...nuevosDatos };
-            localStorage.setItem('session_tvdigital', JSON.stringify(currentUser));
-            document.getElementById('info-sesion').innerText = `${currentUser.rol.toUpperCase()} · ${currentUser.username}`;
-            actualizarInfoCreditosRevendedor();
-        }
-
-        function actualizarInfoCreditosRevendedor() {
-            const infoBox = document.getElementById('info-creditos-revendedor');
-            const label = document.getElementById('creditos-disponibles-label');
-            if (currentUser.rol === 'revendedor') {
-                infoBox.style.display = '';
-                label.innerText = normalizarCreditos(currentUser.creditos_disponibles);
-            } else {
-                infoBox.style.display = 'none';
-            }
-        }
-
-        function mostrarCamposSegunRolSeleccionado() {
-            const selectRol = document.getElementById('newRol');
-            const creditosBox = document.getElementById('campo-creditos-iniciales');
-            const inputCreditos = document.getElementById('newCreditos');
-
-            if (currentUser.rol === 'admin' && selectRol.value === 'revendedor') {
-                creditosBox.style.display = '';
-                inputCreditos.value = inputCreditos.value || '0';
-            } else {
-                creditosBox.style.display = 'none';
-                inputCreditos.value = '0';
-            }
+        function normalizarRol(rol) {
+            return String(rol || '').trim().toLowerCase();
         }
 
         function checkSession() {
@@ -726,92 +682,100 @@
                 document.querySelector('.theme-toggle').classList.add('active');
             }
 
-            if (!currentUser) { window.location.href = 'logueo.html'; return; }
-
-            document.getElementById('info-sesion').innerText = `${currentUser.rol.toUpperCase()} · ${currentUser.username}`;
-
-            const selRol = document.getElementById('newRol');
-            if (currentUser.rol === 'admin') {
-                document.getElementById('titulo-gestion').innerText = 'Gestionar Equipo';
-                selRol.innerHTML = '<option value="revendedor">REVENDEDOR</option><option value="vendedor">VENDEDOR</option>';
-            } else {
-                document.getElementById('titulo-gestion').innerText = 'Mis Vendedores';
-                selRol.innerHTML = '<option value="vendedor">VENDEDOR</option>';
+            if (!currentUser) {
+                window.location.href = 'logueo.html';
+                return;
             }
 
-            selRol.addEventListener('change', mostrarCamposSegunRolSeleccionado);
-            mostrarCamposSegunRolSeleccionado();
-            actualizarInfoCreditosRevendedor();
+            if (normalizarRol(currentUser.rol) !== 'admin') {
+                alert('Solo los administradores pueden gestionar vendedores.');
+                window.location.href = 'index.html';
+                return;
+            }
 
-            cargarUsuariosSistema();
-            cargarTodosLosClientes();
+            document.getElementById('info-sesion').innerText = `ADMIN · ${currentUser.username}`;
+            document.getElementById('titulo-gestion').innerText = 'Gestionar Vendedores';
+
+            cargarDatosIniciales();
+        }
+
+        async function cargarDatosIniciales() {
+            await cargarTodosLosClientes();
+            await cargarUsuariosSistema();
         }
 
         async function cargarTodosLosClientes() {
-            const { data } = await supabaseClient.from('clientes').select('*');
+            const { data, error } = await supabaseClient.from('clientes').select('*');
+            if (error) {
+                console.error('Error al cargar clientes:', error);
+                todosLosClientes = [];
+                return;
+            }
             todosLosClientes = data || [];
         }
 
-        function obtenerInfoCreditosUsuario(u) {
-            if (u.rol !== 'revendedor') return '';
-            return `<span style="color:var(--purple);">💳 ${normalizarCreditos(u.creditos_disponibles)} crédito${normalizarCreditos(u.creditos_disponibles) !== 1 ? 's' : ''}</span>`;
-        }
-
         async function cargarUsuariosSistema() {
-            let query = supabaseClient.from('usuarios_sistema').select('*');
-            if (currentUser.rol !== 'admin') {
-                query = query.eq('padre_id', currentUser.id);
-            }
+            const { data, error } = await supabaseClient
+                .from('usuarios_sistema')
+                .select('*')
+                .eq('rol', 'vendedor')
+                .order('username', { ascending: true });
 
-            const { data } = await query;
             const cont = document.getElementById('lista-usuarios-sistema');
             cont.innerHTML = '';
 
-            let countTotal = 0, countRevendedores = 0, countVendedores = 0;
-
-            if (!data || data.length === 0) {
+            if (error) {
                 cont.innerHTML = `
                     <div class="empty-state" style="grid-column:1/-1;">
-                        <div class="empty-icon">👥</div>
-                        <p>No hay usuarios en tu equipo</p>
-                        <p class="sub">Creá un nuevo acceso para tu equipo</p>
+                        <div class="empty-icon">⚠️</div>
+                        <p>No se pudieron cargar los vendedores</p>
+                        <p class="sub">${error.message}</p>
                     </div>`;
                 actualizarEstadisticas(0, 0, 0);
                 return;
             }
 
-            (data || []).forEach(u => {
-                if (u.id === currentUser.id) return;
+            const vendedores = data || [];
+            const total = vendedores.length;
+            const activos = vendedores.filter(u => u.activo !== false).length;
+            const deshabilitados = total - activos;
 
-                countTotal++;
-                if (u.rol === 'revendedor') countRevendedores++;
-                if (u.rol === 'vendedor') countVendedores++;
+            if (total === 0) {
+                cont.innerHTML = `
+                    <div class="empty-state" style="grid-column:1/-1;">
+                        <div class="empty-icon">👥</div>
+                        <p>No hay vendedores cargados</p>
+                        <p class="sub">Creá el primer acceso de vendedor</p>
+                    </div>`;
+                actualizarEstadisticas(0, 0, 0);
+                return;
+            }
 
+            vendedores.forEach(u => {
                 const isDisabled = u.activo === false;
-                const venciEn = u.vencimiento_acceso ? Math.ceil((new Date(u.vencimiento_acceso) - new Date()) / (1000 * 60 * 60 * 24)) : null;
+                const venciEn = u.vencimiento_acceso
+                    ? Math.ceil((new Date(u.vencimiento_acceso) - new Date()) / (1000 * 60 * 60 * 24))
+                    : null;
+
                 let venciColor = 'color:var(--green)';
                 if (venciEn !== null && venciEn <= 0) venciColor = 'color:var(--red)';
                 else if (venciEn !== null && venciEn <= 7) venciColor = 'color:var(--yellow)';
 
                 const clientesDelUsuario = todosLosClientes.filter(c => c.creado_por === u.id);
-                const roleClass = u.rol === 'admin' ? 'role-admin' : u.rol === 'revendedor' ? 'role-revendedor' : 'role-vendedor';
-                const roleIcon = u.rol === 'admin' ? '👑' : u.rol === 'revendedor' ? '🔷' : '📊';
-                const creditosInfo = obtenerInfoCreditosUsuario(u);
 
                 cont.innerHTML += `
                     <div class="card-usuario ${isDisabled ? 'user-disabled' : ''}" onclick="verClientesVendedor(${JSON.stringify(u).replace(/"/g, '&quot;')})">
                         <div class="card-usuario-top">
-                            <div class="user-avatar">${roleIcon}</div>
+                            <div class="user-avatar">📊</div>
                             <div class="user-info">
                                 <div class="user-name">${u.username}</div>
                                 <div class="user-tags">
-                                    <span class="role-badge ${roleClass}">${u.rol}</span>
+                                    <span class="role-badge role-vendedor">VENDEDOR</span>
                                     ${isDisabled ? '<span class="disabled-badge">🔒 Deshabilitado</span>' : ''}
                                 </div>
                                 <div class="user-meta">
                                     <span style="${venciColor}">📅 ${u.vencimiento_acceso ? u.vencimiento_acceso + (venciEn !== null ? ' (' + venciEn + 'd)' : '') : 'Sin fecha'}</span>
                                     <span style="color:var(--accent);">👥 ${clientesDelUsuario.length} cliente${clientesDelUsuario.length !== 1 ? 's' : ''}</span>
-                                    ${creditosInfo}
                                 </div>
                             </div>
                         </div>
@@ -822,7 +786,7 @@
                     </div>`;
             });
 
-            actualizarEstadisticas(countTotal, countRevendedores, countVendedores);
+            actualizarEstadisticas(total, activos, deshabilitados);
         }
 
         function verClientesVendedor(usuario) {
@@ -858,8 +822,11 @@
 
         function renderClienteCard(c, hoy) {
             const tieneVencimiento = !!c.fecha_vencimiento;
-            const d = tieneVencimiento ? Math.ceil((new Date(c.fecha_vencimiento) - hoy) / (1000 * 60 * 60 * 24)) : null;
-            const config = configApps[c.app_instalada];
+            const d = tieneVencimiento
+                ? Math.ceil((new Date(c.fecha_vencimiento) - hoy) / (1000 * 60 * 60 * 24))
+                : null;
+            const config = configApps[String(c.app_instalada || '').trim().toUpperCase()];
+
             let estadoBadge = 'estado-activo';
             if (d !== null && d <= 0) estadoBadge = 'estado-vencido';
             else if (d !== null && d <= 7) estadoBadge = 'estado-pronto';
@@ -868,17 +835,20 @@
             if (d !== null && d <= 0) diasColor = 'var(--red)';
             else if (d !== null && d <= 7) diasColor = 'var(--yellow)';
 
-            const precioTexto = c.precio !== null && c.precio !== undefined && c.precio !== '' ? `$${parseFloat(c.precio || 0).toFixed(2)}` : 'Sin precio';
+            const precioTexto = c.precio !== null && c.precio !== undefined && c.precio !== ''
+                ? `$${parseFloat(c.precio || 0).toFixed(2)}`
+                : 'Sin precio';
             const ciudadTexto = c.ciudad || 'Sin ciudad';
             const appTexto = c.app_instalada || 'Sin app';
             const diasTexto = d === null ? '—' : d;
             const badgeTexto = d === null ? 'Sin fecha' : (d <= 0 ? 'Venc' : d + 'd');
+            const logo = config ? config.logo : LOGO_GENERICO;
 
             return `
                 <div class="card-cliente">
                     <div class="client-left">
                         <div class="client-app-icon">
-                            <img src="${config ? config.logo : ''}" alt="${appTexto}">
+                            <img src="${logo}" alt="${appTexto}">
                         </div>
                         <div class="client-info">
                             <div class="client-name">${c.nombre_apellido}</div>
@@ -933,34 +903,21 @@
             cont.innerHTML = filtrados.map(c => renderClienteCard(c, hoy)).join('');
         }
 
-        function actualizarEstadisticas(total, revendedores, vendedores) {
+        function actualizarEstadisticas(total, activos, deshabilitados) {
             document.getElementById('count-total').innerText = total;
-            document.getElementById('count-revendedores').innerText = revendedores;
-            document.getElementById('count-vendedores').innerText = vendedores;
+            document.getElementById('count-activos').innerText = activos;
+            document.getElementById('count-deshabilitados').innerText = deshabilitados;
         }
 
         function abrirModalEditar(usuario) {
+            if (normalizarRol(usuario.rol) !== 'vendedor') return;
+
             usuarioEnEdicion = usuario;
             document.getElementById('edit-user-id').value = usuario.id;
             document.getElementById('edit-username').value = usuario.username;
             document.getElementById('edit-password').value = '';
             document.getElementById('edit-vencimiento').value = usuario.vencimiento_acceso || '';
             document.getElementById('edit-activo').checked = usuario.activo !== false;
-
-            const creditosBox = document.getElementById('edit-creditos-box');
-            const creditosActuales = document.getElementById('edit-creditos-actuales');
-            const recarga = document.getElementById('edit-recargar-creditos');
-
-            if (currentUser.rol === 'admin' && usuario.rol === 'revendedor') {
-                creditosBox.style.display = '';
-                creditosActuales.value = normalizarCreditos(usuario.creditos_disponibles);
-                recarga.value = '0';
-            } else {
-                creditosBox.style.display = 'none';
-                creditosActuales.value = '';
-                recarga.value = '0';
-            }
-
             document.getElementById('modalEditar').classList.remove('hidden');
         }
 
@@ -969,109 +926,79 @@
             usuarioEnEdicion = null;
         }
 
-        async function actualizarEstadoHijos(padreId, activo) {
-            const { error } = await supabaseClient
-                .from('usuarios_sistema')
-                .update({ activo: activo })
-                .eq('padre_id', padreId);
-
-            if (error) throw error;
-        }
-
         document.getElementById('formEditarUsuario').onsubmit = async (e) => {
             e.preventDefault();
+
+            if (normalizarRol(currentUser?.rol) !== 'admin' || !usuarioEnEdicion) {
+                alert('No tenés permiso para editar vendedores.');
+                return;
+            }
 
             const id = document.getElementById('edit-user-id').value;
             const password = document.getElementById('edit-password').value;
             const vencimiento = document.getElementById('edit-vencimiento').value || null;
             const activo = document.getElementById('edit-activo').checked;
-            const recargaCreditos = normalizarCreditos(document.getElementById('edit-recargar-creditos').value);
 
-            const updateData = { vencimiento_acceso: vencimiento, activo: activo };
+            const updateData = {
+                vencimiento_acceso: vencimiento,
+                activo: activo
+            };
             if (password) updateData.password = password;
 
-            if (currentUser.rol === 'admin' && usuarioEnEdicion && usuarioEnEdicion.rol === 'revendedor' && recargaCreditos > 0) {
-                updateData.creditos_disponibles = normalizarCreditos(usuarioEnEdicion.creditos_disponibles) + recargaCreditos;
-            }
-
-            const { error } = await supabaseClient.from('usuarios_sistema').update(updateData).eq('id', id);
+            const { error } = await supabaseClient
+                .from('usuarios_sistema')
+                .update(updateData)
+                .eq('id', id)
+                .eq('rol', 'vendedor');
 
             if (error) {
-                alert("Error al actualizar: " + error.message);
+                alert('Error al actualizar: ' + error.message);
                 return;
-            }
-
-            if (usuarioEnEdicion && usuarioEnEdicion.rol === 'revendedor') {
-                try {
-                    await actualizarEstadoHijos(usuarioEnEdicion.id, activo);
-                } catch (cascadeError) {
-                    alert("Se actualizó el revendedor, pero falló la cascada: " + cascadeError.message);
-                }
             }
 
             cerrarModalEditar();
             await cargarUsuariosSistema();
-            alert("Usuario actualizado ✓");
+            alert('Vendedor actualizado ✓');
         };
 
         document.getElementById('formNuevoUsuario').onsubmit = async (e) => {
             e.preventDefault();
 
+            if (normalizarRol(currentUser?.rol) !== 'admin') {
+                alert('Solo los administradores pueden crear vendedores.');
+                return;
+            }
+
             const username = document.getElementById('newUsername').value.trim();
             const password = document.getElementById('newPassword').value;
-            const rol = document.getElementById('newRol').value;
             const vencimiento = document.getElementById('newVencimiento').value || null;
-            const creditosIniciales = normalizarCreditos(document.getElementById('newCreditos').value);
-
-            if (currentUser.rol === 'revendedor') {
-                const creditosDisponibles = normalizarCreditos(currentUser.creditos_disponibles);
-                if (creditosDisponibles <= 0) {
-                    alert("No tenés créditos disponibles para crear usuarios.");
-                    return;
-                }
-            }
 
             const newUser = {
                 username: username,
                 password: password,
-                rol: rol,
+                rol: 'vendedor',
                 vencimiento_acceso: vencimiento,
                 padre_id: currentUser.id,
                 activo: true
             };
 
-            if (currentUser.rol === 'admin' && rol === 'revendedor') {
-                newUser.creditos_disponibles = creditosIniciales;
-            }
-
-            const { data, error } = await supabaseClient.from('usuarios_sistema').insert([newUser]).select();
+            const { error } = await supabaseClient
+                .from('usuarios_sistema')
+                .insert([newUser]);
 
             if (error) {
-                alert("Error al crear: " + error.message);
+                alert('Error al crear: ' + error.message);
                 return;
             }
 
-            if (currentUser.rol === 'revendedor') {
-                const nuevosCreditos = Math.max(0, normalizarCreditos(currentUser.creditos_disponibles) - 1);
-                const { error: creditError } = await supabaseClient
-                    .from('usuarios_sistema')
-                    .update({ creditos_disponibles: nuevosCreditos })
-                    .eq('id', currentUser.id);
-
-                if (creditError) {
-                    alert("Usuario creado, pero no se pudo descontar el crédito: " + creditError.message);
-                } else {
-                    actualizarSesionLocal({ creditos_disponibles: nuevosCreditos });
-                }
-            }
-
             document.getElementById('formNuevoUsuario').reset();
-            mostrarCamposSegunRolSeleccionado();
             await cargarUsuariosSistema();
-            alert("Usuario creado ✓");
+            alert('Vendedor creado ✓');
         };
 
         function abrirConfirmarEliminar(usuario) {
+            if (normalizarRol(usuario.rol) !== 'vendedor') return;
+
             usuarioAEliminar = usuario;
             document.getElementById('nombre-usuario-confirmar').innerText = usuario.username;
             document.getElementById('modalConfirmar').classList.remove('hidden');
@@ -1082,40 +1009,22 @@
             usuarioAEliminar = null;
         }
 
-        async function devolverCreditoAlPadreSiCorresponde(usuario) {
-            if (!usuario || !usuario.padre_id) return;
-
-            const { data: padre, error: padreError } = await supabaseClient
-                .from('usuarios_sistema')
-                .select('id, rol, creditos_disponibles')
-                .eq('id', usuario.padre_id)
-                .single();
-
-            if (padreError || !padre || padre.rol !== 'revendedor') return;
-
-            const nuevosCreditos = normalizarCreditos(padre.creditos_disponibles) + 1;
-            const { error: updateError } = await supabaseClient
-                .from('usuarios_sistema')
-                .update({ creditos_disponibles: nuevosCreditos })
-                .eq('id', padre.id);
-
-            if (!updateError && currentUser.id === padre.id) {
-                actualizarSesionLocal({ creditos_disponibles: nuevosCreditos });
-            }
-        }
-
         async function confirmarEliminar() {
-            if (!usuarioAEliminar) return;
+            if (!usuarioAEliminar || normalizarRol(currentUser?.rol) !== 'admin') return;
 
-            await devolverCreditoAlPadreSiCorresponde(usuarioAEliminar);
+            const { error } = await supabaseClient
+                .from('usuarios_sistema')
+                .delete()
+                .eq('id', usuarioAEliminar.id)
+                .eq('rol', 'vendedor');
 
-            const { error } = await supabaseClient.from('usuarios_sistema').delete().eq('id', usuarioAEliminar.id);
             if (error) {
                 alert('Error: ' + error.message);
-            } else {
-                cerrarConfirmar();
-                await cargarUsuariosSistema();
+                return;
             }
+
+            cerrarConfirmar();
+            await cargarUsuariosSistema();
         }
 
         function logout() {
