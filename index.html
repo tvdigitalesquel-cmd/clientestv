@@ -1483,7 +1483,8 @@ Reemplazá estas rutas por las que agregaste en tu archivo:
             }
             
             if (!currentUser) { window.location.href = 'logueo.html'; return; }
-            if (currentUser.rol === 'admin' || currentUser.rol === 'revendedor') {
+            const rolSesion = String(currentUser.rol || '').trim().toLowerCase();
+            if (rolSesion === 'admin' || rolSesion === 'resseller' || rolSesion === 'reseller' || rolSesion === 'revendedor') {
                 document.getElementById('link-equipos').style.display = '';
             }
             
