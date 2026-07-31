@@ -234,6 +234,154 @@
         .input-modern::placeholder { color: var(--text-muted); }
         .input-modern:disabled { opacity: 0.5; cursor: not-allowed; }
 
+        /* ─── APP PERMISSIONS ─── */
+        .apps-permissions {
+            margin-top: 18px;
+            padding-top: 18px;
+            border-top: 1px solid var(--border);
+        }
+
+        .apps-permissions.hidden { display: none; }
+
+        .apps-permissions-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 14px;
+            margin-bottom: 12px;
+        }
+
+        .apps-permissions-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 3px;
+        }
+
+        .apps-permissions-help {
+            font-size: 11px;
+            color: var(--text-muted);
+            line-height: 1.45;
+        }
+
+        .apps-permissions-actions {
+            display: flex;
+            gap: 7px;
+            flex-shrink: 0;
+        }
+
+        .btn-mini {
+            border: 1px solid var(--border);
+            background: var(--bg-surface);
+            color: var(--text-secondary);
+            border-radius: 8px;
+            padding: 6px 9px;
+            font-size: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .btn-mini:hover { border-color: var(--accent); color: var(--accent); }
+
+        .apps-permissions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
+            gap: 9px;
+        }
+
+        .app-permission-option {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-height: 54px;
+            padding: 9px 11px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            background: var(--bg-surface);
+            cursor: pointer;
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .app-permission-option:hover {
+            border-color: var(--border-hover);
+            background: var(--bg-card-hover);
+        }
+
+        .app-permission-option.selected {
+            border-color: var(--accent);
+            background: var(--accent-dim);
+            box-shadow: inset 0 0 0 1px rgba(59,127,245,0.12);
+        }
+
+        .app-permission-option input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .app-permission-check {
+            width: 18px;
+            height: 18px;
+            border-radius: 6px;
+            border: 1px solid var(--border-hover);
+            background: var(--bg-card);
+            display: grid;
+            place-items: center;
+            color: transparent;
+            font-size: 11px;
+            flex-shrink: 0;
+        }
+
+        .app-permission-option.selected .app-permission-check {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+        }
+
+        .app-permission-logo {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            object-fit: cover;
+            background: var(--bg-card);
+            flex-shrink: 0;
+        }
+
+        .app-permission-name {
+            font-size: 10px;
+            line-height: 1.2;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .app-permission-option.selected .app-permission-name { color: var(--text-primary); }
+
+        .apps-summary {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 7px;
+        }
+
+        .app-summary-chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 3px 7px;
+            border-radius: 999px;
+            background: var(--accent-dim);
+            color: var(--accent);
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
         /* ─── USER CARDS ─── */
         .users-grid {
             display: grid;
@@ -460,7 +608,15 @@
             .users-grid { grid-template-columns: 1fr; }
             .clients-grid { grid-template-columns: 1fr; }
             .form-section { padding: 16px; }
+            .apps-permissions-head { flex-direction: column; }
+            .apps-permissions-actions { width: 100%; }
+            .apps-permissions-actions .btn-mini { flex: 1; }
+            .apps-permissions-grid { grid-template-columns: 1fr 1fr; }
         }
+        @media (max-width: 480px) {
+            .apps-permissions-grid { grid-template-columns: 1fr; }
+        }
+
     </style>
 </head>
 <body>
@@ -547,6 +703,20 @@
                     </div>
                     <button type="submit" class="btn-primary" id="btn-crear-usuario" style="justify-content:center; white-space:nowrap;">+ Crear</button>
                 </div>
+
+                <div id="new-apps-box" class="apps-permissions hidden">
+                    <div class="apps-permissions-head">
+                        <div>
+                            <div class="apps-permissions-title">Aplicaciones habilitadas</div>
+                            <div class="apps-permissions-help">Seleccioná qué aplicaciones podrá vender y asignar este vendedor a sus clientes.</div>
+                        </div>
+                        <div class="apps-permissions-actions">
+                            <button type="button" class="btn-mini" onclick="seleccionarTodasLasApps('new-apps-selector', true)">Todas</button>
+                            <button type="button" class="btn-mini" onclick="seleccionarTodasLasApps('new-apps-selector', false)">Ninguna</button>
+                        </div>
+                    </div>
+                    <div id="new-apps-selector" class="apps-permissions-grid"></div>
+                </div>
             </form>
         </div>
 
@@ -592,6 +762,20 @@
                 <div class="form-field">
                     <label class="input-label">Vencimiento</label>
                     <input type="date" id="edit-vencimiento" class="input-modern">
+                </div>
+
+                <div id="edit-apps-box" class="apps-permissions hidden" style="margin-top:0; padding-top:0; border-top:none; margin-bottom:16px;">
+                    <div class="apps-permissions-head">
+                        <div>
+                            <div class="apps-permissions-title">Aplicaciones habilitadas</div>
+                            <div class="apps-permissions-help">Los cambios se aplicarán cuando el vendedor vuelva a cargar la página.</div>
+                        </div>
+                        <div class="apps-permissions-actions">
+                            <button type="button" class="btn-mini" onclick="seleccionarTodasLasApps('edit-apps-selector', true)">Todas</button>
+                            <button type="button" class="btn-mini" onclick="seleccionarTodasLasApps('edit-apps-selector', false)">Ninguna</button>
+                        </div>
+                    </div>
+                    <div id="edit-apps-selector" class="apps-permissions-grid"></div>
                 </div>
 
                 <div class="toggle-row">
@@ -663,6 +847,78 @@
             'FLUJO TV':      { logo: LOGO_GENERICO },
             'FEMON PLUS':    { logo: LOGO_GENERICO }
         };
+
+        const TODAS_LAS_APPS = Object.keys(configApps);
+
+        function normalizarNombreApp(nombre) {
+            return String(nombre || '').trim().toUpperCase();
+        }
+
+        function normalizarListaApps(lista, usarTodasSiVacia = false) {
+            const origen = Array.isArray(lista) ? lista : [];
+            const normalizadas = [...new Set(origen.map(normalizarNombreApp))]
+                .filter(app => Object.prototype.hasOwnProperty.call(configApps, app));
+            return normalizadas.length || !usarTodasSiVacia ? normalizadas : [...TODAS_LAS_APPS];
+        }
+
+        function renderSelectorAppsPermisos(contenedorId, seleccionadas = []) {
+            const contenedor = document.getElementById(contenedorId);
+            if (!contenedor) return;
+            const seleccion = new Set(normalizarListaApps(seleccionadas));
+
+            contenedor.innerHTML = TODAS_LAS_APPS.map(app => {
+                const activa = seleccion.has(app);
+                const config = configApps[app];
+                return `
+                    <label class="app-permission-option ${activa ? 'selected' : ''}">
+                        <input type="checkbox" value="${escaparHtml(app)}" ${activa ? 'checked' : ''} onchange="actualizarEstadoOpcionApp(this)">
+                        <span class="app-permission-check">✓</span>
+                        <img class="app-permission-logo" src="${config.logo}" alt="${escaparHtml(app)}">
+                        <span class="app-permission-name">${escaparHtml(app)}</span>
+                    </label>`;
+            }).join('');
+        }
+
+        function actualizarEstadoOpcionApp(input) {
+            const opcion = input.closest('.app-permission-option');
+            if (opcion) opcion.classList.toggle('selected', input.checked);
+        }
+
+        function seleccionarTodasLasApps(contenedorId, seleccionar) {
+            const contenedor = document.getElementById(contenedorId);
+            if (!contenedor) return;
+            contenedor.querySelectorAll('input[type="checkbox"]').forEach(input => {
+                input.checked = seleccionar;
+                actualizarEstadoOpcionApp(input);
+            });
+        }
+
+        function obtenerAppsSeleccionadas(contenedorId) {
+            const contenedor = document.getElementById(contenedorId);
+            if (!contenedor) return [];
+            return [...contenedor.querySelectorAll('input[type="checkbox"]:checked')]
+                .map(input => normalizarNombreApp(input.value))
+                .filter(app => Object.prototype.hasOwnProperty.call(configApps, app));
+        }
+
+        function actualizarVisibilidadAppsNuevoUsuario() {
+            const esVendedor = normalizarRol(document.getElementById('newRol').value) === 'vendedor';
+            const caja = document.getElementById('new-apps-box');
+            caja.classList.toggle('hidden', !esVendedor);
+            if (esVendedor && !document.getElementById('new-apps-selector').children.length) {
+                renderSelectorAppsPermisos('new-apps-selector', TODAS_LAS_APPS);
+            }
+        }
+
+        function resumenAppsUsuario(usuario) {
+            if (normalizarRol(usuario?.rol) !== 'vendedor') return '';
+            const apps = normalizarListaApps(usuario?.apps_permitidas, true);
+            return `
+                <div class="apps-summary" title="${escaparHtml(apps.join(', '))}">
+                    ${apps.slice(0, 3).map(app => `<span class="app-summary-chip">${escaparHtml(app)}</span>`).join('')}
+                    ${apps.length > 3 ? `<span class="app-summary-chip">+${apps.length - 3}</span>` : ''}
+                </div>`;
+        }
 
         function toggleTheme() {
             const html = document.documentElement;
@@ -742,6 +998,10 @@
                 document.getElementById('btn-crear-usuario').innerText = '+ Crear Vendedor';
                 selectRol.innerHTML = '<option value="vendedor">VENDEDOR</option>';
             }
+
+            selectRol.onchange = actualizarVisibilidadAppsNuevoUsuario;
+            renderSelectorAppsPermisos('new-apps-selector', TODAS_LAS_APPS);
+            actualizarVisibilidadAppsNuevoUsuario();
         }
 
         function checkSession() {
@@ -887,7 +1147,8 @@
                 } else {
                     metaEquipo = `
                         <span style="color:var(--accent);">👥 ${clientesDelUsuario.length} cliente${clientesDelUsuario.length !== 1 ? 's' : ''}</span>
-                        ${padre ? `<span style="color:var(--purple);">🔷 Resseller: ${escaparHtml(padre.username)}</span>` : ''}`;
+                        ${padre ? `<span style="color:var(--purple);">🔷 Resseller: ${escaparHtml(padre.username)}</span>` : ''}
+                        ${resumenAppsUsuario(u)}`;
                 }
 
                 cont.innerHTML += `
@@ -1076,6 +1337,14 @@
             document.getElementById('edit-password').value = '';
             document.getElementById('edit-vencimiento').value = usuario.vencimiento_acceso || '';
             document.getElementById('edit-activo').checked = usuario.activo !== false;
+
+            const esVendedor = normalizarRol(usuario.rol) === 'vendedor';
+            document.getElementById('edit-apps-box').classList.toggle('hidden', !esVendedor);
+            renderSelectorAppsPermisos(
+                'edit-apps-selector',
+                esVendedor ? normalizarListaApps(usuario.apps_permitidas, true) : []
+            );
+
             document.getElementById('modalEditar').classList.remove('hidden');
         }
 
@@ -1120,6 +1389,15 @@
             };
             if (password) updateData.password = password;
 
+            if (normalizarRol(usuarioEnEdicion.rol) === 'vendedor') {
+                const appsSeleccionadas = obtenerAppsSeleccionadas('edit-apps-selector');
+                if (!appsSeleccionadas.length) {
+                    alert('Seleccioná al menos una aplicación para el vendedor.');
+                    return;
+                }
+                updateData.apps_permitidas = appsSeleccionadas;
+            }
+
             const { error } = await actualizarUsuarioPermitido(id, updateData);
             if (error) {
                 alert('Error al actualizar: ' + error.message);
@@ -1151,6 +1429,9 @@
             const password = document.getElementById('newPassword').value;
             const rolSeleccionado = normalizarRol(document.getElementById('newRol').value);
             const vencimiento = document.getElementById('newVencimiento').value || null;
+            const appsSeleccionadas = rolSeleccionado === 'vendedor'
+                ? obtenerAppsSeleccionadas('new-apps-selector')
+                : null;
 
             const rolPermitido = esAdmin()
                 ? ['resseller', 'vendedor'].includes(rolSeleccionado)
@@ -1161,13 +1442,19 @@
                 return;
             }
 
+            if (rolSeleccionado === 'vendedor' && !appsSeleccionadas.length) {
+                alert('Seleccioná al menos una aplicación para el vendedor.');
+                return;
+            }
+
             const newUser = {
                 username: username,
                 password: password,
                 rol: rolSeleccionado,
                 vencimiento_acceso: vencimiento,
                 padre_id: currentUser.id,
-                activo: true
+                activo: true,
+                apps_permitidas: rolSeleccionado === 'vendedor' ? appsSeleccionadas : null
             };
 
             const { error } = await supabaseClient
@@ -1181,6 +1468,7 @@
 
             document.getElementById('formNuevoUsuario').reset();
             configurarInterfazPorRol();
+            seleccionarTodasLasApps('new-apps-selector', true);
             await cargarUsuariosSistema();
             alert(`${rolSeleccionado === 'resseller' ? 'Resseller' : 'Vendedor'} creado ✓`);
         };
