@@ -847,6 +847,18 @@
 
         .app-option.selected span { color: var(--accent); }
 
+        .apps-empty-permission {
+            width: 100%;
+            padding: 18px;
+            border: 1px dashed var(--border-hover);
+            border-radius: var(--radius-md);
+            background: var(--bg-surface);
+            color: var(--text-secondary);
+            font-size: 12px;
+            line-height: 1.5;
+            text-align: center;
+        }
+
         /* ─── FORM BUTTONS ─── */
         .form-actions {
             display: flex;
@@ -1453,12 +1465,52 @@ Reemplazá estas rutas por las que agregaste en tu archivo:
         };
 
 
+        const TODAS_LAS_APPS = Object.keys(configApps);
+
+        function normalizarRol(rol) {
+            const valor = String(rol || '').trim().toLowerCase();
+            if (valor === 'revendedor' || valor === 'reseller' || valor === 'resseller') return 'resseller';
+            return valor;
+        }
+
+        function normalizarNombreApp(nombreApp) {
+            return String(nombreApp || '').trim().toUpperCase();
+        }
+
         function obtenerConfigApp(nombreApp) {
-            if (!nombreApp) return null;
-            return configApps[nombreApp]
-                || configApps[String(nombreApp).toUpperCase()]
-                || configApps[String(nombreApp).trim()]
-                || null;
+            const normalizada = normalizarNombreApp(nombreApp);
+            return normalizada ? configApps[normalizada] || null : null;
+        }
+
+        function obtenerAppsPermitidas() {
+            if (normalizarRol(currentUser?.rol) !== 'vendedor') return [...TODAS_LAS_APPS];
+            if (!Array.isArray(currentUser?.apps_permitidas)) return [];
+
+            return [...new Set(currentUser.apps_permitidas.map(normalizarNombreApp))]
+                .filter(app => Object.prototype.hasOwnProperty.call(configApps, app));
+        }
+
+        function puedeUsarApp(nombreApp) {
+            return obtenerAppsPermitidas().includes(normalizarNombreApp(nombreApp));
+        }
+
+        async function refrescarSesionDesdeBase() {
+            if (!currentUser?.id) return false;
+
+            const { data, error } = await supabaseClient
+                .from('usuarios_sistema')
+                .select('*')
+                .eq('id', currentUser.id)
+                .single();
+
+            if (error || !data) {
+                console.error('No se pudo actualizar la sesión:', error);
+                return false;
+            }
+
+            currentUser = data;
+            localStorage.setItem('session_tvdigital', JSON.stringify(data));
+            return true;
         }
 
         function toggleTheme() {
@@ -1475,7 +1527,7 @@ Reemplazá estas rutas por las que agregaste en tu archivo:
             }
         }
 
-        function checkSession() {
+        async function checkSession() {
             const savedTheme = localStorage.getItem('theme') || 'dark';
             if (savedTheme === 'light') {
                 document.documentElement.classList.add('light-mode');
@@ -1483,8 +1535,24 @@ Reemplazá estas rutas por las que agregaste en tu archivo:
             }
             
             if (!currentUser) { window.location.href = 'logueo.html'; return; }
-            const rolSesion = String(currentUser.rol || '').trim().toLowerCase();
-            if (rolSesion === 'admin' || rolSesion === 'resseller' || rolSesion === 'reseller' || rolSesion === 'revendedor') {
+
+            await refrescarSesionDesdeBase();
+            if (currentUser.activo === false) {
+                alert('Tu acceso fue deshabilitado.');
+                logout();
+                return;
+            }
+            if (currentUser.vencimiento_acceso) {
+                const vencimiento = new Date(currentUser.vencimiento_acceso + 'T23:59:59');
+                if (vencimiento < new Date()) {
+                    alert('Tu acceso está vencido.');
+                    logout();
+                    return;
+                }
+            }
+
+            const rolSesion = normalizarRol(currentUser.rol);
+            if (rolSesion === 'admin' || rolSesion === 'resseller') {
                 document.getElementById('link-equipos').style.display = '';
             }
             
@@ -1509,16 +1577,27 @@ Reemplazá estas rutas por las que agregaste en tu archivo:
             filtrarClientes();
         }
 
-        function generarSelectorAppsModal() {
+        function generarSelectorAppsModal(appSeleccionada = '') {
             const container = document.getElementById('app-selector');
-            let html = '';
-            for (const [name, config] of Object.entries(configApps)) {
-                html += `<div class="app-option" onclick="seleccionarApp('${name}', this)">
+            const permitidas = obtenerAppsPermitidas();
+            const seleccionNormalizada = normalizarNombreApp(appSeleccionada);
+
+            if (!permitidas.length) {
+                container.innerHTML = `
+                    <div class="apps-empty-permission">
+                        Tu usuario todavía no tiene aplicaciones habilitadas. Contactá al administrador o a tu resseller.
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = permitidas.map(name => {
+                const config = configApps[name];
+                const seleccionada = name === seleccionNormalizada;
+                return `<div class="app-option ${seleccionada ? 'selected' : ''}" onclick="seleccionarApp('${name}', this)">
                     <img class="logo-app" src="${config.logo}" alt="${name}">
                     <span>${name}</span>
                 </div>`;
-            }
-            container.innerHTML = html;
+            }).join('');
         }
 
         function seleccionarApp(nombre, el) {
@@ -1531,8 +1610,8 @@ Reemplazá estas rutas por las que agregaste en tu archivo:
             clienteEnEdicion = null;
             document.getElementById('modal-titulo').innerText = 'Nuevo Cliente';
             document.getElementById('form-cliente').reset();
-            document.querySelectorAll('.app-option').forEach(o => o.classList.remove('selected'));
             document.getElementById('app-seleccionada').value = '';
+            generarSelectorAppsModal();
             document.getElementById('modalCliente').classList.remove('hidden');
         }
 
@@ -1549,10 +1628,12 @@ Reemplazá estas rutas por las que agregaste en tu archivo:
             document.getElementById('fecha-pago').value = cliente.fecha_pago || '';
             document.getElementById('vencimiento-cliente').value = cliente.fecha_vencimiento || '';
             
-            document.querySelectorAll('.app-option').forEach(o => {
-                o.classList.toggle('selected', o.querySelector('span').innerText === cliente.app_instalada);
-            });
-            document.getElementById('app-seleccionada').value = cliente.app_instalada;
+            const appActual = normalizarNombreApp(cliente.app_instalada);
+            generarSelectorAppsModal(appActual);
+            document.getElementById('app-seleccionada').value = puedeUsarApp(appActual) ? appActual : '';
+            if (!puedeUsarApp(appActual)) {
+                alert('La aplicación actual de este cliente ya no está habilitada para tu usuario. Elegí una aplicación permitida antes de guardar.');
+            }
             document.getElementById('modalCliente').classList.remove('hidden');
         }
 
@@ -1709,7 +1790,18 @@ Reemplazá estas rutas por las que agregaste en tu archivo:
 
         document.getElementById('form-cliente').onsubmit = async (e) => {
             e.preventDefault();
-            const app = limpiarTextoInput(document.getElementById('app-seleccionada').value);
+            const app = normalizarNombreApp(document.getElementById('app-seleccionada').value);
+
+            if (!app) {
+                alert('Seleccioná una aplicación para el cliente.');
+                return;
+            }
+            if (!puedeUsarApp(app)) {
+                alert('Tu usuario no tiene permiso para vender esa aplicación.');
+                generarSelectorAppsModal();
+                document.getElementById('app-seleccionada').value = '';
+                return;
+            }
 
             const datosCliente = {
                 nombre_apellido: document.getElementById('nombre-apellido').value.trim(),
@@ -2084,7 +2176,7 @@ Reemplazá estas rutas por las que agregaste en tu archivo:
                         usuario: String(usuario).trim(),
                         clave: String(clave).trim(),
                         precio: limpiarNumeroInput(fila['Precio'] || fila['Precio Mensual'] || ''),
-                        app_instalada: limpiarTextoInput(fila['Aplicación'] || fila['App'] || ''),
+                        app_instalada: normalizarNombreApp(fila['Aplicación'] || fila['App'] || ''),
                         fecha_pago: limpiarTextoInput(normalizarFechaExcel(fila['Fecha de Pago'] || fila['Pago'] || '')),
                         fecha_vencimiento: limpiarTextoInput(normalizarFechaExcel(fila['Fecha de Vencimiento'] || fila['Vencimiento'] || '')),
                         vendedor_name: currentUser.username,
@@ -2095,6 +2187,22 @@ Reemplazá estas rutas por las que agregaste en tu archivo:
                 if (!clientesImportados.length) {
                     alert('No se encontraron filas válidas. El Excel debe tener al menos: Nombre y Apellido, Usuario y Contraseña.');
                     event.target.value = '';
+                    return;
+                }
+
+                const sinApp = clientesImportados.filter(cliente => !cliente.app_instalada);
+                if (sinApp.length) {
+                    alert(`Hay ${sinApp.length} fila(s) sin aplicación. Completá la columna Aplicación antes de importar.`);
+                    return;
+                }
+
+                const appsNoPermitidas = [...new Set(
+                    clientesImportados
+                        .map(cliente => cliente.app_instalada)
+                        .filter(app => !puedeUsarApp(app))
+                )];
+                if (appsNoPermitidas.length) {
+                    alert('No podés importar clientes con estas aplicaciones: ' + appsNoPermitidas.join(', '));
                     return;
                 }
 
