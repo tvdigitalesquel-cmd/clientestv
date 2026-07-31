@@ -214,7 +214,7 @@
 
         .form-grid-5 {
             display: grid;
-            grid-template-columns: 1.2fr 1.2fr 1fr auto;
+            grid-template-columns: 1.15fr 1.15fr 1fr 1fr auto;
             gap: 12px; align-items: flex-end;
         }
 
@@ -256,6 +256,7 @@
         }
 
         .card-usuario.user-disabled { opacity: 0.55; border-color: rgba(239,68,68,0.3); }
+        .card-usuario.no-click { cursor: default; }
 
         .card-usuario-top { display: flex; align-items: flex-start; gap: 14px; }
 
@@ -285,6 +286,7 @@
         }
 
         .role-admin { background: var(--red-dim); color: var(--red); }
+        .role-resseller { background: var(--purple-dim); color: var(--purple); }
         .role-vendedor { background: var(--accent-dim); color: var(--accent); }
 
         .disabled-badge {
@@ -487,7 +489,7 @@
         <!-- ─── HEADER PRINCIPAL ─── -->
         <div id="header-principal" class="page-header">
             <h1 id="titulo-gestion">Gestionar Equipo</h1>
-            <p>Administrá los accesos de tus vendedores</p>
+            <p id="subtitulo-gestion">Administrá los accesos de tu equipo</p>
         </div>
 
         <!-- ─── HEADER CLIENTES DEL VENDEDOR ─── -->
@@ -502,29 +504,29 @@
             <div class="stat-card stat-blue">
                 <div class="stat-icon">👥</div>
                 <div class="stat-info">
-                    <p>Total Vendedores</p>
+                    <p id="label-stat-total">Total Usuarios</p>
                     <h2 id="count-total">0</h2>
                 </div>
             </div>
-            <div class="stat-card stat-green">
-                <div class="stat-icon">✓</div>
+            <div class="stat-card stat-purple">
+                <div class="stat-icon">🔷</div>
                 <div class="stat-info">
-                    <p>Activos</p>
-                    <h2 id="count-activos">0</h2>
+                    <p id="label-stat-secundario">Ressellers</p>
+                    <h2 id="count-secundario">0</h2>
                 </div>
             </div>
-            <div class="stat-card stat-purple">
-                <div class="stat-icon">🔒</div>
+            <div class="stat-card stat-green">
+                <div class="stat-icon">📊</div>
                 <div class="stat-info">
-                    <p>Deshabilitados</p>
-                    <h2 id="count-deshabilitados">0</h2>
+                    <p id="label-stat-terciario">Vendedores</p>
+                    <h2 id="count-terciario">0</h2>
                 </div>
             </div>
         </div>
 
-        <!-- ─── FORM NUEVO VENDEDOR ─── -->
+        <!-- ─── FORM NUEVO USUARIO ─── -->
         <div id="seccion-form" class="card-surface form-section">
-            <div class="section-title">Crear Nuevo Vendedor</div>
+            <div id="titulo-form-nuevo" class="section-title">Crear Nuevo Acceso</div>
             <form id="formNuevoUsuario">
                 <div class="form-grid-5">
                     <div>
@@ -536,17 +538,21 @@
                         <input type="password" id="newPassword" placeholder="Contraseña" class="input-modern" required autocomplete="new-password">
                     </div>
                     <div>
+                        <label class="input-label">Rol</label>
+                        <select id="newRol" class="input-modern" required></select>
+                    </div>
+                    <div>
                         <label class="input-label">Vencimiento</label>
                         <input type="date" id="newVencimiento" class="input-modern" required>
                     </div>
-                    <button type="submit" class="btn-primary" id="btn-crear-usuario" style="justify-content:center; white-space:nowrap;">+ Crear Vendedor</button>
+                    <button type="submit" class="btn-primary" id="btn-crear-usuario" style="justify-content:center; white-space:nowrap;">+ Crear</button>
                 </div>
             </form>
         </div>
 
-        <!-- ─── LISTA DE VENDEDORES ─── -->
+        <!-- ─── LISTA DE USUARIOS ─── -->
         <div id="seccion-usuarios">
-            <div class="section-title" style="margin-bottom:16px;">Vendedores</div>
+            <div id="titulo-lista-usuarios" class="section-title" style="margin-bottom:16px;">Equipo de Usuarios</div>
             <div id="lista-usuarios-sistema" class="users-grid"></div>
         </div>
 
@@ -562,11 +568,11 @@
 
     </div>
 
-    <!-- ─── MODAL EDITAR VENDEDOR ─── -->
+    <!-- ─── MODAL EDITAR USUARIO ─── -->
     <div id="modalEditar" class="modal-overlay hidden">
         <div class="modal-box">
             <div class="modal-header">
-                <h3>Editar Vendedor</h3>
+                <h3 id="titulo-modal-editar">Editar Usuario</h3>
                 <button onclick="cerrarModalEditar()" class="modal-close">✕</button>
             </div>
 
@@ -631,6 +637,7 @@
         let usuarioAEliminar = null;
         let usuarioEnEdicion = null;
         let vendedorSeleccionado = null;
+        let usuariosVisibles = [];
         let todosLosClientes = [];
         let clientesVendedorActual = [];
 
@@ -672,7 +679,69 @@
         }
 
         function normalizarRol(rol) {
-            return String(rol || '').trim().toLowerCase();
+            const valor = String(rol || '').trim().toLowerCase();
+            if (valor === 'revendedor' || valor === 'reseller' || valor === 'resseller') return 'resseller';
+            return valor;
+        }
+
+        function mismoId(a, b) {
+            return String(a ?? '') === String(b ?? '');
+        }
+
+        function escaparHtml(valor) {
+            return String(valor ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function esAdmin() {
+            return normalizarRol(currentUser?.rol) === 'admin';
+        }
+
+        function esResseller() {
+            return normalizarRol(currentUser?.rol) === 'resseller';
+        }
+
+        function buscarUsuarioPorId(id) {
+            return usuariosVisibles.find(u => mismoId(u.id, id)) || null;
+        }
+
+        function puedeGestionarUsuario(usuario) {
+            if (!usuario) return false;
+            const rolUsuario = normalizarRol(usuario.rol);
+
+            if (esAdmin()) {
+                return rolUsuario === 'resseller' || rolUsuario === 'vendedor';
+            }
+
+            return esResseller()
+                && rolUsuario === 'vendedor'
+                && mismoId(usuario.padre_id, currentUser.id);
+        }
+
+        function configurarInterfazPorRol() {
+            const selectRol = document.getElementById('newRol');
+
+            if (esAdmin()) {
+                document.getElementById('info-sesion').innerText = `ADMIN · ${currentUser.username}`;
+                document.getElementById('titulo-gestion').innerText = 'Gestionar Equipo';
+                document.getElementById('subtitulo-gestion').innerText = 'Creá resellers y vendedores, y administrá sus accesos';
+                document.getElementById('titulo-form-nuevo').innerText = 'Crear Nuevo Acceso';
+                document.getElementById('titulo-lista-usuarios').innerText = 'Equipo de Usuarios';
+                document.getElementById('btn-crear-usuario').innerText = '+ Crear Usuario';
+                selectRol.innerHTML = '<option value="resseller">RESSELLER</option><option value="vendedor">VENDEDOR</option>';
+            } else {
+                document.getElementById('info-sesion').innerText = `RESSELLER · ${currentUser.username}`;
+                document.getElementById('titulo-gestion').innerText = 'Mis Vendedores';
+                document.getElementById('subtitulo-gestion').innerText = 'Creá y administrá únicamente a los vendedores de tu equipo';
+                document.getElementById('titulo-form-nuevo').innerText = 'Crear Nuevo Vendedor';
+                document.getElementById('titulo-lista-usuarios').innerText = 'Mis Vendedores';
+                document.getElementById('btn-crear-usuario').innerText = '+ Crear Vendedor';
+                selectRol.innerHTML = '<option value="vendedor">VENDEDOR</option>';
+            }
         }
 
         function checkSession() {
@@ -687,71 +756,100 @@
                 return;
             }
 
-            if (normalizarRol(currentUser.rol) !== 'admin') {
-                alert('Solo los administradores pueden gestionar vendedores.');
+            const rol = normalizarRol(currentUser.rol);
+            if (rol !== 'admin' && rol !== 'resseller') {
+                alert('Tu usuario no tiene permiso para gestionar un equipo.');
                 window.location.href = 'index.html';
                 return;
             }
 
-            document.getElementById('info-sesion').innerText = `ADMIN · ${currentUser.username}`;
-            document.getElementById('titulo-gestion').innerText = 'Gestionar Vendedores';
-
-            cargarDatosIniciales();
+            configurarInterfazPorRol();
+            cargarUsuariosSistema();
         }
 
-        async function cargarDatosIniciales() {
-            await cargarTodosLosClientes();
-            await cargarUsuariosSistema();
+        async function obtenerUsuariosPermitidos() {
+            let query = supabaseClient
+                .from('usuarios_sistema')
+                .select('*');
+
+            if (esAdmin()) {
+                query = query.in('rol', ['resseller', 'vendedor']);
+            } else {
+                query = query
+                    .eq('rol', 'vendedor')
+                    .eq('padre_id', currentUser.id);
+            }
+
+            const { data, error } = await query
+                .order('rol', { ascending: true })
+                .order('username', { ascending: true });
+
+            if (error) throw error;
+            usuariosVisibles = data || [];
         }
 
-        async function cargarTodosLosClientes() {
-            const { data, error } = await supabaseClient.from('clientes').select('*');
-            if (error) {
-                console.error('Error al cargar clientes:', error);
+        async function cargarClientesPermitidos() {
+            const vendedorIds = usuariosVisibles
+                .filter(u => normalizarRol(u.rol) === 'vendedor')
+                .map(u => u.id);
+
+            if (vendedorIds.length === 0) {
                 todosLosClientes = [];
                 return;
             }
+
+            const { data, error } = await supabaseClient
+                .from('clientes')
+                .select('*')
+                .in('creado_por', vendedorIds);
+
+            if (error) throw error;
             todosLosClientes = data || [];
         }
 
         async function cargarUsuariosSistema() {
-            const { data, error } = await supabaseClient
-                .from('usuarios_sistema')
-                .select('*')
-                .eq('rol', 'vendedor')
-                .order('username', { ascending: true });
-
             const cont = document.getElementById('lista-usuarios-sistema');
-            cont.innerHTML = '';
+            cont.innerHTML = `
+                <div class="empty-state" style="grid-column:1/-1;">
+                    <div class="empty-icon">⏳</div>
+                    <p>Cargando equipo...</p>
+                </div>`;
 
-            if (error) {
+            try {
+                await obtenerUsuariosPermitidos();
+                await cargarClientesPermitidos();
+                renderUsuariosSistema();
+            } catch (error) {
+                console.error('Error al cargar equipo:', error);
+                usuariosVisibles = [];
+                todosLosClientes = [];
                 cont.innerHTML = `
                     <div class="empty-state" style="grid-column:1/-1;">
                         <div class="empty-icon">⚠️</div>
-                        <p>No se pudieron cargar los vendedores</p>
-                        <p class="sub">${error.message}</p>
+                        <p>No se pudo cargar el equipo</p>
+                        <p class="sub">${escaparHtml(error.message)}</p>
                     </div>`;
-                actualizarEstadisticas(0, 0, 0);
-                return;
+                actualizarEstadisticas();
             }
+        }
 
-            const vendedores = data || [];
-            const total = vendedores.length;
-            const activos = vendedores.filter(u => u.activo !== false).length;
-            const deshabilitados = total - activos;
+        function renderUsuariosSistema() {
+            const cont = document.getElementById('lista-usuarios-sistema');
+            cont.innerHTML = '';
+            actualizarEstadisticas();
 
-            if (total === 0) {
+            if (usuariosVisibles.length === 0) {
                 cont.innerHTML = `
                     <div class="empty-state" style="grid-column:1/-1;">
                         <div class="empty-icon">👥</div>
-                        <p>No hay vendedores cargados</p>
-                        <p class="sub">Creá el primer acceso de vendedor</p>
+                        <p>${esAdmin() ? 'No hay usuarios cargados' : 'No tenés vendedores cargados'}</p>
+                        <p class="sub">${esAdmin() ? 'Creá el primer reseller o vendedor' : 'Creá tu primer acceso de vendedor'}</p>
                     </div>`;
-                actualizarEstadisticas(0, 0, 0);
                 return;
             }
 
-            vendedores.forEach(u => {
+            usuariosVisibles.forEach(u => {
+                const rol = normalizarRol(u.rol);
                 const isDisabled = u.activo === false;
                 const venciEn = u.vencimiento_acceso
                     ? Math.ceil((new Date(u.vencimiento_acceso) - new Date()) / (1000 * 60 * 60 * 24))
@@ -761,37 +859,93 @@
                 if (venciEn !== null && venciEn <= 0) venciColor = 'color:var(--red)';
                 else if (venciEn !== null && venciEn <= 7) venciColor = 'color:var(--yellow)';
 
-                const clientesDelUsuario = todosLosClientes.filter(c => c.creado_por === u.id);
+                const esUsuarioResseller = rol === 'resseller';
+                const vendedoresHijos = esUsuarioResseller
+                    ? usuariosVisibles.filter(v => normalizarRol(v.rol) === 'vendedor' && mismoId(v.padre_id, u.id))
+                    : [];
+                const idsVendedoresHijos = vendedoresHijos.map(v => String(v.id));
+                const clientesDelUsuario = esUsuarioResseller
+                    ? todosLosClientes.filter(c => idsVendedoresHijos.includes(String(c.creado_por)))
+                    : todosLosClientes.filter(c => mismoId(c.creado_por, u.id));
+
+                const padre = rol === 'vendedor'
+                    ? usuariosVisibles.find(p => normalizarRol(p.rol) === 'resseller' && mismoId(p.id, u.padre_id))
+                    : null;
+
+                const roleClass = esUsuarioResseller ? 'role-resseller' : 'role-vendedor';
+                const roleIcon = esUsuarioResseller ? '🔷' : '📊';
+                const clickCard = rol === 'vendedor'
+                    ? `onclick="verClientesVendedorPorId(${JSON.stringify(String(u.id))})"`
+                    : '';
+                const noClickClass = esUsuarioResseller ? 'no-click' : '';
+
+                let metaEquipo = '';
+                if (esUsuarioResseller) {
+                    metaEquipo = `
+                        <span style="color:var(--purple);">👥 ${vendedoresHijos.length} vendedor${vendedoresHijos.length !== 1 ? 'es' : ''}</span>
+                        <span style="color:var(--accent);">📺 ${clientesDelUsuario.length} cliente${clientesDelUsuario.length !== 1 ? 's' : ''} del equipo</span>`;
+                } else {
+                    metaEquipo = `
+                        <span style="color:var(--accent);">👥 ${clientesDelUsuario.length} cliente${clientesDelUsuario.length !== 1 ? 's' : ''}</span>
+                        ${padre ? `<span style="color:var(--purple);">🔷 Resseller: ${escaparHtml(padre.username)}</span>` : ''}`;
+                }
 
                 cont.innerHTML += `
-                    <div class="card-usuario ${isDisabled ? 'user-disabled' : ''}" onclick="verClientesVendedor(${JSON.stringify(u).replace(/"/g, '&quot;')})">
+                    <div class="card-usuario ${isDisabled ? 'user-disabled' : ''} ${noClickClass}" ${clickCard}>
                         <div class="card-usuario-top">
-                            <div class="user-avatar">📊</div>
+                            <div class="user-avatar">${roleIcon}</div>
                             <div class="user-info">
-                                <div class="user-name">${u.username}</div>
+                                <div class="user-name">${escaparHtml(u.username)}</div>
                                 <div class="user-tags">
-                                    <span class="role-badge role-vendedor">VENDEDOR</span>
+                                    <span class="role-badge ${roleClass}">${rol.toUpperCase()}</span>
                                     ${isDisabled ? '<span class="disabled-badge">🔒 Deshabilitado</span>' : ''}
                                 </div>
                                 <div class="user-meta">
-                                    <span style="${venciColor}">📅 ${u.vencimiento_acceso ? u.vencimiento_acceso + (venciEn !== null ? ' (' + venciEn + 'd)' : '') : 'Sin fecha'}</span>
-                                    <span style="color:var(--accent);">👥 ${clientesDelUsuario.length} cliente${clientesDelUsuario.length !== 1 ? 's' : ''}</span>
+                                    <span style="${venciColor}">📅 ${u.vencimiento_acceso ? escaparHtml(u.vencimiento_acceso) + (venciEn !== null ? ' (' + venciEn + 'd)' : '') : 'Sin fecha'}</span>
+                                    ${metaEquipo}
                                 </div>
                             </div>
                         </div>
                         <div class="card-usuario-actions">
-                            <button onclick="event.stopPropagation(); abrirModalEditar(${JSON.stringify(u).replace(/"/g, '&quot;')})" class="btn-card btn-edit">✏️ Editar</button>
-                            <button onclick="event.stopPropagation(); abrirConfirmarEliminar(${JSON.stringify(u).replace(/"/g, '&quot;')})" class="btn-card btn-delete">🗑️ Eliminar</button>
+                            <button onclick="event.stopPropagation(); abrirModalEditarPorId(${JSON.stringify(String(u.id))})" class="btn-card btn-edit">✏️ Editar</button>
+                            <button onclick="event.stopPropagation(); abrirConfirmarEliminarPorId(${JSON.stringify(String(u.id))})" class="btn-card btn-delete">🗑️ Eliminar</button>
                         </div>
                     </div>`;
             });
+        }
 
-            actualizarEstadisticas(total, activos, deshabilitados);
+        function actualizarEstadisticas() {
+            if (esAdmin()) {
+                const ressellers = usuariosVisibles.filter(u => normalizarRol(u.rol) === 'resseller').length;
+                const vendedores = usuariosVisibles.filter(u => normalizarRol(u.rol) === 'vendedor').length;
+                document.getElementById('label-stat-total').innerText = 'Total Usuarios';
+                document.getElementById('label-stat-secundario').innerText = 'Ressellers';
+                document.getElementById('label-stat-terciario').innerText = 'Vendedores';
+                document.getElementById('count-total').innerText = usuariosVisibles.length;
+                document.getElementById('count-secundario').innerText = ressellers;
+                document.getElementById('count-terciario').innerText = vendedores;
+            } else {
+                const vendedores = usuariosVisibles.filter(u => normalizarRol(u.rol) === 'vendedor');
+                const activos = vendedores.filter(u => u.activo !== false).length;
+                document.getElementById('label-stat-total').innerText = 'Total Vendedores';
+                document.getElementById('label-stat-secundario').innerText = 'Activos';
+                document.getElementById('label-stat-terciario').innerText = 'Deshabilitados';
+                document.getElementById('count-total').innerText = vendedores.length;
+                document.getElementById('count-secundario').innerText = activos;
+                document.getElementById('count-terciario').innerText = vendedores.length - activos;
+            }
+        }
+
+        function verClientesVendedorPorId(id) {
+            const usuario = buscarUsuarioPorId(id);
+            if (usuario) verClientesVendedor(usuario);
         }
 
         function verClientesVendedor(usuario) {
+            if (normalizarRol(usuario.rol) !== 'vendedor') return;
+
             vendedorSeleccionado = usuario;
-            clientesVendedorActual = todosLosClientes.filter(c => c.creado_por === usuario.id);
+            clientesVendedorActual = todosLosClientes.filter(c => mismoId(c.creado_por, usuario.id));
 
             document.getElementById('header-principal').style.display = 'none';
             document.getElementById('seccion-form').style.display = 'none';
@@ -848,12 +1002,12 @@
                 <div class="card-cliente">
                     <div class="client-left">
                         <div class="client-app-icon">
-                            <img src="${logo}" alt="${appTexto}">
+                            <img src="${logo}" alt="${escaparHtml(appTexto)}">
                         </div>
                         <div class="client-info">
-                            <div class="client-name">${c.nombre_apellido}</div>
-                            <div class="client-meta">${appTexto} · ${ciudadTexto}</div>
-                            <div class="client-meta" style="font-family:'DM Mono',monospace;">${precioTexto}</div>
+                            <div class="client-name">${escaparHtml(c.nombre_apellido)}</div>
+                            <div class="client-meta">${escaparHtml(appTexto)} · ${escaparHtml(ciudadTexto)}</div>
+                            <div class="client-meta" style="font-family:'DM Mono',monospace;">${escaparHtml(precioTexto)}</div>
                         </div>
                     </div>
                     <div class="client-right">
@@ -903,16 +1057,20 @@
             cont.innerHTML = filtrados.map(c => renderClienteCard(c, hoy)).join('');
         }
 
-        function actualizarEstadisticas(total, activos, deshabilitados) {
-            document.getElementById('count-total').innerText = total;
-            document.getElementById('count-activos').innerText = activos;
-            document.getElementById('count-deshabilitados').innerText = deshabilitados;
+        function abrirModalEditarPorId(id) {
+            const usuario = buscarUsuarioPorId(id);
+            if (usuario) abrirModalEditar(usuario);
         }
 
         function abrirModalEditar(usuario) {
-            if (normalizarRol(usuario.rol) !== 'vendedor') return;
+            if (!puedeGestionarUsuario(usuario)) {
+                alert('No tenés permiso para editar este usuario.');
+                return;
+            }
 
             usuarioEnEdicion = usuario;
+            const nombreRol = normalizarRol(usuario.rol) === 'resseller' ? 'Resseller' : 'Vendedor';
+            document.getElementById('titulo-modal-editar').innerText = `Editar ${nombreRol}`;
             document.getElementById('edit-user-id').value = usuario.id;
             document.getElementById('edit-username').value = usuario.username;
             document.getElementById('edit-password').value = '';
@@ -926,11 +1084,28 @@
             usuarioEnEdicion = null;
         }
 
+        async function actualizarUsuarioPermitido(id, updateData) {
+            let query = supabaseClient
+                .from('usuarios_sistema')
+                .update(updateData)
+                .eq('id', id);
+
+            if (esResseller()) {
+                query = query
+                    .eq('rol', 'vendedor')
+                    .eq('padre_id', currentUser.id);
+            } else {
+                query = query.in('rol', ['resseller', 'vendedor']);
+            }
+
+            return await query;
+        }
+
         document.getElementById('formEditarUsuario').onsubmit = async (e) => {
             e.preventDefault();
 
-            if (normalizarRol(currentUser?.rol) !== 'admin' || !usuarioEnEdicion) {
-                alert('No tenés permiso para editar vendedores.');
+            if (!usuarioEnEdicion || !puedeGestionarUsuario(usuarioEnEdicion)) {
+                alert('No tenés permiso para editar este usuario.');
                 return;
             }
 
@@ -945,38 +1120,51 @@
             };
             if (password) updateData.password = password;
 
-            const { error } = await supabaseClient
-                .from('usuarios_sistema')
-                .update(updateData)
-                .eq('id', id)
-                .eq('rol', 'vendedor');
-
+            const { error } = await actualizarUsuarioPermitido(id, updateData);
             if (error) {
                 alert('Error al actualizar: ' + error.message);
                 return;
             }
 
+            if (esAdmin() && normalizarRol(usuarioEnEdicion.rol) === 'resseller') {
+                const { error: cascadeError } = await supabaseClient
+                    .from('usuarios_sistema')
+                    .update({ activo: activo })
+                    .eq('rol', 'vendedor')
+                    .eq('padre_id', usuarioEnEdicion.id);
+
+                if (cascadeError) {
+                    alert('El resseller fue actualizado, pero no se pudo actualizar el estado de sus vendedores: ' + cascadeError.message);
+                }
+            }
+
+            const rolEditado = normalizarRol(usuarioEnEdicion.rol) === 'resseller' ? 'Resseller' : 'Vendedor';
             cerrarModalEditar();
             await cargarUsuariosSistema();
-            alert('Vendedor actualizado ✓');
+            alert(`${rolEditado} actualizado ✓`);
         };
 
         document.getElementById('formNuevoUsuario').onsubmit = async (e) => {
             e.preventDefault();
 
-            if (normalizarRol(currentUser?.rol) !== 'admin') {
-                alert('Solo los administradores pueden crear vendedores.');
-                return;
-            }
-
             const username = document.getElementById('newUsername').value.trim();
             const password = document.getElementById('newPassword').value;
+            const rolSeleccionado = normalizarRol(document.getElementById('newRol').value);
             const vencimiento = document.getElementById('newVencimiento').value || null;
+
+            const rolPermitido = esAdmin()
+                ? ['resseller', 'vendedor'].includes(rolSeleccionado)
+                : esResseller() && rolSeleccionado === 'vendedor';
+
+            if (!rolPermitido) {
+                alert('No tenés permiso para crear ese tipo de usuario.');
+                return;
+            }
 
             const newUser = {
                 username: username,
                 password: password,
-                rol: 'vendedor',
+                rol: rolSeleccionado,
                 vencimiento_acceso: vencimiento,
                 padre_id: currentUser.id,
                 activo: true
@@ -992,12 +1180,32 @@
             }
 
             document.getElementById('formNuevoUsuario').reset();
+            configurarInterfazPorRol();
             await cargarUsuariosSistema();
-            alert('Vendedor creado ✓');
+            alert(`${rolSeleccionado === 'resseller' ? 'Resseller' : 'Vendedor'} creado ✓`);
         };
 
+        function abrirConfirmarEliminarPorId(id) {
+            const usuario = buscarUsuarioPorId(id);
+            if (usuario) abrirConfirmarEliminar(usuario);
+        }
+
         function abrirConfirmarEliminar(usuario) {
-            if (normalizarRol(usuario.rol) !== 'vendedor') return;
+            if (!puedeGestionarUsuario(usuario)) {
+                alert('No tenés permiso para eliminar este usuario.');
+                return;
+            }
+
+            if (normalizarRol(usuario.rol) === 'resseller') {
+                const cantidadHijos = usuariosVisibles.filter(u =>
+                    normalizarRol(u.rol) === 'vendedor' && mismoId(u.padre_id, usuario.id)
+                ).length;
+
+                if (cantidadHijos > 0) {
+                    alert(`No podés eliminar este resseller porque todavía tiene ${cantidadHijos} vendedor${cantidadHijos !== 1 ? 'es' : ''}. Eliminá o reasigná primero esos vendedores.`);
+                    return;
+                }
+            }
 
             usuarioAEliminar = usuario;
             document.getElementById('nombre-usuario-confirmar').innerText = usuario.username;
@@ -1010,14 +1218,22 @@
         }
 
         async function confirmarEliminar() {
-            if (!usuarioAEliminar || normalizarRol(currentUser?.rol) !== 'admin') return;
+            if (!usuarioAEliminar || !puedeGestionarUsuario(usuarioAEliminar)) return;
 
-            const { error } = await supabaseClient
+            let query = supabaseClient
                 .from('usuarios_sistema')
                 .delete()
-                .eq('id', usuarioAEliminar.id)
-                .eq('rol', 'vendedor');
+                .eq('id', usuarioAEliminar.id);
 
+            if (esResseller()) {
+                query = query
+                    .eq('rol', 'vendedor')
+                    .eq('padre_id', currentUser.id);
+            } else {
+                query = query.in('rol', ['resseller', 'vendedor']);
+            }
+
+            const { error } = await query;
             if (error) {
                 alert('Error: ' + error.message);
                 return;
