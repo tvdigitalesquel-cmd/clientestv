@@ -3,385 +3,358 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Acceso - Tv Digital</title>
+    <meta name="theme-color" content="#08101f">
+    <title>TV Digital | Acceso al panel</title>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+
     <style>
         :root {
-            --bg-1: #061224;
-            --bg-2: #0a1d3f;
-            --bg-3: #03101f;
-            --card: rgba(8, 18, 37, 0.88);
-            --card-2: rgba(16, 33, 66, 0.88);
-            --border: rgba(255,255,255,0.10);
-            --border-strong: rgba(96, 165, 250, 0.28);
-            --text: #f2f6fc;
-            --muted: #94a3b8;
-            --muted-2: #c3d0e4;
-            --blue: #3b82f6;
-            --blue-2: #2563eb;
-            --cyan: #22d3ee;
-            --green: #22c55e;
-            --red: #ef4444;
-            --shadow: 0 24px 60px rgba(0,0,0,0.38);
-            --radius-xl: 28px;
-            --radius-lg: 22px;
-            --radius-md: 16px;
-            --radius-sm: 12px;
+            --bg: #07101f;
+            --bg-soft: #0b1629;
+            --panel: rgba(12, 24, 43, 0.88);
+            --panel-solid: #0d1a2e;
+            --surface: #111f35;
+            --surface-hover: #172943;
+            --border: rgba(148, 163, 184, 0.14);
+            --border-strong: rgba(96, 165, 250, 0.46);
+            --text: #f8fafc;
+            --text-soft: #cbd5e1;
+            --muted: #7f91aa;
+            --primary: #4f8cff;
+            --primary-hover: #3b75e8;
+            --primary-soft: rgba(79, 140, 255, 0.13);
+            --success: #22c55e;
+            --danger: #f87171;
+            --danger-soft: rgba(248, 113, 113, 0.12);
+            --shadow: 0 32px 90px rgba(0, 0, 0, 0.46);
+            --radius-xl: 30px;
+            --radius-lg: 20px;
+            --radius-md: 14px;
+            --radius-sm: 10px;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-        html, body {
-            width: 100%;
-            min-height: 100%;
+        html {
+            color-scheme: dark;
         }
 
         body {
-            font-family: "Manrope", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            min-height: 100vh;
+            font-family: "DM Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
             color: var(--text);
             background:
-                radial-gradient(circle at top left, rgba(59,130,246,0.22), transparent 32%),
-                radial-gradient(circle at bottom right, rgba(14,165,233,0.18), transparent 28%),
-                linear-gradient(135deg, var(--bg-2) 0%, var(--bg-1) 38%, #03101a 100%);
+                radial-gradient(circle at 8% 12%, rgba(79, 140, 255, 0.16), transparent 31%),
+                radial-gradient(circle at 92% 82%, rgba(45, 212, 191, 0.08), transparent 24%),
+                linear-gradient(145deg, #050b15 0%, var(--bg) 48%, #091528 100%);
             overflow-x: hidden;
         }
 
-        .background-grid {
+        button,
+        input {
+            font: inherit;
+        }
+
+        button {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .ambient-grid {
             position: fixed;
             inset: 0;
             pointer-events: none;
-            opacity: 0.08;
+            opacity: 0.16;
             background-image:
-                linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px);
-            background-size: 38px 38px;
-        }
-
-        .background-glow {
-            position: fixed;
-            inset: auto auto 8% 12%;
-            width: 380px;
-            height: 380px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(37,99,235,0.24), transparent 68%);
-            filter: blur(18px);
-            pointer-events: none;
+                linear-gradient(rgba(148, 163, 184, 0.055) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(148, 163, 184, 0.055) 1px, transparent 1px);
+            background-size: 44px 44px;
+            mask-image: linear-gradient(to bottom, black, transparent 90%);
         }
 
         .page {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 22px;
-        }
-
-        .shell {
-            width: min(1120px, 100%);
-            min-height: min(700px, calc(100vh - 44px));
-            display: grid;
-            grid-template-columns: 1.04fr 0.96fr;
-            background: rgba(2, 10, 24, 0.64);
-            border: 1px solid rgba(96, 165, 250, 0.12);
-            border-radius: 32px;
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            backdrop-filter: blur(14px);
-        }
-
-        .panel-brand {
             position: relative;
-            padding: 38px 48px;
-            background:
-                linear-gradient(180deg, rgba(28,58,110,0.55) 0%, rgba(18,34,67,0.7) 100%),
-                linear-gradient(135deg, #17376c 0%, #102544 100%);
+            z-index: 1;
+            width: 100%;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 28px;
+        }
+
+        .access-shell {
+            width: min(1160px, 100%);
+            min-height: min(720px, calc(100vh - 56px));
+            display: grid;
+            grid-template-columns: minmax(420px, 0.9fr) minmax(500px, 1.1fr);
+            overflow: hidden;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            background: rgba(7, 16, 31, 0.76);
+            backdrop-filter: blur(18px);
+            box-shadow: var(--shadow);
+        }
+
+        .login-panel {
+            position: relative;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            gap: 22px;
-        }
-
-        .panel-brand::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at top left, rgba(96,165,250,0.22), transparent 34%);
-            pointer-events: none;
-        }
-
-        .brand-top, .brand-middle, .brand-bottom { position: relative; z-index: 1; }
-
-        .logo-wrap {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .logo-box {
-            width: 78px;
-            height: 78px;
-            border-radius: 24px;
+            padding: 48px 52px 38px;
             background:
-                radial-gradient(circle at 30% 30%, rgba(255,255,255,0.18), transparent 32%),
-                linear-gradient(135deg, #4f8dff 0%, #2563eb 58%, #1d4ed8 100%);
-            display: grid;
-            place-items: center;
-            box-shadow: 0 18px 34px rgba(37,99,235,0.32);
-            position: relative;
-            overflow: hidden;
+                linear-gradient(180deg, rgba(13, 26, 46, 0.98), rgba(8, 18, 34, 0.97));
+            border-right: 1px solid var(--border);
         }
 
-        .logo-box svg {
-            width: 42px;
-            height: 42px;
-            display: block;
-            filter: drop-shadow(0 4px 12px rgba(255,255,255,0.12));
-        }
-
-        .brand-title {
-            line-height: 1;
-        }
-
-        .brand-title h1,
-        .login-box h3,
-        .hero h2 {
-            font-family: "Sora", "Manrope", sans-serif;
-        }
-
-        .brand-title h1 {
-            font-size: 30px;
-            font-weight: 800;
-            letter-spacing: -0.05em;
-        }
-
-        .brand-title p {
-            margin-top: 8px;
-            font-size: 12px;
-            letter-spacing: 0.18em;
-            text-transform: uppercase;
-            color: var(--muted-2);
-            font-weight: 800;
-        }
-
-        .pill {
+        .brand {
             display: inline-flex;
             align-items: center;
-            gap: 10px;
-            padding: 10px 16px;
-            border-radius: 999px;
-            border: 1px solid rgba(96,165,250,0.22);
-            background: rgba(59,130,246,0.12);
-            color: #b8d3ff;
-            font-size: 12px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
+            gap: 14px;
             width: fit-content;
         }
 
-        .pill-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: #8fb8ff;
-            box-shadow: 0 0 0 6px rgba(143,184,255,0.12);
-        }
-
-        .hero h2 {
-            max-width: 520px;
-            font-size: clamp(40px, 4vw, 60px);
-            line-height: 0.97;
-            letter-spacing: -0.06em;
-            font-weight: 800;
-            margin-top: 18px;
-        }
-
-        .hero p {
-            max-width: 470px;
-            margin-top: 18px;
-            color: var(--muted-2);
-            font-size: 15px;
-            line-height: 1.75;
-            font-weight: 700;
-        }
-
-        .feature-box {
+        .brand-mark {
+            width: 50px;
+            height: 50px;
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 14px;
+            place-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 16px;
+            background: linear-gradient(145deg, #5d9aff, #2e66d7);
+            box-shadow: 0 14px 30px rgba(46, 102, 215, 0.3);
         }
 
-        .feature-card {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 18px;
-            padding: 16px 18px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            min-height: 108px;
+        .brand-mark svg {
+            width: 29px;
+            height: 29px;
         }
 
-        .feature-card strong {
-            font-size: 14px;
+        .brand-copy strong {
+            display: block;
+            font-family: "Manrope", sans-serif;
+            font-size: 16px;
             font-weight: 800;
             letter-spacing: -0.02em;
         }
 
-        .feature-card span {
-            color: var(--muted-2);
-            font-size: 13px;
-            line-height: 1.55;
-            font-weight: 600;
-        }
-
-        .panel-login {
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 36px 42px;
-            background:
-                radial-gradient(circle at bottom right, rgba(14,165,233,0.18), transparent 26%),
-                linear-gradient(180deg, rgba(3,11,26,0.86) 0%, rgba(3,11,26,0.94) 100%);
-        }
-
-        .login-box {
-            width: min(392px, 100%);
-        }
-
-        .login-box h3 {
-            font-size: 34px;
-            font-weight: 800;
-            letter-spacing: -0.05em;
-            margin-bottom: 10px;
-        }
-
-        .login-box > p {
+        .brand-copy span {
+            display: block;
+            margin-top: 2px;
             color: var(--muted);
-            font-size: 15px;
-            line-height: 1.6;
-            margin-bottom: 28px;
+            font-size: 10px;
             font-weight: 700;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+        }
+
+        .login-content {
+            width: 100%;
+            max-width: 410px;
+            margin: 42px auto 36px;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 18px;
+            color: #aac7ff;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .eyebrow::before {
+            content: "";
+            width: 24px;
+            height: 1px;
+            background: var(--primary);
+        }
+
+        .login-content h1 {
+            font-family: "Manrope", sans-serif;
+            font-size: clamp(34px, 4vw, 48px);
+            line-height: 1.03;
+            letter-spacing: -0.055em;
+            font-weight: 800;
+        }
+
+        .login-description {
+            max-width: 380px;
+            margin-top: 14px;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.65;
+        }
+
+        .form-login {
+            margin-top: 32px;
         }
 
         .field {
-            margin-bottom: 18px;
+            margin-bottom: 17px;
         }
 
-        .label {
-            display: block;
+        .field-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 8px;
+            color: var(--text-soft);
             font-size: 12px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.11em;
-            color: #9dc2ff;
+            font-weight: 600;
         }
 
-        .input-wrap {
+        .input-control {
             position: relative;
         }
 
-        .field-icon {
+        .input-icon {
             position: absolute;
             left: 16px;
             top: 50%;
+            width: 18px;
+            height: 18px;
             transform: translateY(-50%);
-            font-size: 16px;
-            opacity: 0.85;
+            color: #7f93b2;
+            pointer-events: none;
         }
 
         .input-style {
             width: 100%;
-            height: 58px;
-            border-radius: 18px;
-            border: 1px solid var(--border);
-            background: linear-gradient(180deg, rgba(18,31,56,0.82) 0%, rgba(13,24,43,0.92) 100%);
+            height: 56px;
+            padding: 0 50px 0 48px;
             color: var(--text);
-            padding: 0 18px 0 48px;
-            font-size: 15px;
-            font-weight: 700;
+            font-size: 14px;
+            font-weight: 500;
             outline: none;
-            transition: all 0.22s ease;
-            font-family: inherit;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            background: rgba(17, 31, 53, 0.88);
+            transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
         }
 
-        .input-style::placeholder { color: #7385a2; }
+        .input-style::placeholder {
+            color: #60718c;
+        }
+
+        .input-style:hover {
+            border-color: rgba(148, 163, 184, 0.24);
+            background: rgba(23, 41, 67, 0.88);
+        }
 
         .input-style:focus {
             border-color: var(--border-strong);
-            box-shadow: 0 0 0 4px rgba(59,130,246,0.12);
-            transform: translateY(-1px);
+            background: var(--surface-hover);
+            box-shadow: 0 0 0 4px rgba(79, 140, 255, 0.11);
         }
 
-        .status-row {
+        .password-toggle {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            width: 38px;
+            height: 38px;
+            transform: translateY(-50%);
+            display: grid;
+            place-items: center;
+            color: var(--muted);
+            border: 0;
+            border-radius: 10px;
+            background: transparent;
+            cursor: pointer;
+            transition: color 0.2s ease, background 0.2s ease;
+        }
+
+        .password-toggle:hover {
+            color: var(--text);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .password-toggle svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .access-status {
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 12px;
-            margin: 16px 0 22px;
-            color: var(--muted);
-            font-size: 12px;
-            font-weight: 800;
+            margin: 20px 0;
+            padding: 12px 14px;
+            border: 1px solid rgba(34, 197, 94, 0.13);
+            border-radius: 12px;
+            background: rgba(34, 197, 94, 0.055);
+            color: #9fb2ca;
+            font-size: 11px;
+            font-weight: 600;
         }
 
-        .status-left {
+        .access-status-left {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 9px;
         }
 
-        .status-indicator {
-            width: 10px;
-            height: 10px;
+        .status-dot {
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
-            background: var(--green);
-            box-shadow: 0 0 0 6px rgba(34,197,94,0.12);
+            background: var(--success);
+            box-shadow: 0 0 0 5px rgba(34, 197, 94, 0.1);
         }
 
-        .btn-submit {
+        .submit-button {
             width: 100%;
             height: 56px;
-            border: none;
-            border-radius: 18px;
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-            color: white;
-            font-size: 15px;
-            font-weight: 800;
-            letter-spacing: 0.03em;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: transform 0.22s ease, box-shadow 0.22s ease, opacity 0.22s ease;
-            box-shadow: 0 16px 28px rgba(37,99,235,0.28);
             display: inline-flex;
             align-items: center;
             justify-content: center;
+            gap: 9px;
+            color: #fff;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            border: 0;
+            border-radius: var(--radius-md);
+            background: linear-gradient(135deg, #5793ff, #326fdf);
+            box-shadow: 0 16px 28px rgba(50, 111, 223, 0.24);
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
         }
 
-        .btn-submit:hover {
+        .submit-button:hover {
             transform: translateY(-1px);
-            box-shadow: 0 18px 34px rgba(37,99,235,0.34);
+            filter: brightness(1.04);
+            box-shadow: 0 19px 34px rgba(50, 111, 223, 0.31);
         }
 
-        .btn-submit.loading {
-            opacity: 0.82;
+        .submit-button:active {
+            transform: translateY(0);
+        }
+
+        .submit-button.loading {
             pointer-events: none;
+            opacity: 0.84;
         }
 
         .spinner {
-            width: 18px;
-            height: 18px;
-            border: 2px solid rgba(255,255,255,0.26);
+            width: 17px;
+            height: 17px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
             border-top-color: #fff;
             border-radius: 50%;
-            display: inline-block;
-            margin-right: 8px;
-            animation: spin 0.85s linear infinite;
-            vertical-align: middle;
+            animation: spin 0.75s linear infinite;
         }
 
         @keyframes spin {
@@ -391,246 +364,546 @@
         .error-message {
             display: none;
             margin-top: 14px;
-            padding: 14px 16px;
-            border-radius: 16px;
-            background: rgba(239,68,68,0.12);
-            border: 1px solid rgba(239,68,68,0.22);
+            padding: 13px 14px;
             color: #fecaca;
-            font-size: 13px;
-            font-weight: 800;
-            line-height: 1.55;
+            font-size: 12px;
+            font-weight: 600;
+            line-height: 1.5;
+            border: 1px solid rgba(248, 113, 113, 0.22);
+            border-radius: 12px;
+            background: var(--danger-soft);
         }
 
-        .error-message.show { display: block; }
+        .error-message.show {
+            display: block;
+            animation: error-in 0.18s ease-out;
+        }
 
-        .mini-footer {
-            margin-top: 18px;
-            color: #7385a2;
+        @keyframes error-in {
+            from { opacity: 0; transform: translateY(-4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .login-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding-top: 22px;
+            color: #5f718c;
+            font-size: 10px;
+            font-weight: 600;
+            border-top: 1px solid rgba(148, 163, 184, 0.08);
+        }
+
+        .visual-panel {
+            position: relative;
+            overflow: hidden;
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background:
+                linear-gradient(145deg, rgba(18, 36, 64, 0.82), rgba(7, 18, 34, 0.95)),
+                radial-gradient(circle at top right, rgba(79, 140, 255, 0.22), transparent 42%);
+        }
+
+        .visual-panel::before {
+            content: "";
+            position: absolute;
+            width: 420px;
+            height: 420px;
+            right: -140px;
+            top: -160px;
+            border: 1px solid rgba(96, 165, 250, 0.12);
+            border-radius: 50%;
+            box-shadow:
+                0 0 0 58px rgba(96, 165, 250, 0.025),
+                0 0 0 116px rgba(96, 165, 250, 0.018);
+        }
+
+        .visual-panel > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .visual-copy {
+            max-width: 550px;
+        }
+
+        .system-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            color: #b9d2ff;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.11em;
+            text-transform: uppercase;
+            border: 1px solid rgba(96, 165, 250, 0.2);
+            border-radius: 999px;
+            background: rgba(79, 140, 255, 0.09);
+        }
+
+        .visual-copy h2 {
+            max-width: 570px;
+            margin-top: 24px;
+            font-family: "Manrope", sans-serif;
+            font-size: clamp(38px, 4.7vw, 66px);
+            line-height: 0.98;
+            letter-spacing: -0.065em;
+            font-weight: 800;
+        }
+
+        .visual-copy p {
+            max-width: 520px;
+            margin-top: 20px;
+            color: #a8b7cc;
+            font-size: 15px;
+            line-height: 1.75;
+        }
+
+        .dashboard-preview {
+            margin-top: 38px;
+            padding: 18px;
+            border: 1px solid rgba(148, 163, 184, 0.12);
+            border-radius: 22px;
+            background: rgba(7, 17, 32, 0.62);
+            box-shadow: 0 22px 50px rgba(0, 0, 0, 0.22);
+        }
+
+        .preview-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            padding: 2px 2px 16px;
+        }
+
+        .preview-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-soft);
             font-size: 12px;
             font-weight: 700;
-            text-align: center;
         }
 
-        @media (max-width: 1080px) {
-            .shell {
-                width: min(990px, 100%);
-                min-height: min(660px, calc(100vh - 36px));
-            }
-            .panel-brand { padding: 32px 36px; }
-            .panel-login { padding: 32px; }
-            .hero h2 { font-size: clamp(36px, 4vw, 52px); }
+        .preview-title-icon {
+            width: 30px;
+            height: 30px;
+            display: grid;
+            place-items: center;
+            border-radius: 9px;
+            background: var(--primary-soft);
+            color: #8eb4ff;
         }
 
-        @media (max-width: 860px) {
-            body { min-height: auto; }
+        .preview-live {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            color: #87dca3;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .preview-live::before {
+            content: "";
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--success);
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .metric-card {
+            padding: 14px;
+            border: 1px solid rgba(148, 163, 184, 0.09);
+            border-radius: 14px;
+            background: rgba(17, 31, 53, 0.72);
+        }
+
+        .metric-card span {
+            display: block;
+            color: #71839f;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 0.07em;
+            text-transform: uppercase;
+        }
+
+        .metric-card strong {
+            display: block;
+            margin-top: 8px;
+            font-family: "Manrope", sans-serif;
+            font-size: 23px;
+            letter-spacing: -0.04em;
+        }
+
+        .activity-list {
+            margin-top: 10px;
+            display: grid;
+            gap: 8px;
+        }
+
+        .activity-row {
+            display: grid;
+            grid-template-columns: 34px 1fr auto;
+            align-items: center;
+            gap: 11px;
+            padding: 11px 12px;
+            border: 1px solid rgba(148, 163, 184, 0.075);
+            border-radius: 13px;
+            background: rgba(12, 25, 44, 0.7);
+        }
+
+        .activity-icon {
+            width: 34px;
+            height: 34px;
+            display: grid;
+            place-items: center;
+            border-radius: 10px;
+            color: #9bbdff;
+            background: rgba(79, 140, 255, 0.1);
+        }
+
+        .activity-copy strong {
+            display: block;
+            color: var(--text-soft);
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .activity-copy span {
+            display: block;
+            margin-top: 2px;
+            color: #647690;
+            font-size: 9px;
+        }
+
+        .activity-state {
+            padding: 5px 8px;
+            color: #8ce2a8;
+            font-size: 8px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            border-radius: 999px;
+            background: rgba(34, 197, 94, 0.09);
+        }
+
+        .visual-footer {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+            margin-top: 28px;
+            color: #71839f;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .visual-footer span {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .visual-footer svg {
+            width: 14px;
+            height: 14px;
+            color: #7ca7fb;
+        }
+
+        @media (max-width: 980px) {
             .page {
-                min-height: auto;
-                align-items: flex-start;
-                padding: 14px;
+                padding: 16px;
             }
-            .shell {
+
+            .access-shell {
+                width: min(760px, 100%);
                 min-height: auto;
                 grid-template-columns: 1fr;
-                border-radius: 24px;
             }
-            .panel-login {
-                order: 1;
-                padding: 22px 18px 20px;
-                align-items: flex-start;
+
+            .login-panel {
+                border-right: 0;
+                border-bottom: 1px solid var(--border);
             }
-            .panel-brand {
-                order: 2;
-                padding: 20px 18px 22px;
-                gap: 16px;
+
+            .login-content {
+                max-width: 520px;
             }
-            .login-box {
-                width: 100%;
-                max-width: 100%;
+
+            .visual-panel {
+                padding: 38px 42px;
             }
-            .login-box h3 {
-                font-size: 28px;
-                margin-bottom: 8px;
-            }
-            .login-box > p {
-                margin-bottom: 18px;
-                font-size: 14px;
-            }
-            .status-row {
-                margin: 14px 0 18px;
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .hero h2 {
-                max-width: 100%;
-                font-size: clamp(28px, 8vw, 42px);
-                margin-top: 14px;
-            }
-            .hero p {
-                max-width: 100%;
-                margin-top: 14px;
-                font-size: 14px;
-                line-height: 1.65;
-            }
-            .feature-box {
-                grid-template-columns: 1fr;
-                gap: 10px;
-            }
-            .feature-card {
-                min-height: auto;
-                padding: 14px;
-            }
-            .mini-footer {
-                text-align: left;
-                margin-top: 14px;
+
+            .visual-copy h2 {
+                max-width: 620px;
+                font-size: clamp(36px, 7vw, 54px);
             }
         }
 
-        @media (max-width: 480px) {
-            .page { padding: 10px; }
-            .shell { border-radius: 20px; }
-            .panel-login {
-                padding: 18px 16px 16px;
+        @media (max-width: 640px) {
+            .page {
+                align-items: start;
+                padding: 10px;
             }
-            .panel-brand {
-                padding: 16px 16px 18px;
+
+            .access-shell {
+                border-radius: 22px;
             }
-            .logo-wrap { gap: 12px; }
-            .logo-box {
-                width: 60px;
-                height: 60px;
-                border-radius: 18px;
+
+            .login-panel {
+                padding: 24px 20px 20px;
             }
-            .logo-box svg {
-                width: 32px;
-                height: 32px;
+
+            .brand-mark {
+                width: 44px;
+                height: 44px;
+                border-radius: 14px;
             }
-            .brand-title h1 {
-                font-size: 24px;
+
+            .login-content {
+                margin: 38px auto 30px;
             }
-            .brand-title p {
-                font-size: 10px;
-                letter-spacing: 0.16em;
+
+            .login-content h1 {
+                font-size: 36px;
             }
-            .pill {
-                padding: 8px 12px;
-                font-size: 10px;
+
+            .access-status {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .login-footer {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 6px;
+            }
+
+            .visual-panel {
+                padding: 28px 20px;
+            }
+
+            .visual-copy h2 {
+                font-size: 38px;
+            }
+
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .activity-row:nth-child(n+3) {
+                display: none;
+            }
+
+            .visual-footer {
+                align-items: flex-start;
+                flex-direction: column;
                 gap: 8px;
             }
-            .pill-dot {
-                width: 8px;
-                height: 8px;
-            }
-            .field {
-                margin-bottom: 14px;
-            }
-            .label {
-                margin-bottom: 6px;
-                font-size: 11px;
-            }
-            .input-style {
-                height: 54px;
-                border-radius: 16px;
-                font-size: 14px;
-            }
-            .btn-submit {
-                height: 54px;
-                border-radius: 16px;
-                font-size: 14px;
-            }
-            .hero h2 {
-                font-size: clamp(26px, 9vw, 34px);
-            }
         }
 
-        @media (max-height: 760px) and (min-width: 861px) {
-            .page { padding: 14px; }
-            .shell { min-height: calc(100vh - 28px); }
-            .panel-brand { padding: 28px 38px; }
-            .panel-login { padding: 28px 34px; }
-            .hero h2 { font-size: clamp(34px, 3.4vw, 48px); }
-            .hero p { font-size: 14px; margin-top: 14px; }
-            .feature-card { min-height: 94px; padding: 14px 16px; }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                scroll-behavior: auto !important;
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="background-grid"></div>
-    <div class="background-glow"></div>
+    <div class="ambient-grid" aria-hidden="true"></div>
 
     <main class="page">
-        <section class="shell">
-            <aside class="panel-brand">
-                <div class="brand-top">
-                    <div class="logo-wrap">
-                        <div class="logo-box" aria-hidden="true">
-                            <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <rect x="10" y="16" width="44" height="32" rx="10" fill="rgba(255,255,255,0.16)"/>
-                                <path d="M28 24L42 32L28 40V24Z" fill="white"/>
-                                <rect x="18" y="22" width="4" height="20" rx="2" fill="rgba(255,255,255,0.9)"/>
+        <section class="access-shell" aria-label="Acceso al sistema TV Digital">
+            <section class="login-panel">
+                <header class="brand">
+                    <div class="brand-mark" aria-hidden="true">
+                        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="4" y="7" width="24" height="17" rx="5" fill="rgba(255,255,255,.16)" stroke="white" stroke-width="1.4"/>
+                            <path d="M13.3 11.5L21 15.5L13.3 19.5V11.5Z" fill="white"/>
+                            <path d="M11 27H21" stroke="white" stroke-width="1.6" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <div class="brand-copy">
+                        <strong>TV Digital</strong>
+                        <span>Panel administrativo</span>
+                    </div>
+                </header>
+
+                <div class="login-content">
+                    <div class="eyebrow">Acceso privado</div>
+                    <h1>Bienvenido<br>de nuevo.</h1>
+                    <p class="login-description">Ingresá tus credenciales para administrar clientes, vencimientos y usuarios desde un entorno centralizado.</p>
+
+                    <form id="formLogin" class="form-login" novalidate>
+                        <div class="field">
+                            <label class="field-label" for="loginUser">Usuario</label>
+                            <div class="input-control">
+                                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                                    <path d="M20 21a8 8 0 0 0-16 0"/>
+                                    <circle cx="12" cy="7" r="4"/>
+                                </svg>
+                                <input
+                                    type="text"
+                                    id="loginUser"
+                                    class="input-style"
+                                    placeholder="Ingresá tu usuario"
+                                    autocomplete="username"
+                                    autocapitalize="none"
+                                    spellcheck="false"
+                                    required
+                                >
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label class="field-label" for="loginPass">Contraseña</label>
+                            <div class="input-control">
+                                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                                    <rect x="4" y="10" width="16" height="10" rx="3"/>
+                                    <path d="M8 10V7a4 4 0 0 1 8 0v3"/>
+                                </svg>
+                                <input
+                                    type="password"
+                                    id="loginPass"
+                                    class="input-style"
+                                    placeholder="Ingresá tu contraseña"
+                                    autocomplete="current-password"
+                                    required
+                                >
+                                <button type="button" class="password-toggle" id="passwordToggle" aria-label="Mostrar contraseña" title="Mostrar contraseña">
+                                    <svg id="eyeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                                        <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6S2.5 12 2.5 12Z"/>
+                                        <circle cx="12" cy="12" r="2.5"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="access-status">
+                            <div class="access-status-left">
+                                <span class="status-dot"></span>
+                                Sistema disponible
+                            </div>
+                            <span>Conexión protegida</span>
+                        </div>
+
+                        <button type="submit" class="submit-button" id="submitBtn">
+                            <span id="btn-text">Ingresar al panel</span>
+                        </button>
+
+                        <div id="loginError" class="error-message" role="alert" aria-live="polite"></div>
+                    </form>
+                </div>
+
+                <footer class="login-footer">
+                    <span>© 2026 TV Digital</span>
+                    <span>Acceso exclusivo para usuarios autorizados</span>
+                </footer>
+            </section>
+
+            <aside class="visual-panel">
+                <div class="visual-copy">
+                    <span class="system-badge">Centro de operaciones</span>
+                    <h2>Tu gestión comercial, clara y bajo control.</h2>
+                    <p>Consultá clientes, supervisá vencimientos y organizá el trabajo de administradores, resellers y vendedores desde una única plataforma.</p>
+                </div>
+
+                <div>
+                    <div class="dashboard-preview" aria-hidden="true">
+                        <div class="preview-head">
+                            <div class="preview-title">
+                                <span class="preview-title-icon">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                        <rect x="3" y="3" width="7" height="7" rx="2"/>
+                                        <rect x="14" y="3" width="7" height="7" rx="2"/>
+                                        <rect x="3" y="14" width="7" height="7" rx="2"/>
+                                        <rect x="14" y="14" width="7" height="7" rx="2"/>
+                                    </svg>
+                                </span>
+                                Resumen operativo
+                            </div>
+                            <span class="preview-live">En línea</span>
+                        </div>
+
+                        <div class="metrics-grid">
+                            <div class="metric-card">
+                                <span>Clientes activos</span>
+                                <strong>248</strong>
+                            </div>
+                            <div class="metric-card">
+                                <span>Próximos a vencer</span>
+                                <strong>16</strong>
+                            </div>
+                            <div class="metric-card">
+                                <span>Equipo conectado</span>
+                                <strong>12</strong>
+                            </div>
+                        </div>
+
+                        <div class="activity-list">
+                            <div class="activity-row">
+                                <div class="activity-icon">✓</div>
+                                <div class="activity-copy">
+                                    <strong>Gestión de clientes</strong>
+                                    <span>Altas, renovaciones y seguimiento</span>
+                                </div>
+                                <span class="activity-state">Activo</span>
+                            </div>
+                            <div class="activity-row">
+                                <div class="activity-icon">⌁</div>
+                                <div class="activity-copy">
+                                    <strong>Control de accesos</strong>
+                                    <span>Roles y permisos organizados</span>
+                                </div>
+                                <span class="activity-state">Activo</span>
+                            </div>
+                            <div class="activity-row">
+                                <div class="activity-icon">↗</div>
+                                <div class="activity-copy">
+                                    <strong>Reportes operativos</strong>
+                                    <span>Información disponible en tiempo real</span>
+                                </div>
+                                <span class="activity-state">Activo</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="visual-footer">
+                        <span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/>
+                                <path d="m9 12 2 2 4-4"/>
                             </svg>
-                        </div>
-                        <div class="brand-title">
-                            <h1>TV DIGITAL</h1>
-                            <p>Panel de gestión</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="brand-middle hero">
-                    <div class="pill"><span class="pill-dot"></span> Plataforma segura</div>
-                    <h2>Controlá clientes, accesos y facturación desde un solo lugar.</h2>
-                    <p>Ingresá con tu cuenta para administrar clientes, supervisar tu equipo y mantener la operación ordenada, segura y actualizada.</p>
-                </div>
-
-                <div class="brand-bottom feature-box">
-                    <div class="feature-card">
-                        <strong>Accesos centralizados</strong>
-                        <span>Control de usuarios, vencimientos, estados y permisos desde un mismo panel.</span>
-                    </div>
-                    <div class="feature-card">
-                        <strong>Operación más clara</strong>
-                        <span>Seguimiento de clientes, reportes y gestión comercial con mejor visibilidad.</span>
+                            Acceso controlado
+                        </span>
+                        <span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                                <path d="M4 19V9"/>
+                                <path d="M10 19V5"/>
+                                <path d="M16 19v-7"/>
+                                <path d="M22 19V3"/>
+                            </svg>
+                            Operación centralizada
+                        </span>
                     </div>
                 </div>
             </aside>
-
-            <section class="panel-login">
-                <div class="login-box">
-                    <h3>Iniciar sesión</h3>
-                    <p>Accedé con tus credenciales para ingresar al panel de gestión.</p>
-
-                    <form id="formLogin">
-                        <div class="field">
-                            <label class="label" for="loginUser">Usuario</label>
-                            <div class="input-wrap">
-                                <span class="field-icon">👤</span>
-                                <input type="text" id="loginUser" class="input-style" placeholder="Ingresá tu usuario" required autocomplete="username">
-                            </div>
-                        </div>
-
-                        <div class="field">
-                            <label class="label" for="loginPass">Contraseña</label>
-                            <div class="input-wrap">
-                                <span class="field-icon">🔒</span>
-                                <input type="password" id="loginPass" class="input-style" placeholder="••••••••" required autocomplete="current-password">
-                            </div>
-                        </div>
-
-                        <div class="status-row">
-                            <div class="status-left"><span class="status-indicator"></span> Validación de acceso activa</div>
-                            <div>Seguridad habilitada</div>
-                        </div>
-
-                        <button type="submit" class="btn-submit" id="submitBtn">
-                            <span id="btn-text">Entrar al sistema</span>
-                        </button>
-
-                        <div id="loginError" class="error-message"></div>
-                    </form>
-
-                    <div class="mini-footer">Tv Digital · Acceso seguro</div>
-                </div>
-            </section>
         </section>
     </main>
 
@@ -645,17 +918,32 @@
         const passInput = document.getElementById('loginPass');
         const btnText = document.getElementById('btn-text');
         const submitBtn = document.getElementById('submitBtn');
+        const passwordToggle = document.getElementById('passwordToggle');
+        const eyeIcon = document.getElementById('eyeIcon');
 
-        form.onsubmit = async (e) => {
-            e.preventDefault();
+        passwordToggle.addEventListener('click', () => {
+            const mostrar = passInput.type === 'password';
+            passInput.type = mostrar ? 'text' : 'password';
+            passwordToggle.setAttribute('aria-label', mostrar ? 'Ocultar contraseña' : 'Mostrar contraseña');
+            passwordToggle.setAttribute('title', mostrar ? 'Ocultar contraseña' : 'Mostrar contraseña');
+
+            eyeIcon.innerHTML = mostrar
+                ? '<path d="m3 3 18 18"/><path d="M10.6 10.6a2 2 0 0 0 2.8 2.8"/><path d="M9.9 4.2A10.5 10.5 0 0 1 12 4c6 0 9.5 8 9.5 8a18.6 18.6 0 0 1-2 3.1"/><path d="M6.6 6.6C4 8.3 2.5 12 2.5 12S6 20 12 20a9.8 9.8 0 0 0 4.1-.9"/>'
+                : '<path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6S2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="2.5"/>';
+        });
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
 
             const username = userInput.value.trim();
             const password = passInput.value;
 
-            submitBtn.classList.add('loading');
-            btnText.innerHTML = '<span class="spinner"></span>Validando...';
-            errorMsg.classList.remove('show');
-            errorMsg.textContent = '';
+            if (!username || !password) {
+                mostrarError('Completá el usuario y la contraseña.');
+                return;
+            }
+
+            activarCarga();
 
             try {
                 const { data, error } = await supabaseClient
@@ -666,48 +954,62 @@
                     .single();
 
                 if (error || !data) {
-                    mostrarError('Credenciales incorrectas.');
+                    mostrarError('Usuario o contraseña incorrectos.');
                     return;
                 }
 
                 if (data.activo === false) {
-                    mostrarError('Acceso deshabilitado. Contactá al administrador.');
+                    mostrarError('Tu acceso se encuentra deshabilitado. Contactá al administrador.');
                     return;
                 }
 
                 const hoy = new Date();
-                const venci = data.vencimiento_acceso ? new Date(data.vencimiento_acceso + 'T23:59:59') : null;
-                if (venci && venci < hoy) {
-                    mostrarError('Acceso vencido. Contactá al soporte.');
+                const vencimiento = data.vencimiento_acceso
+                    ? new Date(data.vencimiento_acceso + 'T23:59:59')
+                    : null;
+
+                if (vencimiento && vencimiento < hoy) {
+                    mostrarError('Tu acceso está vencido. Contactá al administrador.');
                     return;
                 }
 
                 localStorage.setItem('session_tvdigital', JSON.stringify(data));
                 btnText.textContent = 'Acceso concedido';
-                submitBtn.style.background = 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)';
+                submitBtn.style.background = 'linear-gradient(135deg, #22c55e, #16a34a)';
 
-                setTimeout(() => {
+                window.setTimeout(() => {
                     window.location.href = 'index.html';
-                }, 650);
+                }, 550);
 
-            } catch (err) {
-                console.error(err);
-                mostrarError('Error de conexión. Intentá de nuevo.');
+            } catch (error) {
+                console.error(error);
+                mostrarError('No se pudo conectar con el sistema. Intentá nuevamente.');
             } finally {
                 if (!localStorage.getItem('session_tvdigital')) {
-                    submitBtn.classList.remove('loading');
-                    btnText.textContent = 'Entrar al sistema';
-                    submitBtn.style.background = '';
+                    desactivarCarga();
                 }
             }
-        };
+        });
+
+        function activarCarga() {
+            submitBtn.classList.add('loading');
+            submitBtn.disabled = true;
+            btnText.innerHTML = '<span class="spinner" aria-hidden="true"></span>Verificando acceso';
+            errorMsg.classList.remove('show');
+            errorMsg.textContent = '';
+        }
+
+        function desactivarCarga() {
+            submitBtn.classList.remove('loading');
+            submitBtn.disabled = false;
+            btnText.textContent = 'Ingresar al panel';
+            submitBtn.style.background = '';
+        }
 
         function mostrarError(mensaje) {
-            errorMsg.textContent = '⚠️ ' + mensaje;
+            errorMsg.textContent = '⚠ ' + mensaje;
             errorMsg.classList.add('show');
-            submitBtn.classList.remove('loading');
-            btnText.textContent = 'Entrar al sistema';
-            submitBtn.style.background = '';
+            desactivarCarga();
             userInput.focus();
         }
 
