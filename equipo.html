@@ -835,6 +835,15 @@
             '</svg>'
         );
 
+        function crearLogoTexto(texto, fondo) {
+            return 'data:image/svg+xml,' + encodeURIComponent(
+                `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">` +
+                `<rect width="256" height="256" rx="54" fill="${fondo}"/>` +
+                `<text x="128" y="145" text-anchor="middle" fill="#fff" font-family="Arial, sans-serif" font-size="62" font-weight="700">${texto}</text>` +
+                `</svg>`
+            );
+        }
+
         const configApps = {
             'TV PLUS 2':       { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/tvplus2.png' },
             'TV':              { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/tv.png' },
@@ -845,7 +854,10 @@
             'TRY PLAY':        { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/tryplay.png' },
             'STELLA':          { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/stella.png' },
             'FLUJO TV':        { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/flujo.png' },
-            'FEMON PLUS':      { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/femon.png' }
+            'FEMON PLUS':      { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/femon.png' },
+            'VEXA TV':         { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/vexa.png' },
+            'MUNDO INFINITO':  { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/mundo.png' },
+            'SUFFIXED':        { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/suffixed.png' }
         };
 
         const TODAS_LAS_APPS = Object.keys(configApps);
