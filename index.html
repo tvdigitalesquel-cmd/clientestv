@@ -231,6 +231,26 @@
         .theme-toggle:not(.active) .dark-icon { opacity: 1; }
         .theme-toggle:not(.active) .light-icon { opacity: 0.3; }
 
+        /* ─── CAMBIAR CLAVE ─── */
+        .btn-password {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--accent);
+            background: var(--accent-dim);
+            border: 1px solid rgba(59,127,245,0.28);
+            padding: 6px 12px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'DM Sans', sans-serif;
+            white-space: nowrap;
+        }
+
+        .btn-password:hover {
+            background: rgba(59,127,245,0.2);
+            border-color: rgba(59,127,245,0.45);
+        }
+
         /* ─── BTN LOGOUT ─── */
         .btn-logout {
             font-size: 12px;
@@ -1093,6 +1113,7 @@
             .nav-inner { padding: 0 14px; height: 54px; }
             .nav-links a { padding: 6px 10px; font-size: 12px; }
             #info-sesion { display: none; }
+            .btn-password { padding: 6px 9px; }
             .container { padding: 20px 14px 70px; }
             .page-header { flex-direction: column; gap: 14px; }
             .header-actions { width: 100%; }
@@ -1150,6 +1171,7 @@ Reemplazá estas rutas por las que agregaste en tu archivo:
             </div>
             <div class="nav-right">
                 <span id="info-sesion"></span>
+                <button id="btn-cambiar-clave" onclick="abrirModalCambiarClave()" class="btn-password" style="display:none;">🔑 Cambiar clave</button>
                 <button onclick="toggleTheme()" class="theme-toggle" title="Cambiar tema">
                     <span class="dark-icon">🌙</span>
                     <span class="light-icon">☀️</span>
@@ -1398,6 +1420,38 @@ Reemplazá estas rutas por las que agregaste en tu archivo:
         </div>
     </div>
 
+    <!-- ─── MODAL CAMBIAR CLAVE ─── -->
+    <div id="modalCambiarClave" class="modal-overlay hidden">
+        <div class="modal-box" style="max-width:420px;">
+            <div class="modal-header">
+                <h3>Cambiar mi clave</h3>
+                <button type="button" onclick="cerrarModalCambiarClave()" class="modal-close">✕</button>
+            </div>
+
+            <form id="formCambiarClave" onsubmit="cambiarClavePropia(event)">
+                <div class="form-field">
+                    <label class="input-label">Clave actual</label>
+                    <input type="password" id="clave-actual-vendedor" class="input-modern" required autocomplete="current-password">
+                </div>
+
+                <div class="form-field">
+                    <label class="input-label">Nueva clave</label>
+                    <input type="password" id="nueva-clave-vendedor" class="input-modern" minlength="4" required autocomplete="new-password" placeholder="Mínimo 4 caracteres">
+                </div>
+
+                <div class="form-field">
+                    <label class="input-label">Repetir nueva clave</label>
+                    <input type="password" id="confirmar-clave-vendedor" class="input-modern" minlength="4" required autocomplete="new-password">
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" id="btn-guardar-clave" class="btn-primary">Guardar nueva clave</button>
+                    <button type="button" onclick="cerrarModalCambiarClave()" class="btn-cancel">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- ─── MODAL CONFIRMAR RENOVACIÓN ─── -->
     <div id="modalRenovar" class="modal-overlay hidden">
         <div class="modal-box" style="max-width:380px;">
@@ -1451,6 +1505,15 @@ Reemplazá estas rutas por las que agregaste en tu archivo:
             '</svg>'
         );
 
+        function crearLogoTexto(texto, fondo) {
+            return 'data:image/svg+xml,' + encodeURIComponent(
+                `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">` +
+                `<rect width="256" height="256" rx="54" fill="${fondo}"/>` +
+                `<text x="128" y="145" text-anchor="middle" fill="#fff" font-family="Arial, sans-serif" font-size="62" font-weight="700">${texto}</text>` +
+                `</svg>`
+            );
+        }
+
         const configApps = {
             'TV PLUS 2':       { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/tvplus2.png', color: '#3b7ff5' },
             'TV':              { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/tv.png', color: '#3b7ff5' },
@@ -1462,6 +1525,9 @@ Reemplazá estas rutas por las que agregaste en tu archivo:
             'STELLA':          { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/stella.png', color: '#3b7ff5' },
             'FLUJO TV':        { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/flujo.png', color: '#3b7ff5' },
             'FEMON PLUS':      { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/femon.png', color: '#3b7ff5' },
+            'VEXA TV':         { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/vexa.png', color: '#2563eb' },
+            'MUNDO INFINITO':  { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/mundo.png', color: '#7c3aed' },
+            'SUFFIXED':        { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/suffixed.png', color: '#0891b2' }
         };
 
 
@@ -1527,6 +1593,84 @@ Reemplazá estas rutas por las que agregaste en tu archivo:
             }
         }
 
+        function abrirModalCambiarClave() {
+            if (normalizarRol(currentUser?.rol) !== 'vendedor') return;
+            document.getElementById('formCambiarClave').reset();
+            document.getElementById('modalCambiarClave').classList.remove('hidden');
+            setTimeout(() => document.getElementById('clave-actual-vendedor').focus(), 50);
+        }
+
+        function cerrarModalCambiarClave() {
+            document.getElementById('modalCambiarClave').classList.add('hidden');
+            document.getElementById('formCambiarClave').reset();
+        }
+
+        async function cambiarClavePropia(event) {
+            event.preventDefault();
+
+            if (normalizarRol(currentUser?.rol) !== 'vendedor') {
+                alert('Esta opción está disponible únicamente para vendedores.');
+                cerrarModalCambiarClave();
+                return;
+            }
+
+            const claveActual = document.getElementById('clave-actual-vendedor').value;
+            const nuevaClave = document.getElementById('nueva-clave-vendedor').value;
+            const confirmarClave = document.getElementById('confirmar-clave-vendedor').value;
+            const boton = document.getElementById('btn-guardar-clave');
+
+            if (nuevaClave.length < 4) {
+                alert('La nueva clave debe tener al menos 4 caracteres.');
+                return;
+            }
+
+            if (nuevaClave !== confirmarClave) {
+                alert('Las nuevas claves no coinciden.');
+                return;
+            }
+
+            boton.disabled = true;
+            boton.textContent = 'Guardando...';
+
+            try {
+                const sesionActualizada = await refrescarSesionDesdeBase();
+                if (!sesionActualizada) {
+                    alert('No se pudo verificar tu usuario. Volvé a intentarlo.');
+                    return;
+                }
+
+                if (String(currentUser.password ?? '') !== claveActual) {
+                    alert('La clave actual es incorrecta.');
+                    return;
+                }
+
+                if (nuevaClave === claveActual) {
+                    alert('La nueva clave debe ser diferente de la actual.');
+                    return;
+                }
+
+                const { data, error } = await supabaseClient
+                    .from('usuarios_sistema')
+                    .update({ password: nuevaClave })
+                    .eq('id', currentUser.id)
+                    .select('*')
+                    .single();
+
+                if (error || !data) {
+                    alert('No se pudo cambiar la clave: ' + (error?.message || 'error desconocido'));
+                    return;
+                }
+
+                currentUser = data;
+                localStorage.setItem('session_tvdigital', JSON.stringify(data));
+                cerrarModalCambiarClave();
+                alert('Tu clave fue actualizada correctamente.');
+            } finally {
+                boton.disabled = false;
+                boton.textContent = 'Guardar nueva clave';
+            }
+        }
+
         async function checkSession() {
             const savedTheme = localStorage.getItem('theme') || 'dark';
             if (savedTheme === 'light') {
@@ -1554,6 +1698,9 @@ Reemplazá estas rutas por las que agregaste en tu archivo:
             const rolSesion = normalizarRol(currentUser.rol);
             if (rolSesion === 'admin' || rolSesion === 'resseller') {
                 document.getElementById('link-equipos').style.display = '';
+            }
+            if (rolSesion === 'vendedor') {
+                document.getElementById('btn-cambiar-clave').style.display = '';
             }
             
             let infoText = `${currentUser.rol.toUpperCase()} · ${currentUser.username}`;
