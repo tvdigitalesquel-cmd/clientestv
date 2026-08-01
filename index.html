@@ -1711,11 +1711,16 @@ Reemplazá estas rutas por las que agregaste en tu archivo:
         }
 
         function obtenerAppsPermitidas() {
-            if (normalizarRol(currentUser?.rol) !== 'vendedor') return [...TODAS_LAS_APPS];
-            if (!Array.isArray(currentUser?.apps_permitidas)) return [];
+            const rol = normalizarRol(currentUser?.rol);
+            const configuradas = Array.isArray(currentUser?.apps_permitidas)
+                ? [...new Set(currentUser.apps_permitidas.map(normalizarNombreApp))]
+                    .filter(app => Object.prototype.hasOwnProperty.call(configApps, app))
+                : [];
 
-            return [...new Set(currentUser.apps_permitidas.map(normalizarNombreApp))]
-                .filter(app => Object.prototype.hasOwnProperty.call(configApps, app));
+            // Compatibilidad con cuentas admin/resseller anteriores:
+            // mientras no guarden su configuración, conservan acceso a todas.
+            if (!configuradas.length && rol !== 'vendedor') return [...TODAS_LAS_APPS];
+            return configuradas;
         }
 
         function puedeUsarApp(nombreApp) {
@@ -1892,10 +1897,13 @@ Reemplazá estas rutas por las que agregaste en tu archivo:
             const seleccionNormalizada = normalizarNombreApp(appSeleccionada);
 
             if (!permitidas.length) {
+                const rol = normalizarRol(currentUser?.rol);
+                const mensaje = rol === 'vendedor'
+                    ? 'Tu usuario todavía no tiene aplicaciones habilitadas. Contactá al administrador o a tu resseller.'
+                    : 'Todavía no configuraste aplicaciones de venta. Ingresá en Equipo y guardá al menos una aplicación.';
+
                 container.innerHTML = `
-                    <div class="apps-empty-permission">
-                        Tu usuario todavía no tiene aplicaciones habilitadas. Contactá al administrador o a tu resseller.
-                    </div>`;
+                    <div class="apps-empty-permission">${mensaje}</div>`;
                 return;
             }
 
