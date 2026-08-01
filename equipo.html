@@ -680,6 +680,31 @@
             </div>
         </div>
 
+        <!-- ─── MIS APLICACIONES DE VENTA ─── -->
+        <div id="seccion-mis-apps" class="card-surface form-section">
+            <div class="apps-permissions-head" style="margin-bottom:14px;">
+                <div>
+                    <div class="section-title" style="margin-bottom:5px;">Mis aplicaciones de venta</div>
+                    <div class="apps-permissions-help">
+                        Elegí las aplicaciones que vendés con esta cuenta. En “Mis Clientes” solo aparecerán estas opciones al crear o editar un cliente.
+                    </div>
+                </div>
+                <div class="apps-permissions-actions">
+                    <button type="button" class="btn-mini" onclick="seleccionarTodasLasApps('my-apps-selector', true)">Todas</button>
+                    <button type="button" class="btn-mini" onclick="seleccionarTodasLasApps('my-apps-selector', false)">Ninguna</button>
+                </div>
+            </div>
+
+            <form id="formMisApps">
+                <div id="my-apps-selector" class="apps-permissions-grid"></div>
+                <div class="form-actions" style="justify-content:flex-end;">
+                    <button type="submit" id="btn-guardar-mis-apps" class="btn-primary" style="justify-content:center; min-width:190px;">
+                        Guardar mis aplicaciones
+                    </button>
+                </div>
+            </form>
+        </div>
+
         <!-- ─── FORM NUEVO USUARIO ─── -->
         <div id="seccion-form" class="card-surface form-section">
             <div id="titulo-form-nuevo" class="section-title">Crear Nuevo Acceso</div>
@@ -913,6 +938,34 @@
                 .filter(app => Object.prototype.hasOwnProperty.call(configApps, app));
         }
 
+        function obtenerAppsPropiasConfiguradas() {
+            const configuradas = normalizarListaApps(currentUser?.apps_permitidas);
+            return configuradas.length ? configuradas : [...TODAS_LAS_APPS];
+        }
+
+        async function refrescarSesionDesdeBase() {
+            if (!currentUser?.id) return false;
+
+            const { data, error } = await supabaseClient
+                .from('usuarios_sistema')
+                .select('*')
+                .eq('id', currentUser.id)
+                .single();
+
+            if (error || !data) {
+                console.error('No se pudo actualizar la sesión:', error);
+                return false;
+            }
+
+            currentUser = data;
+            localStorage.setItem('session_tvdigital', JSON.stringify(data));
+            return true;
+        }
+
+        function cargarConfiguracionAppsPropias() {
+            renderSelectorAppsPermisos('my-apps-selector', obtenerAppsPropiasConfiguradas());
+        }
+
         function actualizarVisibilidadAppsNuevoUsuario() {
             const esVendedor = normalizarRol(document.getElementById('newRol').value) === 'vendedor';
             const caja = document.getElementById('new-apps-box');
@@ -1016,7 +1069,7 @@
             actualizarVisibilidadAppsNuevoUsuario();
         }
 
-        function checkSession() {
+        async function checkSession() {
             const savedTheme = localStorage.getItem('theme') || 'dark';
             if (savedTheme === 'light') {
                 document.documentElement.classList.add('light-mode');
@@ -1028,6 +1081,8 @@
                 return;
             }
 
+            await refrescarSesionDesdeBase();
+
             const rol = normalizarRol(currentUser.rol);
             if (rol !== 'admin' && rol !== 'resseller') {
                 alert('Tu usuario no tiene permiso para gestionar un equipo.');
@@ -1036,8 +1091,46 @@
             }
 
             configurarInterfazPorRol();
+            cargarConfiguracionAppsPropias();
             cargarUsuariosSistema();
         }
+
+        document.getElementById('formMisApps').onsubmit = async (e) => {
+            e.preventDefault();
+
+            const appsSeleccionadas = obtenerAppsSeleccionadas('my-apps-selector');
+            if (!appsSeleccionadas.length) {
+                alert('Seleccioná al menos una aplicación para tu cuenta.');
+                return;
+            }
+
+            const boton = document.getElementById('btn-guardar-mis-apps');
+            const textoOriginal = boton.innerText;
+            boton.disabled = true;
+            boton.innerText = 'Guardando...';
+
+            try {
+                const { data, error } = await supabaseClient
+                    .from('usuarios_sistema')
+                    .update({ apps_permitidas: appsSeleccionadas })
+                    .eq('id', currentUser.id)
+                    .select('*')
+                    .single();
+
+                if (error) throw error;
+
+                currentUser = data;
+                localStorage.setItem('session_tvdigital', JSON.stringify(data));
+                cargarConfiguracionAppsPropias();
+                alert('Tus aplicaciones de venta se actualizaron ✓');
+            } catch (error) {
+                console.error('Error al guardar aplicaciones propias:', error);
+                alert('No se pudieron guardar las aplicaciones: ' + error.message);
+            } finally {
+                boton.disabled = false;
+                boton.innerText = textoOriginal;
+            }
+        };
 
         async function obtenerUsuariosPermitidos() {
             let query = supabaseClient
