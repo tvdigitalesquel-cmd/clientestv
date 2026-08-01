@@ -803,10 +803,10 @@
             <div class="confirm-icon">⚠️</div>
             <div class="confirm-title">Confirmar Eliminación</div>
             <div class="confirm-text">
-                ¿Estás seguro de que querés revocar el acceso a <strong id="nombre-usuario-confirmar" style="color:var(--text-primary);"></strong>?
+                ¿Estás seguro de que querés eliminar al usuario <strong id="nombre-usuario-confirmar" style="color:var(--text-primary);"></strong>? Esta acción no se puede deshacer.
             </div>
             <div class="confirm-actions">
-                <button onclick="confirmarEliminar()" class="btn-confirm-delete">Revocar</button>
+                <button onclick="confirmarEliminar()" class="btn-confirm-delete">Eliminar</button>
                 <button onclick="cerrarConfirmar()" class="btn-confirm-cancel">Cancelar</button>
             </div>
         </div>
@@ -855,9 +855,9 @@
             'STELLA':          { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/stella.png' },
             'FLUJO TV':        { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/flujo.png' },
             'FEMON PLUS':      { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/femon.png' },
-            'VEXA TV':         { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/vexa.png' },
-            'MUNDO INFINITO':  { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/mundo.png' },
-            'SUFFIXED':        { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/suffixed.png' }
+            'VEXA TV':         { logo: crearLogoTexto('VEXA', '#2563eb') },
+            'MUNDO INFINITO':  { logo: crearLogoTexto('M∞', '#7c3aed') },
+            'SUFFIXED':        { logo: crearLogoTexto('SFX', '#0891b2') }
         };
 
         const TODAS_LAS_APPS = Object.keys(configApps);
@@ -1146,6 +1146,7 @@
 
                 const roleClass = esUsuarioResseller ? 'role-resseller' : 'role-vendedor';
                 const roleIcon = esUsuarioResseller ? '🔷' : '📊';
+                const puedeGestionar = puedeGestionarUsuario(u);
                 const clickCard = rol === 'vendedor'
                     ? `onclick="verClientesVendedorPorId(${JSON.stringify(String(u.id))})"`
                     : '';
@@ -1179,10 +1180,11 @@
                                 </div>
                             </div>
                         </div>
+                        ${puedeGestionar ? `
                         <div class="card-usuario-actions">
                             <button onclick="event.stopPropagation(); abrirModalEditarPorId(${JSON.stringify(String(u.id))})" class="btn-card btn-edit">✏️ Editar</button>
                             <button onclick="event.stopPropagation(); abrirConfirmarEliminarPorId(${JSON.stringify(String(u.id))})" class="btn-card btn-delete">🗑️ Eliminar</button>
-                        </div>
+                        </div>` : ''}
                     </div>`;
             });
         }
@@ -1379,7 +1381,7 @@
                 query = query.in('rol', ['resseller', 'vendedor']);
             }
 
-            return await query;
+            return await query.select('id');
         }
 
         document.getElementById('formEditarUsuario').onsubmit = async (e) => {
@@ -1410,9 +1412,13 @@
                 updateData.apps_permitidas = appsSeleccionadas;
             }
 
-            const { error } = await actualizarUsuarioPermitido(id, updateData);
+            const { data: usuariosActualizados, error } = await actualizarUsuarioPermitido(id, updateData);
             if (error) {
                 alert('Error al actualizar: ' + error.message);
+                return;
+            }
+            if (!usuariosActualizados || usuariosActualizados.length === 0) {
+                alert('No se actualizó ningún usuario. Verificá que el vendedor pertenezca a tu equipo.');
                 return;
             }
 
@@ -1533,14 +1539,19 @@
                 query = query.in('rol', ['resseller', 'vendedor']);
             }
 
-            const { error } = await query;
+            const { data: usuariosEliminados, error } = await query.select('id');
             if (error) {
-                alert('Error: ' + error.message);
+                alert('Error al eliminar: ' + error.message);
+                return;
+            }
+            if (!usuariosEliminados || usuariosEliminados.length === 0) {
+                alert('No se eliminó ningún usuario. Verificá que el vendedor pertenezca a tu equipo.');
                 return;
             }
 
             cerrarConfirmar();
             await cargarUsuariosSistema();
+            alert('Vendedor eliminado ✓');
         }
 
         function logout() {
