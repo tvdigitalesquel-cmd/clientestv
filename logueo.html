@@ -723,6 +723,151 @@
                 transition-duration: 0.01ms !important;
             }
         }
+
+        /* ─── DISEÑO MINIMALISTA ─── */
+        body {
+            background:
+                radial-gradient(circle at top, rgba(59, 130, 246, 0.08), transparent 34%),
+                #090e16;
+        }
+
+        .ambient-grid {
+            display: none;
+        }
+
+        .page {
+            min-height: 100svh;
+            padding: 24px;
+        }
+
+        .access-shell {
+            width: min(440px, 100%);
+            min-height: auto;
+            display: block;
+            overflow: hidden;
+            border: 1px solid rgba(148, 163, 184, 0.12);
+            border-radius: 22px;
+            background: #111827;
+            backdrop-filter: none;
+            box-shadow: 0 24px 70px rgba(0, 0, 0, 0.34);
+        }
+
+        .login-panel {
+            min-height: auto;
+            padding: 34px;
+            justify-content: flex-start;
+            border: 0;
+            background: #111827;
+        }
+
+        .brand {
+            gap: 12px;
+        }
+
+        .brand-mark {
+            width: 44px;
+            height: 44px;
+            border-radius: 13px;
+            box-shadow: none;
+        }
+
+        .brand-copy strong {
+            font-size: 15px;
+        }
+
+        .brand-copy span {
+            font-size: 9px;
+        }
+
+        .login-content {
+            width: 100%;
+            max-width: none;
+            margin: 36px 0 24px;
+        }
+
+        .eyebrow {
+            display: none;
+        }
+
+        .login-content h1 {
+            font-size: 32px;
+            line-height: 1.1;
+            letter-spacing: -0.04em;
+        }
+
+        .login-description {
+            margin-top: 10px;
+            font-size: 13px;
+            line-height: 1.55;
+        }
+
+        .form-login {
+            margin-top: 28px;
+        }
+
+        .field {
+            margin-bottom: 15px;
+        }
+
+        .input-style {
+            height: 52px;
+            background: #0d1522;
+            border-color: rgba(148, 163, 184, 0.15);
+        }
+
+        .input-style:hover,
+        .input-style:focus {
+            background: #101b2b;
+        }
+
+        .submit-button {
+            height: 52px;
+            border-radius: 12px;
+            background: #3b82f6;
+            box-shadow: none;
+        }
+
+        .submit-button:hover {
+            box-shadow: none;
+        }
+
+        .login-footer {
+            justify-content: center;
+            padding-top: 18px;
+            border-top-color: rgba(148, 163, 184, 0.08);
+        }
+
+        @media (max-width: 640px) {
+            .page {
+                align-items: center;
+                padding: 14px;
+            }
+
+            .access-shell {
+                border-radius: 18px;
+            }
+
+            .login-panel {
+                padding: 26px 20px 22px;
+            }
+
+            .login-content {
+                margin: 30px 0 20px;
+            }
+
+            .login-content h1 {
+                font-size: 30px;
+            }
+
+            .input-style {
+                font-size: 16px;
+            }
+
+            .login-footer {
+                align-items: center;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -746,9 +891,8 @@
                 </header>
 
                 <div class="login-content">
-                    <div class="eyebrow">Acceso privado</div>
-                    <h1>Bienvenido<br>de nuevo.</h1>
-                    <p class="login-description">Ingresá tus credenciales para administrar clientes, vencimientos y usuarios desde un entorno centralizado.</p>
+                                        <h1>Iniciar sesión</h1>
+                    <p class="login-description">Ingresá tus credenciales para acceder al panel.</p>
 
                     <form id="formLogin" class="form-login" novalidate>
                         <div class="field">
@@ -795,14 +939,6 @@
                             </div>
                         </div>
 
-                        <div class="access-status">
-                            <div class="access-status-left">
-                                <span class="status-dot"></span>
-                                Sistema disponible
-                            </div>
-                            <span>Conexión protegida</span>
-                        </div>
-
                         <button type="submit" class="submit-button" id="submitBtn">
                             <span id="btn-text">Ingresar al panel</span>
                         </button>
@@ -813,97 +949,8 @@
 
                 <footer class="login-footer">
                     <span>© 2026 TV Digital</span>
-                    <span>Acceso exclusivo para usuarios autorizados</span>
                 </footer>
             </section>
-
-            <aside class="visual-panel">
-                <div class="visual-copy">
-                    <span class="system-badge">Centro de operaciones</span>
-                    <h2>Tu gestión comercial, clara y bajo control.</h2>
-                    <p>Consultá clientes, supervisá vencimientos y organizá el trabajo de administradores, resellers y vendedores desde una única plataforma.</p>
-                </div>
-
-                <div>
-                    <div class="dashboard-preview" aria-hidden="true">
-                        <div class="preview-head">
-                            <div class="preview-title">
-                                <span class="preview-title-icon">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                                        <rect x="3" y="3" width="7" height="7" rx="2"/>
-                                        <rect x="14" y="3" width="7" height="7" rx="2"/>
-                                        <rect x="3" y="14" width="7" height="7" rx="2"/>
-                                        <rect x="14" y="14" width="7" height="7" rx="2"/>
-                                    </svg>
-                                </span>
-                                Resumen operativo
-                            </div>
-                            <span class="preview-live">En línea</span>
-                        </div>
-
-                        <div class="metrics-grid">
-                            <div class="metric-card">
-                                <span>Clientes activos</span>
-                                <strong>248</strong>
-                            </div>
-                            <div class="metric-card">
-                                <span>Próximos a vencer</span>
-                                <strong>16</strong>
-                            </div>
-                            <div class="metric-card">
-                                <span>Equipo conectado</span>
-                                <strong>12</strong>
-                            </div>
-                        </div>
-
-                        <div class="activity-list">
-                            <div class="activity-row">
-                                <div class="activity-icon">✓</div>
-                                <div class="activity-copy">
-                                    <strong>Gestión de clientes</strong>
-                                    <span>Altas, renovaciones y seguimiento</span>
-                                </div>
-                                <span class="activity-state">Activo</span>
-                            </div>
-                            <div class="activity-row">
-                                <div class="activity-icon">⌁</div>
-                                <div class="activity-copy">
-                                    <strong>Control de accesos</strong>
-                                    <span>Roles y permisos organizados</span>
-                                </div>
-                                <span class="activity-state">Activo</span>
-                            </div>
-                            <div class="activity-row">
-                                <div class="activity-icon">↗</div>
-                                <div class="activity-copy">
-                                    <strong>Reportes operativos</strong>
-                                    <span>Información disponible en tiempo real</span>
-                                </div>
-                                <span class="activity-state">Activo</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="visual-footer">
-                        <span>
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/>
-                                <path d="m9 12 2 2 4-4"/>
-                            </svg>
-                            Acceso controlado
-                        </span>
-                        <span>
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-                                <path d="M4 19V9"/>
-                                <path d="M10 19V5"/>
-                                <path d="M16 19v-7"/>
-                                <path d="M22 19V3"/>
-                            </svg>
-                            Operación centralizada
-                        </span>
-                    </div>
-                </div>
-            </aside>
         </section>
     </main>
 
