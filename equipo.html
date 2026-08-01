@@ -598,6 +598,55 @@
         .btn-confirm-cancel { flex: 1; padding: 11px; background: var(--bg-surface); color: var(--text-secondary); border: 1px solid var(--border); border-radius: var(--radius-md); font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; text-transform: uppercase; }
         .btn-confirm-cancel:hover { background: var(--border); color: var(--text-primary); }
 
+        /* ─── DATOS DE ACCESO CREADOS ─── */
+        .access-created-box {
+            padding: 16px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            background: var(--bg-surface);
+            margin-bottom: 18px;
+        }
+
+        .access-created-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            padding: 9px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .access-created-row:last-child { border-bottom: 0; }
+        .access-created-label {
+            color: var(--text-muted);
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .access-created-value {
+            color: var(--text-primary);
+            font-family: 'DM Mono', monospace;
+            font-size: 13px;
+            font-weight: 600;
+            text-align: right;
+            overflow-wrap: anywhere;
+        }
+        .btn-copy-access {
+            width: 100%;
+            justify-content: center;
+            padding: 12px;
+        }
+        .copy-success {
+            display: none;
+            margin-top: 10px;
+            color: var(--green);
+            font-size: 12px;
+            font-weight: 700;
+            text-align: center;
+        }
+        .copy-success.show { display: block; }
+
         /* ─── RESPONSIVE ─── */
         @media (max-width: 768px) {
             .nav-inner { padding: 0 14px; height: 54px; }
@@ -837,6 +886,44 @@
         </div>
     </div>
 
+    <!-- ─── MODAL DATOS DEL VENDEDOR CREADO ─── -->
+    <div id="modalDatosVendedor" class="modal-overlay hidden">
+        <div class="modal-box" style="max-width:420px;">
+            <div class="modal-header">
+                <h3>Vendedor creado</h3>
+                <button type="button" onclick="cerrarModalDatosVendedor()" class="modal-close">✕</button>
+            </div>
+
+            <p style="font-size:12px; color:var(--text-secondary); line-height:1.5; margin-bottom:16px;">
+                Copiá estos datos para enviárselos al vendedor por mensaje.
+            </p>
+
+            <div class="access-created-box">
+                <div class="access-created-row">
+                    <span class="access-created-label">Usuario</span>
+                    <span id="dato-vendedor-usuario" class="access-created-value"></span>
+                </div>
+                <div class="access-created-row">
+                    <span class="access-created-label">Clave</span>
+                    <span id="dato-vendedor-clave" class="access-created-value"></span>
+                </div>
+                <div class="access-created-row">
+                    <span class="access-created-label">Vencimiento</span>
+                    <span id="dato-vendedor-vencimiento" class="access-created-value"></span>
+                </div>
+            </div>
+
+            <button type="button" onclick="copiarDatosVendedorCreado()" class="btn-primary btn-copy-access">
+                📋 Copiar datos
+            </button>
+            <div id="mensaje-copia-vendedor" class="copy-success">Datos copiados ✓</div>
+
+            <div class="form-actions" style="margin-top:14px; padding-top:14px;">
+                <button type="button" onclick="cerrarModalDatosVendedor()" class="btn-cancel" style="flex:1;">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         const SUPABASE_URL = 'https://vjbdhbbxbvoigbidquya.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_4ogrbtxBrBWBFj-NRJOrbg_XnpmO4pS';
@@ -849,6 +936,7 @@
         let usuariosVisibles = [];
         let todosLosClientes = [];
         let clientesVendedorActual = [];
+        let datosUltimoVendedorCreado = null;
 
         const LOGO_GENERICO = 'data:image/svg+xml,' + encodeURIComponent(
             '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">' +
@@ -1567,6 +1655,63 @@
             alert(`${rolEditado} actualizado ✓`);
         };
 
+        function formatearFechaParaMensaje(fecha) {
+            if (!fecha) return 'Sin vencimiento';
+            const partes = String(fecha).split('-');
+            if (partes.length !== 3) return fecha;
+            return `${partes[2]}/${partes[1]}/${partes[0]}`;
+        }
+
+        function abrirModalDatosVendedor(datos) {
+            datosUltimoVendedorCreado = datos;
+            document.getElementById('dato-vendedor-usuario').innerText = datos.username;
+            document.getElementById('dato-vendedor-clave').innerText = datos.password;
+            document.getElementById('dato-vendedor-vencimiento').innerText = formatearFechaParaMensaje(datos.vencimiento);
+            document.getElementById('mensaje-copia-vendedor').classList.remove('show');
+            document.getElementById('modalDatosVendedor').classList.remove('hidden');
+        }
+
+        function cerrarModalDatosVendedor() {
+            document.getElementById('modalDatosVendedor').classList.add('hidden');
+            document.getElementById('mensaje-copia-vendedor').classList.remove('show');
+        }
+
+        async function copiarTextoSeguro(texto) {
+            if (navigator.clipboard && window.isSecureContext) {
+                await navigator.clipboard.writeText(texto);
+                return;
+            }
+
+            const textarea = document.createElement('textarea');
+            textarea.value = texto;
+            textarea.setAttribute('readonly', '');
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            const copiado = document.execCommand('copy');
+            document.body.removeChild(textarea);
+            if (!copiado) throw new Error('No se pudo copiar automáticamente.');
+        }
+
+        async function copiarDatosVendedorCreado() {
+            if (!datosUltimoVendedorCreado) return;
+
+            const texto = [
+                'Datos de acceso - Panel Gestión Clientes TVD',
+                `Usuario: ${datosUltimoVendedorCreado.username}`,
+                `Clave: ${datosUltimoVendedorCreado.password}`,
+                `Vencimiento: ${formatearFechaParaMensaje(datosUltimoVendedorCreado.vencimiento)}`
+            ].join('\n');
+
+            try {
+                await copiarTextoSeguro(texto);
+                document.getElementById('mensaje-copia-vendedor').classList.add('show');
+            } catch (error) {
+                alert('No se pudieron copiar los datos: ' + error.message);
+            }
+        }
+
         document.getElementById('formNuevoUsuario').onsubmit = async (e) => {
             e.preventDefault();
 
@@ -1615,7 +1760,16 @@
             configurarInterfazPorRol();
             seleccionarTodasLasApps('new-apps-selector', true);
             await cargarUsuariosSistema();
-            alert(`${rolSeleccionado === 'resseller' ? 'Resseller' : 'Vendedor'} creado ✓`);
+
+            if (rolSeleccionado === 'vendedor') {
+                abrirModalDatosVendedor({
+                    username: username,
+                    password: password,
+                    vencimiento: vencimiento
+                });
+            } else {
+                alert('Resseller creado ✓');
+            }
         };
 
         function abrirConfirmarEliminarPorId(id) {
