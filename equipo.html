@@ -751,7 +751,7 @@
 
                 <div class="form-field">
                     <label class="input-label">Usuario</label>
-                    <input type="text" id="edit-username" class="input-modern" disabled>
+                    <input type="text" id="edit-username" class="input-modern" required autocomplete="username">
                 </div>
 
                 <div class="form-field">
@@ -803,7 +803,7 @@
             <div class="confirm-icon">⚠️</div>
             <div class="confirm-title">Confirmar Eliminación</div>
             <div class="confirm-text">
-                ¿Estás seguro de que querés eliminar al usuario <strong id="nombre-usuario-confirmar" style="color:var(--text-primary);"></strong>? Esta acción no se puede deshacer.
+                <span id="texto-eliminacion-usuario">¿Estás seguro de que querés eliminar al usuario <strong id="nombre-usuario-confirmar" style="color:var(--text-primary);"></strong>? Esta acción no se puede deshacer.</span>
             </div>
             <div class="confirm-actions">
                 <button onclick="confirmarEliminar()" class="btn-confirm-delete">Eliminar</button>
@@ -1147,8 +1147,8 @@
                 const roleClass = esUsuarioResseller ? 'role-resseller' : 'role-vendedor';
                 const roleIcon = esUsuarioResseller ? '🔷' : '📊';
                 const puedeGestionar = puedeGestionarUsuario(u);
-                const clickCard = rol === 'vendedor'
-                    ? `onclick="verClientesVendedorPorId(${JSON.stringify(String(u.id))})"`
+                const vendedorData = rol === 'vendedor'
+                    ? `data-view-vendedor-id="${escaparHtml(String(u.id))}"`
                     : '';
                 const noClickClass = esUsuarioResseller ? 'no-click' : '';
 
@@ -1165,7 +1165,7 @@
                 }
 
                 cont.innerHTML += `
-                    <div class="card-usuario ${isDisabled ? 'user-disabled' : ''} ${noClickClass}" ${clickCard}>
+                    <div class="card-usuario ${isDisabled ? 'user-disabled' : ''} ${noClickClass}" ${vendedorData}>
                         <div class="card-usuario-top">
                             <div class="user-avatar">${roleIcon}</div>
                             <div class="user-info">
@@ -1182,10 +1182,37 @@
                         </div>
                         ${puedeGestionar ? `
                         <div class="card-usuario-actions">
-                            <button onclick="event.stopPropagation(); abrirModalEditarPorId(${JSON.stringify(String(u.id))})" class="btn-card btn-edit">✏️ Editar</button>
-                            <button onclick="event.stopPropagation(); abrirConfirmarEliminarPorId(${JSON.stringify(String(u.id))})" class="btn-card btn-delete">🗑️ Eliminar</button>
+                            <button type="button" data-action="edit-user" data-user-id="${escaparHtml(String(u.id))}" class="btn-card btn-edit">✏️ Editar</button>
+                            <button type="button" data-action="delete-user" data-user-id="${escaparHtml(String(u.id))}" class="btn-card btn-delete">🗑️ Eliminar</button>
                         </div>` : ''}
                     </div>`;
+            });
+
+            vincularAccionesTarjetasEquipo();
+        }
+
+        function vincularAccionesTarjetasEquipo() {
+            const cont = document.getElementById('lista-usuarios-sistema');
+            if (!cont) return;
+
+            cont.querySelectorAll('[data-action="edit-user"]').forEach(btn => {
+                btn.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    abrirModalEditarPorId(btn.dataset.userId);
+                });
+            });
+
+            cont.querySelectorAll('[data-action="delete-user"]').forEach(btn => {
+                btn.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    abrirConfirmarEliminarPorId(btn.dataset.userId);
+                });
+            });
+
+            cont.querySelectorAll('[data-view-vendedor-id]').forEach(card => {
+                card.addEventListener('click', () => {
+                    verClientesVendedorPorId(card.dataset.viewVendedorId);
+                });
             });
         }
 
@@ -1393,11 +1420,18 @@
             }
 
             const id = document.getElementById('edit-user-id').value;
+            const username = document.getElementById('edit-username').value.trim();
             const password = document.getElementById('edit-password').value;
             const vencimiento = document.getElementById('edit-vencimiento').value || null;
             const activo = document.getElementById('edit-activo').checked;
 
+            if (!username) {
+                alert('El nombre de usuario es obligatorio.');
+                return;
+            }
+
             const updateData = {
+                username: username,
                 vencimiento_acceso: vencimiento,
                 activo: activo
             };
@@ -1502,19 +1536,23 @@
                 return;
             }
 
-            if (normalizarRol(usuario.rol) === 'resseller') {
-                const cantidadHijos = usuariosVisibles.filter(u =>
+            const rolUsuario = normalizarRol(usuario.rol);
+            const cantidadHijos = rolUsuario === 'resseller'
+                ? usuariosVisibles.filter(u =>
                     normalizarRol(u.rol) === 'vendedor' && mismoId(u.padre_id, usuario.id)
-                ).length;
-
-                if (cantidadHijos > 0) {
-                    alert(`No podés eliminar este resseller porque todavía tiene ${cantidadHijos} vendedor${cantidadHijos !== 1 ? 'es' : ''}. Eliminá o reasigná primero esos vendedores.`);
-                    return;
-                }
-            }
+                ).length
+                : 0;
 
             usuarioAEliminar = usuario;
-            document.getElementById('nombre-usuario-confirmar').innerText = usuario.username;
+            const nombreSeguro = escaparHtml(usuario.username);
+            const textoConfirmacion = document.getElementById('texto-eliminacion-usuario');
+
+            if (rolUsuario === 'resseller' && cantidadHijos > 0) {
+                textoConfirmacion.innerHTML = `¿Querés eliminar al reseller <strong style="color:var(--text-primary);">${nombreSeguro}</strong>? Sus ${cantidadHijos} vendedor${cantidadHijos !== 1 ? 'es' : ''} pasarán a depender del administrador. Esta acción no se puede deshacer.`;
+            } else {
+                textoConfirmacion.innerHTML = `¿Estás seguro de que querés eliminar al ${rolUsuario === 'resseller' ? 'reseller' : 'vendedor'} <strong style="color:var(--text-primary);">${nombreSeguro}</strong>? Esta acción no se puede deshacer.`;
+            }
+
             document.getElementById('modalConfirmar').classList.remove('hidden');
         }
 
@@ -1526,10 +1564,28 @@
         async function confirmarEliminar() {
             if (!usuarioAEliminar || !puedeGestionarUsuario(usuarioAEliminar)) return;
 
+            const usuarioObjetivo = usuarioAEliminar;
+            const rolObjetivo = normalizarRol(usuarioObjetivo.rol);
+
+            // Al eliminar un reseller, sus vendedores se reasignan al admin para conservarlos
+            // junto con todos sus clientes.
+            if (esAdmin() && rolObjetivo === 'resseller') {
+                const { error: reasignacionError } = await supabaseClient
+                    .from('usuarios_sistema')
+                    .update({ padre_id: currentUser.id })
+                    .eq('rol', 'vendedor')
+                    .eq('padre_id', usuarioObjetivo.id);
+
+                if (reasignacionError) {
+                    alert('No se pudieron reasignar los vendedores del reseller: ' + reasignacionError.message);
+                    return;
+                }
+            }
+
             let query = supabaseClient
                 .from('usuarios_sistema')
                 .delete()
-                .eq('id', usuarioAEliminar.id);
+                .eq('id', usuarioObjetivo.id);
 
             if (esResseller()) {
                 query = query
@@ -1545,13 +1601,13 @@
                 return;
             }
             if (!usuariosEliminados || usuariosEliminados.length === 0) {
-                alert('No se eliminó ningún usuario. Verificá que el vendedor pertenezca a tu equipo.');
+                alert('No se eliminó ningún usuario. Puede que no tengas permiso o que el registro ya no exista.');
                 return;
             }
 
             cerrarConfirmar();
             await cargarUsuariosSistema();
-            alert('Vendedor eliminado ✓');
+            alert(`${rolObjetivo === 'resseller' ? 'Resseller' : 'Vendedor'} eliminado ✓`);
         }
 
         function logout() {
