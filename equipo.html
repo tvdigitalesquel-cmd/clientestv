@@ -1272,7 +1272,7 @@
         function rolesQuePuedeCrear() {
             if (esAdmin()) return ['admin', 'moderador', 'resseller', 'vendedor'];
             if (esModerador()) return ['resseller', 'vendedor'];
-            if (esRevendedor()) return ['resseller'];
+            if (esRevendedor()) return ['resseller', 'vendedor'];
             return [];
         }
 
@@ -1280,7 +1280,7 @@
             if (!usuario || !puedeGestionarUsuario(usuario)) return [];
             if (esAdmin()) return ['admin', 'moderador', 'resseller', 'vendedor'];
             if (esModerador()) return ['resseller', 'vendedor'];
-            if (esRevendedor()) return ['resseller'];
+            if (esRevendedor()) return ['resseller', 'vendedor'];
             return [];
         }
 
@@ -1427,7 +1427,7 @@
             }
 
             return esRevendedor()
-                && rolUsuario === 'resseller'
+                && ['resseller', 'vendedor'].includes(rolUsuario)
                 && esDescendienteVisible(usuario);
         }
 
@@ -1451,11 +1451,11 @@
                 document.getElementById('titulo-lista-usuarios').innerText = 'Mi Equipo';
                 document.getElementById('btn-crear-usuario').innerText = '+ Crear Usuario';
             } else {
-                document.getElementById('titulo-gestion').innerText = 'Mi Red de Revendedores';
-                document.getElementById('subtitulo-gestion').innerText = 'Creá revendedores y administrá toda la rama que depende de tu usuario';
-                document.getElementById('titulo-form-nuevo').innerText = 'Crear Nuevo Revendedor';
+                document.getElementById('titulo-gestion').innerText = 'Gestionar Mi Equipo';
+                document.getElementById('subtitulo-gestion').innerText = 'Creá revendedores y vendedores, y administrá toda la rama que depende de tu usuario';
+                document.getElementById('titulo-form-nuevo').innerText = 'Crear Nuevo Usuario';
                 document.getElementById('titulo-lista-usuarios').innerText = 'Mi Equipo';
-                document.getElementById('btn-crear-usuario').innerText = '+ Crear Revendedor';
+                document.getElementById('btn-crear-usuario').innerText = '+ Crear Usuario';
             }
 
             selectRol.innerHTML = opciones.map(rol => {
@@ -1638,7 +1638,9 @@
 
             while (actual) {
                 const id = String(actual.id);
-                if (visitados.has(id)) return { habilitado: false, heredado: true, motivo: 'Jerarquía inválida' };
+                if (visitados.has(id)) {
+                    return { habilitado: false, heredado: true, motivo: 'Jerarquía inválida' };
+                }
                 visitados.add(id);
 
                 if (actual.activo === false) {
@@ -1657,9 +1659,17 @@
                     };
                 }
 
+                // Para usuarios no administradores, la lista cargada contiene solo
+                // su propia rama descendente. Al llegar al usuario de la sesión,
+                // su cadena superior ya fue validada contra Supabase al iniciar.
+                if (mismoId(actual.id, currentUser?.id)) break;
                 if (!actual.padre_id) break;
-                actual = buscarUsuarioGlobalPorId(actual.padre_id);
-                if (!actual && mismoId(usuario.padre_id, currentUser.id)) actual = currentUser;
+
+                const padre = buscarUsuarioGlobalPorId(actual.padre_id);
+                if (!padre) {
+                    return { habilitado: false, heredado: true, motivo: 'Jerarquía inválida' };
+                }
+                actual = padre;
             }
 
             return { habilitado: true, heredado: false, motivo: '' };
@@ -1744,7 +1754,7 @@
                         <p>No hay usuarios en esta rama</p>
                         <p class="sub">${esAdmin()
                             ? 'Creá el primer administrador, moderador, revendedor o vendedor'
-                            : (esModerador() ? 'Creá tu primer revendedor o vendedor' : 'Creá tu primer revendedor')}</p>
+                            : (esModerador() ? 'Creá tu primer revendedor o vendedor' : 'Creá tu primer revendedor o vendedor')}</p>
                     </div>`;
                 return;
             }
@@ -1849,8 +1859,8 @@
                 document.getElementById('label-stat-terciario').innerText = 'Bloqueados';
                 document.getElementById('count-terciario').innerText = bloqueados;
             } else {
-                document.getElementById('label-stat-secundario').innerText = 'Revendedores';
-                document.getElementById('count-secundario').innerText = revendedores;
+                document.getElementById('label-stat-secundario').innerText = 'Revendedores / Vendedores';
+                document.getElementById('count-secundario').innerText = `${revendedores} / ${vendedores}`;
                 document.getElementById('label-stat-terciario').innerText = 'Bloqueados';
                 document.getElementById('count-terciario').innerText = bloqueados;
             }
@@ -2033,7 +2043,7 @@
             if (esModerador()) {
                 query = query.in('rol', ['resseller', 'reseller', 'revendedor', 'vendedor']);
             } else if (esRevendedor()) {
-                query = query.in('rol', ['resseller', 'reseller', 'revendedor']);
+                query = query.in('rol', ['resseller', 'reseller', 'revendedor', 'vendedor']);
             } else {
                 query = query.in('rol', ['admin', 'moderador', 'moderator', 'resseller', 'reseller', 'revendedor', 'vendedor']);
             }
@@ -2299,7 +2309,7 @@ Toda su rama quedó bloqueada por cascada.`);
             if (esModerador()) {
                 query = query.in('rol', ['resseller', 'reseller', 'revendedor', 'vendedor']);
             } else if (esRevendedor()) {
-                query = query.in('rol', ['resseller', 'reseller', 'revendedor']);
+                query = query.in('rol', ['resseller', 'reseller', 'revendedor', 'vendedor']);
             } else {
                 query = query.in('rol', ['admin', 'moderador', 'moderator', 'resseller', 'reseller', 'revendedor', 'vendedor']);
             }
