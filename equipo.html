@@ -1031,9 +1031,9 @@
             'STELLA':          { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/stella.png' },
             'FLUJO TV':        { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/flujo.png' },
             'FEMON PLUS':      { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/femon.png' },
-            'VEXA TV':         { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/vexa.png' },
-            'MUNDO INFINITO':  { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/mundo.png' },
-            'SUFFIXED':        { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/suffixed.png' }
+            'VEXA TV':         { logo: crearLogoTexto('VEXA', '#2563eb') },
+            'MUNDO INFINITO':  { logo: crearLogoTexto('M∞', '#7c3aed') },
+            'SUFFIXED':        { logo: crearLogoTexto('SFX', '#0891b2') }
         };
 
         const TODAS_LAS_APPS = Object.keys(configApps);
@@ -1111,6 +1111,36 @@
             currentUser = data;
             localStorage.setItem('session_tvdigital', JSON.stringify(data));
             return true;
+        }
+
+
+
+        function claveRegistroInicioSesion() {
+            return currentUser?.id ? `tvd_ultimo_inicio_registrado:${currentUser.id}` : '';
+        }
+
+        async function registrarInicioSesionSiCorresponde() {
+            if (!currentUser?.id) return;
+
+            const claveSesion = claveRegistroInicioSesion();
+            if (!claveSesion || sessionStorage.getItem(claveSesion)) return;
+
+            const fechaInicio = new Date().toISOString();
+            const { data, error } = await supabaseClient
+                .from('usuarios_sistema')
+                .update({ ultimo_inicio_sesion: fechaInicio })
+                .eq('id', currentUser.id)
+                .select('*')
+                .single();
+
+            if (error || !data) {
+                console.error('No se pudo registrar el último inicio de sesión:', error);
+                return;
+            }
+
+            currentUser = data;
+            localStorage.setItem('session_tvdigital', JSON.stringify(data));
+            sessionStorage.setItem(claveSesion, fechaInicio);
         }
 
         function cargarConfiguracionAppsPropias() {
@@ -1309,6 +1339,35 @@
             return '📊';
         }
 
+
+        function puedeVerUltimosInicios() {
+            return esAdmin() || esModerador();
+        }
+
+        function formatearUltimoInicioSesion(valor) {
+            if (!valor) return 'Todavía no inició sesión';
+            const fecha = new Date(valor);
+            if (Number.isNaN(fecha.getTime())) return 'Fecha no disponible';
+
+            return new Intl.DateTimeFormat('es-AR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false,
+                timeZone: 'America/Argentina/Buenos_Aires'
+            }).format(fecha);
+        }
+
+        function detalleUltimoInicioSesion(usuario) {
+            const rolUsuario = normalizarRol(usuario?.rol);
+            if (!puedeVerUltimosInicios() || !['resseller', 'vendedor'].includes(rolUsuario)) return '';
+
+            const texto = formatearUltimoInicioSesion(usuario?.ultimo_inicio_sesion);
+            return `<span style="color:var(--text-secondary);" title="Último inicio de sesión registrado">🕘 Última sesión: ${escaparHtml(texto)}</span>`;
+        }
+
         function fechaAccesoVencida(fecha) {
             if (!fecha) return false;
             return new Date(`${fecha}T23:59:59`) < new Date();
@@ -1498,6 +1557,8 @@
                 window.location.href = 'index.html';
                 return;
             }
+
+            await registrarInicioSesionSiCorresponde();
 
             configurarInterfazPorRol();
             cargarConfiguracionAppsPropias();
@@ -1796,6 +1857,7 @@
                                 <div class="user-meta">
                                     <span style="${venciColor}">📅 ${u.vencimiento_acceso ? escaparHtml(u.vencimiento_acceso) + (venciEn !== null ? ' (' + venciEn + 'd)' : '') : 'Sin fecha'}</span>
                                     ${padre ? `<span>⬆ Depende de: ${escaparHtml(padre.username)}</span>` : ''}
+                                    ${detalleUltimoInicioSesion(u)}
                                     <span style="color:var(--purple);">👥 ${hijosDirectos.length} usuario${hijosDirectos.length !== 1 ? 's' : ''} directo${hijosDirectos.length !== 1 ? 's' : ''}</span>
                                     <span style="color:var(--accent);">📺 ${clientesPropios.length} propio${clientesPropios.length !== 1 ? 's' : ''} · ${clientesSubrama.length} en su rama</span>
                                     ${resumenAppsUsuario(u)}
@@ -2330,6 +2392,8 @@ Toda su rama quedó bloqueada por cascada.`);
         }
 
         function logout() {
+            const claveSesion = claveRegistroInicioSesion();
+            if (claveSesion) sessionStorage.removeItem(claveSesion);
             localStorage.removeItem('session_tvdigital');
             window.location.href = 'logueo.html';
         }
