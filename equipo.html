@@ -837,6 +837,12 @@
                 </div>
 
                 <div class="form-field">
+                    <label class="input-label">Tipo de usuario</label>
+                    <select id="edit-rol" class="input-modern" required></select>
+                    <div class="field-note" style="margin-top:6px;">El cambio se aplicará la próxima vez que el usuario cargue el sistema.</div>
+                </div>
+
+                <div class="form-field">
                     <label class="input-label">Nueva Contraseña</label>
                     <input type="password" id="edit-password" class="input-modern" placeholder="Dejar vacío para no cambiar">
                 </div>
@@ -1072,6 +1078,21 @@
             }
         }
 
+        function actualizarVisibilidadAppsEditarUsuario() {
+            const selectRol = document.getElementById('edit-rol');
+            const esVendedor = normalizarRol(selectRol?.value) === 'vendedor';
+            const caja = document.getElementById('edit-apps-box');
+            caja.classList.toggle('hidden', !esVendedor);
+
+            if (esVendedor && !document.getElementById('edit-apps-selector').children.length) {
+                const appsActuales = normalizarListaApps(usuarioEnEdicion?.apps_permitidas, true);
+                renderSelectorAppsPermisos(
+                    'edit-apps-selector',
+                    appsActuales.length ? appsActuales : TODAS_LAS_APPS
+                );
+            }
+        }
+
         function resumenAppsUsuario(usuario) {
             if (normalizarRol(usuario?.rol) !== 'vendedor') return '';
             const apps = normalizarListaApps(usuario?.apps_permitidas, true);
@@ -1133,6 +1154,13 @@
         }
 
         function rolesQuePuedeCrear() {
+            if (esAdmin()) return ['admin', 'moderador', 'resseller', 'vendedor'];
+            if (esModerador() || esRevendedor()) return ['resseller'];
+            return [];
+        }
+
+        function rolesQuePuedeAsignarAlEditar(usuario) {
+            if (!usuario || !puedeGestionarUsuario(usuario)) return [];
             if (esAdmin()) return ['admin', 'moderador', 'resseller', 'vendedor'];
             if (esModerador() || esRevendedor()) return ['resseller'];
             return [];
@@ -1824,12 +1852,21 @@
             document.getElementById('edit-vencimiento').value = usuario.vencimiento_acceso || '';
             document.getElementById('edit-activo').checked = usuario.activo !== false;
 
-            const esVendedor = normalizarRol(usuario.rol) === 'vendedor';
-            document.getElementById('edit-apps-box').classList.toggle('hidden', !esVendedor);
+            const selectRol = document.getElementById('edit-rol');
+            const rolActual = normalizarRol(usuario.rol);
+            const rolesDisponibles = rolesQuePuedeAsignarAlEditar(usuario);
+            selectRol.innerHTML = rolesDisponibles.map(rol =>
+                `<option value="${rol}" ${rol === rolActual ? 'selected' : ''}>${etiquetaRol(rol)}</option>`
+            ).join('');
+            selectRol.value = rolActual;
+            selectRol.onchange = actualizarVisibilidadAppsEditarUsuario;
+
+            const appsActuales = normalizarListaApps(usuario.apps_permitidas, true);
             renderSelectorAppsPermisos(
                 'edit-apps-selector',
-                esVendedor ? normalizarListaApps(usuario.apps_permitidas, true) : []
+                appsActuales.length ? appsActuales : TODAS_LAS_APPS
             );
+            actualizarVisibilidadAppsEditarUsuario();
 
             document.getElementById('modalEditar').classList.remove('hidden');
         }
@@ -1872,20 +1909,35 @@
             const password = document.getElementById('edit-password').value;
             const vencimiento = document.getElementById('edit-vencimiento').value || null;
             const activo = document.getElementById('edit-activo').checked;
+            const rolAnterior = normalizarRol(usuarioEnEdicion.rol);
+            const nuevoRol = normalizarRol(document.getElementById('edit-rol').value);
+            const rolesPermitidos = rolesQuePuedeAsignarAlEditar(usuarioEnEdicion);
 
             if (!username) {
                 alert('El nombre de usuario es obligatorio.');
                 return;
             }
 
+            if (!rolesPermitidos.includes(nuevoRol)) {
+                alert('No tenés permiso para asignar ese tipo de usuario.');
+                return;
+            }
+
+            const descendientes = idsDescendientesDe(usuarioEnEdicion.id, todosLosUsuariosSistema);
+            if (nuevoRol === 'vendedor' && descendientes.size > 0) {
+                alert('No se puede convertir en vendedor porque tiene usuarios debajo. Primero tenés que reasignar o eliminar su equipo.');
+                return;
+            }
+
             const updateData = {
                 username: username,
+                rol: nuevoRol,
                 vencimiento_acceso: vencimiento,
                 activo: activo
             };
             if (password) updateData.password = password;
 
-            if (normalizarRol(usuarioEnEdicion.rol) === 'vendedor') {
+            if (nuevoRol === 'vendedor') {
                 const appsSeleccionadas = obtenerAppsSeleccionadas('edit-apps-selector');
                 if (!appsSeleccionadas.length) {
                     alert('Seleccioná al menos una aplicación para el vendedor.');
@@ -1904,7 +1956,8 @@
                 return;
             }
 
-            const rolEditado = etiquetaRol(usuarioEnEdicion.rol);
+            const rolEditado = etiquetaRol(nuevoRol);
+            const cambioRol = rolAnterior !== nuevoRol;
             const tieneDescendientes = idsDescendientesDe(usuarioEnEdicion.id, usuariosVisibles).size > 0;
             cerrarModalEditar();
             await cargarUsuariosSistema();
@@ -1912,6 +1965,8 @@
             if (!activo && tieneDescendientes) {
                 alert(`${rolEditado} actualizado ✓
 Toda su rama quedó bloqueada por cascada.`);
+            } else if (cambioRol) {
+                alert(`Tipo de usuario cambiado de ${etiquetaRol(rolAnterior)} a ${rolEditado} ✓`);
             } else {
                 alert(`${rolEditado} actualizado ✓`);
             }
