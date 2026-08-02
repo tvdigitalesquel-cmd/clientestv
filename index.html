@@ -1337,7 +1337,7 @@ Reemplazá estas rutas por las que agregaste en tu archivo:
             </div>
             <div class="nav-right">
                 <span id="info-sesion"></span>
-                <button id="btn-cambiar-clave" onclick="abrirModalCambiarClave()" class="btn-password" style="display:none;">🔑 Cambiar clave</button>
+                <button id="btn-cambiar-clave" onclick="abrirModalCambiarClave()" class="btn-password">🔑 Cambiar clave</button>
                 <button onclick="toggleTheme()" class="theme-toggle" title="Cambiar tema">
                     <span class="dark-icon">🌙</span>
                     <span class="light-icon">☀️</span>
@@ -1823,7 +1823,6 @@ Reemplazá estas rutas por las que agregaste en tu archivo:
         }
 
         function abrirModalCambiarClave() {
-            if (normalizarRol(currentUser?.rol) !== 'vendedor') return;
             document.getElementById('formCambiarClave').reset();
             document.getElementById('modalCambiarClave').classList.remove('hidden');
             setTimeout(() => document.getElementById('clave-actual-vendedor').focus(), 50);
@@ -1836,12 +1835,6 @@ Reemplazá estas rutas por las que agregaste en tu archivo:
 
         async function cambiarClavePropia(event) {
             event.preventDefault();
-
-            if (normalizarRol(currentUser?.rol) !== 'vendedor') {
-                alert('Esta opción está disponible únicamente para vendedores.');
-                cerrarModalCambiarClave();
-                return;
-            }
 
             const claveActual = document.getElementById('clave-actual-vendedor').value;
             const nuevaClave = document.getElementById('nueva-clave-vendedor').value;
@@ -1927,9 +1920,7 @@ Reemplazá estas rutas por las que agregaste en tu archivo:
             if (['admin', 'moderador', 'resseller'].includes(rolSesion)) {
                 document.getElementById('link-equipos').style.display = '';
             }
-            if (rolSesion === 'vendedor') {
-                document.getElementById('btn-cambiar-clave').style.display = '';
-            }
+            document.getElementById('btn-cambiar-clave').style.display = '';
             
             let infoText = `${currentUser.rol.toUpperCase()} · ${currentUser.username}`;
             if (currentUser.vencimiento_acceso) {
