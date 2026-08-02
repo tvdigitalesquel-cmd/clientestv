@@ -1702,7 +1702,65 @@ Reemplazá estas rutas por las que agregaste en tu archivo:
         function normalizarRol(rol) {
             const valor = String(rol || '').trim().toLowerCase();
             if (valor === 'revendedor' || valor === 'reseller' || valor === 'resseller') return 'resseller';
+            if (valor === 'moderator') return 'moderador';
             return valor;
+        }
+
+        function fechaAccesoVencida(fecha) {
+            if (!fecha) return false;
+            return new Date(`${fecha}T23:59:59`) < new Date();
+        }
+
+        async function validarAccesoJerarquico() {
+            if (!currentUser?.id) return { ok: false, mensaje: 'No se pudo identificar tu usuario.' };
+
+            const visitados = new Set();
+            let usuario = currentUser;
+            let esUsuarioActual = true;
+
+            while (usuario) {
+                const clave = String(usuario.id);
+                if (visitados.has(clave)) {
+                    return { ok: false, mensaje: 'Se detectó un error en la jerarquía de usuarios.' };
+                }
+                visitados.add(clave);
+
+                if (usuario.activo === false) {
+                    return {
+                        ok: false,
+                        mensaje: esUsuarioActual
+                            ? 'Tu acceso fue deshabilitado.'
+                            : `Tu acceso está bloqueado porque ${usuario.username || 'un usuario superior'} está deshabilitado.`
+                    };
+                }
+
+                if (fechaAccesoVencida(usuario.vencimiento_acceso)) {
+                    return {
+                        ok: false,
+                        mensaje: esUsuarioActual
+                            ? 'Tu acceso está vencido.'
+                            : `Tu acceso está bloqueado porque el acceso de ${usuario.username || 'un usuario superior'} está vencido.`
+                    };
+                }
+
+                if (!usuario.padre_id) break;
+
+                const { data: padre, error } = await supabaseClient
+                    .from('usuarios_sistema')
+                    .select('id, username, rol, activo, vencimiento_acceso, padre_id')
+                    .eq('id', usuario.padre_id)
+                    .maybeSingle();
+
+                if (error || !padre) {
+                    console.error('No se pudo validar el usuario superior:', error);
+                    return { ok: false, mensaje: 'No se pudo validar la cadena de acceso de tu usuario.' };
+                }
+
+                usuario = padre;
+                esUsuarioActual = false;
+            }
+
+            return { ok: true };
         }
 
         function normalizarNombreApp(nombreApp) {
@@ -1851,23 +1909,22 @@ Reemplazá estas rutas por las que agregaste en tu archivo:
             
             if (!currentUser) { window.location.href = 'logueo.html'; return; }
 
-            await refrescarSesionDesdeBase();
-            if (currentUser.activo === false) {
-                alert('Tu acceso fue deshabilitado.');
+            const sesionActualizada = await refrescarSesionDesdeBase();
+            if (!sesionActualizada) {
+                alert('No se pudo validar tu sesión.');
                 logout();
                 return;
             }
-            if (currentUser.vencimiento_acceso) {
-                const vencimiento = new Date(currentUser.vencimiento_acceso + 'T23:59:59');
-                if (vencimiento < new Date()) {
-                    alert('Tu acceso está vencido.');
-                    logout();
-                    return;
-                }
+
+            const acceso = await validarAccesoJerarquico();
+            if (!acceso.ok) {
+                alert(acceso.mensaje);
+                logout();
+                return;
             }
 
             const rolSesion = normalizarRol(currentUser.rol);
-            if (rolSesion === 'admin' || rolSesion === 'resseller') {
+            if (['admin', 'moderador', 'resseller'].includes(rolSesion)) {
                 document.getElementById('link-equipos').style.display = '';
             }
             if (rolSesion === 'vendedor') {
