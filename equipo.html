@@ -434,8 +434,16 @@
         }
 
         .role-admin { background: var(--red-dim); color: var(--red); }
+        .role-moderador { background: var(--yellow-dim); color: var(--yellow); }
         .role-resseller { background: var(--purple-dim); color: var(--purple); }
         .role-vendedor { background: var(--accent-dim); color: var(--accent); }
+
+        .inherited-badge {
+            display: inline-flex; align-items: center;
+            padding: 3px 10px; border-radius: 100px;
+            font-size: 10px; font-weight: 700;
+            background: var(--yellow-dim); color: var(--yellow);
+        }
 
         .disabled-badge {
             display: inline-flex; align-items: center;
@@ -716,7 +724,7 @@
             <div class="stat-card stat-purple">
                 <div class="stat-icon">🔷</div>
                 <div class="stat-info">
-                    <p id="label-stat-secundario">Ressellers</p>
+                    <p id="label-stat-secundario">Revendedores</p>
                     <h2 id="count-secundario">0</h2>
                 </div>
             </div>
@@ -934,6 +942,7 @@
         let usuarioEnEdicion = null;
         let vendedorSeleccionado = null;
         let usuariosVisibles = [];
+        let todosLosUsuariosSistema = [];
         let todosLosClientes = [];
         let clientesVendedorActual = [];
         let datosUltimoVendedorCreado = null;
@@ -1090,6 +1099,7 @@
         function normalizarRol(rol) {
             const valor = String(rol || '').trim().toLowerCase();
             if (valor === 'revendedor' || valor === 'reseller' || valor === 'resseller') return 'resseller';
+            if (valor === 'moderator') return 'moderador';
             return valor;
         }
 
@@ -1110,47 +1120,183 @@
             return normalizarRol(currentUser?.rol) === 'admin';
         }
 
-        function esResseller() {
+        function esModerador() {
+            return normalizarRol(currentUser?.rol) === 'moderador';
+        }
+
+        function esRevendedor() {
             return normalizarRol(currentUser?.rol) === 'resseller';
+        }
+
+        function tieneAccesoEquipo(usuario = currentUser) {
+            return ['admin', 'moderador', 'resseller'].includes(normalizarRol(usuario?.rol));
+        }
+
+        function rolesQuePuedeCrear() {
+            if (esAdmin()) return ['admin', 'moderador', 'resseller', 'vendedor'];
+            if (esModerador() || esRevendedor()) return ['resseller'];
+            return [];
+        }
+
+        function etiquetaRol(rol) {
+            const normalizado = normalizarRol(rol);
+            if (normalizado === 'admin') return 'ADMIN';
+            if (normalizado === 'moderador') return 'MODERADOR';
+            if (normalizado === 'resseller') return 'REVENDEDOR';
+            if (normalizado === 'vendedor') return 'VENDEDOR';
+            return String(rol || 'USUARIO').toUpperCase();
+        }
+
+        function claseRol(rol) {
+            const normalizado = normalizarRol(rol);
+            if (normalizado === 'admin') return 'role-admin';
+            if (normalizado === 'moderador') return 'role-moderador';
+            if (normalizado === 'resseller') return 'role-resseller';
+            return 'role-vendedor';
+        }
+
+        function iconoRol(rol) {
+            const normalizado = normalizarRol(rol);
+            if (normalizado === 'admin') return '🛡️';
+            if (normalizado === 'moderador') return '⚖️';
+            if (normalizado === 'resseller') return '🔷';
+            return '📊';
+        }
+
+        function fechaAccesoVencida(fecha) {
+            if (!fecha) return false;
+            return new Date(`${fecha}T23:59:59`) < new Date();
+        }
+
+        async function validarAccesoJerarquico() {
+            if (!currentUser?.id) return { ok: false, mensaje: 'No se pudo identificar tu usuario.' };
+
+            const visitados = new Set();
+            let usuario = currentUser;
+            let esUsuarioActual = true;
+
+            while (usuario) {
+                const clave = String(usuario.id);
+                if (visitados.has(clave)) {
+                    return { ok: false, mensaje: 'Se detectó un error en la jerarquía de usuarios.' };
+                }
+                visitados.add(clave);
+
+                if (usuario.activo === false) {
+                    return {
+                        ok: false,
+                        mensaje: esUsuarioActual
+                            ? 'Tu acceso fue deshabilitado.'
+                            : `Tu acceso está bloqueado porque ${usuario.username || 'un usuario superior'} está deshabilitado.`
+                    };
+                }
+
+                if (fechaAccesoVencida(usuario.vencimiento_acceso)) {
+                    return {
+                        ok: false,
+                        mensaje: esUsuarioActual
+                            ? 'Tu acceso está vencido.'
+                            : `Tu acceso está bloqueado porque el acceso de ${usuario.username || 'un usuario superior'} está vencido.`
+                    };
+                }
+
+                if (!usuario.padre_id) break;
+
+                const { data: padre, error } = await supabaseClient
+                    .from('usuarios_sistema')
+                    .select('id, username, rol, activo, vencimiento_acceso, padre_id')
+                    .eq('id', usuario.padre_id)
+                    .maybeSingle();
+
+                if (error || !padre) {
+                    console.error('No se pudo validar el usuario superior:', error);
+                    return { ok: false, mensaje: 'No se pudo validar la cadena de acceso de tu usuario.' };
+                }
+
+                usuario = padre;
+                esUsuarioActual = false;
+            }
+
+            return { ok: true };
         }
 
         function buscarUsuarioPorId(id) {
             return usuariosVisibles.find(u => mismoId(u.id, id)) || null;
         }
 
+        function buscarUsuarioGlobalPorId(id) {
+            if (mismoId(currentUser?.id, id)) return currentUser;
+            return todosLosUsuariosSistema.find(u => mismoId(u.id, id)) || null;
+        }
+
+        function idsDescendientesDe(padreId, lista = todosLosUsuariosSistema) {
+            const ids = new Set();
+            const pendientes = [String(padreId)];
+
+            while (pendientes.length) {
+                const padre = pendientes.shift();
+                lista.forEach(usuario => {
+                    if (!ids.has(String(usuario.id)) && mismoId(usuario.padre_id, padre)) {
+                        ids.add(String(usuario.id));
+                        pendientes.push(String(usuario.id));
+                    }
+                });
+            }
+
+            return ids;
+        }
+
+        function esDescendienteVisible(usuario) {
+            return usuariosVisibles.some(u => mismoId(u.id, usuario?.id));
+        }
+
+        function esAncestroDelUsuarioActual(usuarioId) {
+            const visitados = new Set();
+            let padreId = currentUser?.padre_id;
+
+            while (padreId) {
+                const clave = String(padreId);
+                if (visitados.has(clave)) break;
+                visitados.add(clave);
+                if (mismoId(padreId, usuarioId)) return true;
+                const padre = buscarUsuarioGlobalPorId(padreId);
+                padreId = padre?.padre_id;
+            }
+
+            return false;
+        }
+
         function puedeGestionarUsuario(usuario) {
-            if (!usuario) return false;
+            if (!usuario || mismoId(usuario.id, currentUser?.id)) return false;
             const rolUsuario = normalizarRol(usuario.rol);
 
             if (esAdmin()) {
-                return rolUsuario === 'resseller' || rolUsuario === 'vendedor';
+                return ['admin', 'moderador', 'resseller', 'vendedor'].includes(rolUsuario)
+                    && !esAncestroDelUsuarioActual(usuario.id);
             }
 
-            return esResseller()
-                && rolUsuario === 'vendedor'
-                && mismoId(usuario.padre_id, currentUser.id);
+            return (esModerador() || esRevendedor())
+                && rolUsuario === 'resseller'
+                && esDescendienteVisible(usuario);
         }
 
         function configurarInterfazPorRol() {
             const selectRol = document.getElementById('newRol');
+            const rolActual = normalizarRol(currentUser?.rol);
+            const opciones = rolesQuePuedeCrear();
 
-            if (esAdmin()) {
-                document.getElementById('info-sesion').innerText = `ADMIN · ${currentUser.username}`;
-                document.getElementById('titulo-gestion').innerText = 'Gestionar Equipo';
-                document.getElementById('subtitulo-gestion').innerText = 'Creá resellers y vendedores, y administrá sus accesos';
-                document.getElementById('titulo-form-nuevo').innerText = 'Crear Nuevo Acceso';
-                document.getElementById('titulo-lista-usuarios').innerText = 'Equipo de Usuarios';
-                document.getElementById('btn-crear-usuario').innerText = '+ Crear Usuario';
-                selectRol.innerHTML = '<option value="resseller">RESSELLER</option><option value="vendedor">VENDEDOR</option>';
-            } else {
-                document.getElementById('info-sesion').innerText = `RESSELLER · ${currentUser.username}`;
-                document.getElementById('titulo-gestion').innerText = 'Mis Vendedores';
-                document.getElementById('subtitulo-gestion').innerText = 'Creá y administrá únicamente a los vendedores de tu equipo';
-                document.getElementById('titulo-form-nuevo').innerText = 'Crear Nuevo Vendedor';
-                document.getElementById('titulo-lista-usuarios').innerText = 'Mis Vendedores';
-                document.getElementById('btn-crear-usuario').innerText = '+ Crear Vendedor';
-                selectRol.innerHTML = '<option value="vendedor">VENDEDOR</option>';
-            }
+            document.getElementById('info-sesion').innerText = `${etiquetaRol(rolActual)} · ${currentUser.username}`;
+            document.getElementById('titulo-gestion').innerText = esAdmin() ? 'Gestionar Equipo' : 'Mi Red de Revendedores';
+            document.getElementById('subtitulo-gestion').innerText = esAdmin()
+                ? 'Administrá administradores, moderadores, revendedores, vendedores y toda su jerarquía'
+                : 'Creá revendedores y administrá toda la rama que depende de tu usuario';
+            document.getElementById('titulo-form-nuevo').innerText = esAdmin() ? 'Crear Nuevo Acceso' : 'Crear Nuevo Revendedor';
+            document.getElementById('titulo-lista-usuarios').innerText = esAdmin() ? 'Equipo de Usuarios' : 'Mi Equipo';
+            document.getElementById('btn-crear-usuario').innerText = esAdmin() ? '+ Crear Usuario' : '+ Crear Revendedor';
+
+            selectRol.innerHTML = opciones.map(rol => {
+                return `<option value="${rol}">${etiquetaRol(rol)}</option>`;
+            }).join('');
 
             selectRol.onchange = actualizarVisibilidadAppsNuevoUsuario;
             renderSelectorAppsPermisos('new-apps-selector', TODAS_LAS_APPS);
@@ -1169,10 +1315,21 @@
                 return;
             }
 
-            await refrescarSesionDesdeBase();
+            const sesionActualizada = await refrescarSesionDesdeBase();
+            if (!sesionActualizada) {
+                alert('No se pudo validar tu sesión.');
+                logout();
+                return;
+            }
 
-            const rol = normalizarRol(currentUser.rol);
-            if (rol !== 'admin' && rol !== 'resseller') {
+            const acceso = await validarAccesoJerarquico();
+            if (!acceso.ok) {
+                alert(acceso.mensaje);
+                logout();
+                return;
+            }
+
+            if (!tieneAccesoEquipo()) {
                 alert('Tu usuario no tiene permiso para gestionar un equipo.');
                 window.location.href = 'index.html';
                 return;
@@ -1221,32 +1378,57 @@
         };
 
         async function obtenerUsuariosPermitidos() {
-            let query = supabaseClient
-                .from('usuarios_sistema')
-                .select('*');
-
             if (esAdmin()) {
-                query = query.in('rol', ['resseller', 'vendedor']);
-            } else {
-                query = query
-                    .eq('rol', 'vendedor')
-                    .eq('padre_id', currentUser.id);
+                const { data, error } = await supabaseClient
+                    .from('usuarios_sistema')
+                    .select('*')
+                    .neq('id', currentUser.id)
+                    .order('username', { ascending: true });
+
+                if (error) throw error;
+                todosLosUsuariosSistema = data || [];
+                usuariosVisibles = [...todosLosUsuariosSistema];
+                return;
             }
 
-            const { data, error } = await query
-                .order('rol', { ascending: true })
-                .order('username', { ascending: true });
+            const encontrados = [];
+            const idsEncontrados = new Set();
+            let padresPendientes = [currentUser.id];
+            let profundidad = 0;
 
-            if (error) throw error;
-            usuariosVisibles = data || [];
+            while (padresPendientes.length && profundidad < 50) {
+                const { data, error } = await supabaseClient
+                    .from('usuarios_sistema')
+                    .select('*')
+                    .in('padre_id', padresPendientes)
+                    .order('username', { ascending: true });
+
+                if (error) throw error;
+
+                const nuevos = (data || []).filter(usuario => {
+                    const id = String(usuario.id);
+                    if (idsEncontrados.has(id)) return false;
+                    idsEncontrados.add(id);
+                    return true;
+                });
+
+                encontrados.push(...nuevos);
+                padresPendientes = nuevos.map(usuario => usuario.id);
+                profundidad++;
+            }
+
+            if (profundidad >= 50 && padresPendientes.length) {
+                console.warn('La jerarquía superó el máximo de 50 niveles.');
+            }
+
+            todosLosUsuariosSistema = encontrados;
+            usuariosVisibles = [...encontrados];
         }
 
         async function cargarClientesPermitidos() {
-            const vendedorIds = usuariosVisibles
-                .filter(u => normalizarRol(u.rol) === 'vendedor')
-                .map(u => u.id);
+            const usuarioIds = usuariosVisibles.map(u => u.id);
 
-            if (vendedorIds.length === 0) {
+            if (usuarioIds.length === 0) {
                 todosLosClientes = [];
                 return;
             }
@@ -1254,7 +1436,7 @@
             const { data, error } = await supabaseClient
                 .from('clientes')
                 .select('*')
-                .in('creado_por', vendedorIds);
+                .in('creado_por', usuarioIds);
 
             if (error) throw error;
             todosLosClientes = data || [];
@@ -1286,6 +1468,106 @@
             }
         }
 
+        function obtenerEstadoEfectivoUsuario(usuario) {
+            const visitados = new Set();
+            let actual = usuario;
+
+            while (actual) {
+                const id = String(actual.id);
+                if (visitados.has(id)) return { habilitado: false, heredado: true, motivo: 'Jerarquía inválida' };
+                visitados.add(id);
+
+                if (actual.activo === false) {
+                    return {
+                        habilitado: false,
+                        heredado: !mismoId(actual.id, usuario.id),
+                        motivo: actual.username || 'Usuario superior'
+                    };
+                }
+
+                if (fechaAccesoVencida(actual.vencimiento_acceso)) {
+                    return {
+                        habilitado: false,
+                        heredado: !mismoId(actual.id, usuario.id),
+                        motivo: `${actual.username || 'Usuario superior'} (vencido)`
+                    };
+                }
+
+                if (!actual.padre_id) break;
+                actual = buscarUsuarioGlobalPorId(actual.padre_id);
+                if (!actual && mismoId(usuario.padre_id, currentUser.id)) actual = currentUser;
+            }
+
+            return { habilitado: true, heredado: false, motivo: '' };
+        }
+
+        function profundidadUsuario(usuario) {
+            let profundidad = 0;
+            let actual = usuario;
+            const visitados = new Set();
+
+            while (actual?.padre_id && !mismoId(actual.padre_id, currentUser.id)) {
+                const id = String(actual.id);
+                if (visitados.has(id)) break;
+                visitados.add(id);
+                actual = buscarUsuarioGlobalPorId(actual.padre_id);
+                if (!actual) break;
+                profundidad++;
+            }
+
+            return profundidad;
+        }
+
+        function ordenarUsuariosJerarquicamente() {
+            const visiblesPorPadre = new Map();
+            usuariosVisibles.forEach(usuario => {
+                const padre = String(usuario.padre_id ?? '');
+                if (!visiblesPorPadre.has(padre)) visiblesPorPadre.set(padre, []);
+                visiblesPorPadre.get(padre).push(usuario);
+            });
+
+            visiblesPorPadre.forEach(lista => lista.sort((a, b) =>
+                String(a.username || '').localeCompare(String(b.username || ''), 'es')
+            ));
+
+            const resultado = [];
+            const agregados = new Set();
+
+            const agregarRama = (padreId) => {
+                (visiblesPorPadre.get(String(padreId)) || []).forEach(usuario => {
+                    const id = String(usuario.id);
+                    if (agregados.has(id)) return;
+                    agregados.add(id);
+                    resultado.push(usuario);
+                    agregarRama(usuario.id);
+                });
+            };
+
+            if (!esAdmin()) {
+                agregarRama(currentUser.id);
+            } else {
+                const raices = usuariosVisibles.filter(usuario =>
+                    !usuario.padre_id ||
+                    mismoId(usuario.padre_id, currentUser.id) ||
+                    !usuariosVisibles.some(posiblePadre => mismoId(posiblePadre.id, usuario.padre_id))
+                );
+                raices.sort((a, b) => String(a.username || '').localeCompare(String(b.username || ''), 'es'));
+                raices.forEach(raiz => {
+                    if (!agregados.has(String(raiz.id))) {
+                        agregados.add(String(raiz.id));
+                        resultado.push(raiz);
+                        agregarRama(raiz.id);
+                    }
+                });
+            }
+
+            usuariosVisibles.forEach(usuario => {
+                if (!agregados.has(String(usuario.id))) resultado.push(usuario);
+            });
+
+            return resultado;
+        }
+
         function renderUsuariosSistema() {
             const cont = document.getElementById('lista-usuarios-sistema');
             cont.innerHTML = '';
@@ -1295,69 +1577,52 @@
                 cont.innerHTML = `
                     <div class="empty-state" style="grid-column:1/-1;">
                         <div class="empty-icon">👥</div>
-                        <p>${esAdmin() ? 'No hay usuarios cargados' : 'No tenés vendedores cargados'}</p>
-                        <p class="sub">${esAdmin() ? 'Creá el primer reseller o vendedor' : 'Creá tu primer acceso de vendedor'}</p>
+                        <p>No hay usuarios en esta rama</p>
+                        <p class="sub">${esAdmin() ? 'Creá el primer administrador, moderador, revendedor o vendedor' : 'Creá tu primer revendedor'}</p>
                     </div>`;
                 return;
             }
 
-            usuariosVisibles.forEach(u => {
+            ordenarUsuariosJerarquicamente().forEach(u => {
                 const rol = normalizarRol(u.rol);
-                const isDisabled = u.activo === false;
+                const estado = obtenerEstadoEfectivoUsuario(u);
+                const isDisabled = !estado.habilitado;
                 const venciEn = u.vencimiento_acceso
-                    ? Math.ceil((new Date(u.vencimiento_acceso) - new Date()) / (1000 * 60 * 60 * 24))
+                    ? Math.ceil((new Date(`${u.vencimiento_acceso}T23:59:59`) - new Date()) / (1000 * 60 * 60 * 24))
                     : null;
 
                 let venciColor = 'color:var(--green)';
                 if (venciEn !== null && venciEn <= 0) venciColor = 'color:var(--red)';
                 else if (venciEn !== null && venciEn <= 7) venciColor = 'color:var(--yellow)';
 
-                const esUsuarioResseller = rol === 'resseller';
-                const vendedoresHijos = esUsuarioResseller
-                    ? usuariosVisibles.filter(v => normalizarRol(v.rol) === 'vendedor' && mismoId(v.padre_id, u.id))
-                    : [];
-                const idsVendedoresHijos = vendedoresHijos.map(v => String(v.id));
-                const clientesDelUsuario = esUsuarioResseller
-                    ? todosLosClientes.filter(c => idsVendedoresHijos.includes(String(c.creado_por)))
-                    : todosLosClientes.filter(c => mismoId(c.creado_por, u.id));
-
-                const padre = rol === 'vendedor'
-                    ? usuariosVisibles.find(p => normalizarRol(p.rol) === 'resseller' && mismoId(p.id, u.padre_id))
-                    : null;
-
-                const roleClass = esUsuarioResseller ? 'role-resseller' : 'role-vendedor';
-                const roleIcon = esUsuarioResseller ? '🔷' : '📊';
+                const hijosDirectos = usuariosVisibles.filter(v => mismoId(v.padre_id, u.id));
+                const idsSubrama = idsDescendientesDe(u.id, usuariosVisibles);
+                idsSubrama.add(String(u.id));
+                const clientesPropios = todosLosClientes.filter(c => mismoId(c.creado_por, u.id));
+                const clientesSubrama = todosLosClientes.filter(c => idsSubrama.has(String(c.creado_por)));
+                const padre = buscarUsuarioGlobalPorId(u.padre_id);
                 const puedeGestionar = puedeGestionarUsuario(u);
-                const vendedorData = rol === 'vendedor'
-                    ? `data-view-vendedor-id="${escaparHtml(String(u.id))}"`
-                    : '';
-                const noClickClass = esUsuarioResseller ? 'no-click' : '';
-
-                let metaEquipo = '';
-                if (esUsuarioResseller) {
-                    metaEquipo = `
-                        <span style="color:var(--purple);">👥 ${vendedoresHijos.length} vendedor${vendedoresHijos.length !== 1 ? 'es' : ''}</span>
-                        <span style="color:var(--accent);">📺 ${clientesDelUsuario.length} cliente${clientesDelUsuario.length !== 1 ? 's' : ''} del equipo</span>`;
-                } else {
-                    metaEquipo = `
-                        <span style="color:var(--accent);">👥 ${clientesDelUsuario.length} cliente${clientesDelUsuario.length !== 1 ? 's' : ''}</span>
-                        ${padre ? `<span style="color:var(--purple);">🔷 Resseller: ${escaparHtml(padre.username)}</span>` : ''}
-                        ${resumenAppsUsuario(u)}`;
-                }
+                const nivel = profundidadUsuario(u);
+                const vistaClientes = `data-view-usuario-id="${escaparHtml(String(u.id))}"`;
 
                 cont.innerHTML += `
-                    <div class="card-usuario ${isDisabled ? 'user-disabled' : ''} ${noClickClass}" ${vendedorData}>
+                    <div class="card-usuario ${isDisabled ? 'user-disabled' : ''}" ${vistaClientes}
+                         style="--nivel-jerarquia:${nivel}; border-left-width:${Math.min(3 + nivel * 2, 9)}px;">
                         <div class="card-usuario-top">
-                            <div class="user-avatar">${roleIcon}</div>
+                            <div class="user-avatar">${iconoRol(rol)}</div>
                             <div class="user-info">
-                                <div class="user-name">${escaparHtml(u.username)}</div>
+                                <div class="user-name">${nivel ? '↳ '.repeat(Math.min(nivel, 3)) : ''}${escaparHtml(u.username)}</div>
                                 <div class="user-tags">
-                                    <span class="role-badge ${roleClass}">${rol.toUpperCase()}</span>
-                                    ${isDisabled ? '<span class="disabled-badge">🔒 Deshabilitado</span>' : ''}
+                                    <span class="role-badge ${claseRol(rol)}">${etiquetaRol(rol)}</span>
+                                    ${u.activo === false ? '<span class="disabled-badge">🔒 Deshabilitado</span>' : ''}
+                                    ${estado.heredado ? `<span class="inherited-badge">⛓ Bloqueado por ${escaparHtml(estado.motivo)}</span>` : ''}
                                 </div>
                                 <div class="user-meta">
                                     <span style="${venciColor}">📅 ${u.vencimiento_acceso ? escaparHtml(u.vencimiento_acceso) + (venciEn !== null ? ' (' + venciEn + 'd)' : '') : 'Sin fecha'}</span>
-                                    ${metaEquipo}
+                                    ${padre ? `<span>⬆ Depende de: ${escaparHtml(padre.username)}</span>` : ''}
+                                    <span style="color:var(--purple);">👥 ${hijosDirectos.length} usuario${hijosDirectos.length !== 1 ? 's' : ''} directo${hijosDirectos.length !== 1 ? 's' : ''}</span>
+                                    <span style="color:var(--accent);">📺 ${clientesPropios.length} propio${clientesPropios.length !== 1 ? 's' : ''} · ${clientesSubrama.length} en su rama</span>
+                                    ${resumenAppsUsuario(u)}
                                 </div>
                             </div>
                         </div>
@@ -1390,43 +1655,42 @@
                 });
             });
 
-            cont.querySelectorAll('[data-view-vendedor-id]').forEach(card => {
+            cont.querySelectorAll('[data-view-usuario-id]').forEach(card => {
                 card.addEventListener('click', () => {
-                    verClientesVendedorPorId(card.dataset.viewVendedorId);
+                    verClientesUsuarioPorId(card.dataset.viewUsuarioId);
                 });
             });
         }
 
         function actualizarEstadisticas() {
+            const administradores = usuariosVisibles.filter(u => normalizarRol(u.rol) === 'admin').length;
+            const moderadores = usuariosVisibles.filter(u => normalizarRol(u.rol) === 'moderador').length;
+            const revendedores = usuariosVisibles.filter(u => normalizarRol(u.rol) === 'resseller').length;
+            const vendedores = usuariosVisibles.filter(u => normalizarRol(u.rol) === 'vendedor').length;
+            const bloqueados = usuariosVisibles.filter(u => !obtenerEstadoEfectivoUsuario(u).habilitado).length;
+
+            document.getElementById('label-stat-total').innerText = 'Total Usuarios';
+            document.getElementById('count-total').innerText = usuariosVisibles.length;
+
             if (esAdmin()) {
-                const ressellers = usuariosVisibles.filter(u => normalizarRol(u.rol) === 'resseller').length;
-                const vendedores = usuariosVisibles.filter(u => normalizarRol(u.rol) === 'vendedor').length;
-                document.getElementById('label-stat-total').innerText = 'Total Usuarios';
-                document.getElementById('label-stat-secundario').innerText = 'Ressellers';
-                document.getElementById('label-stat-terciario').innerText = 'Vendedores';
-                document.getElementById('count-total').innerText = usuariosVisibles.length;
-                document.getElementById('count-secundario').innerText = ressellers;
-                document.getElementById('count-terciario').innerText = vendedores;
+                document.getElementById('label-stat-secundario').innerText = 'Admins / Moderadores';
+                document.getElementById('count-secundario').innerText = `${administradores} / ${moderadores}`;
+                document.getElementById('label-stat-terciario').innerText = 'Revendedores / Vendedores';
+                document.getElementById('count-terciario').innerText = `${revendedores} / ${vendedores}`;
             } else {
-                const vendedores = usuariosVisibles.filter(u => normalizarRol(u.rol) === 'vendedor');
-                const activos = vendedores.filter(u => u.activo !== false).length;
-                document.getElementById('label-stat-total').innerText = 'Total Vendedores';
-                document.getElementById('label-stat-secundario').innerText = 'Activos';
-                document.getElementById('label-stat-terciario').innerText = 'Deshabilitados';
-                document.getElementById('count-total').innerText = vendedores.length;
-                document.getElementById('count-secundario').innerText = activos;
-                document.getElementById('count-terciario').innerText = vendedores.length - activos;
+                document.getElementById('label-stat-secundario').innerText = 'Revendedores';
+                document.getElementById('count-secundario').innerText = revendedores;
+                document.getElementById('label-stat-terciario').innerText = 'Bloqueados';
+                document.getElementById('count-terciario').innerText = bloqueados;
             }
         }
 
-        function verClientesVendedorPorId(id) {
+        function verClientesUsuarioPorId(id) {
             const usuario = buscarUsuarioPorId(id);
-            if (usuario) verClientesVendedor(usuario);
+            if (usuario) verClientesUsuario(usuario);
         }
 
-        function verClientesVendedor(usuario) {
-            if (normalizarRol(usuario.rol) !== 'vendedor') return;
-
+        function verClientesUsuario(usuario) {
             vendedorSeleccionado = usuario;
             clientesVendedorActual = todosLosClientes.filter(c => mismoId(c.creado_por, usuario.id));
 
@@ -1438,7 +1702,7 @@
             document.getElementById('seccion-clientes-vendedor').style.display = 'block';
 
             document.getElementById('titulo-clientes-vendedor').innerText = `Clientes de ${usuario.username}`;
-            document.getElementById('info-clientes-vendedor').innerText = `Total: ${clientesVendedorActual.length} cliente${clientesVendedorActual.length !== 1 ? 's' : ''}`;
+            document.getElementById('info-clientes-vendedor').innerText = `${etiquetaRol(usuario.rol)} · Total: ${clientesVendedorActual.length} cliente${clientesVendedorActual.length !== 1 ? 's' : ''}`;
 
             mostrarClientesVendedor();
             window.scrollTo(0, 0);
@@ -1552,7 +1816,7 @@
             }
 
             usuarioEnEdicion = usuario;
-            const nombreRol = normalizarRol(usuario.rol) === 'resseller' ? 'Resseller' : 'Vendedor';
+            const nombreRol = etiquetaRol(usuario.rol).toLowerCase().replace(/^./, letra => letra.toUpperCase());
             document.getElementById('titulo-modal-editar').innerText = `Editar ${nombreRol}`;
             document.getElementById('edit-user-id').value = usuario.id;
             document.getElementById('edit-username').value = usuario.username;
@@ -1576,17 +1840,20 @@
         }
 
         async function actualizarUsuarioPermitido(id, updateData) {
+            const usuario = buscarUsuarioPorId(id);
+            if (!usuario || !puedeGestionarUsuario(usuario)) {
+                return { data: [], error: new Error('No tenés permiso para actualizar este usuario.') };
+            }
+
             let query = supabaseClient
                 .from('usuarios_sistema')
                 .update(updateData)
                 .eq('id', id);
 
-            if (esResseller()) {
-                query = query
-                    .eq('rol', 'vendedor')
-                    .eq('padre_id', currentUser.id);
+            if (!esAdmin()) {
+                query = query.in('rol', ['resseller', 'reseller', 'revendedor']);
             } else {
-                query = query.in('rol', ['resseller', 'vendedor']);
+                query = query.in('rol', ['admin', 'moderador', 'moderator', 'resseller', 'reseller', 'revendedor', 'vendedor']);
             }
 
             return await query.select('id');
@@ -1633,26 +1900,21 @@
                 return;
             }
             if (!usuariosActualizados || usuariosActualizados.length === 0) {
-                alert('No se actualizó ningún usuario. Verificá que el vendedor pertenezca a tu equipo.');
+                alert('No se actualizó ningún usuario. Verificá que pertenezca a tu equipo.');
                 return;
             }
 
-            if (esAdmin() && normalizarRol(usuarioEnEdicion.rol) === 'resseller') {
-                const { error: cascadeError } = await supabaseClient
-                    .from('usuarios_sistema')
-                    .update({ activo: activo })
-                    .eq('rol', 'vendedor')
-                    .eq('padre_id', usuarioEnEdicion.id);
-
-                if (cascadeError) {
-                    alert('El resseller fue actualizado, pero no se pudo actualizar el estado de sus vendedores: ' + cascadeError.message);
-                }
-            }
-
-            const rolEditado = normalizarRol(usuarioEnEdicion.rol) === 'resseller' ? 'Resseller' : 'Vendedor';
+            const rolEditado = etiquetaRol(usuarioEnEdicion.rol);
+            const tieneDescendientes = idsDescendientesDe(usuarioEnEdicion.id, usuariosVisibles).size > 0;
             cerrarModalEditar();
             await cargarUsuariosSistema();
-            alert(`${rolEditado} actualizado ✓`);
+
+            if (!activo && tieneDescendientes) {
+                alert(`${rolEditado} actualizado ✓
+Toda su rama quedó bloqueada por cascada.`);
+            } else {
+                alert(`${rolEditado} actualizado ✓`);
+            }
         };
 
         function formatearFechaParaMensaje(fecha) {
@@ -1723,11 +1985,7 @@
                 ? obtenerAppsSeleccionadas('new-apps-selector')
                 : null;
 
-            const rolPermitido = esAdmin()
-                ? ['resseller', 'vendedor'].includes(rolSeleccionado)
-                : esResseller() && rolSeleccionado === 'vendedor';
-
-            if (!rolPermitido) {
+            if (!rolesQuePuedeCrear().includes(rolSeleccionado)) {
                 alert('No tenés permiso para crear ese tipo de usuario.');
                 return;
             }
@@ -1738,8 +1996,8 @@
             }
 
             const newUser = {
-                username: username,
-                password: password,
+                username,
+                password,
                 rol: rolSeleccionado,
                 vencimiento_acceso: vencimiento,
                 padre_id: currentUser.id,
@@ -1763,12 +2021,12 @@
 
             if (rolSeleccionado === 'vendedor') {
                 abrirModalDatosVendedor({
-                    username: username,
-                    password: password,
-                    vencimiento: vencimiento
+                    username,
+                    password,
+                    vencimiento
                 });
             } else {
-                alert('Resseller creado ✓');
+                alert(`${etiquetaRol(rolSeleccionado)} creado ✓`);
             }
         };
 
@@ -1783,21 +2041,15 @@
                 return;
             }
 
-            const rolUsuario = normalizarRol(usuario.rol);
-            const cantidadHijos = rolUsuario === 'resseller'
-                ? usuariosVisibles.filter(u =>
-                    normalizarRol(u.rol) === 'vendedor' && mismoId(u.padre_id, usuario.id)
-                ).length
-                : 0;
-
+            const hijosDirectos = usuariosVisibles.filter(u => mismoId(u.padre_id, usuario.id));
             usuarioAEliminar = usuario;
             const nombreSeguro = escaparHtml(usuario.username);
             const textoConfirmacion = document.getElementById('texto-eliminacion-usuario');
 
-            if (rolUsuario === 'resseller' && cantidadHijos > 0) {
-                textoConfirmacion.innerHTML = `¿Querés eliminar al reseller <strong style="color:var(--text-primary);">${nombreSeguro}</strong>? Sus ${cantidadHijos} vendedor${cantidadHijos !== 1 ? 'es' : ''} pasarán a depender del administrador. Esta acción no se puede deshacer.`;
+            if (hijosDirectos.length > 0) {
+                textoConfirmacion.innerHTML = `¿Querés eliminar a <strong style="color:var(--text-primary);">${nombreSeguro}</strong>? Sus ${hijosDirectos.length} usuario${hijosDirectos.length !== 1 ? 's' : ''} directo${hijosDirectos.length !== 1 ? 's' : ''} pasarán a depender de su usuario superior. Sus clientes también serán reasignados.`;
             } else {
-                textoConfirmacion.innerHTML = `¿Estás seguro de que querés eliminar al ${rolUsuario === 'resseller' ? 'reseller' : 'vendedor'} <strong style="color:var(--text-primary);">${nombreSeguro}</strong>? Esta acción no se puede deshacer.`;
+                textoConfirmacion.innerHTML = `¿Estás seguro de que querés eliminar a <strong style="color:var(--text-primary);">${nombreSeguro}</strong>? Sus clientes serán reasignados a su usuario superior. Esta acción no se puede deshacer.`;
             }
 
             document.getElementById('modalConfirmar').classList.remove('hidden');
@@ -1813,20 +2065,30 @@
 
             const usuarioObjetivo = usuarioAEliminar;
             const rolObjetivo = normalizarRol(usuarioObjetivo.rol);
+            const padreDestinoId = usuarioObjetivo.padre_id || currentUser.id;
+            const padreDestino = buscarUsuarioGlobalPorId(padreDestinoId) || currentUser;
 
-            // Al eliminar un reseller, sus vendedores se reasignan al admin para conservarlos
-            // junto con todos sus clientes.
-            if (esAdmin() && rolObjetivo === 'resseller') {
-                const { error: reasignacionError } = await supabaseClient
-                    .from('usuarios_sistema')
-                    .update({ padre_id: currentUser.id })
-                    .eq('rol', 'vendedor')
-                    .eq('padre_id', usuarioObjetivo.id);
+            const { error: reasignacionHijosError } = await supabaseClient
+                .from('usuarios_sistema')
+                .update({ padre_id: padreDestinoId })
+                .eq('padre_id', usuarioObjetivo.id);
 
-                if (reasignacionError) {
-                    alert('No se pudieron reasignar los vendedores del reseller: ' + reasignacionError.message);
-                    return;
-                }
+            if (reasignacionHijosError) {
+                alert('No se pudieron reasignar los usuarios dependientes: ' + reasignacionHijosError.message);
+                return;
+            }
+
+            const { error: reasignacionClientesError } = await supabaseClient
+                .from('clientes')
+                .update({
+                    creado_por: padreDestinoId,
+                    vendedor_name: padreDestino?.username || currentUser.username
+                })
+                .eq('creado_por', usuarioObjetivo.id);
+
+            if (reasignacionClientesError) {
+                alert('No se pudieron reasignar los clientes: ' + reasignacionClientesError.message);
+                return;
             }
 
             let query = supabaseClient
@@ -1834,12 +2096,10 @@
                 .delete()
                 .eq('id', usuarioObjetivo.id);
 
-            if (esResseller()) {
-                query = query
-                    .eq('rol', 'vendedor')
-                    .eq('padre_id', currentUser.id);
+            if (!esAdmin()) {
+                query = query.in('rol', ['resseller', 'reseller', 'revendedor']);
             } else {
-                query = query.in('rol', ['resseller', 'vendedor']);
+                query = query.in('rol', ['admin', 'moderador', 'moderator', 'resseller', 'reseller', 'revendedor', 'vendedor']);
             }
 
             const { data: usuariosEliminados, error } = await query.select('id');
@@ -1854,7 +2114,7 @@
 
             cerrarConfirmar();
             await cargarUsuariosSistema();
-            alert(`${rolObjetivo === 'resseller' ? 'Resseller' : 'Vendedor'} eliminado ✓`);
+            alert(`${etiquetaRol(rolObjetivo)} eliminado ✓`);
         }
 
         function logout() {
