@@ -130,6 +130,25 @@
         .theme-toggle:not(.active) .dark-icon { opacity: 1; }
         .theme-toggle:not(.active) .light-icon { opacity: 0.3; }
 
+        /* ─── CAMBIAR CLAVE ─── */
+        .btn-password {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--accent);
+            background: var(--accent-dim);
+            border: 1px solid rgba(59,127,245,0.28);
+            padding: 6px 12px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'DM Sans', sans-serif;
+            white-space: nowrap;
+        }
+        .btn-password:hover {
+            background: rgba(59,127,245,0.2);
+            border-color: rgba(59,127,245,0.45);
+        }
+
         /* ─── BTN LOGOUT ─── */
         .btn-logout {
             font-size: 12px; font-weight: 600; color: #ef4444;
@@ -688,6 +707,7 @@
             </div>
             <div class="nav-right">
                 <span id="info-sesion"></span>
+                <button onclick="abrirModalCambiarClave()" class="btn-password">🔑 Cambiar clave</button>
                 <button onclick="toggleTheme()" class="theme-toggle" title="Cambiar tema">
                     <span class="dark-icon">🌙</span>
                     <span class="light-icon">☀️</span>
@@ -818,6 +838,34 @@
             <div id="lista-clientes-vendedor" class="clients-grid"></div>
         </div>
 
+    </div>
+
+    <!-- ─── MODAL CAMBIAR CLAVE ─── -->
+    <div id="modalCambiarClave" class="modal-overlay hidden">
+        <div class="modal-box" style="max-width:420px;">
+            <div class="modal-header">
+                <h3>Cambiar mi clave</h3>
+                <button type="button" onclick="cerrarModalCambiarClave()" class="modal-close">✕</button>
+            </div>
+            <form id="formCambiarClave" onsubmit="cambiarClavePropia(event)">
+                <div class="form-field">
+                    <label class="input-label">Clave actual</label>
+                    <input type="password" id="clave-actual-propia" class="input-modern" required autocomplete="current-password">
+                </div>
+                <div class="form-field">
+                    <label class="input-label">Nueva clave</label>
+                    <input type="password" id="nueva-clave-propia" class="input-modern" minlength="4" required autocomplete="new-password" placeholder="Mínimo 4 caracteres">
+                </div>
+                <div class="form-field">
+                    <label class="input-label">Repetir nueva clave</label>
+                    <input type="password" id="confirmar-clave-propia" class="input-modern" minlength="4" required autocomplete="new-password">
+                </div>
+                <div class="form-actions">
+                    <button type="submit" id="btn-guardar-clave-propia" class="btn-primary">Guardar nueva clave</button>
+                    <button type="button" onclick="cerrarModalCambiarClave()" class="btn-cancel">Cancelar</button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <!-- ─── MODAL EDITAR USUARIO ─── -->
@@ -983,9 +1031,9 @@
             'STELLA':          { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/stella.png' },
             'FLUJO TV':        { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/flujo.png' },
             'FEMON PLUS':      { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/femon.png' },
-            'VEXA TV':         { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/vexa.png' },
-            'MUNDO INFINITO':  { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/mundo.png' },
-            'SUFFIXED':        { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/suffixed.png' }
+            'VEXA TV':         { logo: crearLogoTexto('VEXA', '#2563eb') },
+            'MUNDO INFINITO':  { logo: crearLogoTexto('M∞', '#7c3aed') },
+            'SUFFIXED':        { logo: crearLogoTexto('SFX', '#0891b2') }
         };
 
         const TODAS_LAS_APPS = Object.keys(configApps);
@@ -1103,6 +1151,74 @@
                 </div>`;
         }
 
+        function abrirModalCambiarClave() {
+            document.getElementById('formCambiarClave').reset();
+            document.getElementById('modalCambiarClave').classList.remove('hidden');
+            setTimeout(() => document.getElementById('clave-actual-propia').focus(), 50);
+        }
+
+        function cerrarModalCambiarClave() {
+            document.getElementById('modalCambiarClave').classList.add('hidden');
+            document.getElementById('formCambiarClave').reset();
+        }
+
+        async function cambiarClavePropia(event) {
+            event.preventDefault();
+
+            const claveActual = document.getElementById('clave-actual-propia').value;
+            const nuevaClave = document.getElementById('nueva-clave-propia').value;
+            const confirmarClave = document.getElementById('confirmar-clave-propia').value;
+            const boton = document.getElementById('btn-guardar-clave-propia');
+
+            if (nuevaClave.length < 4) {
+                alert('La nueva clave debe tener al menos 4 caracteres.');
+                return;
+            }
+            if (nuevaClave !== confirmarClave) {
+                alert('Las nuevas claves no coinciden.');
+                return;
+            }
+
+            boton.disabled = true;
+            boton.textContent = 'Guardando...';
+
+            try {
+                const sesionActualizada = await refrescarSesionDesdeBase();
+                if (!sesionActualizada) {
+                    alert('No se pudo verificar tu usuario. Volvé a intentarlo.');
+                    return;
+                }
+                if (String(currentUser.password ?? '') !== claveActual) {
+                    alert('La clave actual es incorrecta.');
+                    return;
+                }
+                if (nuevaClave === claveActual) {
+                    alert('La nueva clave debe ser diferente de la actual.');
+                    return;
+                }
+
+                const { data, error } = await supabaseClient
+                    .from('usuarios_sistema')
+                    .update({ password: nuevaClave })
+                    .eq('id', currentUser.id)
+                    .select('*')
+                    .single();
+
+                if (error || !data) {
+                    alert('No se pudo cambiar la clave: ' + (error?.message || 'error desconocido'));
+                    return;
+                }
+
+                currentUser = data;
+                localStorage.setItem('session_tvdigital', JSON.stringify(data));
+                cerrarModalCambiarClave();
+                alert('Tu clave fue actualizada correctamente.');
+            } finally {
+                boton.disabled = false;
+                boton.textContent = 'Guardar nueva clave';
+            }
+        }
+
         function toggleTheme() {
             const html = document.documentElement;
             const isLight = html.classList.contains('light-mode');
@@ -1155,14 +1271,16 @@
 
         function rolesQuePuedeCrear() {
             if (esAdmin()) return ['admin', 'moderador', 'resseller', 'vendedor'];
-            if (esModerador() || esRevendedor()) return ['resseller'];
+            if (esModerador()) return ['resseller', 'vendedor'];
+            if (esRevendedor()) return ['resseller'];
             return [];
         }
 
         function rolesQuePuedeAsignarAlEditar(usuario) {
             if (!usuario || !puedeGestionarUsuario(usuario)) return [];
             if (esAdmin()) return ['admin', 'moderador', 'resseller', 'vendedor'];
-            if (esModerador() || esRevendedor()) return ['resseller'];
+            if (esModerador()) return ['resseller', 'vendedor'];
+            if (esRevendedor()) return ['resseller'];
             return [];
         }
 
@@ -1303,7 +1421,12 @@
                     && !esAncestroDelUsuarioActual(usuario.id);
             }
 
-            return (esModerador() || esRevendedor())
+            if (esModerador()) {
+                return ['resseller', 'vendedor'].includes(rolUsuario)
+                    && esDescendienteVisible(usuario);
+            }
+
+            return esRevendedor()
                 && rolUsuario === 'resseller'
                 && esDescendienteVisible(usuario);
         }
@@ -1314,13 +1437,26 @@
             const opciones = rolesQuePuedeCrear();
 
             document.getElementById('info-sesion').innerText = `${etiquetaRol(rolActual)} · ${currentUser.username}`;
-            document.getElementById('titulo-gestion').innerText = esAdmin() ? 'Gestionar Equipo' : 'Mi Red de Revendedores';
-            document.getElementById('subtitulo-gestion').innerText = esAdmin()
-                ? 'Administrá administradores, moderadores, revendedores, vendedores y toda su jerarquía'
-                : 'Creá revendedores y administrá toda la rama que depende de tu usuario';
-            document.getElementById('titulo-form-nuevo').innerText = esAdmin() ? 'Crear Nuevo Acceso' : 'Crear Nuevo Revendedor';
-            document.getElementById('titulo-lista-usuarios').innerText = esAdmin() ? 'Equipo de Usuarios' : 'Mi Equipo';
-            document.getElementById('btn-crear-usuario').innerText = esAdmin() ? '+ Crear Usuario' : '+ Crear Revendedor';
+
+            if (esAdmin()) {
+                document.getElementById('titulo-gestion').innerText = 'Gestionar Equipo';
+                document.getElementById('subtitulo-gestion').innerText = 'Administrá administradores, moderadores, revendedores, vendedores y toda su jerarquía';
+                document.getElementById('titulo-form-nuevo').innerText = 'Crear Nuevo Acceso';
+                document.getElementById('titulo-lista-usuarios').innerText = 'Equipo de Usuarios';
+                document.getElementById('btn-crear-usuario').innerText = '+ Crear Usuario';
+            } else if (esModerador()) {
+                document.getElementById('titulo-gestion').innerText = 'Gestionar Mi Equipo';
+                document.getElementById('subtitulo-gestion').innerText = 'Creá revendedores y vendedores, y administrá toda la rama que depende de tu usuario';
+                document.getElementById('titulo-form-nuevo').innerText = 'Crear Nuevo Usuario';
+                document.getElementById('titulo-lista-usuarios').innerText = 'Mi Equipo';
+                document.getElementById('btn-crear-usuario').innerText = '+ Crear Usuario';
+            } else {
+                document.getElementById('titulo-gestion').innerText = 'Mi Red de Revendedores';
+                document.getElementById('subtitulo-gestion').innerText = 'Creá revendedores y administrá toda la rama que depende de tu usuario';
+                document.getElementById('titulo-form-nuevo').innerText = 'Crear Nuevo Revendedor';
+                document.getElementById('titulo-lista-usuarios').innerText = 'Mi Equipo';
+                document.getElementById('btn-crear-usuario').innerText = '+ Crear Revendedor';
+            }
 
             selectRol.innerHTML = opciones.map(rol => {
                 return `<option value="${rol}">${etiquetaRol(rol)}</option>`;
@@ -1606,7 +1742,9 @@
                     <div class="empty-state" style="grid-column:1/-1;">
                         <div class="empty-icon">👥</div>
                         <p>No hay usuarios en esta rama</p>
-                        <p class="sub">${esAdmin() ? 'Creá el primer administrador, moderador, revendedor o vendedor' : 'Creá tu primer revendedor'}</p>
+                        <p class="sub">${esAdmin()
+                            ? 'Creá el primer administrador, moderador, revendedor o vendedor'
+                            : (esModerador() ? 'Creá tu primer revendedor o vendedor' : 'Creá tu primer revendedor')}</p>
                     </div>`;
                 return;
             }
@@ -1705,6 +1843,11 @@
                 document.getElementById('count-secundario').innerText = `${administradores} / ${moderadores}`;
                 document.getElementById('label-stat-terciario').innerText = 'Revendedores / Vendedores';
                 document.getElementById('count-terciario').innerText = `${revendedores} / ${vendedores}`;
+            } else if (esModerador()) {
+                document.getElementById('label-stat-secundario').innerText = 'Revendedores / Vendedores';
+                document.getElementById('count-secundario').innerText = `${revendedores} / ${vendedores}`;
+                document.getElementById('label-stat-terciario').innerText = 'Bloqueados';
+                document.getElementById('count-terciario').innerText = bloqueados;
             } else {
                 document.getElementById('label-stat-secundario').innerText = 'Revendedores';
                 document.getElementById('count-secundario').innerText = revendedores;
@@ -1887,7 +2030,9 @@
                 .update(updateData)
                 .eq('id', id);
 
-            if (!esAdmin()) {
+            if (esModerador()) {
+                query = query.in('rol', ['resseller', 'reseller', 'revendedor', 'vendedor']);
+            } else if (esRevendedor()) {
                 query = query.in('rol', ['resseller', 'reseller', 'revendedor']);
             } else {
                 query = query.in('rol', ['admin', 'moderador', 'moderator', 'resseller', 'reseller', 'revendedor', 'vendedor']);
@@ -2151,7 +2296,9 @@ Toda su rama quedó bloqueada por cascada.`);
                 .delete()
                 .eq('id', usuarioObjetivo.id);
 
-            if (!esAdmin()) {
+            if (esModerador()) {
+                query = query.in('rol', ['resseller', 'reseller', 'revendedor', 'vendedor']);
+            } else if (esRevendedor()) {
                 query = query.in('rol', ['resseller', 'reseller', 'revendedor']);
             } else {
                 query = query.in('rol', ['admin', 'moderador', 'moderator', 'resseller', 'reseller', 'revendedor', 'vendedor']);
