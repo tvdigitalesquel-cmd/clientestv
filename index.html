@@ -1808,6 +1808,36 @@ Reemplazá estas rutas por las que agregaste en tu archivo:
             return true;
         }
 
+
+
+        function claveRegistroInicioSesion() {
+            return currentUser?.id ? `tvd_ultimo_inicio_registrado:${currentUser.id}` : '';
+        }
+
+        async function registrarInicioSesionSiCorresponde() {
+            if (!currentUser?.id) return;
+
+            const claveSesion = claveRegistroInicioSesion();
+            if (!claveSesion || sessionStorage.getItem(claveSesion)) return;
+
+            const fechaInicio = new Date().toISOString();
+            const { data, error } = await supabaseClient
+                .from('usuarios_sistema')
+                .update({ ultimo_inicio_sesion: fechaInicio })
+                .eq('id', currentUser.id)
+                .select('*')
+                .single();
+
+            if (error || !data) {
+                console.error('No se pudo registrar el último inicio de sesión:', error);
+                return;
+            }
+
+            currentUser = data;
+            localStorage.setItem('session_tvdigital', JSON.stringify(data));
+            sessionStorage.setItem(claveSesion, fechaInicio);
+        }
+
         function toggleTheme() {
             const html = document.documentElement;
             const isLightMode = html.classList.contains('light-mode');
@@ -1915,6 +1945,8 @@ Reemplazá estas rutas por las que agregaste en tu archivo:
                 logout();
                 return;
             }
+
+            await registrarInicioSesionSiCorresponde();
 
             const rolSesion = normalizarRol(currentUser.rol);
             if (['admin', 'moderador', 'resseller'].includes(rolSesion)) {
@@ -2627,7 +2659,12 @@ Reemplazá estas rutas por las que agregaste en tu archivo:
             }
         }
 
-        function logout() { localStorage.removeItem('session_tvdigital'); window.location.href = 'logueo.html'; }
+        function logout() {
+            const claveSesion = claveRegistroInicioSesion();
+            if (claveSesion) sessionStorage.removeItem(claveSesion);
+            localStorage.removeItem('session_tvdigital');
+            window.location.href = 'logueo.html';
+        }
         window.onload = checkSession;
     
 async function renovar30Dias(id, fechaActual){
