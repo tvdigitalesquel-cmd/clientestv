@@ -492,6 +492,287 @@
         .btn-card.btn-edit:hover { background: var(--accent-dim); color: var(--accent); border-color: rgba(59,127,245,0.3); }
         .btn-card.btn-delete:hover { background: var(--red-dim); color: var(--red); border-color: rgba(239,68,68,0.3); }
 
+
+        /* ─── TEAM DIRECTORY: COMPACT, SEARCHABLE AND PAGINATED ─── */
+        .users-directory {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+
+        .users-directory-toolbar {
+            display: grid;
+            grid-template-columns: minmax(260px, 1fr) 190px 145px;
+            align-items: center;
+            gap: 10px;
+            padding: 14px;
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .team-search-wrapper {
+            position: relative;
+            min-width: 0;
+        }
+
+        .team-search-wrapper .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 14px;
+            pointer-events: none;
+        }
+
+        #buscar-usuario-equipo { padding-left: 40px; }
+
+        .users-directory-summary {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 10px 14px;
+            background: var(--bg-surface);
+            border-bottom: 1px solid var(--border);
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .users-directory-summary strong {
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+
+        .users-list {
+            display: flex;
+            flex-direction: column;
+            min-height: 120px;
+        }
+
+        .user-row {
+            display: grid;
+            grid-template-columns: minmax(230px, 1.35fr) minmax(105px, .65fr) minmax(110px, .7fr) minmax(95px, .55fr) minmax(115px, .65fr) auto;
+            align-items: center;
+            gap: 12px;
+            min-height: 78px;
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-card);
+            cursor: pointer;
+            transition: background .18s ease, border-color .18s ease;
+            position: relative;
+        }
+
+        .user-row:last-child { border-bottom: none; }
+        .user-row:hover { background: var(--bg-card-hover); }
+        .user-row.user-disabled { opacity: .58; }
+
+        .user-row::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 10px;
+            bottom: 10px;
+            width: 3px;
+            border-radius: 0 3px 3px 0;
+            background: var(--accent);
+        }
+
+        .user-row.row-admin::before { background: var(--red); }
+        .user-row.row-moderador::before { background: var(--yellow); }
+        .user-row.row-resseller::before { background: var(--purple); }
+        .user-row.row-vendedor::before { background: var(--accent); }
+
+        .user-row-main {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            min-width: 0;
+        }
+
+        .user-row .user-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            font-size: 17px;
+        }
+
+        .user-row-identity { min-width: 0; }
+
+        .user-row-name-line {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            min-width: 0;
+            margin-bottom: 5px;
+        }
+
+        .user-row-name {
+            color: var(--text-primary);
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .hierarchy-mark {
+            color: var(--text-muted);
+            font-family: 'DM Mono', monospace;
+            font-size: 11px;
+            flex-shrink: 0;
+        }
+
+        .user-row-subline {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 5px 9px;
+            color: var(--text-muted);
+            font-size: 10px;
+            line-height: 1.35;
+        }
+
+        .user-row .role-badge,
+        .user-row .disabled-badge,
+        .user-row .inherited-badge {
+            padding: 2px 7px;
+            font-size: 9px;
+        }
+
+        .user-data-cell {
+            min-width: 0;
+        }
+
+        .user-data-label {
+            display: block;
+            margin-bottom: 3px;
+            color: var(--text-muted);
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .07em;
+        }
+
+        .user-data-value {
+            display: block;
+            color: var(--text-secondary);
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .user-row-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            justify-content: flex-end;
+        }
+
+        .user-row-actions .btn-card {
+            flex: none;
+            min-width: 34px;
+            height: 34px;
+            padding: 0 9px;
+            font-size: 10px;
+            white-space: nowrap;
+        }
+
+        .users-pagination {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 12px 14px;
+            background: var(--bg-card);
+            border-top: 1px solid var(--border);
+        }
+
+        .users-pagination-info {
+            color: var(--text-muted);
+            font-size: 11px;
+        }
+
+        .users-pagination-controls {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .pagination-page {
+            min-width: 88px;
+            color: var(--text-secondary);
+            font-size: 11px;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .pagination-btn:disabled {
+            opacity: .35;
+            cursor: not-allowed;
+            border-color: var(--border);
+            color: var(--text-muted);
+        }
+
+        html.light-mode .users-directory,
+        html.light-mode .users-directory-toolbar,
+        html.light-mode .user-row,
+        html.light-mode .users-pagination {
+            background: #fff;
+        }
+
+        html.light-mode .users-directory-summary { background: #f4f7fb; }
+        html.light-mode .user-row:hover { background: #f7faff; }
+
+        @media (max-width: 1050px) {
+            .user-row {
+                grid-template-columns: minmax(220px, 1.25fr) repeat(3, minmax(92px, .6fr)) auto;
+            }
+            .user-row .user-parent-cell { display: none; }
+        }
+
+        @media (max-width: 768px) {
+            .users-directory-toolbar {
+                grid-template-columns: 1fr 1fr;
+            }
+            .team-search-wrapper { grid-column: 1 / -1; }
+            .user-row {
+                grid-template-columns: minmax(0, 1fr) auto;
+                gap: 10px;
+                min-height: 0;
+                padding: 13px 12px;
+            }
+            .user-row-main { align-items: flex-start; }
+            .user-row .user-data-cell { display: none; }
+            .user-row-actions {
+                flex-direction: column;
+                align-self: center;
+            }
+            .user-row-actions .btn-card {
+                width: 34px;
+                padding: 0;
+                font-size: 0;
+            }
+            .user-row-actions .btn-card::first-letter { font-size: 13px; }
+            .users-directory-summary,
+            .users-pagination {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+            .users-pagination-controls { width: 100%; }
+            .users-pagination-controls .btn-mini { flex: 1; }
+        }
+
+        @media (max-width: 480px) {
+            .users-directory-toolbar { grid-template-columns: 1fr; }
+            .team-search-wrapper { grid-column: auto; }
+        }
+
         /* ─── CLIENT CARDS (inside seller view) ─── */
         .clients-grid {
             display: grid;
@@ -822,10 +1103,54 @@
             </form>
         </div>
 
-        <!-- ─── LISTA DE USUARIOS ─── -->
+        <!-- ─── DIRECTORIO DE USUARIOS ─── -->
         <div id="seccion-usuarios">
-            <div id="titulo-lista-usuarios" class="section-title" style="margin-bottom:16px;">Equipo de Usuarios</div>
-            <div id="lista-usuarios-sistema" class="users-grid"></div>
+            <div id="titulo-lista-usuarios" class="section-title" style="margin-bottom:12px;">Equipo de Usuarios</div>
+
+            <div class="users-directory">
+                <div class="users-directory-toolbar">
+                    <div class="team-search-wrapper">
+                        <span class="search-icon">🔍</span>
+                        <input
+                            type="search"
+                            id="buscar-usuario-equipo"
+                            class="input-modern"
+                            placeholder="Buscar revendedor o vendedor..."
+                            autocomplete="off"
+                            oninput="aplicarFiltrosUsuarios(true)">
+                    </div>
+
+                    <select id="filtro-rol-equipo" class="input-modern" onchange="aplicarFiltrosUsuarios(true)">
+                        <option value="todos">Todos los roles</option>
+                        <option value="resseller">Solo revendedores</option>
+                        <option value="vendedor">Solo vendedores</option>
+                        <option value="admin">Solo administradores</option>
+                        <option value="moderador">Solo moderadores</option>
+                    </select>
+
+                    <select id="cantidad-usuarios-pagina" class="input-modern" onchange="cambiarCantidadUsuariosPagina()">
+                        <option value="10">10 por página</option>
+                        <option value="20" selected>20 por página</option>
+                        <option value="50">50 por página</option>
+                    </select>
+                </div>
+
+                <div class="users-directory-summary">
+                    <span id="resumen-filtro-usuarios"><strong>0</strong> usuarios</span>
+                    <span>Hacé clic en un usuario para ver sus clientes</span>
+                </div>
+
+                <div id="lista-usuarios-sistema" class="users-list"></div>
+
+                <div id="paginacion-usuarios" class="users-pagination" style="display:none;">
+                    <span id="info-paginacion-usuarios" class="users-pagination-info"></span>
+                    <div class="users-pagination-controls">
+                        <button type="button" id="btn-pagina-anterior" class="btn-mini pagination-btn" onclick="cambiarPaginaUsuarios(-1)">← Anterior</button>
+                        <span id="numero-pagina-usuarios" class="pagination-page">Página 1 de 1</span>
+                        <button type="button" id="btn-pagina-siguiente" class="btn-mini pagination-btn" onclick="cambiarPaginaUsuarios(1)">Siguiente →</button>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- ─── CLIENTES DEL VENDEDOR ─── -->
@@ -1000,6 +1325,8 @@
         let todosLosClientes = [];
         let clientesVendedorActual = [];
         let datosUltimoVendedorCreado = null;
+        let paginaUsuariosActual = 1;
+        let usuariosPorPagina = 20;
 
         const LOGO_GENERICO = 'data:image/svg+xml,' + encodeURIComponent(
             '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">' +
@@ -1803,24 +2130,113 @@
             return resultado;
         }
 
+        function normalizarBusquedaUsuarios(valor) {
+            return String(valor || '')
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .toLowerCase()
+                .trim();
+        }
+
+        function obtenerUsuariosFiltrados() {
+            const texto = normalizarBusquedaUsuarios(document.getElementById('buscar-usuario-equipo')?.value);
+            const rolSeleccionado = document.getElementById('filtro-rol-equipo')?.value || 'todos';
+
+            return ordenarUsuariosJerarquicamente().filter(usuario => {
+                const rol = normalizarRol(usuario.rol);
+                if (rolSeleccionado !== 'todos' && rol !== rolSeleccionado) return false;
+
+                if (!texto) return true;
+
+                const padre = buscarUsuarioGlobalPorId(usuario.padre_id);
+                const estado = obtenerEstadoEfectivoUsuario(usuario);
+                const contenido = [
+                    usuario.username,
+                    etiquetaRol(rol),
+                    padre?.username,
+                    usuario.vencimiento_acceso,
+                    estado.habilitado ? 'habilitado activo' : 'bloqueado deshabilitado',
+                    estado.motivo
+                ].map(normalizarBusquedaUsuarios).join(' ');
+
+                return contenido.includes(texto);
+            });
+        }
+
+        function aplicarFiltrosUsuarios(reiniciarPagina = false) {
+            if (reiniciarPagina) paginaUsuariosActual = 1;
+            renderUsuariosSistema();
+        }
+
+        function cambiarCantidadUsuariosPagina() {
+            const selector = document.getElementById('cantidad-usuarios-pagina');
+            usuariosPorPagina = Math.max(1, Number(selector?.value) || 20);
+            paginaUsuariosActual = 1;
+            renderUsuariosSistema();
+        }
+
+        function cambiarPaginaUsuarios(direccion) {
+            const total = obtenerUsuariosFiltrados().length;
+            const totalPaginas = Math.max(1, Math.ceil(total / usuariosPorPagina));
+            paginaUsuariosActual = Math.min(totalPaginas, Math.max(1, paginaUsuariosActual + direccion));
+            renderUsuariosSistema();
+            document.getElementById('seccion-usuarios')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
         function renderUsuariosSistema() {
             const cont = document.getElementById('lista-usuarios-sistema');
+            const resumen = document.getElementById('resumen-filtro-usuarios');
+            const paginacion = document.getElementById('paginacion-usuarios');
+            const infoPaginacion = document.getElementById('info-paginacion-usuarios');
+            const numeroPagina = document.getElementById('numero-pagina-usuarios');
+            const btnAnterior = document.getElementById('btn-pagina-anterior');
+            const btnSiguiente = document.getElementById('btn-pagina-siguiente');
+
             cont.innerHTML = '';
             actualizarEstadisticas();
 
+            const usuariosFiltrados = obtenerUsuariosFiltrados();
+            const totalFiltrados = usuariosFiltrados.length;
+            const totalGeneral = usuariosVisibles.length;
+            const totalPaginas = Math.max(1, Math.ceil(totalFiltrados / usuariosPorPagina));
+
+            if (paginaUsuariosActual > totalPaginas) paginaUsuariosActual = totalPaginas;
+
+            const desdeIndice = (paginaUsuariosActual - 1) * usuariosPorPagina;
+            const hastaIndice = Math.min(desdeIndice + usuariosPorPagina, totalFiltrados);
+            const usuariosPagina = usuariosFiltrados.slice(desdeIndice, hastaIndice);
+
+            if (resumen) {
+                resumen.innerHTML = totalFiltrados === totalGeneral
+                    ? `<strong>${totalGeneral}</strong> usuario${totalGeneral !== 1 ? 's' : ''} en el equipo`
+                    : `<strong>${totalFiltrados}</strong> de ${totalGeneral} usuario${totalGeneral !== 1 ? 's' : ''}`;
+            }
+
             if (usuariosVisibles.length === 0) {
                 cont.innerHTML = `
-                    <div class="empty-state" style="grid-column:1/-1;">
+                    <div class="empty-state">
                         <div class="empty-icon">👥</div>
                         <p>No hay usuarios en esta rama</p>
                         <p class="sub">${esAdmin()
                             ? 'Creá el primer administrador, moderador, revendedor o vendedor'
-                            : (esModerador() ? 'Creá tu primer revendedor o vendedor' : 'Creá tu primer revendedor o vendedor')}</p>
+                            : 'Creá tu primer revendedor o vendedor'}</p>
                     </div>`;
+                if (paginacion) paginacion.style.display = 'none';
                 return;
             }
 
-            ordenarUsuariosJerarquicamente().forEach(u => {
+            if (totalFiltrados === 0) {
+                cont.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🔍</div>
+                        <p>No se encontraron usuarios</p>
+                        <p class="sub">Probá con otro nombre o cambiá el filtro de rol.</p>
+                    </div>`;
+                if (paginacion) paginacion.style.display = 'none';
+                return;
+            }
+
+            usuariosPagina.forEach(u => {
                 const rol = normalizarRol(u.rol);
                 const estado = obtenerEstadoEfectivoUsuario(u);
                 const isDisabled = !estado.habilitado;
@@ -1840,37 +2256,73 @@
                 const padre = buscarUsuarioGlobalPorId(u.padre_id);
                 const puedeGestionar = puedeGestionarUsuario(u);
                 const nivel = profundidadUsuario(u);
-                const vistaClientes = `data-view-usuario-id="${escaparHtml(String(u.id))}"`;
+                const apps = rol === 'vendedor' ? normalizarListaApps(u.apps_permitidas, true) : [];
+                const ultimoInicio = puedeVerUltimosInicios() && ['resseller', 'vendedor'].includes(rol)
+                    ? formatearUltimoInicioSesion(u.ultimo_inicio_sesion)
+                    : '';
 
-                cont.innerHTML += `
-                    <div class="card-usuario ${isDisabled ? 'user-disabled' : ''}" ${vistaClientes}
-                         style="--nivel-jerarquia:${nivel}; border-left-width:${Math.min(3 + nivel * 2, 9)}px;">
-                        <div class="card-usuario-top">
+                cont.insertAdjacentHTML('beforeend', `
+                    <div class="user-row row-${rol} ${isDisabled ? 'user-disabled' : ''}"
+                         data-view-usuario-id="${escaparHtml(String(u.id))}"
+                         style="padding-left:${14 + Math.min(nivel, 4) * 10}px;">
+
+                        <div class="user-row-main">
                             <div class="user-avatar">${iconoRol(rol)}</div>
-                            <div class="user-info">
-                                <div class="user-name">${nivel ? '↳ '.repeat(Math.min(nivel, 3)) : ''}${escaparHtml(u.username)}</div>
-                                <div class="user-tags">
+                            <div class="user-row-identity">
+                                <div class="user-row-name-line">
+                                    ${nivel ? `<span class="hierarchy-mark">${'↳'.repeat(Math.min(nivel, 3))}</span>` : ''}
+                                    <span class="user-row-name" title="${escaparHtml(u.username)}">${escaparHtml(u.username)}</span>
+                                </div>
+                                <div class="user-row-subline">
                                     <span class="role-badge ${claseRol(rol)}">${etiquetaRol(rol)}</span>
                                     ${u.activo === false ? '<span class="disabled-badge">🔒 Deshabilitado</span>' : ''}
-                                    ${estado.heredado ? `<span class="inherited-badge">⛓ Bloqueado por ${escaparHtml(estado.motivo)}</span>` : ''}
-                                </div>
-                                <div class="user-meta">
-                                    <span style="${venciColor}">📅 ${u.vencimiento_acceso ? escaparHtml(u.vencimiento_acceso) + (venciEn !== null ? ' (' + venciEn + 'd)' : '') : 'Sin fecha'}</span>
-                                    ${padre ? `<span>⬆ Depende de: ${escaparHtml(padre.username)}</span>` : ''}
-                                    ${detalleUltimoInicioSesion(u)}
-                                    <span style="color:var(--purple);">👥 ${hijosDirectos.length} usuario${hijosDirectos.length !== 1 ? 's' : ''} directo${hijosDirectos.length !== 1 ? 's' : ''}</span>
-                                    <span style="color:var(--accent);">📺 ${clientesPropios.length} propio${clientesPropios.length !== 1 ? 's' : ''} · ${clientesSubrama.length} en su rama</span>
-                                    ${resumenAppsUsuario(u)}
+                                    ${estado.heredado ? `<span class="inherited-badge" title="${escaparHtml(estado.motivo)}">⛓ Bloqueado</span>` : ''}
+                                    ${apps.length ? `<span title="${escaparHtml(apps.join(', '))}">📡 ${apps.length} app${apps.length !== 1 ? 's' : ''}</span>` : ''}
+                                    ${ultimoInicio ? `<span title="Último inicio de sesión">🕘 ${escaparHtml(ultimoInicio)}</span>` : ''}
                                 </div>
                             </div>
                         </div>
-                        ${puedeGestionar ? `
-                        <div class="card-usuario-actions">
-                            <button type="button" data-action="edit-user" data-user-id="${escaparHtml(String(u.id))}" class="btn-card btn-edit">✏️ Editar</button>
-                            <button type="button" data-action="delete-user" data-user-id="${escaparHtml(String(u.id))}" class="btn-card btn-delete">🗑️ Eliminar</button>
-                        </div>` : ''}
-                    </div>`;
+
+                        <div class="user-data-cell">
+                            <span class="user-data-label">Vencimiento</span>
+                            <span class="user-data-value" style="${venciColor}" title="${escaparHtml(u.vencimiento_acceso || 'Sin fecha')}">
+                                ${u.vencimiento_acceso ? escaparHtml(u.vencimiento_acceso) + (venciEn !== null ? ` · ${venciEn}d` : '') : 'Sin fecha'}
+                            </span>
+                        </div>
+
+                        <div class="user-data-cell user-parent-cell">
+                            <span class="user-data-label">Depende de</span>
+                            <span class="user-data-value" title="${escaparHtml(padre?.username || 'Cuenta principal')}">${escaparHtml(padre?.username || 'Cuenta principal')}</span>
+                        </div>
+
+                        <div class="user-data-cell">
+                            <span class="user-data-label">Equipo</span>
+                            <span class="user-data-value">👥 ${hijosDirectos.length} directo${hijosDirectos.length !== 1 ? 's' : ''}</span>
+                        </div>
+
+                        <div class="user-data-cell">
+                            <span class="user-data-label">Clientes</span>
+                            <span class="user-data-value" title="${clientesSubrama.length} clientes en toda su rama">📺 ${clientesPropios.length} propios · ${clientesSubrama.length} rama</span>
+                        </div>
+
+                        <div class="user-row-actions">
+                            ${puedeGestionar ? `
+                                <button type="button" data-action="edit-user" data-user-id="${escaparHtml(String(u.id))}" class="btn-card btn-edit" title="Editar usuario">✏️ Editar</button>
+                                <button type="button" data-action="delete-user" data-user-id="${escaparHtml(String(u.id))}" class="btn-card btn-delete" title="Eliminar usuario">🗑️ Eliminar</button>
+                            ` : '<span class="user-data-value">—</span>'}
+                        </div>
+                    </div>`);
             });
+
+            if (paginacion) {
+                paginacion.style.display = totalFiltrados > 0 ? 'flex' : 'none';
+            }
+            if (infoPaginacion) {
+                infoPaginacion.textContent = `Mostrando ${desdeIndice + 1}–${hastaIndice} de ${totalFiltrados}`;
+            }
+            if (numeroPagina) numeroPagina.textContent = `Página ${paginaUsuariosActual} de ${totalPaginas}`;
+            if (btnAnterior) btnAnterior.disabled = paginaUsuariosActual <= 1;
+            if (btnSiguiente) btnSiguiente.disabled = paginaUsuariosActual >= totalPaginas;
 
             vincularAccionesTarjetasEquipo();
         }
