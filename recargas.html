@@ -1,1 +1,361 @@
 
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tv Digital - Recargas</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary:#0a0d14; --bg-secondary:#0f1520; --bg-card:#131b28; --bg-card-hover:#1a2235;
+            --bg-surface:#1c2740; --border:rgba(255,255,255,.07); --border-hover:rgba(255,255,255,.14);
+            --accent:#3b7ff5; --accent-dim:rgba(59,127,245,.12); --accent-glow:rgba(59,127,245,.25);
+            --green:#22c55e; --green-dim:rgba(34,197,94,.12); --red:#ef4444; --red-dim:rgba(239,68,68,.12);
+            --yellow:#f59e0b; --yellow-dim:rgba(245,158,11,.12); --purple:#a855f7; --purple-dim:rgba(168,85,247,.12);
+            --text-primary:#e8edf5; --text-secondary:#7a8a9e; --text-muted:#4a5568;
+            --radius-sm:8px; --radius-md:12px; --radius-lg:16px; --radius-xl:20px;
+        }
+        html.light-mode {
+            --bg-primary:#f0f4fa; --bg-secondary:#111318; --bg-card:#fff; --bg-card-hover:#f7faff;
+            --bg-surface:#e8eef7; --border:rgba(0,0,0,.08); --border-hover:rgba(59,127,245,.25);
+            --accent-dim:rgba(59,127,245,.08); --text-primary:#1a2235; --text-secondary:#5a6a82; --text-muted:#9aa5b4;
+        }
+        html.light-mode nav .nav-links a{color:rgba(255,255,255,.55)}
+        html.light-mode nav .nav-links a:hover{background:rgba(255,255,255,.08);color:#fff}
+        html.light-mode nav .nav-links a.active{background:rgba(59,127,245,.2);color:#6eaaff}
+        html.light-mode #info-sesion{color:rgba(255,255,255,.35)}
+        html.light-mode .theme-toggle{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.15)}
+        html.light-mode .btn-logout{color:#f87171;border-color:rgba(239,68,68,.35)}
+        html.light-mode .input-modern{background:#e4ecf9;border-color:rgba(59,127,245,.2);color:#1a2235}
+        html.light-mode .input-modern:focus{background:#fff;border-color:var(--accent)}
+        html.light-mode input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(0)}
+        *{box-sizing:border-box;margin:0;padding:0}
+        body{font-family:'DM Sans',sans-serif;background:var(--bg-primary);color:var(--text-primary);min-height:100vh}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+        ::-webkit-scrollbar{width:5px;height:5px} ::-webkit-scrollbar-track{background:transparent}
+        ::-webkit-scrollbar-thumb{background:var(--border-hover);border-radius:10px}
+        nav{background:var(--bg-secondary);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50;backdrop-filter:blur(12px)}
+        .nav-inner{max-width:1280px;margin:0 auto;padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between}
+        .nav-links{display:flex;gap:4px}.nav-links a{text-decoration:none;font-size:13px;font-weight:500;color:var(--text-secondary);padding:7px 14px;border-radius:var(--radius-sm);transition:.2s}
+        .nav-links a:hover{background:var(--border);color:var(--text-primary)}.nav-links a.active{background:var(--accent-dim);color:var(--accent)}
+        .nav-right{display:flex;align-items:center;gap:12px}#info-sesion{font-size:12px;color:var(--text-muted);font-family:'DM Mono',monospace}
+        .theme-toggle{cursor:pointer;width:44px;height:24px;background:var(--bg-surface);border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;padding:2px;transition:.3s;position:relative}
+        .theme-toggle span{width:20px;height:20px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:12px;transition:.3s;position:absolute}
+        .theme-toggle .dark-icon{left:2px}.theme-toggle .light-icon{right:2px}.theme-toggle.active .dark-icon{opacity:.3}.theme-toggle.active .light-icon{opacity:1}.theme-toggle:not(.active) .dark-icon{opacity:1}.theme-toggle:not(.active) .light-icon{opacity:.3}
+        .btn-logout{font-size:12px;font-weight:600;color:var(--red);background:transparent;border:1px solid rgba(239,68,68,.25);padding:6px 14px;border-radius:var(--radius-sm);cursor:pointer;font-family:'DM Sans',sans-serif}.btn-logout:hover{background:var(--red-dim)}
+        .container{max-width:1280px;margin:0 auto;padding:32px 24px 80px}.page-header{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;margin-bottom:28px}.page-header h1{font-size:26px;letter-spacing:-.02em}.page-header p{font-size:13px;color:var(--text-secondary);margin-top:4px;max-width:700px}
+        .badge-private{font-size:11px;font-weight:700;color:var(--purple);background:var(--purple-dim);border:1px solid rgba(168,85,247,.25);padding:7px 11px;border-radius:100px;white-space:nowrap}
+        .card-surface{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg)}
+        .section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted);margin-bottom:14px}
+        .form-section{padding:22px 24px;margin-bottom:20px}.form-grid{display:grid;grid-template-columns:1.1fr .8fr .9fr 1.1fr .9fr auto;gap:12px;align-items:flex-end}
+        .input-label{display:block;font-size:11px;font-weight:600;color:var(--text-secondary);margin-bottom:5px}.input-modern{width:100%;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);padding:10px 14px;border-radius:var(--radius-md);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;transition:.2s;height:40px}.input-modern:focus{border-color:var(--accent);background:var(--bg-card)}
+        .btn-primary,.btn-secondary,.btn-green,.btn-danger,.btn-small{border:0;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;transition:.2s;border-radius:var(--radius-md)}
+        .btn-primary{background:var(--accent);color:#fff;padding:10px 18px;height:40px}.btn-primary:hover{background:#2d6fd4;transform:translateY(-1px);box-shadow:0 6px 20px var(--accent-glow)}
+        .btn-secondary{background:var(--bg-surface);border:1px solid var(--border);color:var(--text-secondary);padding:10px 16px;height:40px}.btn-secondary:hover{color:var(--text-primary);border-color:var(--border-hover)}
+        .form-actions-inline{display:flex;gap:8px}.hidden{display:none!important}
+        .periodo-section{padding:20px 24px;margin-bottom:20px}.periodo-head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px}.periodo-btn-container{display:flex;flex-wrap:wrap;gap:8px}.periodo-btn{padding:8px 18px;border-radius:100px;border:1px solid var(--border);background:var(--bg-surface);color:var(--text-secondary);font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif}.periodo-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}.periodo-btn:hover:not(.active){background:var(--border);color:var(--text-primary)}
+        #rango-personalizado{margin-top:16px;padding:16px;background:var(--bg-surface);border-radius:var(--radius-md);border:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:flex-end}
+        .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}.stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px 22px;position:relative;overflow:hidden;animation:fadeUp .35s ease-out}.stat-card:before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px}.stat-blue:before{background:var(--accent)}.stat-green:before{background:var(--green)}.stat-purple:before{background:var(--purple)}.stat-yellow:before{background:var(--yellow)}
+        .stat-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:8px}.stat-value{font-size:28px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}.stat-blue .stat-value{color:var(--accent)}.stat-green .stat-value{color:var(--green)}.stat-purple .stat-value{color:var(--purple)}.stat-yellow .stat-value{color:var(--yellow)}
+        .toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}.toolbar-left{display:flex;gap:10px;flex:1}.toolbar .input-modern{max-width:240px}.btn-green{background:var(--green-dim);border:1px solid rgba(34,197,94,.3);color:var(--green);padding:9px 14px}.btn-green:hover{background:rgba(34,197,94,.18)}
+        .table-section{padding:20px 0 0;overflow:hidden}.table-head{padding:0 24px}.table-wrap{overflow:auto}.tabla{width:100%;border-collapse:collapse;min-width:900px}.tabla th{text-align:left;padding:11px 16px;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);background:var(--bg-surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}.tabla td{padding:12px 16px;font-size:13px;color:var(--text-primary);border-bottom:1px solid var(--border);vertical-align:middle}.tabla tbody tr:hover td{background:var(--bg-surface)}
+        .mono{font-family:'DM Mono',monospace}.app-chip{display:inline-flex;padding:4px 8px;border-radius:7px;background:var(--accent-dim);color:var(--accent);font-size:11px;font-weight:700}.seller-name{font-weight:600}.muted{font-size:11px;color:var(--text-muted);margin-top:2px}.money{color:var(--green);font-weight:700}.credits{color:var(--purple);font-weight:700}
+        .action-group{display:flex;gap:6px}.btn-small{padding:6px 9px;font-size:11px;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-secondary)}.btn-small:hover{color:var(--text-primary);border-color:var(--border-hover)}.btn-small.danger{color:var(--red)}.btn-small.danger:hover{background:var(--red-dim);border-color:rgba(239,68,68,.3)}
+        .empty-state{text-align:center;padding:55px 20px;color:var(--text-muted)}.empty-state .icon{font-size:36px;margin-bottom:10px;opacity:.5}.empty-state p{font-size:13px}.empty-state .sub{font-size:11px;margin-top:4px}
+        .setup-warning{margin-bottom:20px;padding:14px 16px;border-radius:var(--radius-md);border:1px solid rgba(245,158,11,.28);background:var(--yellow-dim);font-size:12px;line-height:1.55}.setup-warning strong{color:var(--yellow)}
+        @media(max-width:1050px){.form-grid{grid-template-columns:repeat(2,1fr)}.form-actions-inline{grid-column:1/-1}.stats-grid{grid-template-columns:repeat(2,1fr)}}
+        @media(max-width:768px){.nav-inner{padding:0 12px;height:auto;min-height:54px;gap:8px}.nav-links{overflow:auto;padding:7px 0}.nav-links a{white-space:nowrap;padding:7px 10px}.nav-right{gap:7px}#info-sesion{display:none}.container{padding:20px 14px 70px}.page-header{flex-direction:column}.stats-grid{grid-template-columns:1fr}.periodo-head,.toolbar{align-items:stretch;flex-direction:column}.toolbar-left{flex-direction:column}.toolbar .input-modern{max-width:none}#rango-personalizado{grid-template-columns:1fr}.form-section,.periodo-section{padding:16px}.table-head{padding:0 16px}}
+        @media(max-width:520px){.form-grid{grid-template-columns:1fr}.form-actions-inline{grid-column:auto;flex-direction:column}.btn-primary,.btn-secondary{width:100%}.stat-value{font-size:24px}}
+    </style>
+</head>
+<body>
+<nav>
+    <div class="nav-inner">
+        <div class="nav-links">
+            <a href="index.html">Mis Clientes</a>
+            <a href="equipo.html">Equipo</a>
+            <a href="recargas.html" class="active">Recargas</a>
+            <a href="reporte.html">Reportes</a>
+        </div>
+        <div class="nav-right">
+            <span id="info-sesion"></span>
+            <button onclick="toggleTheme()" class="theme-toggle" title="Cambiar tema"><span class="dark-icon">🌙</span><span class="light-icon">☀️</span></button>
+            <button onclick="logout()" class="btn-logout">Salir</button>
+        </div>
+    </div>
+</nav>
+
+<main class="container">
+    <div class="page-header">
+        <div><h1>Control de Recargas</h1><p>Registrá los créditos entregados a cada vendedor y controlá el dinero ingresado sin mezclarlo con el reporte general de clientes.</p></div>
+        <span class="badge-private">🔒 ADMIN · MODERADOR</span>
+    </div>
+
+    <div id="setup-warning" class="setup-warning hidden"><strong>Falta configurar Supabase.</strong> No se encontró la tabla <code>recargas</code>. Ejecutá primero el archivo <code>crear_tabla_recargas.sql</code> en el SQL Editor de Supabase.</div>
+
+    <section class="card-surface form-section">
+        <div class="section-title" id="form-title">Nueva recarga</div>
+        <form id="form-recarga" class="form-grid">
+            <div><label class="input-label" for="vendedor">Vendedor</label><select id="vendedor" class="input-modern" required><option value="">Cargando vendedores...</option></select></div>
+            <div><label class="input-label" for="creditos">Créditos recargados</label><input id="creditos" type="number" min="0" step="1" class="input-modern" placeholder="Ej: 100" required></div>
+            <div><label class="input-label" for="precio">Precio</label><input id="precio" type="number" min="0" step="0.01" class="input-modern" placeholder="Ej: 25000" required></div>
+            <div><label class="input-label" for="nombre-app">Nombre de la app</label><input id="nombre-app" list="apps-list" class="input-modern" placeholder="Seleccionar o escribir" required><datalist id="apps-list"></datalist></div>
+            <div><label class="input-label" for="fecha-recarga">Fecha de recarga</label><input id="fecha-recarga" type="date" class="input-modern" required></div>
+            <div class="form-actions-inline"><button id="btn-guardar" type="submit" class="btn-primary">+ Agregar</button><button id="btn-cancelar-edicion" type="button" class="btn-secondary hidden" onclick="cancelarEdicion()">Cancelar</button></div>
+        </form>
+    </section>
+
+    <section class="card-surface periodo-section">
+        <div class="periodo-head">
+            <div><div class="section-title">Período del reporte</div><div class="periodo-btn-container">
+                <button class="periodo-btn active" data-periodo="hoy" onclick="cambiarPeriodo('hoy',this)">Hoy</button>
+                <button class="periodo-btn" data-periodo="semana" onclick="cambiarPeriodo('semana',this)">Esta semana</button>
+                <button class="periodo-btn" data-periodo="mes" onclick="cambiarPeriodo('mes',this)">Este mes</button>
+                <button class="periodo-btn" data-periodo="todo" onclick="cambiarPeriodo('todo',this)">Todo</button>
+                <button class="periodo-btn" data-periodo="personalizado" onclick="cambiarPeriodo('personalizado',this)">Personalizado</button>
+            </div></div>
+        </div>
+        <div id="rango-personalizado" class="hidden">
+            <div><label class="input-label">Desde</label><input id="fecha-desde" type="date" class="input-modern"></div>
+            <div><label class="input-label">Hasta</label><input id="fecha-hasta" type="date" class="input-modern"></div>
+            <button type="button" class="btn-primary" onclick="aplicarRangoPersonalizado()">Aplicar</button>
+        </div>
+    </section>
+
+    <div class="stats-grid">
+        <div class="stat-card stat-purple"><div class="stat-label">Créditos recargados</div><div id="stat-creditos" class="stat-value">0</div></div>
+        <div class="stat-card stat-green"><div class="stat-label">Dinero ingresado</div><div id="stat-ingresos" class="stat-value">$ 0</div></div>
+        <div class="stat-card stat-blue"><div class="stat-label">Cantidad de recargas</div><div id="stat-cantidad" class="stat-value">0</div></div>
+        <div class="stat-card stat-yellow"><div class="stat-label">Precio promedio</div><div id="stat-promedio" class="stat-value">$ 0</div></div>
+    </div>
+
+    <section class="card-surface table-section">
+        <div class="table-head">
+            <div class="toolbar">
+                <div class="toolbar-left">
+                    <select id="filtro-vendedor" class="input-modern" onchange="renderTodo()"><option value="todos">Todos los vendedores</option></select>
+                    <select id="filtro-app" class="input-modern" onchange="renderTodo()"><option value="todas">Todas las apps</option></select>
+                </div>
+                <button class="btn-green" onclick="descargarExcel()">↓ Exportar Excel</button>
+            </div>
+            <div class="section-title">Historial de recargas</div>
+        </div>
+        <div class="table-wrap">
+            <table class="tabla">
+                <thead><tr><th>Fecha</th><th>Vendedor</th><th>Aplicación</th><th>Créditos</th><th>Precio</th><th>Registrado por</th><th>Acciones</th></tr></thead>
+                <tbody id="tabla-recargas"></tbody>
+            </table>
+            <div id="empty-recargas" class="empty-state hidden"><div class="icon">💳</div><p>No hay recargas para este período.</p><p class="sub">Cambiá los filtros o agregá una nueva recarga.</p></div>
+        </div>
+    </section>
+</main>
+
+<script>
+    const SUPABASE_URL = 'https://vjbdhbbxbvoigbidquya.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_4ogrbtxBrBWBFj-NRJOrbg_XnpmO4pS';
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    let currentUser = JSON.parse(localStorage.getItem('session_tvdigital'));
+    let todosLosUsuarios = [];
+    let vendedoresPermitidos = [];
+    let todasLasRecargas = [];
+    let periodoActual = 'hoy';
+    let rangoPersonalizado = { desde:null, hasta:null };
+    let recargaEnEdicion = null;
+
+    const APPS = ['TV PLUS 2','TV','FUTURE','ON PLAY','TV (EX LUMIX)','KRATEN','TRY PLAY','STELLA','FLUJO TV','FEMON PLUS','VEXA TV','MUNDO INFINITO','SUFFIXED'];
+
+    function normalizarRol(rol){
+        const valor=String(rol||'').trim().toLowerCase();
+        if(['revendedor','reseller','resseller'].includes(valor)) return 'resseller';
+        if(valor==='moderator') return 'moderador';
+        return valor;
+    }
+    function mismoId(a,b){return String(a??'')===String(b??'')}
+    function escaparHtml(v){return String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;')}
+    function esAdmin(){return normalizarRol(currentUser?.rol)==='admin'}
+    function esModerador(){return normalizarRol(currentUser?.rol)==='moderador'}
+    function tieneAccesoRecargas(){return esAdmin()||esModerador()}
+    function fechaAccesoVencida(fecha){if(!fecha)return false;return new Date(`${fecha}T23:59:59`)<new Date()}
+    function fechaHoyArgentina(){return new Intl.DateTimeFormat('en-CA',{timeZone:'America/Argentina/Buenos_Aires',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date())}
+    function parseFechaLocal(fecha){const [y,m,d]=String(fecha).split('-').map(Number);return new Date(y,m-1,d,12,0,0)}
+    function fechaISO(d){const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),dia=String(d.getDate()).padStart(2,'0');return `${y}-${m}-${dia}`}
+    function formatearFecha(fecha){if(!fecha)return '—';return new Intl.DateTimeFormat('es-AR',{day:'2-digit',month:'2-digit',year:'numeric'}).format(parseFechaLocal(fecha))}
+    function formatearDinero(n){return new Intl.NumberFormat('es-AR',{style:'currency',currency:'ARS',maximumFractionDigits:2}).format(Number(n)||0)}
+    function formatearNumero(n){return new Intl.NumberFormat('es-AR',{maximumFractionDigits:2}).format(Number(n)||0)}
+
+    async function refrescarSesionDesdeBase(){
+        if(!currentUser?.id)return false;
+        const {data,error}=await supabaseClient.from('usuarios_sistema').select('*').eq('id',currentUser.id).single();
+        if(error||!data){console.error(error);return false}
+        currentUser=data;localStorage.setItem('session_tvdigital',JSON.stringify(data));return true;
+    }
+    async function validarAccesoJerarquico(){
+        if(!currentUser?.id)return {ok:false,mensaje:'No se pudo identificar tu usuario.'};
+        const visitados=new Set();let usuario=currentUser;let actual=true;
+        while(usuario){
+            const id=String(usuario.id);if(visitados.has(id))return {ok:false,mensaje:'Se detectó un error en la jerarquía de usuarios.'};visitados.add(id);
+            if(usuario.activo===false)return {ok:false,mensaje:actual?'Tu acceso fue deshabilitado.':`Tu acceso está bloqueado porque ${usuario.username||'un usuario superior'} está deshabilitado.`};
+            if(fechaAccesoVencida(usuario.vencimiento_acceso))return {ok:false,mensaje:actual?'Tu acceso está vencido.':`Tu acceso está bloqueado porque el acceso de ${usuario.username||'un usuario superior'} está vencido.`};
+            if(!usuario.padre_id)break;
+            const {data:padre,error}=await supabaseClient.from('usuarios_sistema').select('id,username,rol,activo,vencimiento_acceso,padre_id').eq('id',usuario.padre_id).maybeSingle();
+            if(error||!padre)return {ok:false,mensaje:'No se pudo validar la cadena de acceso de tu usuario.'};usuario=padre;actual=false;
+        }
+        return {ok:true};
+    }
+
+    async function cargarUsuariosPermitidos(){
+        if(esAdmin()){
+            const {data,error}=await supabaseClient.from('usuarios_sistema').select('id,username,rol,padre_id,activo,vencimiento_acceso').order('username',{ascending:true});
+            if(error)throw error;todosLosUsuarios=data||[];
+        } else {
+            const encontrados=[];const ids=new Set();let padres=[currentUser.id];let profundidad=0;
+            while(padres.length&&profundidad<50){
+                const {data,error}=await supabaseClient.from('usuarios_sistema').select('id,username,rol,padre_id,activo,vencimiento_acceso').in('padre_id',padres).order('username',{ascending:true});
+                if(error)throw error;
+                const nuevos=(data||[]).filter(u=>{const id=String(u.id);if(ids.has(id))return false;ids.add(id);return true});
+                encontrados.push(...nuevos);padres=nuevos.map(u=>u.id);profundidad++;
+            }
+            todosLosUsuarios=encontrados;
+        }
+        vendedoresPermitidos=todosLosUsuarios.filter(u=>normalizarRol(u.rol)==='vendedor');
+        renderSelectVendedores();
+    }
+
+    function renderSelectVendedores(){
+        const opciones=vendedoresPermitidos.map(v=>`<option value="${escaparHtml(v.id)}">${escaparHtml(v.username)}</option>`).join('');
+        document.getElementById('vendedor').innerHTML=`<option value="">Seleccionar vendedor</option>${opciones}`;
+        document.getElementById('filtro-vendedor').innerHTML=`<option value="todos">Todos los vendedores</option>${opciones}`;
+    }
+
+    function buscarUsuario(id){return todosLosUsuarios.find(u=>mismoId(u.id,id))||null}
+    function gestorDeVendedor(vendedor){
+        if(!vendedor)return currentUser.id;
+        let actual=vendedor;const visitados=new Set();
+        while(actual?.padre_id){
+            const padre=buscarUsuario(actual.padre_id);
+            if(!padre)break;
+            const pid=String(padre.id);if(visitados.has(pid))break;visitados.add(pid);
+            const rol=normalizarRol(padre.rol);
+            if(rol==='moderador')return padre.id;
+            if(rol==='admin')return padre.id;
+            actual=padre;
+        }
+        return currentUser.id;
+    }
+
+    async function cargarRecargas(){
+        let query=supabaseClient.from('recargas').select('*').order('fecha_recarga',{ascending:false}).order('created_at',{ascending:false});
+        if(esModerador())query=query.eq('propietario_id',currentUser.id);
+        const {data,error}=await query;
+        if(error){
+            console.error('Error al cargar recargas:',error);
+            if(String(error.code)==='42P01'||String(error.message||'').toLowerCase().includes('recargas'))document.getElementById('setup-warning').classList.remove('hidden');
+            todasLasRecargas=[];renderTodo();return;
+        }
+        document.getElementById('setup-warning').classList.add('hidden');
+        todasLasRecargas=data||[];actualizarFiltroApps();renderTodo();
+    }
+
+    document.getElementById('form-recarga').addEventListener('submit',async e=>{
+        e.preventDefault();
+        const vendedorId=document.getElementById('vendedor').value;
+        const vendedor=vendedoresPermitidos.find(v=>mismoId(v.id,vendedorId));
+        if(!vendedor){alert('Seleccioná un vendedor válido.');return}
+        const creditos=Number(document.getElementById('creditos').value);
+        const precio=Number(document.getElementById('precio').value);
+        const nombreApp=document.getElementById('nombre-app').value.trim().toUpperCase();
+        const fechaRecarga=document.getElementById('fecha-recarga').value;
+        if(!Number.isFinite(creditos)||creditos<0||!Number.isFinite(precio)||precio<0||!nombreApp||!fechaRecarga){alert('Completá correctamente todos los campos.');return}
+        const btn=document.getElementById('btn-guardar');btn.disabled=true;const original=btn.textContent;btn.textContent='Guardando...';
+        try{
+            const payload={
+                vendedor_id:String(vendedor.id),vendedor_nombre:vendedor.username,creditos_recargados:creditos,precio,nombre_app:nombreApp,fecha_recarga:fechaRecarga,
+                propietario_id:String(gestorDeVendedor(vendedor)),registrado_por:String(currentUser.id),registrado_por_nombre:currentUser.username,actualizado_at:new Date().toISOString()
+            };
+            let resultado;
+            if(recargaEnEdicion){
+                let q=supabaseClient.from('recargas').update(payload).eq('id',recargaEnEdicion);
+                if(esModerador())q=q.eq('propietario_id',currentUser.id);
+                resultado=await q.select('id');
+            } else {
+                resultado=await supabaseClient.from('recargas').insert(payload).select('id');
+            }
+            if(resultado.error)throw resultado.error;
+            cancelarEdicion();await cargarRecargas();
+        }catch(error){console.error(error);alert('No se pudo guardar la recarga: '+error.message)}finally{btn.disabled=false;btn.textContent=recargaEnEdicion?'Guardar cambios':'+ Agregar';if(!recargaEnEdicion)btn.textContent='+ Agregar'}
+    });
+
+    function editarRecarga(id){
+        const r=todasLasRecargas.find(x=>mismoId(x.id,id));if(!r)return;
+        recargaEnEdicion=r.id;document.getElementById('form-title').textContent='Editar recarga';document.getElementById('btn-guardar').textContent='Guardar cambios';document.getElementById('btn-cancelar-edicion').classList.remove('hidden');
+        document.getElementById('vendedor').value=String(r.vendedor_id);document.getElementById('creditos').value=r.creditos_recargados;document.getElementById('precio').value=r.precio;document.getElementById('nombre-app').value=r.nombre_app;document.getElementById('fecha-recarga').value=r.fecha_recarga;
+        window.scrollTo({top:0,behavior:'smooth'});
+    }
+    function cancelarEdicion(){
+        recargaEnEdicion=null;document.getElementById('form-title').textContent='Nueva recarga';document.getElementById('btn-guardar').textContent='+ Agregar';document.getElementById('btn-cancelar-edicion').classList.add('hidden');document.getElementById('form-recarga').reset();document.getElementById('fecha-recarga').value=fechaHoyArgentina();
+    }
+    async function eliminarRecarga(id){
+        const r=todasLasRecargas.find(x=>mismoId(x.id,id));if(!r)return;
+        if(!confirm(`¿Eliminar la recarga de ${r.vendedor_nombre} por ${formatearDinero(r.precio)}?`))return;
+        let q=supabaseClient.from('recargas').delete().eq('id',id);if(esModerador())q=q.eq('propietario_id',currentUser.id);
+        const {error}=await q;if(error){alert('No se pudo eliminar: '+error.message);return}await cargarRecargas();
+    }
+
+    function rangoPeriodo(){
+        const hoy=parseFechaLocal(fechaHoyArgentina());
+        if(periodoActual==='todo')return {desde:null,hasta:null};
+        if(periodoActual==='personalizado')return rangoPersonalizado;
+        if(periodoActual==='hoy'){const f=fechaISO(hoy);return {desde:f,hasta:f}}
+        if(periodoActual==='semana'){
+            const dia=hoy.getDay()||7;const inicio=new Date(hoy);inicio.setDate(hoy.getDate()-dia+1);const fin=new Date(inicio);fin.setDate(inicio.getDate()+6);return {desde:fechaISO(inicio),hasta:fechaISO(fin)};
+        }
+        const inicio=new Date(hoy.getFullYear(),hoy.getMonth(),1,12);const fin=new Date(hoy.getFullYear(),hoy.getMonth()+1,0,12);return {desde:fechaISO(inicio),hasta:fechaISO(fin)};
+    }
+    function cambiarPeriodo(periodo,btn){periodoActual=periodo;document.querySelectorAll('.periodo-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('rango-personalizado').classList.toggle('hidden',periodo!=='personalizado');if(periodo!=='personalizado')renderTodo()}
+    function aplicarRangoPersonalizado(){const desde=document.getElementById('fecha-desde').value,hasta=document.getElementById('fecha-hasta').value;if(!desde||!hasta){alert('Elegí las dos fechas.');return}if(desde>hasta){alert('La fecha desde no puede ser posterior a la fecha hasta.');return}rangoPersonalizado={desde,hasta};renderTodo()}
+
+    function recargasFiltradas(){
+        const {desde,hasta}=rangoPeriodo();const vendedor=document.getElementById('filtro-vendedor').value;const app=document.getElementById('filtro-app').value;
+        return todasLasRecargas.filter(r=>{
+            if(desde&&r.fecha_recarga<desde)return false;if(hasta&&r.fecha_recarga>hasta)return false;
+            if(vendedor!=='todos'&&!mismoId(r.vendedor_id,vendedor))return false;if(app!=='todas'&&String(r.nombre_app)!==app)return false;return true;
+        });
+    }
+    function renderTodo(){const lista=recargasFiltradas();renderStats(lista);renderTabla(lista)}
+    function renderStats(lista){const creditos=lista.reduce((a,r)=>a+(Number(r.creditos_recargados)||0),0);const ingresos=lista.reduce((a,r)=>a+(Number(r.precio)||0),0);document.getElementById('stat-creditos').textContent=formatearNumero(creditos);document.getElementById('stat-ingresos').textContent=formatearDinero(ingresos);document.getElementById('stat-cantidad').textContent=lista.length;document.getElementById('stat-promedio').textContent=formatearDinero(lista.length?ingresos/lista.length:0)}
+    function renderTabla(lista){
+        const tbody=document.getElementById('tabla-recargas'),empty=document.getElementById('empty-recargas');
+        if(!lista.length){tbody.innerHTML='';empty.classList.remove('hidden');return}empty.classList.add('hidden');
+        tbody.innerHTML=lista.map(r=>`<tr><td class="mono">${formatearFecha(r.fecha_recarga)}</td><td><div class="seller-name">${escaparHtml(r.vendedor_nombre||'—')}</div></td><td><span class="app-chip">${escaparHtml(r.nombre_app||'—')}</span></td><td class="credits mono">${formatearNumero(r.creditos_recargados)}</td><td class="money mono">${formatearDinero(r.precio)}</td><td><div>${escaparHtml(r.registrado_por_nombre||'—')}</div><div class="muted">${r.created_at?new Intl.DateTimeFormat('es-AR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit',timeZone:'America/Argentina/Buenos_Aires'}).format(new Date(r.created_at)):''}</div></td><td><div class="action-group"><button class="btn-small" onclick="editarRecarga('${escaparHtml(r.id)}')">Editar</button><button class="btn-small danger" onclick="eliminarRecarga('${escaparHtml(r.id)}')">Eliminar</button></div></td></tr>`).join('');
+    }
+    function actualizarFiltroApps(){const actual=document.getElementById('filtro-app').value;const apps=[...new Set(todasLasRecargas.map(r=>String(r.nombre_app||'').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'es'));document.getElementById('filtro-app').innerHTML='<option value="todas">Todas las apps</option>'+apps.map(a=>`<option value="${escaparHtml(a)}">${escaparHtml(a)}</option>`).join('');if(apps.includes(actual))document.getElementById('filtro-app').value=actual}
+    function descargarExcel(){
+        const lista=recargasFiltradas();if(!lista.length){alert('No hay datos para exportar con los filtros actuales.');return}
+        const rows=lista.map(r=>({'Fecha':formatearFecha(r.fecha_recarga),'Vendedor':r.vendedor_nombre||'','Aplicación':r.nombre_app||'','Créditos recargados':Number(r.creditos_recargados)||0,'Precio ($)':Number(r.precio)||0,'Registrado por':r.registrado_por_nombre||''}));
+        const totalCred=lista.reduce((a,r)=>a+(Number(r.creditos_recargados)||0),0),totalDin=lista.reduce((a,r)=>a+(Number(r.precio)||0),0);rows.push({'Fecha':'','Vendedor':'TOTAL','Aplicación':'','Créditos recargados':totalCred,'Precio ($)':totalDin,'Registrado por':''});
+        const ws=XLSX.utils.json_to_sheet(rows),wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Recargas');ws['!cols']=[{wch:13},{wch:22},{wch:20},{wch:20},{wch:16},{wch:20}];XLSX.writeFile(wb,`Recargas_${periodoActual}_${fechaHoyArgentina()}.xlsx`);
+    }
+
+    function toggleTheme(){const html=document.documentElement,isLight=html.classList.contains('light-mode');if(isLight){html.classList.remove('light-mode');localStorage.setItem('theme','dark');document.querySelector('.theme-toggle').classList.remove('active')}else{html.classList.add('light-mode');localStorage.setItem('theme','light');document.querySelector('.theme-toggle').classList.add('active')}}
+    function logout(){localStorage.removeItem('session_tvdigital');window.location.href='logueo.html'}
+
+    async function iniciar(){
+        const savedTheme=localStorage.getItem('theme')||'dark';if(savedTheme==='light'){document.documentElement.classList.add('light-mode');document.querySelector('.theme-toggle').classList.add('active')}
+        if(!currentUser){window.location.href='logueo.html';return}
+        const actualizada=await refrescarSesionDesdeBase();if(!actualizada){alert('No se pudo validar tu sesión.');logout();return}
+        const acceso=await validarAccesoJerarquico();if(!acceso.ok){alert(acceso.mensaje);logout();return}
+        if(!tieneAccesoRecargas()){alert('Esta sección está disponible únicamente para administradores y moderadores.');window.location.href='index.html';return}
+        document.getElementById('info-sesion').textContent=`${normalizarRol(currentUser.rol).toUpperCase()} · ${currentUser.username}`;
+        document.getElementById('fecha-recarga').value=fechaHoyArgentina();document.getElementById('fecha-desde').value=fechaHoyArgentina();document.getElementById('fecha-hasta').value=fechaHoyArgentina();
+        document.getElementById('apps-list').innerHTML=APPS.map(a=>`<option value="${a}"></option>`).join('');
+        try{await cargarUsuariosPermitidos();await cargarRecargas()}catch(error){console.error(error);alert('No se pudo iniciar el módulo de recargas: '+error.message)}
+    }
+    window.onload=iniciar;
+</script>
+</body>
+</html>
