@@ -1365,6 +1365,7 @@ Reemplazá estas rutas por las que agregaste en tu archivo:
             <div class="nav-links">
                 <a href="index.html" class="active">Mis Clientes</a>
                 <a href="equipo.html" id="link-equipos" style="display:none;">Equipo</a>
+                <a href="recargas.html" id="link-recargas" style="display:none;">Recargas</a>
                 <a href="reporte.html">Reportes</a>
             </div>
             <div class="nav-right">
@@ -1987,6 +1988,9 @@ Reemplazá estas rutas por las que agregaste en tu archivo:
             const rolSesion = normalizarRol(currentUser.rol);
             if (['admin', 'moderador', 'resseller'].includes(rolSesion)) {
                 document.getElementById('link-equipos').style.display = '';
+            }
+            if (['admin', 'moderador'].includes(rolSesion)) {
+                document.getElementById('link-recargas').style.display = '';
             }
             document.getElementById('btn-cambiar-clave').style.display = '';
             
