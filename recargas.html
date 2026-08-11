@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -101,7 +100,7 @@
     <section class="card-surface form-section">
         <div class="section-title" id="form-title">Nueva recarga</div>
         <form id="form-recarga" class="form-grid">
-            <div><label class="input-label" for="vendedor">Vendedor</label><select id="vendedor" class="input-modern" required><option value="">Cargando vendedores...</option></select></div>
+            <div><label class="input-label" for="vendedor">Vendedor</label><input id="vendedor" type="text" class="input-modern" placeholder="Ej: Juan Pérez" autocomplete="off" required></div>
             <div><label class="input-label" for="creditos">Créditos recargados</label><input id="creditos" type="number" min="0" step="1" class="input-modern" placeholder="Ej: 100" required></div>
             <div><label class="input-label" for="precio">Precio</label><input id="precio" type="number" min="0" step="0.01" class="input-modern" placeholder="Ej: 25000" required></div>
             <div><label class="input-label" for="nombre-app">Nombre de la app</label><input id="nombre-app" list="apps-list" class="input-modern" placeholder="Seleccionar o escribir" required><datalist id="apps-list"></datalist></div>
@@ -160,8 +159,6 @@
     const SUPABASE_KEY = 'sb_publishable_4ogrbtxBrBWBFj-NRJOrbg_XnpmO4pS';
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     let currentUser = JSON.parse(localStorage.getItem('session_tvdigital'));
-    let todosLosUsuarios = [];
-    let vendedoresPermitidos = [];
     let todasLasRecargas = [];
     let periodoActual = 'hoy';
     let rangoPersonalizado = { desde:null, hasta:null };
@@ -208,46 +205,6 @@
         return {ok:true};
     }
 
-    async function cargarUsuariosPermitidos(){
-        if(esAdmin()){
-            const {data,error}=await supabaseClient.from('usuarios_sistema').select('id,username,rol,padre_id,activo,vencimiento_acceso').order('username',{ascending:true});
-            if(error)throw error;todosLosUsuarios=data||[];
-        } else {
-            const encontrados=[];const ids=new Set();let padres=[currentUser.id];let profundidad=0;
-            while(padres.length&&profundidad<50){
-                const {data,error}=await supabaseClient.from('usuarios_sistema').select('id,username,rol,padre_id,activo,vencimiento_acceso').in('padre_id',padres).order('username',{ascending:true});
-                if(error)throw error;
-                const nuevos=(data||[]).filter(u=>{const id=String(u.id);if(ids.has(id))return false;ids.add(id);return true});
-                encontrados.push(...nuevos);padres=nuevos.map(u=>u.id);profundidad++;
-            }
-            todosLosUsuarios=encontrados;
-        }
-        vendedoresPermitidos=todosLosUsuarios.filter(u=>normalizarRol(u.rol)==='vendedor');
-        renderSelectVendedores();
-    }
-
-    function renderSelectVendedores(){
-        const opciones=vendedoresPermitidos.map(v=>`<option value="${escaparHtml(v.id)}">${escaparHtml(v.username)}</option>`).join('');
-        document.getElementById('vendedor').innerHTML=`<option value="">Seleccionar vendedor</option>${opciones}`;
-        document.getElementById('filtro-vendedor').innerHTML=`<option value="todos">Todos los vendedores</option>${opciones}`;
-    }
-
-    function buscarUsuario(id){return todosLosUsuarios.find(u=>mismoId(u.id,id))||null}
-    function gestorDeVendedor(vendedor){
-        if(!vendedor)return currentUser.id;
-        let actual=vendedor;const visitados=new Set();
-        while(actual?.padre_id){
-            const padre=buscarUsuario(actual.padre_id);
-            if(!padre)break;
-            const pid=String(padre.id);if(visitados.has(pid))break;visitados.add(pid);
-            const rol=normalizarRol(padre.rol);
-            if(rol==='moderador')return padre.id;
-            if(rol==='admin')return padre.id;
-            actual=padre;
-        }
-        return currentUser.id;
-    }
-
     async function cargarRecargas(){
         let query=supabaseClient.from('recargas').select('*').order('fecha_recarga',{ascending:false}).order('created_at',{ascending:false});
         if(esModerador())query=query.eq('propietario_id',currentUser.id);
@@ -258,14 +215,13 @@
             todasLasRecargas=[];renderTodo();return;
         }
         document.getElementById('setup-warning').classList.add('hidden');
-        todasLasRecargas=data||[];actualizarFiltroApps();renderTodo();
+        todasLasRecargas=data||[];actualizarFiltroVendedores();actualizarFiltroApps();renderTodo();
     }
 
     document.getElementById('form-recarga').addEventListener('submit',async e=>{
         e.preventDefault();
-        const vendedorId=document.getElementById('vendedor').value;
-        const vendedor=vendedoresPermitidos.find(v=>mismoId(v.id,vendedorId));
-        if(!vendedor){alert('Seleccioná un vendedor válido.');return}
+        const vendedorNombre=document.getElementById('vendedor').value.trim();
+        if(!vendedorNombre){alert('Escribí el nombre del vendedor.');return}
         const creditos=Number(document.getElementById('creditos').value);
         const precio=Number(document.getElementById('precio').value);
         const nombreApp=document.getElementById('nombre-app').value.trim().toUpperCase();
@@ -274,8 +230,8 @@
         const btn=document.getElementById('btn-guardar');btn.disabled=true;const original=btn.textContent;btn.textContent='Guardando...';
         try{
             const payload={
-                vendedor_id:String(vendedor.id),vendedor_nombre:vendedor.username,creditos_recargados:creditos,precio,nombre_app:nombreApp,fecha_recarga:fechaRecarga,
-                propietario_id:String(gestorDeVendedor(vendedor)),registrado_por:String(currentUser.id),registrado_por_nombre:currentUser.username,actualizado_at:new Date().toISOString()
+                vendedor_id:vendedorNombre.toLocaleLowerCase('es-AR'),vendedor_nombre:vendedorNombre,creditos_recargados:creditos,precio,nombre_app:nombreApp,fecha_recarga:fechaRecarga,
+                propietario_id:String(currentUser.id),registrado_por:String(currentUser.id),registrado_por_nombre:currentUser.username,actualizado_at:new Date().toISOString()
             };
             let resultado;
             if(recargaEnEdicion){
@@ -293,7 +249,7 @@
     function editarRecarga(id){
         const r=todasLasRecargas.find(x=>mismoId(x.id,id));if(!r)return;
         recargaEnEdicion=r.id;document.getElementById('form-title').textContent='Editar recarga';document.getElementById('btn-guardar').textContent='Guardar cambios';document.getElementById('btn-cancelar-edicion').classList.remove('hidden');
-        document.getElementById('vendedor').value=String(r.vendedor_id);document.getElementById('creditos').value=r.creditos_recargados;document.getElementById('precio').value=r.precio;document.getElementById('nombre-app').value=r.nombre_app;document.getElementById('fecha-recarga').value=r.fecha_recarga;
+        document.getElementById('vendedor').value=r.vendedor_nombre||'';document.getElementById('creditos').value=r.creditos_recargados;document.getElementById('precio').value=r.precio;document.getElementById('nombre-app').value=r.nombre_app;document.getElementById('fecha-recarga').value=r.fecha_recarga;
         window.scrollTo({top:0,behavior:'smooth'});
     }
     function cancelarEdicion(){
@@ -323,7 +279,7 @@
         const {desde,hasta}=rangoPeriodo();const vendedor=document.getElementById('filtro-vendedor').value;const app=document.getElementById('filtro-app').value;
         return todasLasRecargas.filter(r=>{
             if(desde&&r.fecha_recarga<desde)return false;if(hasta&&r.fecha_recarga>hasta)return false;
-            if(vendedor!=='todos'&&!mismoId(r.vendedor_id,vendedor))return false;if(app!=='todas'&&String(r.nombre_app)!==app)return false;return true;
+            if(vendedor!=='todos'&&String(r.vendedor_nombre||'')!==vendedor)return false;if(app!=='todas'&&String(r.nombre_app)!==app)return false;return true;
         });
     }
     function renderTodo(){const lista=recargasFiltradas();renderStats(lista);renderTabla(lista)}
@@ -333,6 +289,7 @@
         if(!lista.length){tbody.innerHTML='';empty.classList.remove('hidden');return}empty.classList.add('hidden');
         tbody.innerHTML=lista.map(r=>`<tr><td class="mono">${formatearFecha(r.fecha_recarga)}</td><td><div class="seller-name">${escaparHtml(r.vendedor_nombre||'—')}</div></td><td><span class="app-chip">${escaparHtml(r.nombre_app||'—')}</span></td><td class="credits mono">${formatearNumero(r.creditos_recargados)}</td><td class="money mono">${formatearDinero(r.precio)}</td><td><div>${escaparHtml(r.registrado_por_nombre||'—')}</div><div class="muted">${r.created_at?new Intl.DateTimeFormat('es-AR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit',timeZone:'America/Argentina/Buenos_Aires'}).format(new Date(r.created_at)):''}</div></td><td><div class="action-group"><button class="btn-small" onclick="editarRecarga('${escaparHtml(r.id)}')">Editar</button><button class="btn-small danger" onclick="eliminarRecarga('${escaparHtml(r.id)}')">Eliminar</button></div></td></tr>`).join('');
     }
+    function actualizarFiltroVendedores(){const select=document.getElementById('filtro-vendedor');const actual=select.value;const vendedores=[...new Set(todasLasRecargas.map(r=>String(r.vendedor_nombre||'').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'es'));select.innerHTML='<option value="todos">Todos los vendedores</option>'+vendedores.map(v=>`<option value="${escaparHtml(v)}">${escaparHtml(v)}</option>`).join('');if(vendedores.includes(actual))select.value=actual}
     function actualizarFiltroApps(){const actual=document.getElementById('filtro-app').value;const apps=[...new Set(todasLasRecargas.map(r=>String(r.nombre_app||'').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'es'));document.getElementById('filtro-app').innerHTML='<option value="todas">Todas las apps</option>'+apps.map(a=>`<option value="${escaparHtml(a)}">${escaparHtml(a)}</option>`).join('');if(apps.includes(actual))document.getElementById('filtro-app').value=actual}
     function descargarExcel(){
         const lista=recargasFiltradas();if(!lista.length){alert('No hay datos para exportar con los filtros actuales.');return}
@@ -353,7 +310,7 @@
         document.getElementById('info-sesion').textContent=`${normalizarRol(currentUser.rol).toUpperCase()} · ${currentUser.username}`;
         document.getElementById('fecha-recarga').value=fechaHoyArgentina();document.getElementById('fecha-desde').value=fechaHoyArgentina();document.getElementById('fecha-hasta').value=fechaHoyArgentina();
         document.getElementById('apps-list').innerHTML=APPS.map(a=>`<option value="${a}"></option>`).join('');
-        try{await cargarUsuariosPermitidos();await cargarRecargas()}catch(error){console.error(error);alert('No se pudo iniciar el módulo de recargas: '+error.message)}
+        try{await cargarRecargas()}catch(error){console.error(error);alert('No se pudo iniciar el módulo de recargas: '+error.message)}
     }
     window.onload=iniciar;
 </script>
