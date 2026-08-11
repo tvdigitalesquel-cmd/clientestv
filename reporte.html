@@ -491,6 +491,7 @@
             <div class="nav-links">
                 <a href="index.html">Mis Clientes</a>
                 <a href="equipo.html" id="link-equipos" style="display:none;">Equipo</a>
+                <a href="recargas.html" id="link-recargas" style="display:none;">Recargas</a>
                 <a href="reporte.html" class="active">Reportes</a>
             </div>
             <div class="nav-right">
@@ -610,6 +611,13 @@
             }
         }
 
+        function normalizarRol(rol) {
+            const valor = String(rol || '').trim().toLowerCase();
+            if (valor === 'revendedor' || valor === 'reseller' || valor === 'resseller') return 'resseller';
+            if (valor === 'moderator') return 'moderador';
+            return valor;
+        }
+
         function checkSession() {
             const savedTheme = localStorage.getItem('theme') || 'dark';
             if (savedTheme === 'light') {
@@ -618,8 +626,12 @@
             }
 
             if (!currentUser) { window.location.href = 'logueo.html'; return; }
-            if (currentUser.rol === 'admin' || currentUser.rol === 'revendedor') {
+            const rolSesion = normalizarRol(currentUser.rol);
+            if (['admin', 'moderador', 'resseller'].includes(rolSesion)) {
                 document.getElementById('link-equipos').style.display = '';
+            }
+            if (['admin', 'moderador'].includes(rolSesion)) {
+                document.getElementById('link-recargas').style.display = '';
             }
 
             let infoText = `${currentUser.rol.toUpperCase()} · ${currentUser.username}`;
