@@ -984,6 +984,7 @@
             <div class="nav-links">
                 <a href="index.html">Mis Clientes</a>
                 <a href="equipo.html" class="active">Equipo</a>
+                <a href="recargas.html" id="link-recargas" style="display:none;">Recargas</a>
                 <a href="reporte.html">Reportes</a>
             </div>
             <div class="nav-right">
@@ -1823,6 +1824,8 @@
             const opciones = rolesQuePuedeCrear();
 
             document.getElementById('info-sesion').innerText = `${etiquetaRol(rolActual)} · ${currentUser.username}`;
+            const linkRecargas = document.getElementById('link-recargas');
+            if (linkRecargas) linkRecargas.style.display = ['admin', 'moderador'].includes(rolActual) ? '' : 'none';
 
             if (esAdmin()) {
                 document.getElementById('titulo-gestion').innerText = 'Gestionar Equipo';
