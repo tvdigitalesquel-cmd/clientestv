@@ -70,6 +70,26 @@
         @media(max-width:1050px){.form-grid{grid-template-columns:repeat(2,1fr)}.form-actions-inline{grid-column:1/-1}.stats-grid{grid-template-columns:repeat(2,1fr)}}
         @media(max-width:768px){.nav-inner{padding:0 12px;height:auto;min-height:54px;gap:8px}.nav-links{overflow:auto;padding:7px 0}.nav-links a{white-space:nowrap;padding:7px 10px}.nav-right{gap:7px}#info-sesion{display:none}.container{padding:20px 14px 70px}.page-header{flex-direction:column}.stats-grid{grid-template-columns:1fr}.periodo-head,.toolbar{align-items:stretch;flex-direction:column}.toolbar-left{flex-direction:column}.toolbar .input-modern{max-width:none}#rango-personalizado{grid-template-columns:1fr}.form-section,.periodo-section{padding:16px}.table-head{padding:0 16px}}
         @media(max-width:520px){.form-grid{grid-template-columns:1fr}.form-actions-inline{grid-column:auto;flex-direction:column}.btn-primary,.btn-secondary{width:100%}.stat-value{font-size:24px}}
+    
+
+        /* ─── MODO CLARO GRIS + MOBILE V2 ─── */
+        html.light-mode{--bg-primary:#cfd3d8;--bg-card:#e1e4e8;--bg-card-hover:#d7dbe0;--bg-surface:#c4c9cf;--border:rgba(15,23,42,.12);--border-hover:rgba(59,127,245,.28);--text-primary:#1f2937;--text-secondary:#4b5563;--text-muted:#747d8a}
+        html.light-mode .input-modern{background:#d8dce0;color:#1f2937;border-color:rgba(15,23,42,.13)}
+        html.light-mode .input-modern:focus{background:#e7e9ec}
+        @media(max-width:768px){
+            .nav-inner{height:auto;min-height:58px;padding:8px 12px;flex-wrap:wrap;gap:7px}
+            .nav-links{order:2;width:100%;overflow-x:auto;padding:2px 0;scrollbar-width:none}.nav-links::-webkit-scrollbar{display:none}
+            .nav-links a{white-space:nowrap;min-height:36px;display:inline-flex;align-items:center}
+            .nav-right{order:1;margin-left:auto;gap:7px}.btn-logout{min-height:36px}
+            .container{padding:18px 12px 72px}.page-header h1{font-size:23px}
+            .form-grid{grid-template-columns:1fr}.form-actions-inline{grid-column:auto;display:grid;grid-template-columns:1fr 1fr}
+            .input-modern,select.input-modern,input.input-modern{min-height:46px;font-size:16px}
+            .stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+            .table-wrap{-webkit-overflow-scrolling:touch}
+            .action-group{flex-wrap:wrap}
+        }
+        @media(max-width:480px){.stats-grid{grid-template-columns:1fr}.form-actions-inline{grid-template-columns:1fr}.page-header h1{font-size:21px}}
+
     </style>
 </head>
 <body>
@@ -164,7 +184,9 @@
     let rangoPersonalizado = { desde:null, hasta:null };
     let recargaEnEdicion = null;
 
-    const APPS = ['TV PLUS 2','TV','FUTURE','ON PLAY','TV (EX LUMIX)','KRATEN','TRY PLAY','STELLA','FLUJO TV','FEMON PLUS','VEXA TV','MUNDO INFINITO','SUFFIXED'];
+    const APPS = ['TV PLUS 2','TV','FUTURE','MAR TV','TV (EX LUMIX)','KRATEN','TRY PLAY','STELLA','FLUJO TV','FEMON PLUS','VEXA TV','MUNDO INFINITO','SUFFIXED','INTERNET PERSONAL','INTERNET CLARO'];
+
+    function normalizarNombreApp(nombre){const v=String(nombre||'').trim().toUpperCase();return v==='ON PLAY'?'MAR TV':v;}
 
     function normalizarRol(rol){
         const valor=String(rol||'').trim().toLowerCase();
@@ -215,7 +237,7 @@
             todasLasRecargas=[];renderTodo();return;
         }
         document.getElementById('setup-warning').classList.add('hidden');
-        todasLasRecargas=data||[];actualizarFiltroVendedores();actualizarFiltroApps();renderTodo();
+        todasLasRecargas=(data||[]).map(r=>({...r,nombre_app:normalizarNombreApp(r.nombre_app)}));actualizarFiltroVendedores();actualizarFiltroApps();renderTodo();
     }
 
     document.getElementById('form-recarga').addEventListener('submit',async e=>{
@@ -224,7 +246,7 @@
         if(!vendedorNombre){alert('Escribí el nombre del vendedor.');return}
         const creditos=Number(document.getElementById('creditos').value);
         const precio=Number(document.getElementById('precio').value);
-        const nombreApp=document.getElementById('nombre-app').value.trim().toUpperCase();
+        const nombreApp=normalizarNombreApp(document.getElementById('nombre-app').value);
         const fechaRecarga=document.getElementById('fecha-recarga').value;
         if(!Number.isFinite(creditos)||creditos<0||!Number.isFinite(precio)||precio<0||!nombreApp||!fechaRecarga){alert('Completá correctamente todos los campos.');return}
         const btn=document.getElementById('btn-guardar');btn.disabled=true;const original=btn.textContent;btn.textContent='Guardando...';
@@ -249,7 +271,7 @@
     function editarRecarga(id){
         const r=todasLasRecargas.find(x=>mismoId(x.id,id));if(!r)return;
         recargaEnEdicion=r.id;document.getElementById('form-title').textContent='Editar recarga';document.getElementById('btn-guardar').textContent='Guardar cambios';document.getElementById('btn-cancelar-edicion').classList.remove('hidden');
-        document.getElementById('vendedor').value=r.vendedor_nombre||'';document.getElementById('creditos').value=r.creditos_recargados;document.getElementById('precio').value=r.precio;document.getElementById('nombre-app').value=r.nombre_app;document.getElementById('fecha-recarga').value=r.fecha_recarga;
+        document.getElementById('vendedor').value=r.vendedor_nombre||'';document.getElementById('creditos').value=r.creditos_recargados;document.getElementById('precio').value=r.precio;document.getElementById('nombre-app').value=normalizarNombreApp(r.nombre_app);document.getElementById('fecha-recarga').value=r.fecha_recarga;
         window.scrollTo({top:0,behavior:'smooth'});
     }
     function cancelarEdicion(){
