@@ -55,6 +55,39 @@ input,select{font-size:16px}
 .list{display:grid;gap:9px}.entity-card{background:var(--card);border:1px solid var(--border);border-radius:19px;padding:13px}.entity-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}.entity-name{font-size:16px;font-weight:800;line-height:1.2;overflow-wrap:anywhere}.entity-sub{font-size:10px;color:var(--muted);margin-top:4px}.status{display:inline-flex;align-items:center;padding:5px 8px;border-radius:999px;font-size:9px;font-weight:800;white-space:nowrap}.status.vencido{color:var(--red);background:var(--redSoft)}.status.hoy{color:var(--yellow);background:var(--yellowSoft)}.status.proximo{color:var(--blue);background:var(--blueSoft)}.status.aldia{color:var(--green);background:var(--greenSoft)}
 .entity-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:11px;padding-top:10px;border-top:1px solid var(--border)}.metric{background:var(--surface);border-radius:12px;padding:9px;min-width:0}.metric span{display:block;font-size:8px;color:var(--muted2);text-transform:uppercase;font-weight:800;letter-spacing:.06em;margin-bottom:3px}.metric strong{font-size:11px;display:block;overflow-wrap:anywhere}.entity-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}.entity-actions .btn{min-height:42px;font-size:11px;padding:0 9px}.apps-list{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}.app-chip,.type-chip{display:inline-flex;padding:5px 7px;border-radius:8px;font-size:9px;font-weight:800}.app-chip{background:var(--blueSoft);color:var(--blue)}.type-chip.client{background:var(--greenSoft);color:var(--green)}.type-chip.seller{background:var(--purpleSoft);color:var(--purple)}
 
+
+/* Logos de aplicaciones */
+.app-logo-wrap{
+ width:48px;height:48px;border-radius:14px;background:var(--surface);
+ border:1px solid var(--border);display:grid;place-items:center;overflow:hidden;
+ flex:0 0 auto;
+}
+.app-logo{
+ width:100%;height:100%;object-fit:contain;padding:6px;display:block;
+}
+.app-logo-fallback{
+ width:100%;height:100%;display:grid;place-items:center;font-size:20px;
+ color:var(--muted);
+}
+.entity-app-row{display:flex;align-items:center;gap:9px;min-width:0}
+.entity-app-row .app-logo-wrap{width:34px;height:34px;border-radius:10px}
+.entity-app-row .app-logo{padding:4px}
+.client-admin-actions{
+ display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;
+}
+.client-admin-actions .btn{min-height:42px}
+.client-edit-grid{display:grid;gap:12px}
+.client-edit-grid .input{width:100%}
+.modal-note{
+ margin-top:10px;padding:10px 12px;border-radius:12px;
+ background:var(--surface);border:1px solid var(--border);
+ color:var(--muted);font-size:11px;line-height:1.45;
+}
+@media(max-width:420px){
+ .client-admin-actions{grid-template-columns:1fr}
+ .app-logo-wrap{width:44px;height:44px}
+}
+
 /* Apps */
 .apps-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
 .app-service-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:14px;min-width:0}
@@ -187,7 +220,7 @@ input,select{font-size:16px}
   </section>
 
   <section id="view-clientes" class="view">
-   <div class="view-title"><h1>Clientes</h1><p>Buscá una ficha, revisá sus renovaciones y renovalo desde acá.</p></div>
+   <div class="view-title"><h1>Clientes</h1><p>Agenda permanente de clientes. Borrar movimientos del historial no elimina estas fichas.</p></div>
    <div class="card toolbar-card"><input id="clients-search" class="input" type="search" placeholder="Buscar cliente por nombre..."></div>
    <div id="clients-list" class="list"></div><div id="clients-empty" class="empty hidden"><div class="emoji">👤</div><p>No encontré clientes.</p></div>
   </section>
@@ -213,6 +246,34 @@ input,select{font-size:16px}
  </main>
 </div>
 
+<div id="client-edit-modal" class="modal hidden">
+ <div class="modal-panel">
+  <div class="modal-head">
+   <div><h2>Editar cliente</h2><p>Esta ficha es independiente del historial.</p></div>
+   <button id="client-edit-close" class="close-btn" type="button">×</button>
+  </div>
+  <form id="client-edit-form" class="client-edit-grid">
+   <input id="client-edit-id" type="hidden">
+   <div>
+    <label class="input-label" for="client-edit-name">Nombre</label>
+    <input id="client-edit-name" class="input" type="text" autocomplete="off" required>
+   </div>
+   <div>
+    <label class="input-label" for="client-edit-app">Aplicación</label>
+    <select id="client-edit-app" class="input" required>
+     <option>TV</option><option>FUTURE</option><option>TV PLUS 2</option><option>FLUJO TV</option><option>MAR TV</option>
+    </select>
+   </div>
+   <div>
+    <label class="input-label" for="client-edit-date">Última renovación</label>
+    <input id="client-edit-date" class="input" type="date" required>
+   </div>
+   <button id="client-edit-save" class="btn btn-primary" type="submit">Guardar cambios</button>
+   <div class="modal-note">Editar esta ficha no modifica los movimientos históricos. La fecha indicada es la que se usará para calcular el próximo vencimiento.</div>
+  </form>
+ </div>
+</div>
+
 <div id="profile-modal" class="modal hidden"><div class="modal-panel"><div class="modal-head"><div><h2 id="profile-title">Ficha</h2><p id="profile-subtitle"></p></div><button id="profile-close" class="close-btn" type="button">×</button></div><div id="profile-body"></div></div></div>
 <div id="toast" class="toast hidden"></div>
 
@@ -221,6 +282,13 @@ const SUPABASE_URL='https://vjbdhbbxbvoigbidquya.supabase.co';
 const SUPABASE_KEY='sb_publishable_4ogrbtxBrBWBFj-NRJOrbg_XnpmO4pS';
 const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const APPS=['TV','FUTURE','TV PLUS 2','FLUJO TV','MAR TV'];
+const APP_LOGOS={
+ 'TV':'img/tv.png',
+ 'FUTURE':'img/future.png',
+ 'TV PLUS 2':'img/tvplus.png',
+ 'FLUJO TV':'img/flujotv.png',
+ 'MAR TV':'img/martv.png'
+};
 const CLIENT_PRICE=8000, SOON_DAYS=5;
 let selectedApp=null;
 let user=null,movements=[],savedClients=[],savedSellers=[],clientCatalog=[],sellerCatalog=[],editMovement=null;
@@ -228,6 +296,15 @@ let currentView='registrar',renewStatus='todos',historyPeriod='hoy',customRange=
 
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 function esc(v){return String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;')}
+function appLogoHTML(app,extraClass=''){
+ const src=APP_LOGOS[app]||'';
+ const safeApp=esc(app||'App');
+ if(!src)return `<span class="app-logo-wrap ${extraClass}"><span class="app-logo-fallback">📺</span></span>`;
+ return `<span class="app-logo-wrap ${extraClass}">
+  <img class="app-logo" src="${esc(src)}" alt="Logo ${safeApp}" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">
+  <span class="app-logo-fallback" style="display:none">📺</span>
+ </span>`;
+}
 function norm(v){return String(v||'').trim().replace(/\s+/g,' ').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase()}
 function cleanName(v){return String(v||'').trim().replace(/\s+/g,' ')}
 function money(v){return new Intl.NumberFormat('es-AR',{style:'currency',currency:'ARS',maximumFractionDigits:0}).format(Number(v)||0)}
@@ -258,7 +335,13 @@ function toggleTheme(){const light=document.documentElement.classList.toggle('li
 async function init(){loadTheme();bindUI();const {data:{session}}=await db.auth.getSession();if(session?.user)await showApp(session.user);else showLogin();db.auth.onAuthStateChange(async(_e,s)=>{if(s?.user)await showApp(s.user);else showLogin()})}
 function showLogin(){user=null;$('#login-screen').classList.remove('hidden');$('#app-screen').classList.add('hidden')}
 async function showApp(u){user=u;$('#login-screen').classList.add('hidden');$('#app-screen').classList.remove('hidden');$('#user-email').textContent=u.email||'Panel privado';await loadAll();updateType();switchView(currentView)}
-async function loadAll(){setLoading(true);await Promise.all([loadMovements(),loadClients(),loadSellers()]);rebuildCatalogs();await Promise.all([syncHistoricalClients(),syncHistoricalSellers()]);rebuildCatalogs();renderAll();setLoading(false)}
+async function loadAll(){
+ setLoading(true);
+ await Promise.all([loadMovements(),loadClients(),loadSellers()]);
+ rebuildCatalogs();
+ renderAll();
+ setLoading(false);
+}
 function setLoading(on){$('#history-loading').classList.toggle('hidden',!on)}
 
 function bindUI(){
@@ -273,6 +356,9 @@ function bindUI(){
  $$('.period-btn').forEach(b=>b.addEventListener('click',()=>changePeriod(b.dataset.period,b)));$('#apply-range').addEventListener('click',applyCustomRange);
  $('#history-search').addEventListener('input',renderHistory);$('#history-app').addEventListener('change',renderHistory);$('#history-type').addEventListener('change',renderHistory);$('#export-btn').addEventListener('click',exportExcel);
  $('#profile-close').addEventListener('click',closeProfile);$('#profile-modal').addEventListener('click',e=>{if(e.target.id==='profile-modal')closeProfile()});
+ $('#client-edit-close').addEventListener('click',closeClientEdit);
+ $('#client-edit-modal').addEventListener('click',e=>{if(e.target.id==='client-edit-modal')closeClientEdit()});
+ $('#client-edit-form').addEventListener('submit',saveClientEdit);
 }
 async function login(e){e.preventDefault();const btn=$('#login-btn'),err=$('#login-error');err.classList.add('hidden');btn.disabled=true;btn.textContent='Ingresando...';const {error}=await db.auth.signInWithPassword({email:$('#login-email').value.trim(),password:$('#login-pass').value});btn.disabled=false;btn.textContent='Ingresar';if(error){err.textContent=error.message==='Invalid login credentials'?'Email o contraseña incorrectos.':error.message;err.classList.remove('hidden')}}
 function switchView(v){currentView=v;$$('.view').forEach(x=>x.classList.toggle('active',x.id===`view-${v}`));$$('.nav-tab').forEach(x=>x.classList.toggle('active',x.dataset.view===v));if(v==='renovaciones')renderRenewals();if(v==='apps')renderApps();if(v==='clientes')renderClients();if(v==='vendedores')renderSellers();if(v==='historial')renderHistory();window.scrollTo({top:0,behavior:'smooth'})}
@@ -285,10 +371,53 @@ async function loadClients(){const {data,error}=await db.from('control_clientes'
 async function loadSellers(){const {data,error}=await db.from('control_vendedores').select('*').order('last_used_at',{ascending:false});if(error){savedSellers=[];console.warn('Agenda vendedores no disponible',error)}else savedSellers=data||[]}
 
 function rebuildCatalogs(){
- const build=(type,saved)=>{const map=new Map();const add=(x,fromMove)=>{const name=cleanName(x.nombre),key=norm(x.nombre_normalizado||name);if(!key)return;const when=x.last_used_at||x.fecha||null;let o=map.get(key)||{key,nombre:name,app_ultima:x.app_ultima||x.app||null,last_used_at:when,ops:0,total:0,credits:0,apps:new Set()};if(fromMove){o.ops++;o.total+=Number(x.precio||0);if(type==='VENDEDOR')o.credits+=Number(x.creditos||0);if(x.app)o.apps.add(x.app)}const old=o.last_used_at?new Date(o.last_used_at).getTime():0,newT=when?new Date(when).getTime():0;if(newT>=old){o.nombre=name||o.nombre;o.app_ultima=x.app_ultima||x.app||o.app_ultima;o.last_used_at=when||o.last_used_at}map.set(key,o)};saved.forEach(x=>add(x,false));movements.filter(x=>x.tipo===type).forEach(x=>add(x,true));return [...map.values()].sort((a,b)=>(new Date(b.last_used_at||0))-(new Date(a.last_used_at||0))||a.nombre.localeCompare(b.nombre,'es'))};
- clientCatalog=build('CLIENTE',savedClients);sellerCatalog=build('VENDEDOR',savedSellers)
+ const buildSaved=(saved,type)=>{
+  return saved.map(x=>{
+   const nombre=cleanName(x.nombre);
+   const key=norm(x.nombre_normalizado||nombre);
+   const hist=movements.filter(m=>m.tipo===type&&norm(m.nombre)===key);
+   return {
+    ...x,
+    key,
+    nombre,
+    app_ultima:x.app_ultima||null,
+    last_used_at:x.last_used_at||null,
+    ops:hist.length,
+    total:hist.reduce((s,m)=>s+Number(m.precio||0),0),
+    credits:type==='VENDEDOR'?hist.reduce((s,m)=>s+Number(m.creditos||0),0):0,
+    apps:new Set(hist.map(m=>m.app).filter(Boolean))
+   };
+  }).filter(x=>x.key).sort((a,b)=>
+   (new Date(b.last_used_at||0))-(new Date(a.last_used_at||0))
+   ||a.nombre.localeCompare(b.nombre,'es')
+  );
+ };
+ clientCatalog=buildSaved(savedClients,'CLIENTE');
+ sellerCatalog=buildSaved(savedSellers,'VENDEDOR');
 }
-async function savePerson(type,name,app){if(!user)return;const table=type==='CLIENTE'?'control_clientes':'control_vendedores';const n=cleanName(name),payload={user_id:user.id,nombre:n,nombre_normalizado:norm(n),app_ultima:app,last_used_at:new Date().toISOString(),updated_at:new Date().toISOString()};const {error}=await db.from(table).upsert(payload,{onConflict:'user_id,nombre_normalizado'});if(error)console.warn(`No se pudo actualizar ${table}`,error);else if(type==='CLIENTE')await loadClients();else await loadSellers()}
+async function savePerson(type,name,app,fecha=null){
+ if(!user)return;
+ const table=type==='CLIENTE'?'control_clientes':'control_vendedores';
+ const n=cleanName(name);
+ const when=fecha||new Date().toISOString();
+ const payload={
+  user_id:user.id,
+  nombre:n,
+  nombre_normalizado:norm(n),
+  app_ultima:app,
+  last_used_at:when,
+  updated_at:new Date().toISOString()
+ };
+ const {error}=await db.from(table).upsert(payload,{onConflict:'user_id,nombre_normalizado'});
+ if(error){
+  console.warn(`No se pudo actualizar ${table}`,error);
+  toast(`No se pudo guardar la ficha permanente: ${error.message}`,true);
+ }else if(type==='CLIENTE'){
+  await loadClients();
+ }else{
+  await loadSellers();
+ }
+}
 async function syncHistoricalClients(){await syncHistorical('CLIENTE','control_clientes',savedClients)}
 async function syncHistoricalSellers(){await syncHistorical('VENDEDOR','control_vendedores',savedSellers)}
 async function syncHistorical(type,table,saved){if(!user)return;const exists=new Set(saved.map(x=>norm(x.nombre_normalizado||x.nombre))),seen=new Set(),rows=[];for(const m of movements){if(m.tipo!==type)continue;const n=cleanName(m.nombre),k=norm(n);if(!k||exists.has(k)||seen.has(k))continue;seen.add(k);rows.push({user_id:user.id,nombre:n,nombre_normalizado:k,app_ultima:m.app,last_used_at:m.fecha||new Date().toISOString(),updated_at:new Date().toISOString()})}if(rows.length){const {error}=await db.from(table).upsert(rows,{onConflict:'user_id,nombre_normalizado'});if(!error){if(type==='CLIENTE')await loadClients();else await loadSellers()}else console.warn(`No se pudo sincronizar ${table}`,error)}}
@@ -340,7 +469,8 @@ async function saveMovement(e){
 
  if(error)return toast(`No se pudo guardar: ${error.message}`,true);
 
- await savePerson(tipo,nombre,app);
+ const fechaFicha=payload.fecha||new Date().toISOString();
+ await savePerson(tipo,nombre,app,fechaFicha);
  toast(editMovement?'Movimiento actualizado.':'Movimiento guardado.');
  cancelEdit();
  await loadMovements();
@@ -375,10 +505,65 @@ function cancelEdit(){
 }
 async function deleteMovement(id){const m=movements.find(x=>String(x.id)===String(id));if(!m||!confirm(`¿Eliminar el movimiento de ${m.nombre} por ${money(m.precio)}?`))return;const {error}=await db.from('control_movimientos').delete().eq('id',id);if(error)return toast(error.message,true);toast('Movimiento eliminado.');await loadMovements();rebuildCatalogs();renderAll()}
 
-function clientProfiles(){return clientCatalog.map(c=>{const hist=movements.filter(m=>m.tipo==='CLIENTE'&&norm(m.nombre)===c.key).sort((a,b)=>new Date(b.fecha)-new Date(a.fecha));const last=hist[0]||null;const lastISO=last?localISO(new Date(last.fecha)):(c.last_used_at?localISO(new Date(c.last_used_at)):null);const next=lastISO?isoNextMonth(lastISO):null;const status=renewalStatus(next);const months=new Set(hist.map(m=>{const d=new Date(m.fecha);return new Intl.DateTimeFormat('en-CA',{timeZone:'America/Argentina/Buenos_Aires',year:'numeric',month:'2-digit'}).format(d)})).size;return {...c,hist,last,lastISO,next,status,total:hist.reduce((s,m)=>s+Number(m.precio||0),0),ops:hist.length,months,app_ultima:last?.app||c.app_ultima}})}
+function clientProfiles(){
+ return clientCatalog.map(c=>{
+  const hist=movements
+   .filter(m=>m.tipo==='CLIENTE'&&norm(m.nombre)===c.key)
+   .sort((a,b)=>new Date(b.fecha)-new Date(a.fecha));
+  const last=hist[0]||null;
+  const lastISO=c.last_used_at?localISO(new Date(c.last_used_at)):(last?localISO(new Date(last.fecha)):null);
+  const next=lastISO?isoNextMonth(lastISO):null;
+  const status=renewalStatus(next);
+  const months=new Set(hist.map(m=>{
+   const d=new Date(m.fecha);
+   return new Intl.DateTimeFormat('en-CA',{
+    timeZone:'America/Argentina/Buenos_Aires',year:'numeric',month:'2-digit'
+   }).format(d);
+  })).size;
+  return {
+   ...c,
+   hist,
+   last,
+   lastISO,
+   next,
+   status,
+   total:hist.reduce((s,m)=>s+Number(m.precio||0),0),
+   ops:hist.length,
+   months,
+   app_ultima:c.app_ultima||last?.app||null
+  };
+ });
+}
 function sellerProfiles(){return sellerCatalog.map(s=>{const hist=movements.filter(m=>m.tipo==='VENDEDOR'&&norm(m.nombre)===s.key).sort((a,b)=>new Date(b.fecha)-new Date(a.fecha));return {...s,hist,last:hist[0]||null,total:hist.reduce((a,m)=>a+Number(m.precio||0),0),credits:hist.reduce((a,m)=>a+Number(m.creditos||0),0),ops:hist.length,apps:[...new Set(hist.map(m=>m.app).filter(Boolean))]}})}
 function renewalStatus(next){if(!next)return {key:'aldia',label:'Sin fecha',days:null};const today=localISO(),diff=daysBetween(today,next);if(diff<0)return {key:'vencido',label:`Vencido hace ${Math.abs(diff)} d.`,days:diff};if(diff===0)return {key:'hoy',label:'Vence hoy',days:0};if(diff<=SOON_DAYS)return {key:'proximo',label:`Vence en ${diff} d.`,days:diff};return {key:'aldia',label:'Al día',days:diff}}
-function clientCard(c,renewContext=false){return `<article class="entity-card"><div class="entity-top"><div><div class="entity-name">${esc(c.nombre)}</div><div class="entity-sub">${esc(c.app_ultima||'Sin app')} · ${c.ops} renovación${c.ops===1?'':'es'}</div></div><span class="status ${c.status.key}">${esc(c.status.label)}</span></div><div class="entity-grid"><div class="metric"><span>Última</span><strong>${c.last?esc(dateOnly(c.last.fecha)):'—'}</strong></div><div class="metric"><span>Próxima</span><strong>${c.next?esc(formatISODate(c.next)):'—'}</strong></div><div class="metric"><span>Total</span><strong>${esc(money(c.total))}</strong></div><div class="metric"><span>Meses comprados</span><strong>${c.months}</strong></div></div><div class="entity-actions"><button class="btn btn-secondary" type="button" onclick="openClientProfile('${esc(c.key)}')">Ver ficha</button><button class="btn btn-green" type="button" onclick="quickRenew('${esc(c.key)}')">Renovar $8.000</button></div></article>`}
+function clientCard(c,renewContext=false){
+ return `<article class="entity-card">
+  <div class="entity-top">
+   <div class="entity-app-row">
+    ${appLogoHTML(c.app_ultima)}
+    <div>
+     <div class="entity-name">${esc(c.nombre)}</div>
+     <div class="entity-sub">${esc(c.app_ultima||'Sin app')} · ${c.ops} movimiento${c.ops===1?'':'s'}</div>
+    </div>
+   </div>
+   <span class="status ${c.status.key}">${esc(c.status.label)}</span>
+  </div>
+  <div class="entity-grid">
+   <div class="metric"><span>Última</span><strong>${c.lastISO?esc(formatISODate(c.lastISO)):'—'}</strong></div>
+   <div class="metric"><span>Próxima</span><strong>${c.next?esc(formatISODate(c.next)):'—'}</strong></div>
+   <div class="metric"><span>Total histórico</span><strong>${esc(money(c.total))}</strong></div>
+   <div class="metric"><span>Meses con movimientos</span><strong>${c.months}</strong></div>
+  </div>
+  <div class="entity-actions">
+   <button class="btn btn-secondary" type="button" onclick="openClientProfile('${esc(c.key)}')">Ver ficha</button>
+   <button class="btn btn-green" type="button" onclick="quickRenew('${esc(c.key)}')">Renovar $8.000</button>
+  </div>
+  <div class="client-admin-actions">
+   <button class="btn btn-secondary" type="button" onclick="editClient('${esc(c.id)}')">Editar cliente</button>
+   <button class="btn btn-danger" type="button" onclick="deleteClient('${esc(c.id)}')">Eliminar cliente</button>
+  </div>
+ </article>`;
+}
 function sellerCard(s){return `<article class="entity-card"><div class="entity-top"><div><div class="entity-name">${esc(s.nombre)}</div><div class="entity-sub">${s.ops} carga${s.ops===1?'':'s'} · Última ${s.last?esc(dateOnly(s.last.fecha)):'—'}</div></div><span class="type-chip seller">VENDEDOR</span></div><div class="entity-grid"><div class="metric"><span>Créditos</span><strong>${esc(num(s.credits))}</strong></div><div class="metric"><span>Ingresado</span><strong>${esc(money(s.total))}</strong></div><div class="metric"><span>Última carga</span><strong>${s.last?esc(dateOnly(s.last.fecha)):'—'}</strong></div><div class="metric"><span>Operaciones</span><strong>${s.ops}</strong></div></div><div class="apps-list">${s.apps.map(a=>`<span class="app-chip">${esc(a)}</span>`).join('')||'<span class="entity-sub">Sin apps</span>'}</div><div class="entity-actions"><button class="btn btn-secondary" type="button" onclick="openSellerProfile('${esc(s.key)}')">Ver ficha</button><button class="btn btn-primary" type="button" onclick="prepareSeller('${esc(s.key)}')">Nueva carga</button></div></article>`}
 function formatISODate(iso){if(!iso)return '—';const [y,m,d]=iso.split('-');return `${d}/${m}/${y}`}
 
@@ -395,7 +580,7 @@ function appCard(app){
     <div class="app-service-name">${esc(app)}</div>
     <div class="app-service-label">Servicio</div>
    </div>
-   <div class="app-service-icon">📺</div>
+   ${appLogoHTML(app)}
   </div>
   <div class="app-service-count">${clients.length}</div>
   <div class="app-service-label">cliente${clients.length===1?'':'s'}</div>
@@ -442,12 +627,130 @@ function renderApps(){
 }
 
 function renderRenewals(){const all=clientProfiles();$('#renew-expired').textContent=all.filter(c=>c.status.key==='vencido').length;$('#renew-today').textContent=all.filter(c=>c.status.key==='hoy').length;$('#renew-soon').textContent=all.filter(c=>c.status.key==='proximo').length;$('#renew-ok').textContent=all.filter(c=>c.status.key==='aldia').length;const q=norm($('#renew-search').value);const list=all.filter(c=>(renewStatus==='todos'||c.status.key===renewStatus)&&(!q||c.key.includes(q))).sort((a,b)=>(a.status.days??9999)-(b.status.days??9999)||a.nombre.localeCompare(b.nombre,'es'));$('#renew-list').innerHTML=list.map(c=>clientCard(c,true)).join('');$('#renew-empty').classList.toggle('hidden',list.length>0)}
+
+function editClient(id){
+ const c=savedClients.find(x=>String(x.id)===String(id));
+ if(!c)return toast('No encontré la ficha del cliente.',true);
+ $('#client-edit-id').value=c.id;
+ $('#client-edit-name').value=c.nombre||'';
+ $('#client-edit-app').value=APPS.includes(c.app_ultima)?c.app_ultima:'TV';
+ $('#client-edit-date').value=c.last_used_at?localISO(new Date(c.last_used_at)):localISO();
+ $('#client-edit-modal').classList.remove('hidden');
+ setTimeout(()=>$('#client-edit-name').focus(),100);
+}
+function closeClientEdit(){
+ $('#client-edit-modal').classList.add('hidden');
+ $('#client-edit-form').reset();
+ $('#client-edit-id').value='';
+}
+async function saveClientEdit(e){
+ e.preventDefault();
+ if(!user)return;
+ const id=$('#client-edit-id').value;
+ const current=savedClients.find(x=>String(x.id)===String(id));
+ if(!current)return toast('No encontré la ficha del cliente.',true);
+
+ const nombre=cleanName($('#client-edit-name').value);
+ const app=$('#client-edit-app').value;
+ const fecha=$('#client-edit-date').value;
+ if(!nombre)return toast('Ingresá el nombre.',true);
+ if(!APPS.includes(app))return toast('Seleccioná una aplicación.',true);
+ const fechaTs=manualDateToTimestamp(fecha);
+ if(!fechaTs)return toast('Ingresá una fecha válida.',true);
+
+ const payload={
+  nombre,
+  nombre_normalizado:norm(nombre),
+  app_ultima:app,
+  last_used_at:fechaTs,
+  updated_at:new Date().toISOString()
+ };
+
+ const btn=$('#client-edit-save');
+ btn.disabled=true;btn.textContent='Guardando...';
+
+ const {error}=await db.from('control_clientes').update(payload).eq('id',id);
+
+ if(error){
+  btn.disabled=false;btn.textContent='Guardar cambios';
+  if(String(error.message||'').toLowerCase().includes('duplicate')){
+   return toast('Ya existe otro cliente con ese nombre.',true);
+  }
+  return toast(`No se pudo editar: ${error.message}`,true);
+ }
+
+ // Si corregiste el nombre, conservamos unido su historial.
+ const oldKey=norm(current.nombre_normalizado||current.nombre);
+ const newKey=norm(nombre);
+ if(oldKey!==newKey){
+  const ids=movements
+   .filter(m=>m.tipo==='CLIENTE'&&norm(m.nombre)===oldKey)
+   .map(m=>m.id);
+  if(ids.length){
+   const {error:histError}=await db.from('control_movimientos')
+    .update({nombre,updated_at:new Date().toISOString()})
+    .in('id',ids);
+   if(histError){
+    console.warn('La ficha se editó, pero no se pudo renombrar todo el historial',histError);
+   }
+  }
+ }
+
+ btn.disabled=false;btn.textContent='Guardar cambios';
+
+ await Promise.all([loadClients(),loadMovements()]);
+ rebuildCatalogs();
+ renderAll();
+ closeClientEdit();
+ closeProfile();
+ toast('Cliente actualizado.');
+}
+async function deleteClient(id){
+ const c=savedClients.find(x=>String(x.id)===String(id));
+ if(!c)return;
+ const ok=confirm(`¿Eliminar la ficha de ${c.nombre}?\n\nEl historial de movimientos NO se va a borrar.`);
+ if(!ok)return;
+
+ const {error}=await db.from('control_clientes').delete().eq('id',id);
+ if(error)return toast(`No se pudo eliminar: ${error.message}`,true);
+
+ await loadClients();
+ rebuildCatalogs();
+ renderAll();
+ closeProfile();
+ toast('Cliente eliminado de la agenda. El historial se conserva.');
+}
+
 function renderClients(){const q=norm($('#clients-search').value);const list=clientProfiles().filter(c=>!q||c.key.includes(q)).sort((a,b)=>a.nombre.localeCompare(b.nombre,'es'));$('#clients-list').innerHTML=list.map(c=>clientCard(c)).join('');$('#clients-empty').classList.toggle('hidden',list.length>0)}
 function renderSellers(){const q=norm($('#sellers-search').value);const list=sellerProfiles().filter(s=>!q||s.key.includes(q)).sort((a,b)=>a.nombre.localeCompare(b.nombre,'es'));$('#sellers-list').innerHTML=list.map(s=>sellerCard(s)).join('');$('#sellers-empty').classList.toggle('hidden',list.length>0)}
-async function quickRenew(key){const c=clientProfiles().find(x=>x.key===key);if(!c)return;if(!c.app_ultima)return toast('Este cliente no tiene una app asociada.',true);if(!confirm(`Renovar a ${c.nombre} en ${c.app_ultima} por ${money(CLIENT_PRICE)}?`))return;const {error}=await db.from('control_movimientos').insert({user_id:user.id,app:c.app_ultima,tipo:'CLIENTE',nombre:c.nombre,creditos:null,precio:CLIENT_PRICE});if(error)return toast(`No se pudo renovar: ${error.message}`,true);await savePerson('CLIENTE',c.nombre,c.app_ultima);await loadMovements();rebuildCatalogs();renderAll();toast(`${c.nombre} renovado por ${money(CLIENT_PRICE)}.`)}
+async function quickRenew(key){const c=clientProfiles().find(x=>x.key===key);if(!c)return;if(!c.app_ultima)return toast('Este cliente no tiene una app asociada.',true);if(!confirm(`Renovar a ${c.nombre} en ${c.app_ultima} por ${money(CLIENT_PRICE)}?`))return;const {error}=await db.from('control_movimientos').insert({user_id:user.id,app:c.app_ultima,tipo:'CLIENTE',nombre:c.nombre,creditos:null,precio:CLIENT_PRICE});if(error)return toast(`No se pudo renovar: ${error.message}`,true);await savePerson('CLIENTE',c.nombre,c.app_ultima,new Date().toISOString());await loadMovements();rebuildCatalogs();renderAll();toast(`${c.nombre} renovado por ${money(CLIENT_PRICE)}.`)}
 function prepareSeller(key){const s=sellerProfiles().find(x=>x.key===key);if(!s)return;$('#tipo-vendedor').checked=true;updateType();$('#nombre').value=s.nombre;if(s.app_ultima&&APPS.includes(s.app_ultima))$('#app').value=s.app_ultima;$('#creditos').value='';$('#precio').value='';switchView('registrar');setTimeout(()=>$('#creditos').focus(),150)}
 
-function openClientProfile(key){const c=clientProfiles().find(x=>x.key===key);if(!c)return;$('#profile-title').textContent=c.nombre;$('#profile-subtitle').textContent=`Cliente · ${c.app_ultima||'Sin app'}`;$('#profile-body').innerHTML=`<div class="entity-grid"><div class="metric"><span>Última renovación</span><strong>${c.last?esc(dateOnly(c.last.fecha)):'—'}</strong></div><div class="metric"><span>Próxima renovación</span><strong>${c.next?esc(formatISODate(c.next)):'—'}</strong></div><div class="metric"><span>Total aportado</span><strong>${esc(money(c.total))}</strong></div><div class="metric"><span>Meses comprados</span><strong>${c.months}</strong></div></div><button class="btn btn-green" style="width:100%;margin-top:10px" type="button" onclick="quickRenew('${esc(c.key)}');closeProfile()">Renovar ahora · $8.000</button><div class="section-label" style="margin-top:16px">Historial</div><div class="profile-history">${c.hist.map(m=>profileRow(m)).join('')||'<div class="empty">Sin movimientos.</div>'}</div>`;$('#profile-modal').classList.remove('hidden')}
+function openClientProfile(key){
+ const c=clientProfiles().find(x=>x.key===key);
+ if(!c)return;
+ $('#profile-title').textContent=c.nombre;
+ $('#profile-subtitle').textContent=`Cliente · ${c.app_ultima||'Sin app'}`;
+ $('#profile-body').innerHTML=`
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+   ${appLogoHTML(c.app_ultima)}
+   <div><strong>${esc(c.app_ultima||'Sin app')}</strong><div class="entity-sub">Aplicación actual</div></div>
+  </div>
+  <div class="entity-grid">
+   <div class="metric"><span>Última renovación</span><strong>${c.lastISO?esc(formatISODate(c.lastISO)):'—'}</strong></div>
+   <div class="metric"><span>Próxima renovación</span><strong>${c.next?esc(formatISODate(c.next)):'—'}</strong></div>
+   <div class="metric"><span>Total histórico</span><strong>${esc(money(c.total))}</strong></div>
+   <div class="metric"><span>Movimientos</span><strong>${c.ops}</strong></div>
+  </div>
+  <button class="btn btn-green" style="width:100%;margin-top:10px" type="button" onclick="quickRenew('${esc(c.key)}');closeProfile()">Renovar ahora · $8.000</button>
+  <div class="client-admin-actions">
+   <button class="btn btn-secondary" type="button" onclick="editClient('${esc(c.id)}')">Editar cliente</button>
+   <button class="btn btn-danger" type="button" onclick="deleteClient('${esc(c.id)}')">Eliminar cliente</button>
+  </div>
+  <div class="section-label" style="margin-top:16px">Historial</div>
+  <div class="profile-history">${c.hist.map(m=>profileRow(m)).join('')||'<div class="empty">Sin movimientos. La ficha del cliente sigue guardada.</div>'}</div>`;
+ $('#profile-modal').classList.remove('hidden');
+}
 function openSellerProfile(key){const s=sellerProfiles().find(x=>x.key===key);if(!s)return;$('#profile-title').textContent=s.nombre;$('#profile-subtitle').textContent='Vendedor';$('#profile-body').innerHTML=`<div class="entity-grid"><div class="metric"><span>Créditos totales</span><strong>${esc(num(s.credits))}</strong></div><div class="metric"><span>Dinero ingresado</span><strong>${esc(money(s.total))}</strong></div><div class="metric"><span>Última carga</span><strong>${s.last?esc(dateOnly(s.last.fecha)):'—'}</strong></div><div class="metric"><span>Cargas</span><strong>${s.ops}</strong></div></div><div class="apps-list">${s.apps.map(a=>`<span class="app-chip">${esc(a)}</span>`).join('')}</div><button class="btn btn-primary" style="width:100%;margin-top:10px" type="button" onclick="prepareSeller('${esc(s.key)}');closeProfile()">Nueva carga</button><div class="section-label" style="margin-top:16px">Historial</div><div class="profile-history">${s.hist.map(m=>profileRow(m)).join('')||'<div class="empty">Sin movimientos.</div>'}</div>`;$('#profile-modal').classList.remove('hidden')}
 function profileRow(m){return `<div class="profile-row"><div><strong>${esc(m.app)}${m.tipo==='VENDEDOR'?' · '+esc(num(m.creditos))+' créditos':''}</strong><span>${esc(dateTime(m.fecha))}</span></div><div class="amount">${esc(money(m.precio))}</div></div>`}
 function closeProfile(){$('#profile-modal').classList.add('hidden')}
@@ -460,7 +763,7 @@ function renderHistory(){const list=filteredHistory();$('#stat-money').textConte
 function exportExcel(){const list=filteredHistory();if(!list.length)return toast('No hay datos para exportar.',true);const rows=list.map(m=>({'Fecha y hora':dateTime(m.fecha),'Aplicación':m.app,'Tipo':m.tipo,'Nombre':m.nombre,'Créditos':m.tipo==='VENDEDOR'?Number(m.creditos||0):'','Precio':Number(m.precio||0)}));const ws=XLSX.utils.json_to_sheet(rows),wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Movimientos');XLSX.writeFile(wb,`Control_ingresos_${historyPeriod}_${localISO()}.xlsx`)}
 function renderAll(){renderRenewals();renderApps();renderClients();renderSellers();renderHistory()}
 
-window.selectApp=selectApp;window.openClientProfile=openClientProfile;window.openSellerProfile=openSellerProfile;window.quickRenew=quickRenew;window.prepareSeller=prepareSeller;window.closeProfile=closeProfile;window.editMovementById=editMovementById;window.deleteMovement=deleteMovement;
+window.selectApp=selectApp;window.openClientProfile=openClientProfile;window.editClient=editClient;window.deleteClient=deleteClient;window.openSellerProfile=openSellerProfile;window.quickRenew=quickRenew;window.prepareSeller=prepareSeller;window.closeProfile=closeProfile;window.editMovementById=editMovementById;window.deleteMovement=deleteMovement;
 init();
 </script>
 </body>
