@@ -1347,7 +1347,82 @@ height:100%;
 object-fit:contain;
 padding:6px;
 }
-</style>
+
+
+        /* ─── MODO CLARO GRIS + MOBILE V2 ─── */
+        html.light-mode {
+            --bg-primary: #cfd3d8;
+            --bg-card: #e1e4e8;
+            --bg-card-hover: #d7dbe0;
+            --bg-surface: #c4c9cf;
+            --border: rgba(15,23,42,0.12);
+            --border-hover: rgba(59,127,245,0.28);
+            --text-primary: #1f2937;
+            --text-secondary: #4b5563;
+            --text-muted: #747d8a;
+        }
+        html.light-mode .modal-box { background: #d6dade; }
+        html.light-mode #modalCliente .modal-box {
+            background: #d5d9de;
+            border-color: rgba(15,23,42,0.14);
+            box-shadow: 0 24px 70px rgba(15,23,42,0.22);
+        }
+        html.light-mode #modalCliente .modal-header h3,
+        html.light-mode #modalCliente .input-label { color: #1f2937; }
+        html.light-mode #modalCliente .form-section-label,
+        html.light-mode #modalCliente .field-note { color: #667085; }
+        html.light-mode #modalCliente .input-modern {
+            background: #c4c9cf; border-color: rgba(15,23,42,0.13); color: #1f2937;
+        }
+        html.light-mode #modalCliente .input-modern:focus { background: #e3e6e9; }
+        html.light-mode #modalCliente .input-modern::placeholder { color: #7a8491; }
+        html.light-mode #modalCliente .app-option { background: #c8cdd3; border-color: rgba(15,23,42,0.12); }
+        html.light-mode #modalCliente .app-option span { color: #4b5563; }
+        html.light-mode #modalCliente .app-option.selected { background: #dbe6f7; border-color: var(--accent); }
+        html.light-mode #modalCliente .app-option.selected span { color: #245fc2; }
+        html.light-mode #modalCliente .modal-close,
+        html.light-mode #modalCliente .form-actions .btn-cancel { background: #c4c9cf; color: #374151; border-color: rgba(15,23,42,0.12); }
+        html.light-mode .detail-row { background: #c7ccd2; }
+        html.light-mode .input-modern { background: #d8dce0; color: #1f2937; }
+        html.light-mode .input-modern:focus { background: #e7e9ec; }
+        html.light-mode .app-option { background: #c7ccd2; }
+        html.light-mode .form-actions .btn-cancel,
+        html.light-mode .confirm-actions .btn-confirm-cancel { background: #c7ccd2; color: #374151; }
+        html.light-mode .card-cliente { background: #e1e4e8; box-shadow: 0 10px 24px rgba(15,23,42,0.08); }
+        html.light-mode .card-cliente:hover { background: #d7dbe0; }
+        html.light-mode .card-footer { background: #d4d8dd; }
+        html.light-mode .btn-card { background: #d9dde2; }
+        html.light-mode .btn-card:hover { background: #cdd6e3; }
+
+        @media (max-width: 768px) {
+            nav { position: sticky; top: 0; }
+            .nav-inner { height: auto; min-height: 58px; padding: 8px 12px; flex-wrap: wrap; gap: 7px; }
+            .nav-links { order: 2; width: 100%; overflow-x: auto; padding: 2px 0; scrollbar-width: none; }
+            .nav-links::-webkit-scrollbar { display: none; }
+            .nav-links a { white-space: nowrap; min-height: 36px; display: inline-flex; align-items: center; }
+            .nav-right { order: 1; margin-left: auto; gap: 7px; }
+            .btn-password, .btn-logout { min-height: 36px; }
+            .container { padding: 18px 12px 72px; }
+            .page-header h1 { font-size: 23px; }
+            .header-actions { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 8px; width: 100%; }
+            .header-actions > * { width: 100%; min-width: 0; min-height: 44px; justify-content: center; }
+            .stats-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+            .stat-card { min-width: 0; }
+            .toolbar, .filters-row { gap: 9px; }
+            .input-modern, select.input-modern, input.input-modern { min-height: 46px; font-size: 16px; }
+            .card-footer { flex-wrap: wrap; }
+            .card-footer .btn-card { min-height: 42px; }
+        }
+        @media (max-width: 480px) {
+            .header-actions { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .page-header h1 { font-size: 21px; }
+            .card-body { gap: 10px; }
+            .card-footer { flex-direction: column; }
+            .card-footer .btn-card { width: 100%; }
+        }
+
+    </style>
 </head>
 
 <!--
@@ -1721,7 +1796,7 @@ Reemplazá estas rutas por las que agregaste en tu archivo:
             'TV PLUS 2':       { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/tvplus2.png', color: '#3b7ff5' },
             'TV':              { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/tv.png', color: '#3b7ff5' },
             'FUTURE':          { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/future.png', color: '#3b7ff5' },
-            'ON PLAY':         { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/onplay.png', color: '#3b7ff5' },
+            'MAR TV':          { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/martv.png', color: '#3b7ff5' },
             'TV (EX LUMIX)':   { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/tvlumix.png', color: '#3b7ff5' },
             'KRATEN':          { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/kraken.png', color: '#3b7ff5' },
             'TRY PLAY':        { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/tryplay.png', color: '#3b7ff5' },
@@ -1730,7 +1805,9 @@ Reemplazá estas rutas por las que agregaste en tu archivo:
             'FEMON PLUS':      { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/femon.png', color: '#3b7ff5' },
             'VEXA TV':         { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/vexa.png', color: '#2563eb' },
             'MUNDO INFINITO':  { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/mundo.png', color: '#7c3aed' },
-            'SUFFIXED':        { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/suffixed.png', color: '#0891b2' }
+            'SUFFIXED':        { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/suffixed.png', color: '#0891b2' },
+            'INTERNET PERSONAL':{ logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/internetpersonal.png', color: '#0ea5e9' },
+            'INTERNET CLARO':   { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/internetclaro.png', color: '#ef4444' }
         };
 
 
@@ -1801,7 +1878,9 @@ Reemplazá estas rutas por las que agregaste en tu archivo:
         }
 
         function normalizarNombreApp(nombreApp) {
-            return String(nombreApp || '').trim().toUpperCase();
+            const nombre = String(nombreApp || '').trim().toUpperCase();
+            // Compatibilidad con registros históricos: ON PLAY ahora se llama MAR TV.
+            return nombre === 'ON PLAY' ? 'MAR TV' : nombre;
         }
 
         function obtenerConfigApp(nombreApp) {
@@ -2009,7 +2088,7 @@ Reemplazá estas rutas por las que agregaste en tu archivo:
 
         async function cargarClientes() {
             const { data } = await supabaseClient.from('clientes').select('*').eq('creado_por', currentUser.id).order('fecha_vencimiento', { ascending: true });
-            todosLosClientes = data || [];
+            todosLosClientes = (data || []).map(c => ({ ...c, app_instalada: normalizarNombreApp(c.app_instalada) }));
             generarFiltrosApps(todosLosClientes);
             actualizarDashboard(todosLosClientes);
             filtrarClientes();
