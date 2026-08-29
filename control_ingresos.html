@@ -73,6 +73,7 @@
         .btn-primary{height:42px;padding:0 18px;background:var(--accent);color:#fff;white-space:nowrap}.btn-primary:hover{background:#2d6fd4;transform:translateY(-1px);box-shadow:0 6px 20px var(--accent-glow)}
         .btn-secondary{height:42px;padding:0 16px;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-secondary)}.btn-secondary:hover{border-color:var(--border-hover);color:var(--text-primary)}
         .form-actions{display:flex;gap:7px}.credit-field.hidden-by-type{display:none}
+        .autocomplete-wrap{position:relative}.client-suggestions{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:80;background:var(--bg-card);border:1px solid var(--border-hover);border-radius:var(--radius-md);box-shadow:0 18px 45px rgba(0,0,0,.25);max-height:260px;overflow:auto;padding:5px}.client-suggestion{width:100%;border:0;background:transparent;color:var(--text-primary);display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 11px;border-radius:9px;cursor:pointer;text-align:left}.client-suggestion:hover,.client-suggestion.active{background:var(--accent-dim)}.client-suggestion strong{font-size:12px}.client-suggestion span{font-size:10px;color:var(--text-muted);white-space:nowrap}.client-helper{font-size:10px;color:var(--text-muted);margin-top:5px;line-height:1.4}.client-helper strong{color:var(--accent)}
 
         /* Period */
         .periodo-section{padding:18px 22px;margin-bottom:18px}.periodo-btn-container{display:flex;flex-wrap:wrap;gap:7px}.periodo-btn{padding:8px 16px;border-radius:999px;border:1px solid var(--border);background:var(--bg-surface);color:var(--text-secondary);font-size:11px;font-weight:700;cursor:pointer}.periodo-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}.periodo-btn:hover:not(.active){border-color:var(--border-hover);color:var(--text-primary)}
@@ -138,9 +139,9 @@
                 <form id="form-movimiento" class="form-grid">
                     <div><label class="input-label" for="app">Aplicación</label><select id="app" class="input-modern" required><option value="">Seleccionar app</option><option>TV</option><option>FUTURE</option><option>TV PLUS 2</option><option>FLUJO TV</option><option>MAR TV</option></select></div>
                     <div class="type-wrap"><label class="input-label">Cliente o vendedor</label><div class="type-selector"><div class="type-option"><input id="tipo-cliente" name="tipo" type="radio" value="CLIENTE" checked><label for="tipo-cliente"><span class="check-dot"></span>Cliente</label></div><div class="type-option"><input id="tipo-vendedor" name="tipo" type="radio" value="VENDEDOR"><label for="tipo-vendedor"><span class="check-dot"></span>Vendedor</label></div></div></div>
-                    <div><label class="input-label" for="nombre">Nombre</label><input id="nombre" class="input-modern" type="text" placeholder="Nombre del cliente o vendedor" autocomplete="off" required></div>
+                    <div><label class="input-label" for="nombre">Nombre</label><div class="autocomplete-wrap"><input id="nombre" class="input-modern" type="text" placeholder="Nombre del cliente o vendedor" autocomplete="off" required><div id="client-suggestions" class="client-suggestions hidden"></div></div><div id="client-helper" class="client-helper">Los clientes nuevos se guardan automáticamente para futuras renovaciones.</div></div>
                     <div id="credit-field" class="credit-field hidden-by-type"><label class="input-label" for="creditos">Créditos cargados</label><input id="creditos" class="input-modern" type="number" min="0" step="1" inputmode="numeric" placeholder="Ej: 100"></div>
-                    <div><label class="input-label" for="precio">Precio cobrado</label><input id="precio" class="input-modern" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Ej: 25000" required></div>
+                    <div><label class="input-label" for="precio">Precio cobrado</label><input id="precio" class="input-modern" type="number" min="0" step="0.01" inputmode="decimal" value="8000" placeholder="Ej: 8000" required></div>
                     <div class="form-actions"><button id="btn-guardar" class="btn-primary" type="submit">+ Guardar</button><button id="btn-cancelar" class="btn-secondary hidden" type="button" onclick="cancelarEdicion()">Cancelar</button></div>
                 </form>
                 <div class="auto-date">🕒 <span>Fecha y hora: <strong>automáticas al guardar</strong></span></div>
@@ -189,6 +190,7 @@
     let periodoActual='hoy';
     let rangoPersonalizado={desde:null,hasta:null};
     let movimientoEnEdicion=null;
+    let clientesGuardados=[];
 
     function escaparHtml(v){return String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;')}
     function formatearDinero(v){return new Intl.NumberFormat('es-AR',{style:'currency',currency:'ARS',maximumFractionDigits:2}).format(Number(v)||0)}
@@ -207,7 +209,7 @@
         supabaseClient.auth.onAuthStateChange((_event,session)=>{if(session?.user)mostrarApp(session.user);else mostrarLogin()});
     }
     function mostrarLogin(){currentUser=null;document.getElementById('login-screen').classList.remove('hidden');document.getElementById('app-screen').classList.add('hidden')}
-    async function mostrarApp(user){currentUser=user;document.getElementById('login-screen').classList.add('hidden');document.getElementById('app-screen').classList.remove('hidden');document.getElementById('user-email').textContent=user.email||'';cargarTema();actualizarTipo();await cargarMovimientos()}
+    async function mostrarApp(user){currentUser=user;document.getElementById('login-screen').classList.add('hidden');document.getElementById('app-screen').classList.remove('hidden');document.getElementById('user-email').textContent=user.email||'';cargarTema();actualizarTipo();await Promise.all([cargarClientes(),cargarMovimientos()]);await sincronizarClientesHistoricos()}
 
     document.getElementById('form-login').addEventListener('submit',async e=>{
         e.preventDefault();const email=document.getElementById('login-email').value.trim();const password=document.getElementById('login-password').value;const btn=document.getElementById('btn-login');const err=document.getElementById('login-error');err.classList.add('hidden');btn.disabled=true;btn.textContent='Ingresando...';
@@ -217,8 +219,50 @@
     async function logout(){await supabaseClient.auth.signOut()}
 
     document.querySelectorAll('input[name="tipo"]').forEach(el=>el.addEventListener('change',actualizarTipo));
+    const nombreInput=document.getElementById('nombre');
+    nombreInput.addEventListener('input',mostrarSugerenciasClientes);
+    nombreInput.addEventListener('focus',mostrarSugerenciasClientes);
+    document.addEventListener('click',e=>{if(!e.target.closest('.autocomplete-wrap'))ocultarSugerenciasClientes()});
     function tipoSeleccionado(){return document.querySelector('input[name="tipo"]:checked')?.value||'CLIENTE'}
-    function actualizarTipo(){const vendedor=tipoSeleccionado()==='VENDEDOR';document.getElementById('credit-field').classList.toggle('hidden-by-type',!vendedor);document.getElementById('creditos').required=vendedor;if(!vendedor)document.getElementById('creditos').value=''}
+    function normalizarNombre(v){return String(v||'').trim().replace(/\s+/g,' ').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase()}
+    function actualizarTipo(){const vendedor=tipoSeleccionado()==='VENDEDOR';document.getElementById('credit-field').classList.toggle('hidden-by-type',!vendedor);document.getElementById('creditos').required=vendedor;document.getElementById('client-helper').classList.toggle('hidden',vendedor);if(!vendedor){document.getElementById('creditos').value='';if(!movimientoEnEdicion)document.getElementById('precio').value='8000'}else{ocultarSugerenciasClientes();if(!movimientoEnEdicion&&document.getElementById('precio').value==='8000')document.getElementById('precio').value=''}}
+
+    async function cargarClientes(){
+        const {data,error}=await supabaseClient.from('control_clientes').select('id,nombre,nombre_normalizado,app_ultima,last_used_at').order('last_used_at',{ascending:false});
+        if(error){console.error('No se pudieron cargar los clientes guardados:',error);clientesGuardados=[];return}
+        clientesGuardados=data||[];
+    }
+    function mostrarSugerenciasClientes(){
+        const box=document.getElementById('client-suggestions');
+        if(tipoSeleccionado()!=='CLIENTE'){box.classList.add('hidden');return}
+        const q=normalizarNombre(nombreInput.value);
+        const lista=clientesGuardados.filter(c=>!q||String(c.nombre_normalizado||normalizarNombre(c.nombre)).includes(q)).slice(0,8);
+        if(!lista.length){box.classList.add('hidden');box.innerHTML='';return}
+        box.innerHTML=lista.map(c=>`<button type="button" class="client-suggestion" onclick="seleccionarClienteGuardado('${c.id}')"><strong>${escaparHtml(c.nombre)}</strong><span>${escaparHtml(c.app_ultima||'Cliente guardado')}</span></button>`).join('');
+        box.classList.remove('hidden');
+    }
+    function ocultarSugerenciasClientes(){document.getElementById('client-suggestions')?.classList.add('hidden')}
+    function seleccionarClienteGuardado(id){const c=clientesGuardados.find(x=>String(x.id)===String(id));if(!c)return;nombreInput.value=c.nombre;if(c.app_ultima&&APPS.includes(c.app_ultima))document.getElementById('app').value=c.app_ultima;document.getElementById('precio').value='8000';ocultarSugerenciasClientes()}
+    async function guardarCliente(nombre,app){
+        const limpio=String(nombre||'').trim().replace(/\s+/g,' ');const normalizado=normalizarNombre(limpio);if(!normalizado||!currentUser)return;
+        const payload={user_id:currentUser.id,nombre:limpio,nombre_normalizado:normalizado,app_ultima:app,last_used_at:new Date().toISOString(),updated_at:new Date().toISOString()};
+        const {error}=await supabaseClient.from('control_clientes').upsert(payload,{onConflict:'user_id,nombre_normalizado'});
+        if(error){console.error('No se pudo guardar el cliente:',error);return}
+        await cargarClientes();
+    }
+    async function sincronizarClientesHistoricos(){
+        if(!currentUser||!movimientos.length)return;
+        const existentes=new Set(clientesGuardados.map(c=>String(c.nombre_normalizado||normalizarNombre(c.nombre))));
+        const nuevos=[];const vistos=new Set();
+        for(const m of movimientos){
+            if(m.tipo!=='CLIENTE')continue;const limpio=String(m.nombre||'').trim().replace(/\s+/g,' ');const normalizado=normalizarNombre(limpio);if(!normalizado||existentes.has(normalizado)||vistos.has(normalizado))continue;
+            vistos.add(normalizado);nuevos.push({user_id:currentUser.id,nombre:limpio,nombre_normalizado:normalizado,app_ultima:m.app,last_used_at:m.fecha||new Date().toISOString(),updated_at:new Date().toISOString()});
+        }
+        if(!nuevos.length)return;
+        const {error}=await supabaseClient.from('control_clientes').upsert(nuevos,{onConflict:'user_id,nombre_normalizado'});
+        if(error){console.error('No se pudieron importar clientes históricos:',error);return}
+        await cargarClientes();
+    }
 
     document.getElementById('form-movimiento').addEventListener('submit',async e=>{
         e.preventDefault();if(!currentUser)return;
@@ -228,7 +272,7 @@
         let error;if(movimientoEnEdicion){({error}=await supabaseClient.from('control_movimientos').update(payload).eq('id',movimientoEnEdicion.id))}else{({error}=await supabaseClient.from('control_movimientos').insert(payload))}
         btn.disabled=false;btn.textContent=movimientoEnEdicion?'Guardar cambios':'+ Guardar';
         if(error){console.error(error);mostrarToast(`No se pudo guardar: ${error.message}`,true);return}
-        mostrarToast(movimientoEnEdicion?'Movimiento actualizado.':'Movimiento guardado.');cancelarEdicion();await cargarMovimientos();
+        if(tipo==='CLIENTE')await guardarCliente(nombre,app);mostrarToast(movimientoEnEdicion?'Movimiento actualizado.':'Movimiento guardado.');cancelarEdicion();await cargarMovimientos();
     });
 
     async function cargarMovimientos(){
@@ -239,7 +283,7 @@
     }
 
     function editarMovimiento(id){const m=movimientos.find(x=>String(x.id)===String(id));if(!m)return;movimientoEnEdicion=m;document.getElementById('app').value=m.app;document.getElementById(m.tipo==='VENDEDOR'?'tipo-vendedor':'tipo-cliente').checked=true;document.getElementById('nombre').value=m.nombre;document.getElementById('precio').value=m.precio;document.getElementById('creditos').value=m.creditos??'';actualizarTipo();document.getElementById('form-title').textContent='Editar movimiento';document.getElementById('btn-guardar').textContent='Guardar cambios';document.getElementById('btn-cancelar').classList.remove('hidden');document.querySelector('.form-section').scrollIntoView({behavior:'smooth',block:'start'})}
-    function cancelarEdicion(){movimientoEnEdicion=null;document.getElementById('form-movimiento').reset();document.getElementById('tipo-cliente').checked=true;actualizarTipo();document.getElementById('form-title').textContent='Nuevo movimiento';document.getElementById('btn-guardar').textContent='+ Guardar';document.getElementById('btn-cancelar').classList.add('hidden')}
+    function cancelarEdicion(){movimientoEnEdicion=null;document.getElementById('form-movimiento').reset();document.getElementById('tipo-cliente').checked=true;document.getElementById('precio').value='8000';actualizarTipo();ocultarSugerenciasClientes();document.getElementById('form-title').textContent='Nuevo movimiento';document.getElementById('btn-guardar').textContent='+ Guardar';document.getElementById('btn-cancelar').classList.add('hidden')}
     async function eliminarMovimiento(id){const m=movimientos.find(x=>String(x.id)===String(id));if(!m)return;if(!confirm(`¿Eliminar el movimiento de ${m.nombre} por ${formatearDinero(m.precio)}?`))return;const {error}=await supabaseClient.from('control_movimientos').delete().eq('id',id);if(error){mostrarToast(`No se pudo eliminar: ${error.message}`,true);return}mostrarToast('Movimiento eliminado.');await cargarMovimientos()}
 
     function limitesPeriodo(){
