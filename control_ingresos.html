@@ -103,7 +103,78 @@
             .table-head{padding:0 14px}.table-wrap{overflow:visible}.tabla{min-width:0;display:block;padding:0 12px 12px}.tabla thead{display:none}.tabla tbody{display:grid;gap:10px}.tabla tr{display:block;background:var(--bg-surface);border:1px solid var(--border);border-radius:14px;padding:9px 12px}.tabla td{display:flex;align-items:center;justify-content:space-between;gap:16px;border:0;padding:7px 0;text-align:right}.tabla td:before{content:attr(data-label);font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted);text-align:left}.tabla td:last-child{border-top:1px solid var(--border);margin-top:5px;padding-top:10px}.action-group{justify-content:flex-end}.table-section{padding-top:15px}
         }
         @media(max-width:480px){
-            .login-card{padding:24px 18px;border-radius:21px}.stats-grid{grid-template-columns:1fr}.toolbar-left{grid-template-columns:1fr}.nav-right{gap:6px}.btn-logout{padding:7px 9px}.periodo-btn{flex:1;text-align:center;padding:8px 9px}.periodo-btn-container{display:grid;grid-template-columns:repeat(2,1fr)}
+            .login-card{padding:24px 18px;border-radius:21px}.nav-right{gap:6px}.btn-logout{padding:7px 9px}
+        }
+
+        /* ─── MOBILE APP EXPERIENCE ─── */
+        .mobile-history{display:none}
+        .suggestion-empty{padding:13px 12px;color:var(--text-muted);font-size:12px;text-align:center}
+        .client-suggestion-main{min-width:0;display:flex;flex-direction:column;gap:3px}
+        .client-suggestion strong{font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+        .client-suggestion-meta{display:flex;align-items:center;gap:7px;flex-shrink:0}
+        .client-count{display:inline-flex;align-items:center;padding:4px 7px;border-radius:999px;background:var(--purple-dim);color:var(--purple);font-size:9px;font-weight:800;white-space:nowrap}
+
+        @media(max-width:760px){
+            body{background:var(--bg-primary);padding-bottom:18px}
+            nav{border-bottom:1px solid var(--border);box-shadow:none}
+            .nav-inner{height:56px;padding:0 12px}
+            .brand-icon{width:36px;height:36px;border-radius:12px}.brand-text strong{font-size:13px}
+            .theme-toggle{width:42px;height:28px}.btn-logout{min-height:40px;padding:0 11px}
+            .container{padding:12px 10px 34px}
+            .page-header{margin:4px 2px 12px;display:flex;flex-direction:row;align-items:center;gap:8px}
+            .page-header h1{font-size:20px;line-height:1.1}.page-header p{display:none}.private-badge{margin-left:auto;font-size:9px;padding:6px 8px}
+            .card-surface{border-radius:20px}
+            .form-section{padding:14px 12px 13px;margin-bottom:12px;box-shadow:0 10px 30px rgba(0,0,0,.10)}
+            .section-title{font-size:10px;margin-bottom:11px}
+            .form-grid{grid-template-columns:1fr;gap:12px}
+            .input-label{font-size:12px;margin-bottom:7px}
+            .input-modern{height:52px;border-radius:14px;font-size:16px;padding:0 14px}
+            select.input-modern{padding-right:36px}
+            .type-selector,.type-option label{height:52px}.type-option label{border-radius:14px;font-size:14px}
+            .check-dot{width:17px;height:17px;border-radius:5px}
+            .form-actions{display:grid;grid-template-columns:1fr;gap:8px;margin-top:2px}
+            .form-actions .btn-primary,.form-actions .btn-secondary{height:52px;border-radius:14px;font-size:15px;width:100%}
+            .auto-date{justify-content:center;margin-top:10px;font-size:10px}
+            .client-helper{font-size:11px;margin-top:7px}
+            .client-suggestions{top:calc(100% + 5px);border-radius:16px;padding:6px;max-height:300px;box-shadow:0 18px 55px rgba(0,0,0,.42)}
+            .client-suggestion{min-height:55px;padding:10px;border-radius:12px}
+            .client-suggestion span{font-size:10px}
+
+            .periodo-section{padding:12px;margin-bottom:12px}
+            .periodo-btn-container{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+            .periodo-btn{min-height:42px;padding:6px 4px;border-radius:12px;font-size:11px}
+            #rango-personalizado{grid-template-columns:1fr;gap:9px;padding:10px;border-radius:14px}
+            #rango-personalizado .btn-primary{height:50px;border-radius:13px}
+
+            .stats-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:12px}
+            .stat-card{padding:13px 12px;min-height:86px;border-radius:17px;display:flex;flex-direction:column;justify-content:center}
+            .stat-label{font-size:9px;line-height:1.25;margin-bottom:7px}.stat-value{font-size:20px;line-height:1.05;overflow-wrap:anywhere}
+
+            .table-section{padding:12px 0 0;border-radius:20px}
+            .table-head{padding:0 12px}.toolbar{gap:8px;margin-bottom:12px}
+            .toolbar-left{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+            .toolbar-left .search-input{grid-column:1/-1}
+            .toolbar .input-modern{height:48px;font-size:14px;border-radius:13px}
+            .btn-green{width:100%;height:48px;border-radius:13px;font-size:13px}
+            .tabla{display:none!important}
+            .mobile-history{display:grid;gap:9px;padding:0 10px 10px}
+            .mobile-movement{background:var(--bg-surface);border:1px solid var(--border);border-radius:17px;padding:12px}
+            .mobile-movement-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:9px}
+            .mobile-name{font-size:15px;font-weight:800;line-height:1.2;overflow-wrap:anywhere}.mobile-price{font-size:16px;font-weight:800;color:var(--green);white-space:nowrap}
+            .mobile-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+            .mobile-details{display:grid;grid-template-columns:1fr 1fr;gap:7px;padding:9px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-bottom:9px}
+            .mobile-detail span{display:block;color:var(--text-muted);font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}.mobile-detail strong{font-size:11px;font-weight:700;color:var(--text-secondary)}
+            .mobile-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px}.mobile-actions .btn-small{min-height:42px;font-size:12px;border-radius:11px}
+            .empty-state{padding:36px 16px}
+            .loading-state{padding:30px 12px}
+            .toast{left:10px;right:10px;bottom:10px;text-align:center;border-radius:14px;font-size:12px}
+        }
+
+        @media(max-width:360px){
+            .stats-grid{grid-template-columns:1fr 1fr}.stat-value{font-size:18px}
+            .periodo-btn-container{grid-template-columns:repeat(2,minmax(0,1fr))}
+            .page-header h1{font-size:18px}.private-badge{display:none}
+            .toolbar-left{grid-template-columns:1fr}.toolbar-left .search-input{grid-column:auto}
         }
     </style>
 </head>
@@ -139,7 +210,7 @@
                 <form id="form-movimiento" class="form-grid">
                     <div><label class="input-label" for="app">Aplicación</label><select id="app" class="input-modern" required><option value="">Seleccionar app</option><option>TV</option><option>FUTURE</option><option>TV PLUS 2</option><option>FLUJO TV</option><option>MAR TV</option></select></div>
                     <div class="type-wrap"><label class="input-label">Cliente o vendedor</label><div class="type-selector"><div class="type-option"><input id="tipo-cliente" name="tipo" type="radio" value="CLIENTE" checked><label for="tipo-cliente"><span class="check-dot"></span>Cliente</label></div><div class="type-option"><input id="tipo-vendedor" name="tipo" type="radio" value="VENDEDOR"><label for="tipo-vendedor"><span class="check-dot"></span>Vendedor</label></div></div></div>
-                    <div><label class="input-label" for="nombre">Nombre</label><div class="autocomplete-wrap"><input id="nombre" class="input-modern" type="text" placeholder="Nombre del cliente o vendedor" autocomplete="off" required><div id="client-suggestions" class="client-suggestions hidden"></div></div><div id="client-helper" class="client-helper">Los clientes nuevos se guardan automáticamente para futuras renovaciones.</div></div>
+                    <div><label class="input-label" for="nombre">Nombre</label><div class="autocomplete-wrap"><input id="nombre" class="input-modern" type="text" placeholder="Nombre del cliente o vendedor" autocomplete="off" required><div id="client-suggestions" class="client-suggestions hidden"></div></div><div id="client-helper" class="client-helper">Empezá a escribir el nombre: busca en todos tus clientes anteriores y evita duplicados.</div></div>
                     <div id="credit-field" class="credit-field hidden-by-type"><label class="input-label" for="creditos">Créditos cargados</label><input id="creditos" class="input-modern" type="number" min="0" step="1" inputmode="numeric" placeholder="Ej: 100"></div>
                     <div><label class="input-label" for="precio">Precio cobrado</label><input id="precio" class="input-modern" type="number" min="0" step="0.01" inputmode="decimal" value="8000" placeholder="Ej: 8000" required></div>
                     <div class="form-actions"><button id="btn-guardar" class="btn-primary" type="submit">+ Guardar</button><button id="btn-cancelar" class="btn-secondary hidden" type="button" onclick="cancelarEdicion()">Cancelar</button></div>
@@ -173,7 +244,7 @@
                     <div class="section-title">Historial de movimientos</div>
                 </div>
                 <div id="loading" class="loading-state"><span class="spinner"></span>Cargando movimientos...</div>
-                <div id="tabla-wrap" class="table-wrap hidden"><table class="tabla"><thead><tr><th>Fecha y hora</th><th>Aplicación</th><th>Tipo</th><th>Nombre</th><th>Créditos</th><th>Precio</th><th>Acciones</th></tr></thead><tbody id="tabla-movimientos"></tbody></table><div id="empty-state" class="empty-state hidden"><div class="icon">🧾</div><p>No hay movimientos para mostrar.</p><p class="sub">Agregá uno nuevo o cambiá los filtros.</p></div></div>
+                <div id="tabla-wrap" class="table-wrap hidden"><table class="tabla"><thead><tr><th>Fecha y hora</th><th>Aplicación</th><th>Tipo</th><th>Nombre</th><th>Créditos</th><th>Precio</th><th>Acciones</th></tr></thead><tbody id="tabla-movimientos"></tbody></table><div id="mobile-history" class="mobile-history"></div><div id="empty-state" class="empty-state hidden"><div class="icon">🧾</div><p>No hay movimientos para mostrar.</p><p class="sub">Agregá uno nuevo o cambiá los filtros.</p></div></div>
             </section>
         </main>
     </div>
@@ -191,6 +262,7 @@
     let rangoPersonalizado={desde:null,hasta:null};
     let movimientoEnEdicion=null;
     let clientesGuardados=[];
+    let catalogoClientes=[];
 
     function escaparHtml(v){return String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;')}
     function formatearDinero(v){return new Intl.NumberFormat('es-AR',{style:'currency',currency:'ARS',maximumFractionDigits:2}).format(Number(v)||0)}
@@ -209,7 +281,7 @@
         supabaseClient.auth.onAuthStateChange((_event,session)=>{if(session?.user)mostrarApp(session.user);else mostrarLogin()});
     }
     function mostrarLogin(){currentUser=null;document.getElementById('login-screen').classList.remove('hidden');document.getElementById('app-screen').classList.add('hidden')}
-    async function mostrarApp(user){currentUser=user;document.getElementById('login-screen').classList.add('hidden');document.getElementById('app-screen').classList.remove('hidden');document.getElementById('user-email').textContent=user.email||'';cargarTema();actualizarTipo();await Promise.all([cargarClientes(),cargarMovimientos()]);await sincronizarClientesHistoricos()}
+    async function mostrarApp(user){currentUser=user;document.getElementById('login-screen').classList.add('hidden');document.getElementById('app-screen').classList.remove('hidden');document.getElementById('user-email').textContent=user.email||'';cargarTema();actualizarTipo();await cargarMovimientos();await cargarClientes();await sincronizarClientesHistoricos();reconstruirCatalogoClientes()}
 
     document.getElementById('form-login').addEventListener('submit',async e=>{
         e.preventDefault();const email=document.getElementById('login-email').value.trim();const password=document.getElementById('login-password').value;const btn=document.getElementById('btn-login');const err=document.getElementById('login-error');err.classList.add('hidden');btn.disabled=true;btn.textContent='Ingresando...';
@@ -229,39 +301,116 @@
 
     async function cargarClientes(){
         const {data,error}=await supabaseClient.from('control_clientes').select('id,nombre,nombre_normalizado,app_ultima,last_used_at').order('last_used_at',{ascending:false});
-        if(error){console.error('No se pudieron cargar los clientes guardados:',error);clientesGuardados=[];return}
-        clientesGuardados=data||[];
+        if(error){
+            console.warn('La agenda auxiliar no está disponible; se usará el historial de movimientos para buscar clientes.',error);
+            clientesGuardados=[];
+        }else{
+            clientesGuardados=data||[];
+        }
+        reconstruirCatalogoClientes();
     }
+
+    function reconstruirCatalogoClientes(){
+        const mapa=new Map();
+        const agregar=(item,desdeMovimiento=false)=>{
+            const nombre=String(item.nombre||'').trim().replace(/\s+/g,' ');
+            const key=normalizarNombre(item.nombre_normalizado||nombre);
+            if(!key)return;
+            const fecha=item.last_used_at||item.fecha||null;
+            const existente=mapa.get(key)||{
+                key,
+                id:item.id||key,
+                nombre,
+                app_ultima:item.app_ultima||item.app||null,
+                last_used_at:fecha,
+                operaciones:0
+            };
+            if(desdeMovimiento)existente.operaciones+=1;
+            const fechaExistente=existente.last_used_at?new Date(existente.last_used_at).getTime():0;
+            const fechaNueva=fecha?new Date(fecha).getTime():0;
+            if(fechaNueva>=fechaExistente){
+                existente.nombre=nombre||existente.nombre;
+                existente.app_ultima=item.app_ultima||item.app||existente.app_ultima;
+                existente.last_used_at=fecha||existente.last_used_at;
+                existente.id=item.id||existente.id;
+            }
+            mapa.set(key,existente);
+        };
+        clientesGuardados.forEach(c=>agregar(c,false));
+        movimientos.filter(m=>m.tipo==='CLIENTE').forEach(m=>agregar(m,true));
+        catalogoClientes=[...mapa.values()].sort((a,b)=>{
+            const fb=b.last_used_at?new Date(b.last_used_at).getTime():0;
+            const fa=a.last_used_at?new Date(a.last_used_at).getTime():0;
+            return fb-fa||a.nombre.localeCompare(b.nombre,'es');
+        });
+    }
+
     function mostrarSugerenciasClientes(){
         const box=document.getElementById('client-suggestions');
         if(tipoSeleccionado()!=='CLIENTE'){box.classList.add('hidden');return}
+        reconstruirCatalogoClientes();
         const q=normalizarNombre(nombreInput.value);
-        const lista=clientesGuardados.filter(c=>!q||String(c.nombre_normalizado||normalizarNombre(c.nombre)).includes(q)).slice(0,8);
-        if(!lista.length){box.classList.add('hidden');box.innerHTML='';return}
-        box.innerHTML=lista.map(c=>`<button type="button" class="client-suggestion" onclick="seleccionarClienteGuardado('${c.id}')"><strong>${escaparHtml(c.nombre)}</strong><span>${escaparHtml(c.app_ultima||'Cliente guardado')}</span></button>`).join('');
+        let lista=catalogoClientes.filter(c=>!q||c.key.includes(q));
+        if(q){
+            lista.sort((a,b)=>{
+                const aInicio=a.key.startsWith(q)?0:1;
+                const bInicio=b.key.startsWith(q)?0:1;
+                if(aInicio!==bInicio)return aInicio-bInicio;
+                return (b.operaciones||0)-(a.operaciones||0);
+            });
+        }
+        lista=lista.slice(0,10);
+        if(!lista.length){
+            if(q){
+                box.innerHTML='<div class="suggestion-empty">No encontré un cliente con esas letras.</div>';
+                box.classList.remove('hidden');
+            }else{
+                box.classList.add('hidden');box.innerHTML='';
+            }
+            return;
+        }
+        box.innerHTML=lista.map(c=>{
+            const operaciones=Number(c.operaciones||0);
+            const label=operaciones===1?'1 movimiento':`${operaciones} movimientos`;
+            return `<button type="button" class="client-suggestion" data-client-key="${escaparHtml(c.key)}"><span class="client-suggestion-main"><strong>${escaparHtml(c.nombre)}</strong><span>${escaparHtml(c.app_ultima||'Cliente guardado')}</span></span><span class="client-suggestion-meta"><span class="client-count">${escaparHtml(label)}</span></span></button>`;
+        }).join('');
+        box.querySelectorAll('[data-client-key]').forEach(btn=>btn.addEventListener('click',()=>seleccionarClienteGuardado(btn.dataset.clientKey)));
         box.classList.remove('hidden');
     }
     function ocultarSugerenciasClientes(){document.getElementById('client-suggestions')?.classList.add('hidden')}
-    function seleccionarClienteGuardado(id){const c=clientesGuardados.find(x=>String(x.id)===String(id));if(!c)return;nombreInput.value=c.nombre;if(c.app_ultima&&APPS.includes(c.app_ultima))document.getElementById('app').value=c.app_ultima;document.getElementById('precio').value='8000';ocultarSugerenciasClientes()}
+    function seleccionarClienteGuardado(key){
+        const c=catalogoClientes.find(x=>x.key===key);if(!c)return;
+        nombreInput.value=c.nombre;
+        if(c.app_ultima&&APPS.includes(c.app_ultima))document.getElementById('app').value=c.app_ultima;
+        document.getElementById('precio').value='8000';
+        ocultarSugerenciasClientes();
+        nombreInput.dispatchEvent(new Event('change',{bubbles:true}));
+    }
     async function guardarCliente(nombre,app){
         const limpio=String(nombre||'').trim().replace(/\s+/g,' ');const normalizado=normalizarNombre(limpio);if(!normalizado||!currentUser)return;
         const payload={user_id:currentUser.id,nombre:limpio,nombre_normalizado:normalizado,app_ultima:app,last_used_at:new Date().toISOString(),updated_at:new Date().toISOString()};
         const {error}=await supabaseClient.from('control_clientes').upsert(payload,{onConflict:'user_id,nombre_normalizado'});
-        if(error){console.error('No se pudo guardar el cliente:',error);return}
+        if(error){
+            console.warn('El movimiento se guardó, pero no se pudo actualizar la agenda auxiliar. La búsqueda seguirá funcionando desde el historial.',error);
+            reconstruirCatalogoClientes();
+            return;
+        }
         await cargarClientes();
     }
     async function sincronizarClientesHistoricos(){
-        if(!currentUser||!movimientos.length)return;
+        if(!currentUser||!movimientos.length){reconstruirCatalogoClientes();return}
         const existentes=new Set(clientesGuardados.map(c=>String(c.nombre_normalizado||normalizarNombre(c.nombre))));
         const nuevos=[];const vistos=new Set();
         for(const m of movimientos){
             if(m.tipo!=='CLIENTE')continue;const limpio=String(m.nombre||'').trim().replace(/\s+/g,' ');const normalizado=normalizarNombre(limpio);if(!normalizado||existentes.has(normalizado)||vistos.has(normalizado))continue;
             vistos.add(normalizado);nuevos.push({user_id:currentUser.id,nombre:limpio,nombre_normalizado:normalizado,app_ultima:m.app,last_used_at:m.fecha||new Date().toISOString(),updated_at:new Date().toISOString()});
         }
-        if(!nuevos.length)return;
-        const {error}=await supabaseClient.from('control_clientes').upsert(nuevos,{onConflict:'user_id,nombre_normalizado'});
-        if(error){console.error('No se pudieron importar clientes históricos:',error);return}
-        await cargarClientes();
+        if(nuevos.length){
+            const {error}=await supabaseClient.from('control_clientes').upsert(nuevos,{onConflict:'user_id,nombre_normalizado'});
+            if(!error)await cargarClientes();
+            else console.warn('No se pudieron sincronizar clientes históricos; se usarán directamente desde movimientos.',error);
+        }
+        reconstruirCatalogoClientes();
     }
 
     document.getElementById('form-movimiento').addEventListener('submit',async e=>{
@@ -279,7 +428,7 @@
         document.getElementById('loading').classList.remove('hidden');document.getElementById('tabla-wrap').classList.add('hidden');
         const {data,error}=await supabaseClient.from('control_movimientos').select('*').order('fecha',{ascending:false});
         document.getElementById('loading').classList.add('hidden');document.getElementById('tabla-wrap').classList.remove('hidden');
-        if(error){console.error(error);movimientos=[];mostrarToast(`Error al cargar: ${error.message}`,true)}else movimientos=data||[];renderTodo();
+        if(error){console.error(error);movimientos=[];mostrarToast(`Error al cargar: ${error.message}`,true)}else movimientos=data||[];reconstruirCatalogoClientes();renderTodo();
     }
 
     function editarMovimiento(id){const m=movimientos.find(x=>String(x.id)===String(id));if(!m)return;movimientoEnEdicion=m;document.getElementById('app').value=m.app;document.getElementById(m.tipo==='VENDEDOR'?'tipo-vendedor':'tipo-cliente').checked=true;document.getElementById('nombre').value=m.nombre;document.getElementById('precio').value=m.precio;document.getElementById('creditos').value=m.creditos??'';actualizarTipo();document.getElementById('form-title').textContent='Editar movimiento';document.getElementById('btn-guardar').textContent='Guardar cambios';document.getElementById('btn-cancelar').classList.remove('hidden');document.querySelector('.form-section').scrollIntoView({behavior:'smooth',block:'start'})}
@@ -302,7 +451,16 @@
     function movimientosFiltrados(){const {desde,hasta}=limitesPeriodo();const app=document.getElementById('filtro-app').value;const tipo=document.getElementById('filtro-tipo').value;const q=document.getElementById('buscar').value.trim().toLowerCase();return movimientos.filter(m=>{const f=fechaRegistroLocal(m);if(desde&&f<desde)return false;if(hasta&&f>hasta)return false;if(app!=='TODAS'&&m.app!==app)return false;if(tipo!=='TODOS'&&m.tipo!==tipo)return false;if(q&&!String(m.nombre||'').toLowerCase().includes(q))return false;return true})}
     function renderTodo(){const lista=movimientosFiltrados();renderStats(lista);renderTabla(lista)}
     function renderStats(lista){const ingresos=lista.reduce((a,m)=>a+Number(m.precio||0),0);const clientes=lista.filter(m=>m.tipo==='CLIENTE').length;const vendedores=lista.filter(m=>m.tipo==='VENDEDOR').length;const creditos=lista.filter(m=>m.tipo==='VENDEDOR').reduce((a,m)=>a+Number(m.creditos||0),0);document.getElementById('stat-ingresos').textContent=formatearDinero(ingresos);document.getElementById('stat-clientes').textContent=formatearNumero(clientes);document.getElementById('stat-vendedores').textContent=formatearNumero(vendedores);document.getElementById('stat-creditos').textContent=formatearNumero(creditos)}
-    function renderTabla(lista){const tbody=document.getElementById('tabla-movimientos');const empty=document.getElementById('empty-state');tbody.innerHTML='';empty.classList.toggle('hidden',lista.length>0);if(!lista.length)return;tbody.innerHTML=lista.map(m=>`<tr><td data-label="Fecha y hora" class="mono">${escaparHtml(formatearFechaHora(m.fecha))}</td><td data-label="Aplicación"><span class="app-chip">${escaparHtml(m.app)}</span></td><td data-label="Tipo"><span class="type-chip ${m.tipo==='CLIENTE'?'cliente':'vendedor'}">${escaparHtml(m.tipo)}</span></td><td data-label="Nombre"><span class="name-main">${escaparHtml(m.nombre)}</span></td><td data-label="Créditos"><span class="credits">${m.tipo==='VENDEDOR'?escaparHtml(formatearNumero(m.creditos)):'—'}</span></td><td data-label="Precio"><span class="money">${escaparHtml(formatearDinero(m.precio))}</span></td><td data-label="Acciones"><div class="action-group"><button class="btn-small" onclick="editarMovimiento('${m.id}')">Editar</button><button class="btn-small danger" onclick="eliminarMovimiento('${m.id}')">Eliminar</button></div></td></tr>`).join('')}
+    function renderTabla(lista){
+        const tbody=document.getElementById('tabla-movimientos');
+        const mobile=document.getElementById('mobile-history');
+        const empty=document.getElementById('empty-state');
+        tbody.innerHTML='';mobile.innerHTML='';
+        empty.classList.toggle('hidden',lista.length>0);
+        if(!lista.length)return;
+        tbody.innerHTML=lista.map(m=>`<tr><td data-label="Fecha y hora" class="mono">${escaparHtml(formatearFechaHora(m.fecha))}</td><td data-label="Aplicación"><span class="app-chip">${escaparHtml(m.app)}</span></td><td data-label="Tipo"><span class="type-chip ${m.tipo==='CLIENTE'?'cliente':'vendedor'}">${escaparHtml(m.tipo)}</span></td><td data-label="Nombre"><span class="name-main">${escaparHtml(m.nombre)}</span></td><td data-label="Créditos"><span class="credits">${m.tipo==='VENDEDOR'?escaparHtml(formatearNumero(m.creditos)):'—'}</span></td><td data-label="Precio"><span class="money">${escaparHtml(formatearDinero(m.precio))}</span></td><td data-label="Acciones"><div class="action-group"><button class="btn-small" onclick="editarMovimiento('${m.id}')">Editar</button><button class="btn-small danger" onclick="eliminarMovimiento('${m.id}')">Eliminar</button></div></td></tr>`).join('');
+        mobile.innerHTML=lista.map(m=>`<article class="mobile-movement"><div class="mobile-movement-top"><div class="mobile-name">${escaparHtml(m.nombre)}</div><div class="mobile-price">${escaparHtml(formatearDinero(m.precio))}</div></div><div class="mobile-chips"><span class="app-chip">${escaparHtml(m.app)}</span><span class="type-chip ${m.tipo==='CLIENTE'?'cliente':'vendedor'}">${escaparHtml(m.tipo)}</span></div><div class="mobile-details"><div class="mobile-detail"><span>Fecha</span><strong>${escaparHtml(formatearFechaHora(m.fecha))}</strong></div><div class="mobile-detail"><span>Créditos</span><strong>${m.tipo==='VENDEDOR'?escaparHtml(formatearNumero(m.creditos)):'No aplica'}</strong></div></div><div class="mobile-actions"><button class="btn-small" onclick="editarMovimiento('${m.id}')">Editar</button><button class="btn-small danger" onclick="eliminarMovimiento('${m.id}')">Eliminar</button></div></article>`).join('');
+    }
 
     function descargarExcel(){const lista=movimientosFiltrados();if(!lista.length){mostrarToast('No hay datos para exportar.',true);return}const rows=lista.map(m=>({'Fecha y hora':formatearFechaHora(m.fecha),'Aplicación':m.app,'Tipo':m.tipo,'Nombre':m.nombre,'Créditos':m.tipo==='VENDEDOR'?Number(m.creditos||0):'','Precio':Number(m.precio||0)}));const ws=XLSX.utils.json_to_sheet(rows);ws['!cols']=[{wch:20},{wch:18},{wch:12},{wch:28},{wch:14},{wch:16}];const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Movimientos');XLSX.writeFile(wb,`Control_ingresos_${periodoActual}_${fechaLocalISO()}.xlsx`)}
 
