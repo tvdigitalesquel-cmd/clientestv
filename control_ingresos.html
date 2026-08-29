@@ -1,470 +1,261 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="theme-color" content="#0a0d14">
-    <title>Control Privado de Ingresos</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <style>
-        :root{
-            --bg-primary:#0a0d14;--bg-secondary:#0f1520;--bg-card:#131b28;--bg-card-hover:#1a2235;
-            --bg-surface:#1c2740;--border:rgba(255,255,255,.07);--border-hover:rgba(255,255,255,.14);
-            --accent:#3b7ff5;--accent-dim:rgba(59,127,245,.12);--accent-glow:rgba(59,127,245,.25);
-            --green:#22c55e;--green-dim:rgba(34,197,94,.12);--red:#ef4444;--red-dim:rgba(239,68,68,.12);
-            --yellow:#f59e0b;--yellow-dim:rgba(245,158,11,.12);--purple:#a855f7;--purple-dim:rgba(168,85,247,.12);
-            --cyan:#06b6d4;--cyan-dim:rgba(6,182,212,.12);
-            --text-primary:#e8edf5;--text-secondary:#7a8a9e;--text-muted:#4a5568;
-            --radius-sm:8px;--radius-md:12px;--radius-lg:16px;--radius-xl:20px;
-        }
-        html.light-mode{
-            --bg-primary:#cfd3d8;--bg-secondary:#20242a;--bg-card:#e2e4e7;--bg-card-hover:#d9dde2;
-            --bg-surface:#c5c9cf;--border:rgba(20,28,38,.13);--border-hover:rgba(59,127,245,.30);
-            --accent-dim:rgba(59,127,245,.10);--text-primary:#1a2230;--text-secondary:#4f5b69;--text-muted:#747f8d;
-        }
-        *{box-sizing:border-box;margin:0;padding:0}
-        html{color-scheme:dark}
-        html.light-mode{color-scheme:light}
-        body{font-family:'DM Sans',sans-serif;background:var(--bg-primary);color:var(--text-primary);min-height:100vh}
-        button,input,select{font:inherit}
-        button{touch-action:manipulation}
-        .hidden{display:none!important}
-        @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-        @keyframes spin{to{transform:rotate(360deg)}}
-        ::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border-hover);border-radius:10px}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0a0d14">
+<title>Control Privado de Ingresos</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+ --bg:#0a0d14;--nav:#0f1520;--card:#131b28;--surface:#1c2740;--surface2:#202c43;
+ --border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.15);--text:#e8edf5;--muted:#8492a6;--muted2:#536176;
+ --blue:#3b82f6;--blueSoft:rgba(59,130,246,.13);--green:#22c55e;--greenSoft:rgba(34,197,94,.13);
+ --red:#ef4444;--redSoft:rgba(239,68,68,.13);--yellow:#f59e0b;--yellowSoft:rgba(245,158,11,.13);
+ --purple:#a855f7;--purpleSoft:rgba(168,85,247,.13);--cyan:#06b6d4;--cyanSoft:rgba(6,182,212,.13);
+ --r:16px;--r2:22px;
+}
+html.light-mode{
+ --bg:#cfd3d8;--nav:#24282e;--card:#e0e3e6;--surface:#c4c9cf;--surface2:#d3d7db;
+ --border:rgba(20,28,38,.13);--border2:rgba(20,28,38,.22);--text:#18212e;--muted:#4e5a69;--muted2:#737d8b;
+ --blueSoft:rgba(59,130,246,.11);--greenSoft:rgba(34,197,94,.11);--redSoft:rgba(239,68,68,.11);--yellowSoft:rgba(245,158,11,.12);--purpleSoft:rgba(168,85,247,.10);--cyanSoft:rgba(6,182,212,.10)
+}
+*{box-sizing:border-box;margin:0;padding:0}html{color-scheme:dark}html.light-mode{color-scheme:light}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:84px}
+button,input,select{font:inherit}button{touch-action:manipulation}.hidden{display:none!important}
+input,select{font-size:16px}
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:10px}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}@keyframes spin{to{transform:rotate(360deg)}}
 
-        /* Login */
-        .login-screen{min-height:100vh;display:grid;place-items:center;padding:20px;background:var(--bg-primary)}
-        .login-card{width:min(440px,100%);background:var(--bg-card);border:1px solid var(--border);border-radius:26px;padding:30px;box-shadow:0 30px 90px rgba(0,0,0,.34);animation:fadeUp .3s ease}
-        .login-badge{width:58px;height:58px;border-radius:18px;background:var(--accent-dim);color:var(--accent);display:grid;place-items:center;font-size:27px;margin-bottom:20px;border:1px solid rgba(59,127,245,.2)}
-        .login-card h1{font-size:27px;letter-spacing:-.03em}.login-card>p{color:var(--text-secondary);font-size:13px;line-height:1.6;margin:7px 0 24px}
-        .field{margin-bottom:14px}.input-label{display:block;font-size:11px;font-weight:700;color:var(--text-secondary);margin-bottom:6px;letter-spacing:.02em}
-        .input-modern{width:100%;height:42px;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);padding:0 13px;border-radius:var(--radius-md);font-size:13px;outline:none;transition:.2s}
-        .input-modern:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-dim)}
-        .input-modern::placeholder{color:var(--text-muted)}
-        .login-card .input-modern{height:50px;font-size:15px}
-        .btn-login{width:100%;height:50px;border:0;border-radius:var(--radius-md);background:var(--accent);color:#fff;font-weight:700;cursor:pointer;margin-top:5px;box-shadow:0 10px 26px var(--accent-glow)}
-        .btn-login:disabled{opacity:.65;cursor:wait}.login-error{margin-top:14px;padding:11px 13px;border-radius:10px;background:var(--red-dim);color:#fca5a5;border:1px solid rgba(239,68,68,.25);font-size:12px;line-height:1.45}
-        .login-foot{margin-top:17px;color:var(--text-muted);font-size:11px;text-align:center}
+/* Login */
+.login-screen{min-height:100vh;display:grid;place-items:center;padding:18px}.login-card{width:min(430px,100%);background:var(--card);border:1px solid var(--border);border-radius:28px;padding:28px 22px;animation:fade .25s ease}.login-logo{width:58px;height:58px;border-radius:18px;display:grid;place-items:center;background:var(--blueSoft);color:var(--blue);font-size:28px;margin-bottom:18px}.login-card h1{font-size:27px;letter-spacing:-.04em}.login-card p{font-size:13px;color:var(--muted);line-height:1.55;margin:8px 0 22px}.login-error{margin-top:12px;padding:11px;border-radius:12px;background:var(--redSoft);color:#fca5a5;font-size:12px;border:1px solid rgba(239,68,68,.25)}
 
-        /* App */
-        nav{background:var(--bg-secondary);border-bottom:1px solid rgba(255,255,255,.05);position:sticky;top:0;z-index:50;box-shadow:0 4px 20px rgba(0,0,0,.08)}
-        .nav-inner{max-width:1280px;margin:0 auto;padding:0 24px;height:62px;display:flex;align-items:center;justify-content:space-between;gap:18px}
-        .brand{display:flex;align-items:center;gap:10px;min-width:0}.brand-icon{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:rgba(59,127,245,.14);color:#6eaaff;font-size:18px}.brand-text strong{display:block;color:#fff;font-size:14px}.brand-text span{display:block;color:rgba(255,255,255,.42);font-size:10px;margin-top:1px}
-        .nav-right{display:flex;align-items:center;gap:10px}.user-email{font-size:11px;color:rgba(255,255,255,.42);font-family:'DM Mono',monospace;max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-        .theme-toggle{cursor:pointer;width:44px;height:26px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.11);border-radius:13px;display:flex;align-items:center;padding:2px;position:relative;color:#fff}
-        .theme-toggle span{width:20px;height:20px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:12px;position:absolute;transition:.25s}.theme-toggle .dark-icon{left:2px}.theme-toggle .light-icon{right:2px}.theme-toggle.active .dark-icon{opacity:.25}.theme-toggle.active .light-icon{opacity:1}.theme-toggle:not(.active) .dark-icon{opacity:1}.theme-toggle:not(.active) .light-icon{opacity:.25}
-        .btn-logout{font-size:12px;font-weight:700;color:#f87171;background:transparent;border:1px solid rgba(239,68,68,.28);padding:7px 13px;border-radius:var(--radius-sm);cursor:pointer}.btn-logout:hover{background:rgba(239,68,68,.12)}
-        .container{max-width:1280px;margin:0 auto;padding:30px 24px 80px}
-        .page-header{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;margin-bottom:24px}.page-header h1{font-size:27px;letter-spacing:-.03em}.page-header p{font-size:13px;color:var(--text-secondary);margin-top:5px;line-height:1.5}.private-badge{font-size:10px;font-weight:800;color:var(--purple);background:var(--purple-dim);border:1px solid rgba(168,85,247,.22);padding:7px 10px;border-radius:999px;white-space:nowrap}
-        .card-surface{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg)}
-        .section-title{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.11em;color:var(--text-muted);margin-bottom:13px}
+/* Header */
+.topbar{position:sticky;top:0;z-index:50;background:var(--nav);border-bottom:1px solid rgba(255,255,255,.06)}.topbar-inner{height:60px;max-width:1180px;margin:auto;padding:0 14px;display:flex;align-items:center;justify-content:space-between;gap:10px}.brand{display:flex;align-items:center;gap:10px;min-width:0}.brand-icon{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:rgba(59,130,246,.16);font-size:19px}.brand strong{display:block;color:#fff;font-size:14px}.brand span{display:block;color:rgba(255,255,255,.42);font-size:10px}.top-actions{display:flex;gap:7px;align-items:center}.icon-btn,.logout-btn{height:40px;border-radius:12px;border:1px solid rgba(255,255,255,.11);background:rgba(255,255,255,.06);color:#fff;cursor:pointer}.icon-btn{width:42px}.logout-btn{padding:0 12px;color:#fca5a5}
 
-        /* Form */
-        .form-section{padding:21px 22px;margin-bottom:18px}.form-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr auto;gap:12px;align-items:end}
-        .type-wrap{grid-column:span 1}.type-selector{display:grid;grid-template-columns:1fr 1fr;gap:7px;height:42px}.type-option{position:relative}.type-option input{position:absolute;opacity:0;pointer-events:none}.type-option label{height:42px;border-radius:var(--radius-md);background:var(--bg-surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;gap:7px;font-size:12px;font-weight:700;color:var(--text-secondary);cursor:pointer;transition:.2s;user-select:none}.type-option input:checked+label{background:var(--accent-dim);border-color:var(--accent);color:var(--accent);box-shadow:inset 0 0 0 1px rgba(59,127,245,.12)}
-        .check-dot{width:14px;height:14px;border-radius:4px;border:1.5px solid currentColor;display:grid;place-items:center;font-size:9px}.type-option input:checked+label .check-dot:after{content:'✓'}
-        .auto-date{font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:6px;margin-top:8px}.auto-date strong{color:var(--text-secondary)}
-        .btn-primary,.btn-secondary,.btn-green,.btn-small{border:0;cursor:pointer;font-weight:700;transition:.2s;border-radius:var(--radius-md)}
-        .btn-primary{height:42px;padding:0 18px;background:var(--accent);color:#fff;white-space:nowrap}.btn-primary:hover{background:#2d6fd4;transform:translateY(-1px);box-shadow:0 6px 20px var(--accent-glow)}
-        .btn-secondary{height:42px;padding:0 16px;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-secondary)}.btn-secondary:hover{border-color:var(--border-hover);color:var(--text-primary)}
-        .form-actions{display:flex;gap:7px}.credit-field.hidden-by-type{display:none}
-        .autocomplete-wrap{position:relative}.client-suggestions{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:80;background:var(--bg-card);border:1px solid var(--border-hover);border-radius:var(--radius-md);box-shadow:0 18px 45px rgba(0,0,0,.25);max-height:260px;overflow:auto;padding:5px}.client-suggestion{width:100%;border:0;background:transparent;color:var(--text-primary);display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 11px;border-radius:9px;cursor:pointer;text-align:left}.client-suggestion:hover,.client-suggestion.active{background:var(--accent-dim)}.client-suggestion strong{font-size:12px}.client-suggestion span{font-size:10px;color:var(--text-muted);white-space:nowrap}.client-helper{font-size:10px;color:var(--text-muted);margin-top:5px;line-height:1.4}.client-helper strong{color:var(--accent)}
+.main{max-width:1180px;margin:auto;padding:14px 12px 28px}.view{display:none;animation:fade .2s ease}.view.active{display:block}.view-title{margin:4px 2px 14px}.view-title h1{font-size:22px;letter-spacing:-.035em}.view-title p{color:var(--muted);font-size:12px;margin-top:4px;line-height:1.45}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r2)}.section-label{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted2);font-weight:800;margin-bottom:12px}
+.input-label{display:block;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:7px}.input{width:100%;height:52px;border-radius:14px;border:1px solid var(--border);background:var(--surface);color:var(--text);padding:0 14px;outline:none}.input:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blueSoft)}.input::placeholder{color:var(--muted2)}
+.btn{min-height:48px;border:0;border-radius:14px;padding:0 16px;font-weight:800;cursor:pointer;transition:.18s}.btn-primary{background:var(--blue);color:#fff}.btn-secondary{background:var(--surface);color:var(--text);border:1px solid var(--border)}.btn-green{background:var(--greenSoft);color:var(--green);border:1px solid rgba(34,197,94,.24)}.btn-danger{background:var(--redSoft);color:var(--red);border:1px solid rgba(239,68,68,.22)}.btn:disabled{opacity:.55;cursor:wait}
 
-        /* Period */
-        .periodo-section{padding:18px 22px;margin-bottom:18px}.periodo-btn-container{display:flex;flex-wrap:wrap;gap:7px}.periodo-btn{padding:8px 16px;border-radius:999px;border:1px solid var(--border);background:var(--bg-surface);color:var(--text-secondary);font-size:11px;font-weight:700;cursor:pointer}.periodo-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}.periodo-btn:hover:not(.active){border-color:var(--border-hover);color:var(--text-primary)}
-        #rango-personalizado{margin-top:15px;padding:14px;background:var(--bg-surface);border-radius:var(--radius-md);border:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end}
+/* Bottom tabs */
+.bottom-nav{position:fixed;left:0;right:0;bottom:0;z-index:60;background:rgba(15,21,32,.97);border-top:1px solid rgba(255,255,255,.08);padding:7px max(6px,env(safe-area-inset-right)) calc(7px + env(safe-area-inset-bottom)) max(6px,env(safe-area-inset-left));display:grid;grid-template-columns:repeat(5,1fr);gap:3px}.nav-tab{border:0;background:transparent;color:#77849a;border-radius:12px;min-height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:9px;font-weight:700;cursor:pointer}.nav-tab .ico{font-size:19px;line-height:1}.nav-tab.active{background:rgba(59,130,246,.14);color:#76a7ff}
 
-        /* Stats */
-        .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}.stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:19px 20px;position:relative;overflow:hidden;animation:fadeUp .3s ease}.stat-card:before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px}.stat-green:before{background:var(--green)}.stat-blue:before{background:var(--accent)}.stat-purple:before{background:var(--purple)}.stat-cyan:before{background:var(--cyan)}
-        .stat-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:8px}.stat-value{font-size:26px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}.stat-green .stat-value{color:var(--green)}.stat-blue .stat-value{color:var(--accent)}.stat-purple .stat-value{color:var(--purple)}.stat-cyan .stat-value{color:var(--cyan)}
+/* Register */
+.register-card{padding:14px}.form-grid{display:grid;grid-template-columns:1fr;gap:12px}.type-selector{display:grid;grid-template-columns:1fr 1fr;gap:8px}.type-option{position:relative}.type-option input{position:absolute;opacity:0}.type-option label{min-height:52px;border-radius:14px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;gap:7px;font-weight:800;color:var(--muted);cursor:pointer}.type-option input:checked+label{color:var(--blue);border-color:var(--blue);background:var(--blueSoft)}.dot{width:17px;height:17px;border-radius:5px;border:1.5px solid currentColor;display:grid;place-items:center;font-size:10px}.type-option input:checked+label .dot:after{content:'✓'}
+.autocomplete{position:relative}.suggestions{position:absolute;top:calc(100% + 5px);left:0;right:0;z-index:80;background:var(--card);border:1px solid var(--border2);border-radius:16px;padding:6px;max-height:310px;overflow:auto;box-shadow:0 20px 55px rgba(0,0,0,.38)}.suggestion{width:100%;min-height:58px;border:0;border-radius:12px;background:transparent;color:var(--text);display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 10px;text-align:left;cursor:pointer}.suggestion:hover{background:var(--blueSoft)}.suggestion-main{min-width:0}.suggestion-main strong{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.suggestion-main span{display:block;font-size:10px;color:var(--muted);margin-top:3px}.suggestion-meta{font-size:9px;font-weight:800;color:var(--purple);background:var(--purpleSoft);padding:5px 7px;border-radius:999px;white-space:nowrap}.helper{font-size:10px;color:var(--muted2);margin-top:6px;line-height:1.4}.form-actions{display:grid;grid-template-columns:1fr;gap:8px}.auto-date{text-align:center;font-size:10px;color:var(--muted2);margin-top:10px}
 
-        /* Table */
-        .table-section{padding:18px 0 0;overflow:hidden}.table-head{padding:0 20px}.toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}.toolbar-left{display:flex;gap:8px;flex:1;min-width:0}.toolbar .input-modern{max-width:220px}.toolbar .search-input{max-width:300px}.btn-green{height:40px;padding:0 14px;background:var(--green-dim);border:1px solid rgba(34,197,94,.28);color:var(--green);white-space:nowrap}.btn-green:hover{background:rgba(34,197,94,.18)}
-        .table-wrap{overflow:auto}.tabla{width:100%;border-collapse:collapse;min-width:900px}.tabla th{text-align:left;padding:11px 14px;font-size:9px;text-transform:uppercase;letter-spacing:.09em;color:var(--text-muted);background:var(--bg-surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}.tabla td{padding:12px 14px;font-size:12px;border-bottom:1px solid var(--border);vertical-align:middle}.tabla tbody tr:hover td{background:color-mix(in srgb,var(--bg-surface) 60%,transparent)}
-        .mono{font-family:'DM Mono',monospace}.app-chip,.type-chip{display:inline-flex;align-items:center;padding:4px 8px;border-radius:7px;font-size:10px;font-weight:800}.app-chip{background:var(--accent-dim);color:var(--accent)}.type-chip.cliente{background:var(--green-dim);color:var(--green)}.type-chip.vendedor{background:var(--purple-dim);color:var(--purple)}.money{color:var(--green);font-weight:800}.credits{color:var(--purple);font-weight:800}.name-main{font-weight:700}.empty-state{text-align:center;padding:52px 20px;color:var(--text-muted)}.empty-state .icon{font-size:34px;margin-bottom:8px}.empty-state p{font-size:13px}.empty-state .sub{font-size:11px;margin-top:4px}
-        .action-group{display:flex;gap:6px}.btn-small{padding:6px 9px;font-size:10px;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-secondary)}.btn-small:hover{border-color:var(--border-hover);color:var(--text-primary)}.btn-small.danger{color:var(--red)}.btn-small.danger:hover{background:var(--red-dim);border-color:rgba(239,68,68,.28)}
-        .loading-state{padding:45px;text-align:center;color:var(--text-muted);font-size:12px}.spinner{display:inline-block;width:18px;height:18px;border-radius:50%;border:2px solid var(--border-hover);border-top-color:var(--accent);animation:spin .7s linear infinite;margin-right:8px;vertical-align:middle}
-        .toast{position:fixed;right:18px;bottom:18px;z-index:100;padding:11px 14px;border-radius:11px;background:#151a22;color:#fff;border:1px solid rgba(255,255,255,.1);box-shadow:0 15px 45px rgba(0,0,0,.25);font-size:12px;font-weight:700;animation:fadeUp .2s ease}.toast.error{background:#2a1215;color:#fecaca;border-color:rgba(239,68,68,.3)}
+/* Status and renewal */
+.renewal-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:12px}.summary-card{border-radius:18px;background:var(--card);border:1px solid var(--border);padding:13px}.summary-card span{display:block;font-size:9px;text-transform:uppercase;letter-spacing:.07em;font-weight:800;color:var(--muted2);margin-bottom:6px}.summary-card strong{font-size:22px}.summary-card.red strong{color:var(--red)}.summary-card.yellow strong{color:var(--yellow)}.summary-card.blue strong{color:var(--blue)}.summary-card.green strong{color:var(--green)}
+.toolbar-card{padding:12px;margin-bottom:12px}.toolbar-grid{display:grid;grid-template-columns:1fr;gap:8px}.chip-row{display:flex;gap:6px;overflow:auto;padding-bottom:1px}.filter-chip{border:1px solid var(--border);background:var(--surface);color:var(--muted);min-height:38px;padding:0 12px;border-radius:999px;white-space:nowrap;font-size:11px;font-weight:800;cursor:pointer}.filter-chip.active{background:var(--blueSoft);border-color:var(--blue);color:var(--blue)}
+.list{display:grid;gap:9px}.entity-card{background:var(--card);border:1px solid var(--border);border-radius:19px;padding:13px}.entity-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}.entity-name{font-size:16px;font-weight:800;line-height:1.2;overflow-wrap:anywhere}.entity-sub{font-size:10px;color:var(--muted);margin-top:4px}.status{display:inline-flex;align-items:center;padding:5px 8px;border-radius:999px;font-size:9px;font-weight:800;white-space:nowrap}.status.vencido{color:var(--red);background:var(--redSoft)}.status.hoy{color:var(--yellow);background:var(--yellowSoft)}.status.proximo{color:var(--blue);background:var(--blueSoft)}.status.aldia{color:var(--green);background:var(--greenSoft)}
+.entity-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:11px;padding-top:10px;border-top:1px solid var(--border)}.metric{background:var(--surface);border-radius:12px;padding:9px;min-width:0}.metric span{display:block;font-size:8px;color:var(--muted2);text-transform:uppercase;font-weight:800;letter-spacing:.06em;margin-bottom:3px}.metric strong{font-size:11px;display:block;overflow-wrap:anywhere}.entity-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}.entity-actions .btn{min-height:42px;font-size:11px;padding:0 9px}.apps-list{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}.app-chip,.type-chip{display:inline-flex;padding:5px 7px;border-radius:8px;font-size:9px;font-weight:800}.app-chip{background:var(--blueSoft);color:var(--blue)}.type-chip.client{background:var(--greenSoft);color:var(--green)}.type-chip.seller{background:var(--purpleSoft);color:var(--purple)}
 
-        @media(max-width:1050px){
-            .form-grid{grid-template-columns:repeat(2,1fr)}.form-actions{grid-column:1/-1}.form-actions .btn-primary,.form-actions .btn-secondary{flex:1}
-            .stats-grid{grid-template-columns:repeat(2,1fr)}
-        }
-        @media(max-width:760px){
-            .nav-inner{padding:0 13px;height:58px}.brand-text span,.user-email{display:none}.container{padding:20px 13px 70px}.page-header{flex-direction:column;gap:10px;margin-bottom:18px}.page-header h1{font-size:23px}.private-badge{align-self:flex-start}
-            .form-section,.periodo-section{padding:16px}.form-grid{grid-template-columns:1fr}.form-actions{grid-column:auto;flex-direction:column}.form-actions button{width:100%}.input-modern{height:46px}.type-selector,.type-option label{height:46px}
-            #rango-personalizado{grid-template-columns:1fr}.stats-grid{grid-template-columns:1fr 1fr;gap:9px}.stat-card{padding:16px}.stat-value{font-size:22px}
-            .toolbar{align-items:stretch;flex-direction:column}.toolbar-left{display:grid;grid-template-columns:1fr 1fr}.toolbar .input-modern,.toolbar .search-input{max-width:none}.btn-green{width:100%}
-            .table-head{padding:0 14px}.table-wrap{overflow:visible}.tabla{min-width:0;display:block;padding:0 12px 12px}.tabla thead{display:none}.tabla tbody{display:grid;gap:10px}.tabla tr{display:block;background:var(--bg-surface);border:1px solid var(--border);border-radius:14px;padding:9px 12px}.tabla td{display:flex;align-items:center;justify-content:space-between;gap:16px;border:0;padding:7px 0;text-align:right}.tabla td:before{content:attr(data-label);font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted);text-align:left}.tabla td:last-child{border-top:1px solid var(--border);margin-top:5px;padding-top:10px}.action-group{justify-content:flex-end}.table-section{padding-top:15px}
-        }
-        @media(max-width:480px){
-            .login-card{padding:24px 18px;border-radius:21px}.nav-right{gap:6px}.btn-logout{padding:7px 9px}
-        }
+/* History */
+.period-card{padding:12px;margin-bottom:12px}.period-row{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.period-btn{min-height:40px;border:1px solid var(--border);border-radius:11px;background:var(--surface);color:var(--muted);font-size:10px;font-weight:800;cursor:pointer}.period-btn.active{background:var(--blue);border-color:var(--blue);color:#fff}.custom-range{display:grid;grid-template-columns:1fr;gap:8px;margin-top:9px;padding:10px;border-radius:14px;background:var(--surface)}.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px}.stat{background:var(--card);border:1px solid var(--border);border-radius:17px;padding:12px;min-height:84px}.stat span{display:block;color:var(--muted2);font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px}.stat strong{font-size:19px;overflow-wrap:anywhere}.stat.money strong{color:var(--green)}.history-card{padding:12px}.history-toolbar{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:11px}.history-toolbar .wide{grid-column:1/-1}.history-list{display:grid;gap:8px}.movement{background:var(--surface);border:1px solid var(--border);border-radius:17px;padding:12px}.movement-top{display:flex;justify-content:space-between;gap:10px}.movement-name{font-size:15px;font-weight:800}.movement-price{font-size:16px;font-weight:800;color:var(--green);white-space:nowrap}.movement-meta{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}.movement-details{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:9px;padding-top:9px;border-top:1px solid var(--border)}.movement-details span{display:block;font-size:8px;color:var(--muted2);text-transform:uppercase;font-weight:800}.movement-details strong{display:block;font-size:10px;margin-top:3px}.movement-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:9px}.movement-actions .btn{min-height:40px;font-size:11px}
+.empty{padding:34px 14px;text-align:center;color:var(--muted2)}.empty .emoji{font-size:30px;margin-bottom:7px}.empty p{font-size:12px}.loading{padding:28px;text-align:center;color:var(--muted)}.spinner{display:inline-block;width:17px;height:17px;border:2px solid var(--border2);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite;margin-right:7px;vertical-align:middle}
 
-        /* ─── MOBILE APP EXPERIENCE ─── */
-        .mobile-history{display:none}
-        .suggestion-empty{padding:13px 12px;color:var(--text-muted);font-size:12px;text-align:center}
-        .client-suggestion-main{min-width:0;display:flex;flex-direction:column;gap:3px}
-        .client-suggestion strong{font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-        .client-suggestion-meta{display:flex;align-items:center;gap:7px;flex-shrink:0}
-        .client-count{display:inline-flex;align-items:center;padding:4px 7px;border-radius:999px;background:var(--purple-dim);color:var(--purple);font-size:9px;font-weight:800;white-space:nowrap}
+/* Modal profile */
+.modal{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.62);display:flex;align-items:flex-end;justify-content:center;padding:0}.modal-panel{width:100%;max-width:650px;max-height:88vh;overflow:auto;background:var(--card);border:1px solid var(--border2);border-radius:24px 24px 0 0;padding:15px 13px calc(18px + env(safe-area-inset-bottom));animation:fade .2s ease}.modal-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:12px}.modal-head h2{font-size:20px}.modal-head p{font-size:11px;color:var(--muted);margin-top:3px}.close-btn{width:42px;height:42px;border-radius:13px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:18px}.profile-history{display:grid;gap:7px;margin-top:12px}.profile-row{display:flex;justify-content:space-between;gap:12px;background:var(--surface);border-radius:13px;padding:10px}.profile-row div:first-child{min-width:0}.profile-row strong{display:block;font-size:12px}.profile-row span{font-size:9px;color:var(--muted)}.profile-row .amount{color:var(--green);font-size:12px;white-space:nowrap}
+.toast{position:fixed;left:10px;right:10px;bottom:88px;z-index:130;background:#151a22;color:#fff;border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:12px;text-align:center;font-size:12px;font-weight:800;box-shadow:0 18px 50px rgba(0,0,0,.3)}.toast.error{background:#2b1518;color:#fecaca;border-color:rgba(239,68,68,.3)}
 
-        @media(max-width:760px){
-            body{background:var(--bg-primary);padding-bottom:18px}
-            nav{border-bottom:1px solid var(--border);box-shadow:none}
-            .nav-inner{height:56px;padding:0 12px}
-            .brand-icon{width:36px;height:36px;border-radius:12px}.brand-text strong{font-size:13px}
-            .theme-toggle{width:42px;height:28px}.btn-logout{min-height:40px;padding:0 11px}
-            .container{padding:12px 10px 34px}
-            .page-header{margin:4px 2px 12px;display:flex;flex-direction:row;align-items:center;gap:8px}
-            .page-header h1{font-size:20px;line-height:1.1}.page-header p{display:none}.private-badge{margin-left:auto;font-size:9px;padding:6px 8px}
-            .card-surface{border-radius:20px}
-            .form-section{padding:14px 12px 13px;margin-bottom:12px;box-shadow:0 10px 30px rgba(0,0,0,.10)}
-            .section-title{font-size:10px;margin-bottom:11px}
-            .form-grid{grid-template-columns:1fr;gap:12px}
-            .input-label{font-size:12px;margin-bottom:7px}
-            .input-modern{height:52px;border-radius:14px;font-size:16px;padding:0 14px}
-            select.input-modern{padding-right:36px}
-            .type-selector,.type-option label{height:52px}.type-option label{border-radius:14px;font-size:14px}
-            .check-dot{width:17px;height:17px;border-radius:5px}
-            .form-actions{display:grid;grid-template-columns:1fr;gap:8px;margin-top:2px}
-            .form-actions .btn-primary,.form-actions .btn-secondary{height:52px;border-radius:14px;font-size:15px;width:100%}
-            .auto-date{justify-content:center;margin-top:10px;font-size:10px}
-            .client-helper{font-size:11px;margin-top:7px}
-            .client-suggestions{top:calc(100% + 5px);border-radius:16px;padding:6px;max-height:300px;box-shadow:0 18px 55px rgba(0,0,0,.42)}
-            .client-suggestion{min-height:55px;padding:10px;border-radius:12px}
-            .client-suggestion span{font-size:10px}
-
-            .periodo-section{padding:12px;margin-bottom:12px}
-            .periodo-btn-container{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
-            .periodo-btn{min-height:42px;padding:6px 4px;border-radius:12px;font-size:11px}
-            #rango-personalizado{grid-template-columns:1fr;gap:9px;padding:10px;border-radius:14px}
-            #rango-personalizado .btn-primary{height:50px;border-radius:13px}
-
-            .stats-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:12px}
-            .stat-card{padding:13px 12px;min-height:86px;border-radius:17px;display:flex;flex-direction:column;justify-content:center}
-            .stat-label{font-size:9px;line-height:1.25;margin-bottom:7px}.stat-value{font-size:20px;line-height:1.05;overflow-wrap:anywhere}
-
-            .table-section{padding:12px 0 0;border-radius:20px}
-            .table-head{padding:0 12px}.toolbar{gap:8px;margin-bottom:12px}
-            .toolbar-left{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-            .toolbar-left .search-input{grid-column:1/-1}
-            .toolbar .input-modern{height:48px;font-size:14px;border-radius:13px}
-            .btn-green{width:100%;height:48px;border-radius:13px;font-size:13px}
-            .tabla{display:none!important}
-            .mobile-history{display:grid;gap:9px;padding:0 10px 10px}
-            .mobile-movement{background:var(--bg-surface);border:1px solid var(--border);border-radius:17px;padding:12px}
-            .mobile-movement-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:9px}
-            .mobile-name{font-size:15px;font-weight:800;line-height:1.2;overflow-wrap:anywhere}.mobile-price{font-size:16px;font-weight:800;color:var(--green);white-space:nowrap}
-            .mobile-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
-            .mobile-details{display:grid;grid-template-columns:1fr 1fr;gap:7px;padding:9px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-bottom:9px}
-            .mobile-detail span{display:block;color:var(--text-muted);font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}.mobile-detail strong{font-size:11px;font-weight:700;color:var(--text-secondary)}
-            .mobile-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px}.mobile-actions .btn-small{min-height:42px;font-size:12px;border-radius:11px}
-            .empty-state{padding:36px 16px}
-            .loading-state{padding:30px 12px}
-            .toast{left:10px;right:10px;bottom:10px;text-align:center;border-radius:14px;font-size:12px}
-        }
-
-        @media(max-width:360px){
-            .stats-grid{grid-template-columns:1fr 1fr}.stat-value{font-size:18px}
-            .periodo-btn-container{grid-template-columns:repeat(2,minmax(0,1fr))}
-            .page-header h1{font-size:18px}.private-badge{display:none}
-            .toolbar-left{grid-template-columns:1fr}.toolbar-left .search-input{grid-column:auto}
-        }
-    </style>
+@media(min-width:760px){
+ body{padding-bottom:28px}.bottom-nav{position:sticky;top:60px;bottom:auto;max-width:1180px;margin:0 auto 12px;border:1px solid var(--border);border-radius:0 0 18px 18px;padding:7px;background:var(--nav)}.nav-tab{flex-direction:row;font-size:11px;min-height:44px}.nav-tab .ico{font-size:16px}.main{padding:18px 20px 50px}.view-title h1{font-size:28px}.register-card{padding:20px}.form-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.form-actions{grid-column:1/-1;grid-template-columns:1fr 1fr}.renewal-summary{grid-template-columns:repeat(4,1fr)}.toolbar-grid{grid-template-columns:minmax(260px,1fr) auto}.list{grid-template-columns:repeat(2,minmax(0,1fr))}.entity-grid{grid-template-columns:repeat(4,1fr)}.period-row{grid-template-columns:repeat(6,1fr)}.custom-range{grid-template-columns:1fr 1fr auto}.stats{grid-template-columns:repeat(4,1fr)}.history-toolbar{grid-template-columns:2fr 1fr 1fr auto}.history-toolbar .wide{grid-column:auto}.history-list{grid-template-columns:repeat(2,minmax(0,1fr))}.modal{align-items:center;padding:18px}.modal-panel{border-radius:24px;max-height:85vh;padding:20px}.toast{left:auto;right:18px;bottom:18px;width:auto;max-width:420px}.brand span{display:block}
+}
+@media(min-width:1050px){.form-grid{grid-template-columns:1fr 1fr 1.25fr .8fr .8fr auto}.form-actions{grid-column:auto;display:flex}.list{grid-template-columns:repeat(3,minmax(0,1fr))}.history-list{grid-template-columns:repeat(3,minmax(0,1fr))}}
+</style>
 </head>
 <body>
-    <section id="login-screen" class="login-screen">
-        <div class="login-card">
-            <div class="login-badge">💰</div>
-            <h1>Control privado</h1>
-            <p>Ingresá con tu cuenta de Supabase para acceder a tus movimientos. Cada usuario solo puede ver sus propios datos.</p>
-            <form id="form-login">
-                <div class="field"><label class="input-label">Email</label><input id="login-email" class="input-modern" type="email" autocomplete="username" placeholder="tu@email.com" required></div>
-                <div class="field"><label class="input-label">Contraseña</label><input id="login-password" class="input-modern" type="password" autocomplete="current-password" placeholder="••••••••" required></div>
-                <button id="btn-login" class="btn-login" type="submit">Ingresar</button>
-                <div id="login-error" class="login-error hidden"></div>
-            </form>
-            <div class="login-foot">Página independiente · Datos protegidos con Row Level Security</div>
-        </div>
-    </section>
+<section id="login-screen" class="login-screen">
+ <div class="login-card">
+  <div class="login-logo">💰</div>
+  <h1>Control privado</h1>
+  <p>Ingresá con tu cuenta para registrar movimientos, renovar clientes y controlar vendedores.</p>
+  <form id="login-form">
+   <label class="input-label" for="login-email">Email</label><input id="login-email" class="input" type="email" autocomplete="username" required placeholder="tu@email.com">
+   <div style="height:12px"></div>
+   <label class="input-label" for="login-pass">Contraseña</label><input id="login-pass" class="input" type="password" autocomplete="current-password" required placeholder="••••••••">
+   <button id="login-btn" class="btn btn-primary" type="submit" style="width:100%;margin-top:14px">Ingresar</button>
+   <div id="login-error" class="login-error hidden"></div>
+  </form>
+ </div>
+</section>
 
-    <div id="app-screen" class="hidden">
-        <nav>
-            <div class="nav-inner">
-                <div class="brand"><div class="brand-icon">💰</div><div class="brand-text"><strong>Control de Ingresos</strong><span>Panel privado</span></div></div>
-                <div class="nav-right"><span id="user-email" class="user-email"></span><button onclick="toggleTheme()" class="theme-toggle" title="Cambiar tema"><span class="dark-icon">🌙</span><span class="light-icon">☀️</span></button><button onclick="logout()" class="btn-logout">Salir</button></div>
-            </div>
-        </nav>
+<div id="app-screen" class="hidden">
+ <header class="topbar"><div class="topbar-inner">
+  <div class="brand"><div class="brand-icon">💰</div><div><strong>Control de Ingresos</strong><span id="user-email">Panel privado</span></div></div>
+  <div class="top-actions"><button class="icon-btn" id="theme-btn" type="button" title="Cambiar tema">☀️</button><button class="logout-btn" id="logout-btn" type="button">Salir</button></div>
+ </div></header>
 
-        <main class="container">
-            <div class="page-header"><div><h1>Control de Ingresos</h1><p>Registrá lo cobrado a clientes y vendedores, y controlá los créditos entregados.</p></div><span class="private-badge">🔒 SOLO TU CUENTA</span></div>
+ <nav class="bottom-nav" aria-label="Secciones">
+  <button class="nav-tab active" data-view="registrar" type="button"><span class="ico">＋</span><span>Cargar</span></button>
+  <button class="nav-tab" data-view="renovaciones" type="button"><span class="ico">🔄</span><span>Renovar</span></button>
+  <button class="nav-tab" data-view="clientes" type="button"><span class="ico">👤</span><span>Clientes</span></button>
+  <button class="nav-tab" data-view="vendedores" type="button"><span class="ico">👥</span><span>Vendedores</span></button>
+  <button class="nav-tab" data-view="historial" type="button"><span class="ico">🧾</span><span>Historial</span></button>
+ </nav>
 
-            <section class="card-surface form-section">
-                <div class="section-title" id="form-title">Nuevo movimiento</div>
-                <form id="form-movimiento" class="form-grid">
-                    <div><label class="input-label" for="app">Aplicación</label><select id="app" class="input-modern" required><option value="">Seleccionar app</option><option>TV</option><option>FUTURE</option><option>TV PLUS 2</option><option>FLUJO TV</option><option>MAR TV</option></select></div>
-                    <div class="type-wrap"><label class="input-label">Cliente o vendedor</label><div class="type-selector"><div class="type-option"><input id="tipo-cliente" name="tipo" type="radio" value="CLIENTE" checked><label for="tipo-cliente"><span class="check-dot"></span>Cliente</label></div><div class="type-option"><input id="tipo-vendedor" name="tipo" type="radio" value="VENDEDOR"><label for="tipo-vendedor"><span class="check-dot"></span>Vendedor</label></div></div></div>
-                    <div><label class="input-label" for="nombre">Nombre</label><div class="autocomplete-wrap"><input id="nombre" class="input-modern" type="text" placeholder="Nombre del cliente o vendedor" autocomplete="off" required><div id="client-suggestions" class="client-suggestions hidden"></div></div><div id="client-helper" class="client-helper">Empezá a escribir el nombre: busca en todos tus clientes anteriores y evita duplicados.</div></div>
-                    <div id="credit-field" class="credit-field hidden-by-type"><label class="input-label" for="creditos">Créditos cargados</label><input id="creditos" class="input-modern" type="number" min="0" step="1" inputmode="numeric" placeholder="Ej: 100"></div>
-                    <div><label class="input-label" for="precio">Precio cobrado</label><input id="precio" class="input-modern" type="number" min="0" step="0.01" inputmode="decimal" value="8000" placeholder="Ej: 8000" required></div>
-                    <div class="form-actions"><button id="btn-guardar" class="btn-primary" type="submit">+ Guardar</button><button id="btn-cancelar" class="btn-secondary hidden" type="button" onclick="cancelarEdicion()">Cancelar</button></div>
-                </form>
-                <div class="auto-date">🕒 <span>Fecha y hora: <strong>automáticas al guardar</strong></span></div>
-            </section>
+ <main class="main">
+  <section id="view-registrar" class="view active">
+   <div class="view-title"><h1>Nuevo movimiento</h1><p>Cliente: $8.000 por defecto. Vendedor: cargás créditos y precio.</p></div>
+   <div class="card register-card">
+    <form id="movement-form" class="form-grid">
+     <div><label class="input-label" for="app">Aplicación</label><select id="app" class="input" required><option value="">Seleccionar app</option><option>TV</option><option>FUTURE</option><option>TV PLUS 2</option><option>FLUJO TV</option><option>MAR TV</option></select></div>
+     <div><label class="input-label">Tipo</label><div class="type-selector"><div class="type-option"><input id="tipo-cliente" type="radio" name="tipo" value="CLIENTE" checked><label for="tipo-cliente"><span class="dot"></span>Cliente</label></div><div class="type-option"><input id="tipo-vendedor" type="radio" name="tipo" value="VENDEDOR"><label for="tipo-vendedor"><span class="dot"></span>Vendedor</label></div></div></div>
+     <div><label class="input-label" for="nombre">Nombre</label><div class="autocomplete"><input id="nombre" class="input" type="text" autocomplete="off" required placeholder="Escribí las primeras letras"><div id="suggestions" class="suggestions hidden"></div></div><div id="name-helper" class="helper">Busca automáticamente entre tus clientes guardados.</div></div>
+     <div id="credits-wrap" class="hidden"><label class="input-label" for="creditos">Créditos</label><input id="creditos" class="input" type="number" min="0" step="1" inputmode="numeric" placeholder="Ej: 100"></div>
+     <div><label class="input-label" for="precio">Precio cobrado</label><input id="precio" class="input" type="number" min="0" step="0.01" inputmode="decimal" value="8000" required></div>
+     <div class="form-actions"><button id="save-btn" class="btn btn-primary" type="submit">Guardar</button><button id="cancel-edit-btn" class="btn btn-secondary hidden" type="button">Cancelar</button></div>
+    </form>
+    <div class="auto-date">🕒 La fecha y hora se guardan automáticamente.</div>
+   </div>
+  </section>
 
-            <section class="card-surface periodo-section">
-                <div class="section-title">Período</div>
-                <div class="periodo-btn-container">
-                    <button class="periodo-btn active" data-periodo="hoy" onclick="cambiarPeriodo('hoy',this)">Hoy</button>
-                    <button class="periodo-btn" data-periodo="semana" onclick="cambiarPeriodo('semana',this)">Semana</button>
-                    <button class="periodo-btn" data-periodo="mes" onclick="cambiarPeriodo('mes',this)">Mes</button>
-                    <button class="periodo-btn" data-periodo="anio" onclick="cambiarPeriodo('anio',this)">Año</button>
-                    <button class="periodo-btn" data-periodo="todo" onclick="cambiarPeriodo('todo',this)">Todo</button>
-                    <button class="periodo-btn" data-periodo="personalizado" onclick="cambiarPeriodo('personalizado',this)">Personalizado</button>
-                </div>
-                <div id="rango-personalizado" class="hidden"><div><label class="input-label">Desde</label><input id="fecha-desde" class="input-modern" type="date"></div><div><label class="input-label">Hasta</label><input id="fecha-hasta" class="input-modern" type="date"></div><button class="btn-primary" type="button" onclick="aplicarRangoPersonalizado()">Aplicar</button></div>
-            </section>
+  <section id="view-renovaciones" class="view">
+   <div class="view-title"><h1>Renovaciones</h1><p>La próxima renovación se calcula 30 días después de la última carga del cliente.</p></div>
+   <div class="renewal-summary">
+    <div class="summary-card red"><span>Vencidos</span><strong id="renew-expired">0</strong></div>
+    <div class="summary-card yellow"><span>Vencen hoy</span><strong id="renew-today">0</strong></div>
+    <div class="summary-card blue"><span>Próximos 5 días</span><strong id="renew-soon">0</strong></div>
+    <div class="summary-card green"><span>Al día</span><strong id="renew-ok">0</strong></div>
+   </div>
+   <div class="card toolbar-card"><div class="toolbar-grid"><input id="renew-search" class="input" type="search" placeholder="Buscar cliente..."><div class="chip-row" id="renew-filters"><button class="filter-chip active" data-status="todos" type="button">Todos</button><button class="filter-chip" data-status="vencido" type="button">Vencidos</button><button class="filter-chip" data-status="hoy" type="button">Hoy</button><button class="filter-chip" data-status="proximo" type="button">Próximos</button><button class="filter-chip" data-status="aldia" type="button">Al día</button></div></div></div>
+   <div id="renew-list" class="list"></div><div id="renew-empty" class="empty hidden"><div class="emoji">🔄</div><p>No hay clientes para este filtro.</p></div>
+  </section>
 
-            <div class="stats-grid">
-                <div class="stat-card stat-green"><div class="stat-label">Dinero ingresado</div><div id="stat-ingresos" class="stat-value">$ 0</div></div>
-                <div class="stat-card stat-blue"><div class="stat-label">Operaciones clientes</div><div id="stat-clientes" class="stat-value">0</div></div>
-                <div class="stat-card stat-purple"><div class="stat-label">Operaciones vendedores</div><div id="stat-vendedores" class="stat-value">0</div></div>
-                <div class="stat-card stat-cyan"><div class="stat-label">Créditos cargados</div><div id="stat-creditos" class="stat-value">0</div></div>
-            </div>
+  <section id="view-clientes" class="view">
+   <div class="view-title"><h1>Clientes</h1><p>Buscá una ficha, revisá sus renovaciones y renovalo desde acá.</p></div>
+   <div class="card toolbar-card"><input id="clients-search" class="input" type="search" placeholder="Buscar cliente por nombre..."></div>
+   <div id="clients-list" class="list"></div><div id="clients-empty" class="empty hidden"><div class="emoji">👤</div><p>No encontré clientes.</p></div>
+  </section>
 
-            <section class="card-surface table-section">
-                <div class="table-head">
-                    <div class="toolbar"><div class="toolbar-left"><input id="buscar" class="input-modern search-input" type="search" placeholder="Buscar por nombre..." oninput="renderTodo()"><select id="filtro-app" class="input-modern" onchange="renderTodo()"><option value="TODAS">Todas las apps</option><option>TV</option><option>FUTURE</option><option>TV PLUS 2</option><option>FLUJO TV</option><option>MAR TV</option></select><select id="filtro-tipo" class="input-modern" onchange="renderTodo()"><option value="TODOS">Clientes y vendedores</option><option value="CLIENTE">Solo clientes</option><option value="VENDEDOR">Solo vendedores</option></select></div><button class="btn-green" type="button" onclick="descargarExcel()">↓ Exportar Excel</button></div>
-                    <div class="section-title">Historial de movimientos</div>
-                </div>
-                <div id="loading" class="loading-state"><span class="spinner"></span>Cargando movimientos...</div>
-                <div id="tabla-wrap" class="table-wrap hidden"><table class="tabla"><thead><tr><th>Fecha y hora</th><th>Aplicación</th><th>Tipo</th><th>Nombre</th><th>Créditos</th><th>Precio</th><th>Acciones</th></tr></thead><tbody id="tabla-movimientos"></tbody></table><div id="mobile-history" class="mobile-history"></div><div id="empty-state" class="empty-state hidden"><div class="icon">🧾</div><p>No hay movimientos para mostrar.</p><p class="sub">Agregá uno nuevo o cambiá los filtros.</p></div></div>
-            </section>
-        </main>
-    </div>
+  <section id="view-vendedores" class="view">
+   <div class="view-title"><h1>Vendedores</h1><p>Créditos cargados, dinero ingresado, última carga y aplicaciones usadas.</p></div>
+   <div class="card toolbar-card"><input id="sellers-search" class="input" type="search" placeholder="Buscar vendedor por nombre..."></div>
+   <div id="sellers-list" class="list"></div><div id="sellers-empty" class="empty hidden"><div class="emoji">👥</div><p>No encontré vendedores.</p></div>
+  </section>
 
-    <div id="toast" class="toast hidden"></div>
+  <section id="view-historial" class="view">
+   <div class="view-title"><h1>Historial</h1><p>Filtrá y revisá todos los movimientos cargados.</p></div>
+   <div class="card period-card">
+    <div class="period-row"><button class="period-btn active" data-period="hoy" type="button">Hoy</button><button class="period-btn" data-period="semana" type="button">Semana</button><button class="period-btn" data-period="mes" type="button">Mes</button><button class="period-btn" data-period="anio" type="button">Año</button><button class="period-btn" data-period="todo" type="button">Todo</button><button class="period-btn" data-period="personalizado" type="button">Personalizado</button></div>
+    <div id="custom-range" class="custom-range hidden"><input id="date-from" class="input" type="date"><input id="date-to" class="input" type="date"><button id="apply-range" class="btn btn-primary" type="button">Aplicar</button></div>
+   </div>
+   <div class="stats"><div class="stat money"><span>Dinero ingresado</span><strong id="stat-money">$ 0</strong></div><div class="stat"><span>Clientes</span><strong id="stat-clients">0</strong></div><div class="stat"><span>Vendedores</span><strong id="stat-sellers">0</strong></div><div class="stat"><span>Créditos</span><strong id="stat-credits">0</strong></div></div>
+   <div class="card history-card">
+    <div class="history-toolbar"><input id="history-search" class="input wide" type="search" placeholder="Buscar nombre..."><select id="history-app" class="input"><option value="TODAS">Todas las apps</option><option>TV</option><option>FUTURE</option><option>TV PLUS 2</option><option>FLUJO TV</option><option>MAR TV</option></select><select id="history-type" class="input"><option value="TODOS">Todos</option><option value="CLIENTE">Clientes</option><option value="VENDEDOR">Vendedores</option></select><button id="export-btn" class="btn btn-green" type="button">Excel</button></div>
+    <div id="history-loading" class="loading"><span class="spinner"></span>Cargando...</div><div id="history-list" class="history-list"></div><div id="history-empty" class="empty hidden"><div class="emoji">🧾</div><p>No hay movimientos para mostrar.</p></div>
+   </div>
+  </section>
+ </main>
+</div>
+
+<div id="profile-modal" class="modal hidden"><div class="modal-panel"><div class="modal-head"><div><h2 id="profile-title">Ficha</h2><p id="profile-subtitle"></p></div><button id="profile-close" class="close-btn" type="button">×</button></div><div id="profile-body"></div></div></div>
+<div id="toast" class="toast hidden"></div>
 
 <script>
-    const SUPABASE_URL='https://vjbdhbbxbvoigbidquya.supabase.co';
-    const SUPABASE_KEY='sb_publishable_4ogrbtxBrBWBFj-NRJOrbg_XnpmO4pS';
-    const supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-    const APPS=['TV','FUTURE','TV PLUS 2','FLUJO TV','MAR TV'];
-    let currentUser=null;
-    let movimientos=[];
-    let periodoActual='hoy';
-    let rangoPersonalizado={desde:null,hasta:null};
-    let movimientoEnEdicion=null;
-    let clientesGuardados=[];
-    let catalogoClientes=[];
+const SUPABASE_URL='https://vjbdhbbxbvoigbidquya.supabase.co';
+const SUPABASE_KEY='sb_publishable_4ogrbtxBrBWBFj-NRJOrbg_XnpmO4pS';
+const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const APPS=['TV','FUTURE','TV PLUS 2','FLUJO TV','MAR TV'];
+const CLIENT_PRICE=8000, RENEW_DAYS=30, SOON_DAYS=5;
+let user=null,movements=[],savedClients=[],savedSellers=[],clientCatalog=[],sellerCatalog=[],editMovement=null;
+let currentView='registrar',renewStatus='todos',historyPeriod='hoy',customRange={from:null,to:null};
 
-    function escaparHtml(v){return String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;')}
-    function formatearDinero(v){return new Intl.NumberFormat('es-AR',{style:'currency',currency:'ARS',maximumFractionDigits:2}).format(Number(v)||0)}
-    function formatearNumero(v){return new Intl.NumberFormat('es-AR',{maximumFractionDigits:2}).format(Number(v)||0)}
-    function formatearFechaHora(v){if(!v)return '—';return new Intl.DateTimeFormat('es-AR',{timeZone:'America/Argentina/Buenos_Aires',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(v))}
-    function fechaLocalISO(date=new Date()){const parts=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Argentina/Buenos_Aires',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(date);const obj=Object.fromEntries(parts.map(p=>[p.type,p.value]));return `${obj.year}-${obj.month}-${obj.day}`}
-    function mostrarToast(msg,error=false){const el=document.getElementById('toast');el.textContent=msg;el.className=`toast${error?' error':''}`;clearTimeout(mostrarToast.t);mostrarToast.t=setTimeout(()=>el.classList.add('hidden'),2600)}
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+function esc(v){return String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;')}
+function norm(v){return String(v||'').trim().replace(/\s+/g,' ').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase()}
+function cleanName(v){return String(v||'').trim().replace(/\s+/g,' ')}
+function money(v){return new Intl.NumberFormat('es-AR',{style:'currency',currency:'ARS',maximumFractionDigits:0}).format(Number(v)||0)}
+function num(v){return new Intl.NumberFormat('es-AR',{maximumFractionDigits:2}).format(Number(v)||0)}
+function dateTime(v){return v?new Intl.DateTimeFormat('es-AR',{timeZone:'America/Argentina/Buenos_Aires',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(v)):'—'}
+function dateOnly(v){return v?new Intl.DateTimeFormat('es-AR',{timeZone:'America/Argentina/Buenos_Aires',day:'2-digit',month:'2-digit',year:'numeric'}).format(new Date(v)):'—'}
+function localISO(d=new Date()){const p=Object.fromEntries(new Intl.DateTimeFormat('en-CA',{timeZone:'America/Argentina/Buenos_Aires',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(d).map(x=>[x.type,x.value]));return `${p.year}-${p.month}-${p.day}`}
+function isoAddDays(iso,days){const [y,m,d]=iso.split('-').map(Number);const x=new Date(Date.UTC(y,m-1,d+days,12));return x.toISOString().slice(0,10)}
+function daysBetween(a,b){const parse=s=>{const [y,m,d]=s.split('-').map(Number);return Date.UTC(y,m-1,d)};return Math.round((parse(b)-parse(a))/86400000)}
+function toast(msg,error=false){const t=$('#toast');t.textContent=msg;t.className='toast'+(error?' error':'');clearTimeout(toast.timer);toast.timer=setTimeout(()=>t.classList.add('hidden'),2800)}
 
-    function toggleTheme(){const light=document.documentElement.classList.toggle('light-mode');localStorage.setItem('control_ingresos_tema',light?'light':'dark');document.querySelector('.theme-toggle')?.classList.toggle('active',light)}
-    function cargarTema(){const light=localStorage.getItem('control_ingresos_tema')==='light';document.documentElement.classList.toggle('light-mode',light);document.querySelector('.theme-toggle')?.classList.toggle('active',light)}
+function loadTheme(){const light=localStorage.getItem('control_ingresos_tema')==='light';document.documentElement.classList.toggle('light-mode',light);$('#theme-btn').textContent=light?'🌙':'☀️'}
+function toggleTheme(){const light=document.documentElement.classList.toggle('light-mode');localStorage.setItem('control_ingresos_tema',light?'light':'dark');$('#theme-btn').textContent=light?'🌙':'☀️'}
 
-    async function iniciar(){
-        cargarTema();
-        const {data:{session}}=await supabaseClient.auth.getSession();
-        if(session?.user) mostrarApp(session.user); else mostrarLogin();
-        supabaseClient.auth.onAuthStateChange((_event,session)=>{if(session?.user)mostrarApp(session.user);else mostrarLogin()});
-    }
-    function mostrarLogin(){currentUser=null;document.getElementById('login-screen').classList.remove('hidden');document.getElementById('app-screen').classList.add('hidden')}
-    async function mostrarApp(user){currentUser=user;document.getElementById('login-screen').classList.add('hidden');document.getElementById('app-screen').classList.remove('hidden');document.getElementById('user-email').textContent=user.email||'';cargarTema();actualizarTipo();await cargarMovimientos();await cargarClientes();await sincronizarClientesHistoricos();reconstruirCatalogoClientes()}
+async function init(){loadTheme();bindUI();const {data:{session}}=await db.auth.getSession();if(session?.user)await showApp(session.user);else showLogin();db.auth.onAuthStateChange(async(_e,s)=>{if(s?.user)await showApp(s.user);else showLogin()})}
+function showLogin(){user=null;$('#login-screen').classList.remove('hidden');$('#app-screen').classList.add('hidden')}
+async function showApp(u){user=u;$('#login-screen').classList.add('hidden');$('#app-screen').classList.remove('hidden');$('#user-email').textContent=u.email||'Panel privado';await loadAll();updateType();switchView(currentView)}
+async function loadAll(){setLoading(true);await Promise.all([loadMovements(),loadClients(),loadSellers()]);rebuildCatalogs();await Promise.all([syncHistoricalClients(),syncHistoricalSellers()]);rebuildCatalogs();renderAll();setLoading(false)}
+function setLoading(on){$('#history-loading').classList.toggle('hidden',!on)}
 
-    document.getElementById('form-login').addEventListener('submit',async e=>{
-        e.preventDefault();const email=document.getElementById('login-email').value.trim();const password=document.getElementById('login-password').value;const btn=document.getElementById('btn-login');const err=document.getElementById('login-error');err.classList.add('hidden');btn.disabled=true;btn.textContent='Ingresando...';
-        const {error}=await supabaseClient.auth.signInWithPassword({email,password});
-        btn.disabled=false;btn.textContent='Ingresar';if(error){err.textContent=error.message==='Invalid login credentials'?'Email o contraseña incorrectos.':error.message;err.classList.remove('hidden')}
-    });
-    async function logout(){await supabaseClient.auth.signOut()}
+function bindUI(){
+ $('#login-form').addEventListener('submit',login);$('#logout-btn').addEventListener('click',()=>db.auth.signOut());$('#theme-btn').addEventListener('click',toggleTheme);
+ $$('.nav-tab').forEach(b=>b.addEventListener('click',()=>switchView(b.dataset.view)));
+ $$('input[name="tipo"]').forEach(r=>r.addEventListener('change',updateType));
+ $('#nombre').addEventListener('input',showSuggestions);$('#nombre').addEventListener('focus',showSuggestions);document.addEventListener('click',e=>{if(!e.target.closest('.autocomplete'))hideSuggestions()});
+ $('#movement-form').addEventListener('submit',saveMovement);$('#cancel-edit-btn').addEventListener('click',cancelEdit);
+ $('#renew-search').addEventListener('input',renderRenewals);$('#clients-search').addEventListener('input',renderClients);$('#sellers-search').addEventListener('input',renderSellers);
+ $$('#renew-filters .filter-chip').forEach(b=>b.addEventListener('click',()=>{renewStatus=b.dataset.status;$$('#renew-filters .filter-chip').forEach(x=>x.classList.toggle('active',x===b));renderRenewals()}));
+ $$('.period-btn').forEach(b=>b.addEventListener('click',()=>changePeriod(b.dataset.period,b)));$('#apply-range').addEventListener('click',applyCustomRange);
+ $('#history-search').addEventListener('input',renderHistory);$('#history-app').addEventListener('change',renderHistory);$('#history-type').addEventListener('change',renderHistory);$('#export-btn').addEventListener('click',exportExcel);
+ $('#profile-close').addEventListener('click',closeProfile);$('#profile-modal').addEventListener('click',e=>{if(e.target.id==='profile-modal')closeProfile()});
+}
+async function login(e){e.preventDefault();const btn=$('#login-btn'),err=$('#login-error');err.classList.add('hidden');btn.disabled=true;btn.textContent='Ingresando...';const {error}=await db.auth.signInWithPassword({email:$('#login-email').value.trim(),password:$('#login-pass').value});btn.disabled=false;btn.textContent='Ingresar';if(error){err.textContent=error.message==='Invalid login credentials'?'Email o contraseña incorrectos.':error.message;err.classList.remove('hidden')}}
+function switchView(v){currentView=v;$$('.view').forEach(x=>x.classList.toggle('active',x.id===`view-${v}`));$$('.nav-tab').forEach(x=>x.classList.toggle('active',x.dataset.view===v));if(v==='renovaciones')renderRenewals();if(v==='clientes')renderClients();if(v==='vendedores')renderSellers();if(v==='historial')renderHistory();window.scrollTo({top:0,behavior:'smooth'})}
 
-    document.querySelectorAll('input[name="tipo"]').forEach(el=>el.addEventListener('change',actualizarTipo));
-    const nombreInput=document.getElementById('nombre');
-    nombreInput.addEventListener('input',mostrarSugerenciasClientes);
-    nombreInput.addEventListener('focus',mostrarSugerenciasClientes);
-    document.addEventListener('click',e=>{if(!e.target.closest('.autocomplete-wrap'))ocultarSugerenciasClientes()});
-    function tipoSeleccionado(){return document.querySelector('input[name="tipo"]:checked')?.value||'CLIENTE'}
-    function normalizarNombre(v){return String(v||'').trim().replace(/\s+/g,' ').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase()}
-    function actualizarTipo(){const vendedor=tipoSeleccionado()==='VENDEDOR';document.getElementById('credit-field').classList.toggle('hidden-by-type',!vendedor);document.getElementById('creditos').required=vendedor;document.getElementById('client-helper').classList.toggle('hidden',vendedor);if(!vendedor){document.getElementById('creditos').value='';if(!movimientoEnEdicion)document.getElementById('precio').value='8000'}else{ocultarSugerenciasClientes();if(!movimientoEnEdicion&&document.getElementById('precio').value==='8000')document.getElementById('precio').value=''}}
+function typeSelected(){return $('input[name="tipo"]:checked')?.value||'CLIENTE'}
+function updateType(){const seller=typeSelected()==='VENDEDOR';$('#credits-wrap').classList.toggle('hidden',!seller);$('#creditos').required=seller;$('#name-helper').textContent=seller?'Busca automáticamente entre tus vendedores guardados.':'Busca automáticamente entre tus clientes guardados.';if(!editMovement){if(seller&&$('#precio').value==='8000')$('#precio').value='';if(!seller){$('#precio').value=String(CLIENT_PRICE);$('#creditos').value=''}}hideSuggestions()}
 
-    async function cargarClientes(){
-        const {data,error}=await supabaseClient.from('control_clientes').select('id,nombre,nombre_normalizado,app_ultima,last_used_at').order('last_used_at',{ascending:false});
-        if(error){
-            console.warn('La agenda auxiliar no está disponible; se usará el historial de movimientos para buscar clientes.',error);
-            clientesGuardados=[];
-        }else{
-            clientesGuardados=data||[];
-        }
-        reconstruirCatalogoClientes();
-    }
+async function loadMovements(){const {data,error}=await db.from('control_movimientos').select('*').order('fecha',{ascending:false});if(error){movements=[];toast(`Error al cargar movimientos: ${error.message}`,true)}else movements=data||[]}
+async function loadClients(){const {data,error}=await db.from('control_clientes').select('*').order('last_used_at',{ascending:false});if(error){savedClients=[];console.warn('Agenda clientes no disponible',error)}else savedClients=data||[]}
+async function loadSellers(){const {data,error}=await db.from('control_vendedores').select('*').order('last_used_at',{ascending:false});if(error){savedSellers=[];console.warn('Agenda vendedores no disponible',error)}else savedSellers=data||[]}
 
-    function reconstruirCatalogoClientes(){
-        const mapa=new Map();
-        const agregar=(item,desdeMovimiento=false)=>{
-            const nombre=String(item.nombre||'').trim().replace(/\s+/g,' ');
-            const key=normalizarNombre(item.nombre_normalizado||nombre);
-            if(!key)return;
-            const fecha=item.last_used_at||item.fecha||null;
-            const existente=mapa.get(key)||{
-                key,
-                id:item.id||key,
-                nombre,
-                app_ultima:item.app_ultima||item.app||null,
-                last_used_at:fecha,
-                operaciones:0
-            };
-            if(desdeMovimiento)existente.operaciones+=1;
-            const fechaExistente=existente.last_used_at?new Date(existente.last_used_at).getTime():0;
-            const fechaNueva=fecha?new Date(fecha).getTime():0;
-            if(fechaNueva>=fechaExistente){
-                existente.nombre=nombre||existente.nombre;
-                existente.app_ultima=item.app_ultima||item.app||existente.app_ultima;
-                existente.last_used_at=fecha||existente.last_used_at;
-                existente.id=item.id||existente.id;
-            }
-            mapa.set(key,existente);
-        };
-        clientesGuardados.forEach(c=>agregar(c,false));
-        movimientos.filter(m=>m.tipo==='CLIENTE').forEach(m=>agregar(m,true));
-        catalogoClientes=[...mapa.values()].sort((a,b)=>{
-            const fb=b.last_used_at?new Date(b.last_used_at).getTime():0;
-            const fa=a.last_used_at?new Date(a.last_used_at).getTime():0;
-            return fb-fa||a.nombre.localeCompare(b.nombre,'es');
-        });
-    }
+function rebuildCatalogs(){
+ const build=(type,saved)=>{const map=new Map();const add=(x,fromMove)=>{const name=cleanName(x.nombre),key=norm(x.nombre_normalizado||name);if(!key)return;const when=x.last_used_at||x.fecha||null;let o=map.get(key)||{key,nombre:name,app_ultima:x.app_ultima||x.app||null,last_used_at:when,ops:0,total:0,credits:0,apps:new Set()};if(fromMove){o.ops++;o.total+=Number(x.precio||0);if(type==='VENDEDOR')o.credits+=Number(x.creditos||0);if(x.app)o.apps.add(x.app)}const old=o.last_used_at?new Date(o.last_used_at).getTime():0,newT=when?new Date(when).getTime():0;if(newT>=old){o.nombre=name||o.nombre;o.app_ultima=x.app_ultima||x.app||o.app_ultima;o.last_used_at=when||o.last_used_at}map.set(key,o)};saved.forEach(x=>add(x,false));movements.filter(x=>x.tipo===type).forEach(x=>add(x,true));return [...map.values()].sort((a,b)=>(new Date(b.last_used_at||0))-(new Date(a.last_used_at||0))||a.nombre.localeCompare(b.nombre,'es'))};
+ clientCatalog=build('CLIENTE',savedClients);sellerCatalog=build('VENDEDOR',savedSellers)
+}
+async function savePerson(type,name,app){if(!user)return;const table=type==='CLIENTE'?'control_clientes':'control_vendedores';const n=cleanName(name),payload={user_id:user.id,nombre:n,nombre_normalizado:norm(n),app_ultima:app,last_used_at:new Date().toISOString(),updated_at:new Date().toISOString()};const {error}=await db.from(table).upsert(payload,{onConflict:'user_id,nombre_normalizado'});if(error)console.warn(`No se pudo actualizar ${table}`,error);else if(type==='CLIENTE')await loadClients();else await loadSellers()}
+async function syncHistoricalClients(){await syncHistorical('CLIENTE','control_clientes',savedClients)}
+async function syncHistoricalSellers(){await syncHistorical('VENDEDOR','control_vendedores',savedSellers)}
+async function syncHistorical(type,table,saved){if(!user)return;const exists=new Set(saved.map(x=>norm(x.nombre_normalizado||x.nombre))),seen=new Set(),rows=[];for(const m of movements){if(m.tipo!==type)continue;const n=cleanName(m.nombre),k=norm(n);if(!k||exists.has(k)||seen.has(k))continue;seen.add(k);rows.push({user_id:user.id,nombre:n,nombre_normalizado:k,app_ultima:m.app,last_used_at:m.fecha||new Date().toISOString(),updated_at:new Date().toISOString()})}if(rows.length){const {error}=await db.from(table).upsert(rows,{onConflict:'user_id,nombre_normalizado'});if(!error){if(type==='CLIENTE')await loadClients();else await loadSellers()}else console.warn(`No se pudo sincronizar ${table}`,error)}}
 
-    function mostrarSugerenciasClientes(){
-        const box=document.getElementById('client-suggestions');
-        if(tipoSeleccionado()!=='CLIENTE'){box.classList.add('hidden');return}
-        reconstruirCatalogoClientes();
-        const q=normalizarNombre(nombreInput.value);
-        let lista=catalogoClientes.filter(c=>!q||c.key.includes(q));
-        if(q){
-            lista.sort((a,b)=>{
-                const aInicio=a.key.startsWith(q)?0:1;
-                const bInicio=b.key.startsWith(q)?0:1;
-                if(aInicio!==bInicio)return aInicio-bInicio;
-                return (b.operaciones||0)-(a.operaciones||0);
-            });
-        }
-        lista=lista.slice(0,10);
-        if(!lista.length){
-            if(q){
-                box.innerHTML='<div class="suggestion-empty">No encontré un cliente con esas letras.</div>';
-                box.classList.remove('hidden');
-            }else{
-                box.classList.add('hidden');box.innerHTML='';
-            }
-            return;
-        }
-        box.innerHTML=lista.map(c=>{
-            const operaciones=Number(c.operaciones||0);
-            const label=operaciones===1?'1 movimiento':`${operaciones} movimientos`;
-            return `<button type="button" class="client-suggestion" data-client-key="${escaparHtml(c.key)}"><span class="client-suggestion-main"><strong>${escaparHtml(c.nombre)}</strong><span>${escaparHtml(c.app_ultima||'Cliente guardado')}</span></span><span class="client-suggestion-meta"><span class="client-count">${escaparHtml(label)}</span></span></button>`;
-        }).join('');
-        box.querySelectorAll('[data-client-key]').forEach(btn=>btn.addEventListener('click',()=>seleccionarClienteGuardado(btn.dataset.clientKey)));
-        box.classList.remove('hidden');
-    }
-    function ocultarSugerenciasClientes(){document.getElementById('client-suggestions')?.classList.add('hidden')}
-    function seleccionarClienteGuardado(key){
-        const c=catalogoClientes.find(x=>x.key===key);if(!c)return;
-        nombreInput.value=c.nombre;
-        if(c.app_ultima&&APPS.includes(c.app_ultima))document.getElementById('app').value=c.app_ultima;
-        document.getElementById('precio').value='8000';
-        ocultarSugerenciasClientes();
-        nombreInput.dispatchEvent(new Event('change',{bubbles:true}));
-    }
-    async function guardarCliente(nombre,app){
-        const limpio=String(nombre||'').trim().replace(/\s+/g,' ');const normalizado=normalizarNombre(limpio);if(!normalizado||!currentUser)return;
-        const payload={user_id:currentUser.id,nombre:limpio,nombre_normalizado:normalizado,app_ultima:app,last_used_at:new Date().toISOString(),updated_at:new Date().toISOString()};
-        const {error}=await supabaseClient.from('control_clientes').upsert(payload,{onConflict:'user_id,nombre_normalizado'});
-        if(error){
-            console.warn('El movimiento se guardó, pero no se pudo actualizar la agenda auxiliar. La búsqueda seguirá funcionando desde el historial.',error);
-            reconstruirCatalogoClientes();
-            return;
-        }
-        await cargarClientes();
-    }
-    async function sincronizarClientesHistoricos(){
-        if(!currentUser||!movimientos.length){reconstruirCatalogoClientes();return}
-        const existentes=new Set(clientesGuardados.map(c=>String(c.nombre_normalizado||normalizarNombre(c.nombre))));
-        const nuevos=[];const vistos=new Set();
-        for(const m of movimientos){
-            if(m.tipo!=='CLIENTE')continue;const limpio=String(m.nombre||'').trim().replace(/\s+/g,' ');const normalizado=normalizarNombre(limpio);if(!normalizado||existentes.has(normalizado)||vistos.has(normalizado))continue;
-            vistos.add(normalizado);nuevos.push({user_id:currentUser.id,nombre:limpio,nombre_normalizado:normalizado,app_ultima:m.app,last_used_at:m.fecha||new Date().toISOString(),updated_at:new Date().toISOString()});
-        }
-        if(nuevos.length){
-            const {error}=await supabaseClient.from('control_clientes').upsert(nuevos,{onConflict:'user_id,nombre_normalizado'});
-            if(!error)await cargarClientes();
-            else console.warn('No se pudieron sincronizar clientes históricos; se usarán directamente desde movimientos.',error);
-        }
-        reconstruirCatalogoClientes();
-    }
+function showSuggestions(){const box=$('#suggestions'),q=norm($('#nombre').value),catalog=typeSelected()==='CLIENTE'?clientCatalog:sellerCatalog;let list=catalog.filter(x=>!q||x.key.includes(q));if(q)list.sort((a,b)=>(a.key.startsWith(q)?0:1)-(b.key.startsWith(q)?0:1)||(b.ops-a.ops));list=list.slice(0,10);if(!list.length){box.innerHTML=q?'<div class="empty" style="padding:14px">No encontré coincidencias.</div>':'';box.classList.toggle('hidden',!q);return}box.innerHTML=list.map(x=>`<button class="suggestion" type="button" data-key="${esc(x.key)}"><span class="suggestion-main"><strong>${esc(x.nombre)}</strong><span>${esc(x.app_ultima||'Sin app')} · ${x.ops} movimiento${x.ops===1?'':'s'}</span></span><span class="suggestion-meta">${typeSelected()==='CLIENTE'?money(x.total):num(x.credits)+' créd.'}</span></button>`).join('');box.querySelectorAll('[data-key]').forEach(b=>b.addEventListener('click',()=>selectSuggestion(b.dataset.key)));box.classList.remove('hidden')}
+function selectSuggestion(key){const catalog=typeSelected()==='CLIENTE'?clientCatalog:sellerCatalog,x=catalog.find(y=>y.key===key);if(!x)return;$('#nombre').value=x.nombre;if(APPS.includes(x.app_ultima))$('#app').value=x.app_ultima;if(typeSelected()==='CLIENTE')$('#precio').value=String(CLIENT_PRICE);hideSuggestions()}
+function hideSuggestions(){$('#suggestions').classList.add('hidden')}
 
-    document.getElementById('form-movimiento').addEventListener('submit',async e=>{
-        e.preventDefault();if(!currentUser)return;
-        const tipo=tipoSeleccionado();const app=document.getElementById('app').value;const nombre=document.getElementById('nombre').value.trim();const precio=Number(document.getElementById('precio').value);const creditos=tipo==='VENDEDOR'?Number(document.getElementById('creditos').value):null;
-        if(!APPS.includes(app)){mostrarToast('Seleccioná una aplicación válida.',true);return}if(!nombre){mostrarToast('Ingresá un nombre.',true);return}if(!Number.isFinite(precio)||precio<0){mostrarToast('Ingresá un precio válido.',true);return}if(tipo==='VENDEDOR'&&(!Number.isFinite(creditos)||creditos<0)){mostrarToast('Ingresá los créditos cargados.',true);return}
-        const payload={app,tipo,nombre,precio,creditos};const btn=document.getElementById('btn-guardar');btn.disabled=true;btn.textContent='Guardando...';
-        let error;if(movimientoEnEdicion){({error}=await supabaseClient.from('control_movimientos').update(payload).eq('id',movimientoEnEdicion.id))}else{({error}=await supabaseClient.from('control_movimientos').insert(payload))}
-        btn.disabled=false;btn.textContent=movimientoEnEdicion?'Guardar cambios':'+ Guardar';
-        if(error){console.error(error);mostrarToast(`No se pudo guardar: ${error.message}`,true);return}
-        if(tipo==='CLIENTE')await guardarCliente(nombre,app);mostrarToast(movimientoEnEdicion?'Movimiento actualizado.':'Movimiento guardado.');cancelarEdicion();await cargarMovimientos();
-    });
+async function saveMovement(e){e.preventDefault();if(!user)return;const tipo=typeSelected(),app=$('#app').value,nombre=cleanName($('#nombre').value),precio=Number($('#precio').value),creditos=tipo==='VENDEDOR'?Number($('#creditos').value):null;if(!APPS.includes(app))return toast('Seleccioná una aplicación.',true);if(!nombre)return toast('Ingresá el nombre.',true);if(!Number.isFinite(precio)||precio<0)return toast('Ingresá un precio válido.',true);if(tipo==='VENDEDOR'&&(!Number.isFinite(creditos)||creditos<0))return toast('Ingresá los créditos.',true);const payload={app,tipo,nombre,precio,creditos};const btn=$('#save-btn');btn.disabled=true;btn.textContent='Guardando...';let error;if(editMovement)({error}=await db.from('control_movimientos').update(payload).eq('id',editMovement.id));else({error}=await db.from('control_movimientos').insert({...payload,user_id:user.id}));btn.disabled=false;btn.textContent=editMovement?'Guardar cambios':'Guardar';if(error)return toast(`No se pudo guardar: ${error.message}`,true);await savePerson(tipo,nombre,app);toast(editMovement?'Movimiento actualizado.':'Movimiento guardado.');cancelEdit();await loadMovements();rebuildCatalogs();renderAll()}
+function editMovementById(id){const m=movements.find(x=>String(x.id)===String(id));if(!m)return;editMovement=m;$('#app').value=m.app;$(m.tipo==='VENDEDOR'?'#tipo-vendedor':'#tipo-cliente').checked=true;$('#nombre').value=m.nombre;$('#precio').value=m.precio;$('#creditos').value=m.creditos??'';updateType();$('#save-btn').textContent='Guardar cambios';$('#cancel-edit-btn').classList.remove('hidden');switchView('registrar')}
+function cancelEdit(){editMovement=null;$('#movement-form').reset();$('#tipo-cliente').checked=true;$('#precio').value=String(CLIENT_PRICE);$('#creditos').value='';$('#save-btn').textContent='Guardar';$('#cancel-edit-btn').classList.add('hidden');updateType()}
+async function deleteMovement(id){const m=movements.find(x=>String(x.id)===String(id));if(!m||!confirm(`¿Eliminar el movimiento de ${m.nombre} por ${money(m.precio)}?`))return;const {error}=await db.from('control_movimientos').delete().eq('id',id);if(error)return toast(error.message,true);toast('Movimiento eliminado.');await loadMovements();rebuildCatalogs();renderAll()}
 
-    async function cargarMovimientos(){
-        document.getElementById('loading').classList.remove('hidden');document.getElementById('tabla-wrap').classList.add('hidden');
-        const {data,error}=await supabaseClient.from('control_movimientos').select('*').order('fecha',{ascending:false});
-        document.getElementById('loading').classList.add('hidden');document.getElementById('tabla-wrap').classList.remove('hidden');
-        if(error){console.error(error);movimientos=[];mostrarToast(`Error al cargar: ${error.message}`,true)}else movimientos=data||[];reconstruirCatalogoClientes();renderTodo();
-    }
+function clientProfiles(){return clientCatalog.map(c=>{const hist=movements.filter(m=>m.tipo==='CLIENTE'&&norm(m.nombre)===c.key).sort((a,b)=>new Date(b.fecha)-new Date(a.fecha));const last=hist[0]||null;const lastISO=last?localISO(new Date(last.fecha)):(c.last_used_at?localISO(new Date(c.last_used_at)):null);const next=lastISO?isoAddDays(lastISO,RENEW_DAYS):null;const status=renewalStatus(next);const months=new Set(hist.map(m=>{const d=new Date(m.fecha);return new Intl.DateTimeFormat('en-CA',{timeZone:'America/Argentina/Buenos_Aires',year:'numeric',month:'2-digit'}).format(d)})).size;return {...c,hist,last,lastISO,next,status,total:hist.reduce((s,m)=>s+Number(m.precio||0),0),ops:hist.length,months,app_ultima:last?.app||c.app_ultima}})}
+function sellerProfiles(){return sellerCatalog.map(s=>{const hist=movements.filter(m=>m.tipo==='VENDEDOR'&&norm(m.nombre)===s.key).sort((a,b)=>new Date(b.fecha)-new Date(a.fecha));return {...s,hist,last:hist[0]||null,total:hist.reduce((a,m)=>a+Number(m.precio||0),0),credits:hist.reduce((a,m)=>a+Number(m.creditos||0),0),ops:hist.length,apps:[...new Set(hist.map(m=>m.app).filter(Boolean))]}})}
+function renewalStatus(next){if(!next)return {key:'aldia',label:'Sin fecha',days:null};const today=localISO(),diff=daysBetween(today,next);if(diff<0)return {key:'vencido',label:`Vencido hace ${Math.abs(diff)} d.`,days:diff};if(diff===0)return {key:'hoy',label:'Vence hoy',days:0};if(diff<=SOON_DAYS)return {key:'proximo',label:`Vence en ${diff} d.`,days:diff};return {key:'aldia',label:'Al día',days:diff}}
+function clientCard(c,renewContext=false){return `<article class="entity-card"><div class="entity-top"><div><div class="entity-name">${esc(c.nombre)}</div><div class="entity-sub">${esc(c.app_ultima||'Sin app')} · ${c.ops} renovación${c.ops===1?'':'es'}</div></div><span class="status ${c.status.key}">${esc(c.status.label)}</span></div><div class="entity-grid"><div class="metric"><span>Última</span><strong>${c.last?esc(dateOnly(c.last.fecha)):'—'}</strong></div><div class="metric"><span>Próxima</span><strong>${c.next?esc(formatISODate(c.next)):'—'}</strong></div><div class="metric"><span>Total</span><strong>${esc(money(c.total))}</strong></div><div class="metric"><span>Meses comprados</span><strong>${c.months}</strong></div></div><div class="entity-actions"><button class="btn btn-secondary" type="button" onclick="openClientProfile('${esc(c.key)}')">Ver ficha</button><button class="btn btn-green" type="button" onclick="quickRenew('${esc(c.key)}')">Renovar $8.000</button></div></article>`}
+function sellerCard(s){return `<article class="entity-card"><div class="entity-top"><div><div class="entity-name">${esc(s.nombre)}</div><div class="entity-sub">${s.ops} carga${s.ops===1?'':'s'} · Última ${s.last?esc(dateOnly(s.last.fecha)):'—'}</div></div><span class="type-chip seller">VENDEDOR</span></div><div class="entity-grid"><div class="metric"><span>Créditos</span><strong>${esc(num(s.credits))}</strong></div><div class="metric"><span>Ingresado</span><strong>${esc(money(s.total))}</strong></div><div class="metric"><span>Última carga</span><strong>${s.last?esc(dateOnly(s.last.fecha)):'—'}</strong></div><div class="metric"><span>Operaciones</span><strong>${s.ops}</strong></div></div><div class="apps-list">${s.apps.map(a=>`<span class="app-chip">${esc(a)}</span>`).join('')||'<span class="entity-sub">Sin apps</span>'}</div><div class="entity-actions"><button class="btn btn-secondary" type="button" onclick="openSellerProfile('${esc(s.key)}')">Ver ficha</button><button class="btn btn-primary" type="button" onclick="prepareSeller('${esc(s.key)}')">Nueva carga</button></div></article>`}
+function formatISODate(iso){if(!iso)return '—';const [y,m,d]=iso.split('-');return `${d}/${m}/${y}`}
 
-    function editarMovimiento(id){const m=movimientos.find(x=>String(x.id)===String(id));if(!m)return;movimientoEnEdicion=m;document.getElementById('app').value=m.app;document.getElementById(m.tipo==='VENDEDOR'?'tipo-vendedor':'tipo-cliente').checked=true;document.getElementById('nombre').value=m.nombre;document.getElementById('precio').value=m.precio;document.getElementById('creditos').value=m.creditos??'';actualizarTipo();document.getElementById('form-title').textContent='Editar movimiento';document.getElementById('btn-guardar').textContent='Guardar cambios';document.getElementById('btn-cancelar').classList.remove('hidden');document.querySelector('.form-section').scrollIntoView({behavior:'smooth',block:'start'})}
-    function cancelarEdicion(){movimientoEnEdicion=null;document.getElementById('form-movimiento').reset();document.getElementById('tipo-cliente').checked=true;document.getElementById('precio').value='8000';actualizarTipo();ocultarSugerenciasClientes();document.getElementById('form-title').textContent='Nuevo movimiento';document.getElementById('btn-guardar').textContent='+ Guardar';document.getElementById('btn-cancelar').classList.add('hidden')}
-    async function eliminarMovimiento(id){const m=movimientos.find(x=>String(x.id)===String(id));if(!m)return;if(!confirm(`¿Eliminar el movimiento de ${m.nombre} por ${formatearDinero(m.precio)}?`))return;const {error}=await supabaseClient.from('control_movimientos').delete().eq('id',id);if(error){mostrarToast(`No se pudo eliminar: ${error.message}`,true);return}mostrarToast('Movimiento eliminado.');await cargarMovimientos()}
+function renderRenewals(){const all=clientProfiles();$('#renew-expired').textContent=all.filter(c=>c.status.key==='vencido').length;$('#renew-today').textContent=all.filter(c=>c.status.key==='hoy').length;$('#renew-soon').textContent=all.filter(c=>c.status.key==='proximo').length;$('#renew-ok').textContent=all.filter(c=>c.status.key==='aldia').length;const q=norm($('#renew-search').value);const list=all.filter(c=>(renewStatus==='todos'||c.status.key===renewStatus)&&(!q||c.key.includes(q))).sort((a,b)=>(a.status.days??9999)-(b.status.days??9999)||a.nombre.localeCompare(b.nombre,'es'));$('#renew-list').innerHTML=list.map(c=>clientCard(c,true)).join('');$('#renew-empty').classList.toggle('hidden',list.length>0)}
+function renderClients(){const q=norm($('#clients-search').value);const list=clientProfiles().filter(c=>!q||c.key.includes(q)).sort((a,b)=>a.nombre.localeCompare(b.nombre,'es'));$('#clients-list').innerHTML=list.map(c=>clientCard(c)).join('');$('#clients-empty').classList.toggle('hidden',list.length>0)}
+function renderSellers(){const q=norm($('#sellers-search').value);const list=sellerProfiles().filter(s=>!q||s.key.includes(q)).sort((a,b)=>a.nombre.localeCompare(b.nombre,'es'));$('#sellers-list').innerHTML=list.map(s=>sellerCard(s)).join('');$('#sellers-empty').classList.toggle('hidden',list.length>0)}
+async function quickRenew(key){const c=clientProfiles().find(x=>x.key===key);if(!c)return;if(!c.app_ultima)return toast('Este cliente no tiene una app asociada.',true);if(!confirm(`Renovar a ${c.nombre} en ${c.app_ultima} por ${money(CLIENT_PRICE)}?`))return;const {error}=await db.from('control_movimientos').insert({user_id:user.id,app:c.app_ultima,tipo:'CLIENTE',nombre:c.nombre,creditos:null,precio:CLIENT_PRICE});if(error)return toast(`No se pudo renovar: ${error.message}`,true);await savePerson('CLIENTE',c.nombre,c.app_ultima);await loadMovements();rebuildCatalogs();renderAll();toast(`${c.nombre} renovado por ${money(CLIENT_PRICE)}.`)}
+function prepareSeller(key){const s=sellerProfiles().find(x=>x.key===key);if(!s)return;$('#tipo-vendedor').checked=true;updateType();$('#nombre').value=s.nombre;if(s.app_ultima&&APPS.includes(s.app_ultima))$('#app').value=s.app_ultima;$('#creditos').value='';$('#precio').value='';switchView('registrar');setTimeout(()=>$('#creditos').focus(),150)}
 
-    function limitesPeriodo(){
-        if(periodoActual==='todo')return {desde:null,hasta:null};if(periodoActual==='personalizado')return rangoPersonalizado;
-        const hoy=new Date();const hoyIso=fechaLocalISO(hoy);if(periodoActual==='hoy')return {desde:hoyIso,hasta:hoyIso};
-        const localNoon=new Date(`${hoyIso}T12:00:00`);let desde=new Date(localNoon),hasta=new Date(localNoon);
-        if(periodoActual==='semana'){const dia=(localNoon.getDay()+6)%7;desde.setDate(localNoon.getDate()-dia);hasta.setDate(desde.getDate()+6)}
-        if(periodoActual==='mes'){desde=new Date(localNoon.getFullYear(),localNoon.getMonth(),1,12);hasta=new Date(localNoon.getFullYear(),localNoon.getMonth()+1,0,12)}
-        if(periodoActual==='anio'){desde=new Date(localNoon.getFullYear(),0,1,12);hasta=new Date(localNoon.getFullYear(),11,31,12)}
-        return {desde:fechaLocalISO(desde),hasta:fechaLocalISO(hasta)};
-    }
-    function fechaRegistroLocal(m){return fechaLocalISO(new Date(m.fecha))}
-    function cambiarPeriodo(periodo,btn){periodoActual=periodo;document.querySelectorAll('.periodo-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('rango-personalizado').classList.toggle('hidden',periodo!=='personalizado');if(periodo!=='personalizado')renderTodo()}
-    function aplicarRangoPersonalizado(){const desde=document.getElementById('fecha-desde').value,hasta=document.getElementById('fecha-hasta').value;if(!desde||!hasta){mostrarToast('Elegí las dos fechas.',true);return}if(desde>hasta){mostrarToast('La fecha desde no puede ser posterior a la fecha hasta.',true);return}rangoPersonalizado={desde,hasta};renderTodo()}
+function openClientProfile(key){const c=clientProfiles().find(x=>x.key===key);if(!c)return;$('#profile-title').textContent=c.nombre;$('#profile-subtitle').textContent=`Cliente · ${c.app_ultima||'Sin app'}`;$('#profile-body').innerHTML=`<div class="entity-grid"><div class="metric"><span>Última renovación</span><strong>${c.last?esc(dateOnly(c.last.fecha)):'—'}</strong></div><div class="metric"><span>Próxima renovación</span><strong>${c.next?esc(formatISODate(c.next)):'—'}</strong></div><div class="metric"><span>Total aportado</span><strong>${esc(money(c.total))}</strong></div><div class="metric"><span>Meses comprados</span><strong>${c.months}</strong></div></div><button class="btn btn-green" style="width:100%;margin-top:10px" type="button" onclick="quickRenew('${esc(c.key)}');closeProfile()">Renovar ahora · $8.000</button><div class="section-label" style="margin-top:16px">Historial</div><div class="profile-history">${c.hist.map(m=>profileRow(m)).join('')||'<div class="empty">Sin movimientos.</div>'}</div>`;$('#profile-modal').classList.remove('hidden')}
+function openSellerProfile(key){const s=sellerProfiles().find(x=>x.key===key);if(!s)return;$('#profile-title').textContent=s.nombre;$('#profile-subtitle').textContent='Vendedor';$('#profile-body').innerHTML=`<div class="entity-grid"><div class="metric"><span>Créditos totales</span><strong>${esc(num(s.credits))}</strong></div><div class="metric"><span>Dinero ingresado</span><strong>${esc(money(s.total))}</strong></div><div class="metric"><span>Última carga</span><strong>${s.last?esc(dateOnly(s.last.fecha)):'—'}</strong></div><div class="metric"><span>Cargas</span><strong>${s.ops}</strong></div></div><div class="apps-list">${s.apps.map(a=>`<span class="app-chip">${esc(a)}</span>`).join('')}</div><button class="btn btn-primary" style="width:100%;margin-top:10px" type="button" onclick="prepareSeller('${esc(s.key)}');closeProfile()">Nueva carga</button><div class="section-label" style="margin-top:16px">Historial</div><div class="profile-history">${s.hist.map(m=>profileRow(m)).join('')||'<div class="empty">Sin movimientos.</div>'}</div>`;$('#profile-modal').classList.remove('hidden')}
+function profileRow(m){return `<div class="profile-row"><div><strong>${esc(m.app)}${m.tipo==='VENDEDOR'?' · '+esc(num(m.creditos))+' créditos':''}</strong><span>${esc(dateTime(m.fecha))}</span></div><div class="amount">${esc(money(m.precio))}</div></div>`}
+function closeProfile(){$('#profile-modal').classList.add('hidden')}
 
-    function movimientosFiltrados(){const {desde,hasta}=limitesPeriodo();const app=document.getElementById('filtro-app').value;const tipo=document.getElementById('filtro-tipo').value;const q=document.getElementById('buscar').value.trim().toLowerCase();return movimientos.filter(m=>{const f=fechaRegistroLocal(m);if(desde&&f<desde)return false;if(hasta&&f>hasta)return false;if(app!=='TODAS'&&m.app!==app)return false;if(tipo!=='TODOS'&&m.tipo!==tipo)return false;if(q&&!String(m.nombre||'').toLowerCase().includes(q))return false;return true})}
-    function renderTodo(){const lista=movimientosFiltrados();renderStats(lista);renderTabla(lista)}
-    function renderStats(lista){const ingresos=lista.reduce((a,m)=>a+Number(m.precio||0),0);const clientes=lista.filter(m=>m.tipo==='CLIENTE').length;const vendedores=lista.filter(m=>m.tipo==='VENDEDOR').length;const creditos=lista.filter(m=>m.tipo==='VENDEDOR').reduce((a,m)=>a+Number(m.creditos||0),0);document.getElementById('stat-ingresos').textContent=formatearDinero(ingresos);document.getElementById('stat-clientes').textContent=formatearNumero(clientes);document.getElementById('stat-vendedores').textContent=formatearNumero(vendedores);document.getElementById('stat-creditos').textContent=formatearNumero(creditos)}
-    function renderTabla(lista){
-        const tbody=document.getElementById('tabla-movimientos');
-        const mobile=document.getElementById('mobile-history');
-        const empty=document.getElementById('empty-state');
-        tbody.innerHTML='';mobile.innerHTML='';
-        empty.classList.toggle('hidden',lista.length>0);
-        if(!lista.length)return;
-        tbody.innerHTML=lista.map(m=>`<tr><td data-label="Fecha y hora" class="mono">${escaparHtml(formatearFechaHora(m.fecha))}</td><td data-label="Aplicación"><span class="app-chip">${escaparHtml(m.app)}</span></td><td data-label="Tipo"><span class="type-chip ${m.tipo==='CLIENTE'?'cliente':'vendedor'}">${escaparHtml(m.tipo)}</span></td><td data-label="Nombre"><span class="name-main">${escaparHtml(m.nombre)}</span></td><td data-label="Créditos"><span class="credits">${m.tipo==='VENDEDOR'?escaparHtml(formatearNumero(m.creditos)):'—'}</span></td><td data-label="Precio"><span class="money">${escaparHtml(formatearDinero(m.precio))}</span></td><td data-label="Acciones"><div class="action-group"><button class="btn-small" onclick="editarMovimiento('${m.id}')">Editar</button><button class="btn-small danger" onclick="eliminarMovimiento('${m.id}')">Eliminar</button></div></td></tr>`).join('');
-        mobile.innerHTML=lista.map(m=>`<article class="mobile-movement"><div class="mobile-movement-top"><div class="mobile-name">${escaparHtml(m.nombre)}</div><div class="mobile-price">${escaparHtml(formatearDinero(m.precio))}</div></div><div class="mobile-chips"><span class="app-chip">${escaparHtml(m.app)}</span><span class="type-chip ${m.tipo==='CLIENTE'?'cliente':'vendedor'}">${escaparHtml(m.tipo)}</span></div><div class="mobile-details"><div class="mobile-detail"><span>Fecha</span><strong>${escaparHtml(formatearFechaHora(m.fecha))}</strong></div><div class="mobile-detail"><span>Créditos</span><strong>${m.tipo==='VENDEDOR'?escaparHtml(formatearNumero(m.creditos)):'No aplica'}</strong></div></div><div class="mobile-actions"><button class="btn-small" onclick="editarMovimiento('${m.id}')">Editar</button><button class="btn-small danger" onclick="eliminarMovimiento('${m.id}')">Eliminar</button></div></article>`).join('');
-    }
+function changePeriod(p,btn){historyPeriod=p;$$('.period-btn').forEach(x=>x.classList.toggle('active',x===btn));$('#custom-range').classList.toggle('hidden',p!=='personalizado');if(p!=='personalizado')renderHistory()}
+function applyCustomRange(){const from=$('#date-from').value,to=$('#date-to').value;if(!from||!to)return toast('Elegí ambas fechas.',true);if(from>to)return toast('La fecha desde no puede ser posterior.',true);customRange={from,to};renderHistory()}
+function periodLimits(){if(historyPeriod==='todo')return{from:null,to:null};if(historyPeriod==='personalizado')return customRange;const today=localISO();if(historyPeriod==='hoy')return{from:today,to:today};const [y,m,d]=today.split('-').map(Number);const base=new Date(y,m-1,d,12);let a,b;if(historyPeriod==='semana'){const day=(base.getDay()+6)%7;a=new Date(base);a.setDate(base.getDate()-day);b=new Date(a);b.setDate(a.getDate()+6)}else if(historyPeriod==='mes'){a=new Date(y,m-1,1,12);b=new Date(y,m,0,12)}else{a=new Date(y,0,1,12);b=new Date(y,11,31,12)}return{from:localISO(a),to:localISO(b)}}
+function filteredHistory(){const {from,to}=periodLimits(),q=norm($('#history-search').value),app=$('#history-app').value,type=$('#history-type').value;return movements.filter(m=>{const day=localISO(new Date(m.fecha));if(from&&day<from)return false;if(to&&day>to)return false;if(app!=='TODAS'&&m.app!==app)return false;if(type!=='TODOS'&&m.tipo!==type)return false;if(q&&!norm(m.nombre).includes(q))return false;return true})}
+function renderHistory(){const list=filteredHistory();$('#stat-money').textContent=money(list.reduce((a,m)=>a+Number(m.precio||0),0));$('#stat-clients').textContent=list.filter(m=>m.tipo==='CLIENTE').length;$('#stat-sellers').textContent=list.filter(m=>m.tipo==='VENDEDOR').length;$('#stat-credits').textContent=num(list.filter(m=>m.tipo==='VENDEDOR').reduce((a,m)=>a+Number(m.creditos||0),0));$('#history-list').innerHTML=list.map(m=>`<article class="movement"><div class="movement-top"><div class="movement-name">${esc(m.nombre)}</div><div class="movement-price">${esc(money(m.precio))}</div></div><div class="movement-meta"><span class="app-chip">${esc(m.app)}</span><span class="type-chip ${m.tipo==='CLIENTE'?'client':'seller'}">${esc(m.tipo)}</span></div><div class="movement-details"><div><span>Fecha</span><strong>${esc(dateTime(m.fecha))}</strong></div><div><span>Créditos</span><strong>${m.tipo==='VENDEDOR'?esc(num(m.creditos)):'No aplica'}</strong></div></div><div class="movement-actions"><button class="btn btn-secondary" type="button" onclick="editMovementById('${m.id}')">Editar</button><button class="btn btn-danger" type="button" onclick="deleteMovement('${m.id}')">Eliminar</button></div></article>`).join('');$('#history-empty').classList.toggle('hidden',list.length>0)}
+function exportExcel(){const list=filteredHistory();if(!list.length)return toast('No hay datos para exportar.',true);const rows=list.map(m=>({'Fecha y hora':dateTime(m.fecha),'Aplicación':m.app,'Tipo':m.tipo,'Nombre':m.nombre,'Créditos':m.tipo==='VENDEDOR'?Number(m.creditos||0):'','Precio':Number(m.precio||0)}));const ws=XLSX.utils.json_to_sheet(rows),wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Movimientos');XLSX.writeFile(wb,`Control_ingresos_${historyPeriod}_${localISO()}.xlsx`)}
+function renderAll(){renderRenewals();renderClients();renderSellers();renderHistory()}
 
-    function descargarExcel(){const lista=movimientosFiltrados();if(!lista.length){mostrarToast('No hay datos para exportar.',true);return}const rows=lista.map(m=>({'Fecha y hora':formatearFechaHora(m.fecha),'Aplicación':m.app,'Tipo':m.tipo,'Nombre':m.nombre,'Créditos':m.tipo==='VENDEDOR'?Number(m.creditos||0):'','Precio':Number(m.precio||0)}));const ws=XLSX.utils.json_to_sheet(rows);ws['!cols']=[{wch:20},{wch:18},{wch:12},{wch:28},{wch:14},{wch:16}];const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Movimientos');XLSX.writeFile(wb,`Control_ingresos_${periodoActual}_${fechaLocalISO()}.xlsx`)}
-
-    iniciar();
+window.openClientProfile=openClientProfile;window.openSellerProfile=openSellerProfile;window.quickRenew=quickRenew;window.prepareSeller=prepareSeller;window.closeProfile=closeProfile;window.editMovementById=editMovementById;window.deleteMovement=deleteMovement;
+init();
 </script>
 </body>
 </html>
