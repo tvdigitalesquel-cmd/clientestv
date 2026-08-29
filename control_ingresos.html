@@ -43,7 +43,7 @@ input,select{font-size:16px}
 .btn{min-height:48px;border:0;border-radius:14px;padding:0 16px;font-weight:800;cursor:pointer;transition:.18s}.btn-primary{background:var(--blue);color:#fff}.btn-secondary{background:var(--surface);color:var(--text);border:1px solid var(--border)}.btn-green{background:var(--greenSoft);color:var(--green);border:1px solid rgba(34,197,94,.24)}.btn-danger{background:var(--redSoft);color:var(--red);border:1px solid rgba(239,68,68,.22)}.btn:disabled{opacity:.55;cursor:wait}
 
 /* Bottom tabs */
-.bottom-nav{position:fixed;left:0;right:0;bottom:0;z-index:60;background:rgba(15,21,32,.97);border-top:1px solid rgba(255,255,255,.08);padding:7px max(6px,env(safe-area-inset-right)) calc(7px + env(safe-area-inset-bottom)) max(6px,env(safe-area-inset-left));display:grid;grid-template-columns:repeat(5,1fr);gap:3px}.nav-tab{border:0;background:transparent;color:#77849a;border-radius:12px;min-height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:9px;font-weight:700;cursor:pointer}.nav-tab .ico{font-size:19px;line-height:1}.nav-tab.active{background:rgba(59,130,246,.14);color:#76a7ff}
+.bottom-nav{position:fixed;left:0;right:0;bottom:0;z-index:60;background:rgba(15,21,32,.97);border-top:1px solid rgba(255,255,255,.08);padding:7px max(6px,env(safe-area-inset-right)) calc(7px + env(safe-area-inset-bottom)) max(6px,env(safe-area-inset-left));display:grid;grid-template-columns:repeat(6,1fr);gap:3px}.nav-tab{border:0;background:transparent;color:#77849a;border-radius:12px;min-height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:9px;font-weight:700;cursor:pointer}.nav-tab .ico{font-size:19px;line-height:1}.nav-tab.active{background:rgba(59,130,246,.14);color:#76a7ff}
 
 /* Register */
 .register-card{padding:14px}.form-grid{display:grid;grid-template-columns:1fr;gap:12px}.type-selector{display:grid;grid-template-columns:1fr 1fr;gap:8px}.type-option{position:relative}.type-option input{position:absolute;opacity:0}.type-option label{min-height:52px;border-radius:14px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;gap:7px;font-weight:800;color:var(--muted);cursor:pointer}.type-option input:checked+label{color:var(--blue);border-color:var(--blue);background:var(--blueSoft)}.dot{width:17px;height:17px;border-radius:5px;border:1.5px solid currentColor;display:grid;place-items:center;font-size:10px}.type-option input:checked+label .dot:after{content:'✓'}
@@ -54,6 +54,29 @@ input,select{font-size:16px}
 .toolbar-card{padding:12px;margin-bottom:12px}.toolbar-grid{display:grid;grid-template-columns:1fr;gap:8px}.chip-row{display:flex;gap:6px;overflow:auto;padding-bottom:1px}.filter-chip{border:1px solid var(--border);background:var(--surface);color:var(--muted);min-height:38px;padding:0 12px;border-radius:999px;white-space:nowrap;font-size:11px;font-weight:800;cursor:pointer}.filter-chip.active{background:var(--blueSoft);border-color:var(--blue);color:var(--blue)}
 .list{display:grid;gap:9px}.entity-card{background:var(--card);border:1px solid var(--border);border-radius:19px;padding:13px}.entity-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}.entity-name{font-size:16px;font-weight:800;line-height:1.2;overflow-wrap:anywhere}.entity-sub{font-size:10px;color:var(--muted);margin-top:4px}.status{display:inline-flex;align-items:center;padding:5px 8px;border-radius:999px;font-size:9px;font-weight:800;white-space:nowrap}.status.vencido{color:var(--red);background:var(--redSoft)}.status.hoy{color:var(--yellow);background:var(--yellowSoft)}.status.proximo{color:var(--blue);background:var(--blueSoft)}.status.aldia{color:var(--green);background:var(--greenSoft)}
 .entity-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:11px;padding-top:10px;border-top:1px solid var(--border)}.metric{background:var(--surface);border-radius:12px;padding:9px;min-width:0}.metric span{display:block;font-size:8px;color:var(--muted2);text-transform:uppercase;font-weight:800;letter-spacing:.06em;margin-bottom:3px}.metric strong{font-size:11px;display:block;overflow-wrap:anywhere}.entity-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}.entity-actions .btn{min-height:42px;font-size:11px;padding:0 9px}.apps-list{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}.app-chip,.type-chip{display:inline-flex;padding:5px 7px;border-radius:8px;font-size:9px;font-weight:800}.app-chip{background:var(--blueSoft);color:var(--blue)}.type-chip.client{background:var(--greenSoft);color:var(--green)}.type-chip.seller{background:var(--purpleSoft);color:var(--purple)}
+
+/* Apps */
+.apps-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.app-service-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:14px;min-width:0}
+.app-service-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.app-service-icon{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:var(--blueSoft);color:var(--blue);font-size:21px;flex:0 0 auto}
+.app-service-name{font-size:14px;font-weight:800;line-height:1.2;overflow-wrap:anywhere}
+.app-service-count{font-size:25px;font-weight:800;margin-top:13px}
+.app-service-label{font-size:9px;color:var(--muted2);font-weight:800;text-transform:uppercase;letter-spacing:.06em;margin-top:2px}
+.app-service-renew{font-size:10px;color:var(--muted);margin-top:8px;min-height:16px}
+.app-service-card .btn{width:100%;margin-top:11px;min-height:42px;font-size:11px}
+.app-client-panel{margin-top:12px}
+.app-client-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.app-client-head .btn{min-height:42px;padding:0 12px;flex:0 0 auto}
+.app-client-head-text{min-width:0}
+.app-client-head h2{font-size:18px;letter-spacing:-.025em;overflow-wrap:anywhere}
+.app-client-head p{font-size:10px;color:var(--muted);margin-top:3px}
+.app-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-bottom:12px}
+.app-mini-stat{background:var(--card);border:1px solid var(--border);border-radius:15px;padding:10px;min-width:0}
+.app-mini-stat span{display:block;font-size:8px;color:var(--muted2);font-weight:800;text-transform:uppercase;letter-spacing:.05em}
+.app-mini-stat strong{display:block;font-size:17px;margin-top:4px;overflow-wrap:anywhere}
+@media(min-width:760px){.apps-grid{grid-template-columns:repeat(5,minmax(0,1fr))}}
+@media(max-width:360px){.nav-tab{font-size:8px}.nav-tab .ico{font-size:17px}.apps-grid{grid-template-columns:1fr 1fr}.app-service-card{padding:11px}.app-service-name{font-size:12px}}
 
 /* History */
 .period-card{padding:12px;margin-bottom:12px}.period-row{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.period-btn{min-height:40px;border:1px solid var(--border);border-radius:11px;background:var(--surface);color:var(--muted);font-size:10px;font-weight:800;cursor:pointer}.period-btn.active{background:var(--blue);border-color:var(--blue);color:#fff}.custom-range{display:grid;grid-template-columns:1fr;gap:8px;margin-top:9px;padding:10px;border-radius:14px;background:var(--surface)}.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px}.stat{background:var(--card);border:1px solid var(--border);border-radius:17px;padding:12px;min-height:84px}.stat span{display:block;color:var(--muted2);font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px}.stat strong{font-size:19px;overflow-wrap:anywhere}.stat.money strong{color:var(--green)}.history-card{padding:12px}.history-toolbar{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:11px}.history-toolbar .wide{grid-column:1/-1}.history-list{display:grid;gap:8px}.movement{background:var(--surface);border:1px solid var(--border);border-radius:17px;padding:12px}.movement-top{display:flex;justify-content:space-between;gap:10px}.movement-name{font-size:15px;font-weight:800}.movement-price{font-size:16px;font-weight:800;color:var(--green);white-space:nowrap}.movement-meta{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}.movement-details{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:9px;padding-top:9px;border-top:1px solid var(--border)}.movement-details span{display:block;font-size:8px;color:var(--muted2);text-transform:uppercase;font-weight:800}.movement-details strong{display:block;font-size:10px;margin-top:3px}.movement-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:9px}.movement-actions .btn{min-height:40px;font-size:11px}
@@ -94,6 +117,7 @@ input,select{font-size:16px}
  <nav class="bottom-nav" aria-label="Secciones">
   <button class="nav-tab active" data-view="registrar" type="button"><span class="ico">＋</span><span>Cargar</span></button>
   <button class="nav-tab" data-view="renovaciones" type="button"><span class="ico">🔄</span><span>Renovar</span></button>
+  <button class="nav-tab" data-view="apps" type="button"><span class="ico">📺</span><span>Apps</span></button>
   <button class="nav-tab" data-view="clientes" type="button"><span class="ico">👤</span><span>Clientes</span></button>
   <button class="nav-tab" data-view="vendedores" type="button"><span class="ico">👥</span><span>Vendedores</span></button>
   <button class="nav-tab" data-view="historial" type="button"><span class="ico">🧾</span><span>Historial</span></button>
@@ -116,7 +140,7 @@ input,select{font-size:16px}
   </section>
 
   <section id="view-renovaciones" class="view">
-   <div class="view-title"><h1>Renovaciones</h1><p>La próxima renovación se calcula 30 días después de la última carga del cliente.</p></div>
+   <div class="view-title"><h1>Renovaciones</h1><p>La próxima renovación mantiene el mismo día en el mes siguiente. Ej.: 29/08 → 29/09.</p></div>
    <div class="renewal-summary">
     <div class="summary-card red"><span>Vencidos</span><strong id="renew-expired">0</strong></div>
     <div class="summary-card yellow"><span>Vencen hoy</span><strong id="renew-today">0</strong></div>
@@ -125,6 +149,40 @@ input,select{font-size:16px}
    </div>
    <div class="card toolbar-card"><div class="toolbar-grid"><input id="renew-search" class="input" type="search" placeholder="Buscar cliente..."><div class="chip-row" id="renew-filters"><button class="filter-chip active" data-status="todos" type="button">Todos</button><button class="filter-chip" data-status="vencido" type="button">Vencidos</button><button class="filter-chip" data-status="hoy" type="button">Hoy</button><button class="filter-chip" data-status="proximo" type="button">Próximos</button><button class="filter-chip" data-status="aldia" type="button">Al día</button></div></div></div>
    <div id="renew-list" class="list"></div><div id="renew-empty" class="empty hidden"><div class="emoji">🔄</div><p>No hay clientes para este filtro.</p></div>
+  </section>
+
+  <section id="view-apps" class="view">
+   <div class="view-title"><h1>Aplicaciones</h1><p>Elegí una app para ver todos los clientes que actualmente tienen ese servicio y renovarlos desde acá.</p></div>
+
+   <div id="apps-home">
+    <div id="apps-grid" class="apps-grid"></div>
+   </div>
+
+   <div id="app-client-panel" class="app-client-panel hidden">
+    <div class="app-client-head">
+     <button id="apps-back" class="btn btn-secondary" type="button">← Apps</button>
+     <div class="app-client-head-text">
+      <h2 id="selected-app-title">Aplicación</h2>
+      <p id="selected-app-count">0 clientes</p>
+     </div>
+    </div>
+
+    <div class="app-summary">
+     <div class="app-mini-stat"><span>Clientes</span><strong id="app-stat-total">0</strong></div>
+     <div class="app-mini-stat"><span>Por renovar</span><strong id="app-stat-renew">0</strong></div>
+     <div class="app-mini-stat"><span>Al día</span><strong id="app-stat-ok">0</strong></div>
+    </div>
+
+    <div class="card toolbar-card">
+     <input id="apps-search" class="input" type="search" placeholder="Buscar dentro de esta app...">
+    </div>
+
+    <div id="apps-clients-list" class="list"></div>
+    <div id="apps-empty" class="empty hidden">
+     <div class="emoji">📺</div>
+     <p>No hay clientes para mostrar en esta aplicación.</p>
+    </div>
+   </div>
   </section>
 
   <section id="view-clientes" class="view">
@@ -162,7 +220,8 @@ const SUPABASE_URL='https://vjbdhbbxbvoigbidquya.supabase.co';
 const SUPABASE_KEY='sb_publishable_4ogrbtxBrBWBFj-NRJOrbg_XnpmO4pS';
 const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const APPS=['TV','FUTURE','TV PLUS 2','FLUJO TV','MAR TV'];
-const CLIENT_PRICE=8000, RENEW_DAYS=30, SOON_DAYS=5;
+const CLIENT_PRICE=8000, SOON_DAYS=5;
+let selectedApp=null;
 let user=null,movements=[],savedClients=[],savedSellers=[],clientCatalog=[],sellerCatalog=[],editMovement=null;
 let currentView='registrar',renewStatus='todos',historyPeriod='hoy',customRange={from:null,to:null};
 
@@ -175,7 +234,14 @@ function num(v){return new Intl.NumberFormat('es-AR',{maximumFractionDigits:2}).
 function dateTime(v){return v?new Intl.DateTimeFormat('es-AR',{timeZone:'America/Argentina/Buenos_Aires',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(v)):'—'}
 function dateOnly(v){return v?new Intl.DateTimeFormat('es-AR',{timeZone:'America/Argentina/Buenos_Aires',day:'2-digit',month:'2-digit',year:'numeric'}).format(new Date(v)):'—'}
 function localISO(d=new Date()){const p=Object.fromEntries(new Intl.DateTimeFormat('en-CA',{timeZone:'America/Argentina/Buenos_Aires',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(d).map(x=>[x.type,x.value]));return `${p.year}-${p.month}-${p.day}`}
-function isoAddDays(iso,days){const [y,m,d]=iso.split('-').map(Number);const x=new Date(Date.UTC(y,m-1,d+days,12));return x.toISOString().slice(0,10)}
+function isoNextMonth(iso){
+ const [y,m,d]=iso.split('-').map(Number);
+ const nextMonth=m===12?1:m+1;
+ const nextYear=m===12?y+1:y;
+ const lastDay=new Date(Date.UTC(nextYear,nextMonth,0,12)).getUTCDate();
+ const day=Math.min(d,lastDay);
+ return `${nextYear}-${String(nextMonth).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+}
 function daysBetween(a,b){const parse=s=>{const [y,m,d]=s.split('-').map(Number);return Date.UTC(y,m-1,d)};return Math.round((parse(b)-parse(a))/86400000)}
 function toast(msg,error=false){const t=$('#toast');t.textContent=msg;t.className='toast'+(error?' error':'');clearTimeout(toast.timer);toast.timer=setTimeout(()=>t.classList.add('hidden'),2800)}
 
@@ -195,13 +261,14 @@ function bindUI(){
  $('#nombre').addEventListener('input',showSuggestions);$('#nombre').addEventListener('focus',showSuggestions);document.addEventListener('click',e=>{if(!e.target.closest('.autocomplete'))hideSuggestions()});
  $('#movement-form').addEventListener('submit',saveMovement);$('#cancel-edit-btn').addEventListener('click',cancelEdit);
  $('#renew-search').addEventListener('input',renderRenewals);$('#clients-search').addEventListener('input',renderClients);$('#sellers-search').addEventListener('input',renderSellers);
+ $('#apps-search').addEventListener('input',renderApps);$('#apps-back').addEventListener('click',()=>{selectedApp=null;$('#apps-search').value='';renderApps()});
  $$('#renew-filters .filter-chip').forEach(b=>b.addEventListener('click',()=>{renewStatus=b.dataset.status;$$('#renew-filters .filter-chip').forEach(x=>x.classList.toggle('active',x===b));renderRenewals()}));
  $$('.period-btn').forEach(b=>b.addEventListener('click',()=>changePeriod(b.dataset.period,b)));$('#apply-range').addEventListener('click',applyCustomRange);
  $('#history-search').addEventListener('input',renderHistory);$('#history-app').addEventListener('change',renderHistory);$('#history-type').addEventListener('change',renderHistory);$('#export-btn').addEventListener('click',exportExcel);
  $('#profile-close').addEventListener('click',closeProfile);$('#profile-modal').addEventListener('click',e=>{if(e.target.id==='profile-modal')closeProfile()});
 }
 async function login(e){e.preventDefault();const btn=$('#login-btn'),err=$('#login-error');err.classList.add('hidden');btn.disabled=true;btn.textContent='Ingresando...';const {error}=await db.auth.signInWithPassword({email:$('#login-email').value.trim(),password:$('#login-pass').value});btn.disabled=false;btn.textContent='Ingresar';if(error){err.textContent=error.message==='Invalid login credentials'?'Email o contraseña incorrectos.':error.message;err.classList.remove('hidden')}}
-function switchView(v){currentView=v;$$('.view').forEach(x=>x.classList.toggle('active',x.id===`view-${v}`));$$('.nav-tab').forEach(x=>x.classList.toggle('active',x.dataset.view===v));if(v==='renovaciones')renderRenewals();if(v==='clientes')renderClients();if(v==='vendedores')renderSellers();if(v==='historial')renderHistory();window.scrollTo({top:0,behavior:'smooth'})}
+function switchView(v){currentView=v;$$('.view').forEach(x=>x.classList.toggle('active',x.id===`view-${v}`));$$('.nav-tab').forEach(x=>x.classList.toggle('active',x.dataset.view===v));if(v==='renovaciones')renderRenewals();if(v==='apps')renderApps();if(v==='clientes')renderClients();if(v==='vendedores')renderSellers();if(v==='historial')renderHistory();window.scrollTo({top:0,behavior:'smooth'})}
 
 function typeSelected(){return $('input[name="tipo"]:checked')?.value||'CLIENTE'}
 function updateType(){const seller=typeSelected()==='VENDEDOR';$('#credits-wrap').classList.toggle('hidden',!seller);$('#creditos').required=seller;$('#name-helper').textContent=seller?'Busca automáticamente entre tus vendedores guardados.':'Busca automáticamente entre tus clientes guardados.';if(!editMovement){if(seller&&$('#precio').value==='8000')$('#precio').value='';if(!seller){$('#precio').value=String(CLIENT_PRICE);$('#creditos').value=''}}hideSuggestions()}
@@ -228,12 +295,71 @@ function editMovementById(id){const m=movements.find(x=>String(x.id)===String(id
 function cancelEdit(){editMovement=null;$('#movement-form').reset();$('#tipo-cliente').checked=true;$('#precio').value=String(CLIENT_PRICE);$('#creditos').value='';$('#save-btn').textContent='Guardar';$('#cancel-edit-btn').classList.add('hidden');updateType()}
 async function deleteMovement(id){const m=movements.find(x=>String(x.id)===String(id));if(!m||!confirm(`¿Eliminar el movimiento de ${m.nombre} por ${money(m.precio)}?`))return;const {error}=await db.from('control_movimientos').delete().eq('id',id);if(error)return toast(error.message,true);toast('Movimiento eliminado.');await loadMovements();rebuildCatalogs();renderAll()}
 
-function clientProfiles(){return clientCatalog.map(c=>{const hist=movements.filter(m=>m.tipo==='CLIENTE'&&norm(m.nombre)===c.key).sort((a,b)=>new Date(b.fecha)-new Date(a.fecha));const last=hist[0]||null;const lastISO=last?localISO(new Date(last.fecha)):(c.last_used_at?localISO(new Date(c.last_used_at)):null);const next=lastISO?isoAddDays(lastISO,RENEW_DAYS):null;const status=renewalStatus(next);const months=new Set(hist.map(m=>{const d=new Date(m.fecha);return new Intl.DateTimeFormat('en-CA',{timeZone:'America/Argentina/Buenos_Aires',year:'numeric',month:'2-digit'}).format(d)})).size;return {...c,hist,last,lastISO,next,status,total:hist.reduce((s,m)=>s+Number(m.precio||0),0),ops:hist.length,months,app_ultima:last?.app||c.app_ultima}})}
+function clientProfiles(){return clientCatalog.map(c=>{const hist=movements.filter(m=>m.tipo==='CLIENTE'&&norm(m.nombre)===c.key).sort((a,b)=>new Date(b.fecha)-new Date(a.fecha));const last=hist[0]||null;const lastISO=last?localISO(new Date(last.fecha)):(c.last_used_at?localISO(new Date(c.last_used_at)):null);const next=lastISO?isoNextMonth(lastISO):null;const status=renewalStatus(next);const months=new Set(hist.map(m=>{const d=new Date(m.fecha);return new Intl.DateTimeFormat('en-CA',{timeZone:'America/Argentina/Buenos_Aires',year:'numeric',month:'2-digit'}).format(d)})).size;return {...c,hist,last,lastISO,next,status,total:hist.reduce((s,m)=>s+Number(m.precio||0),0),ops:hist.length,months,app_ultima:last?.app||c.app_ultima}})}
 function sellerProfiles(){return sellerCatalog.map(s=>{const hist=movements.filter(m=>m.tipo==='VENDEDOR'&&norm(m.nombre)===s.key).sort((a,b)=>new Date(b.fecha)-new Date(a.fecha));return {...s,hist,last:hist[0]||null,total:hist.reduce((a,m)=>a+Number(m.precio||0),0),credits:hist.reduce((a,m)=>a+Number(m.creditos||0),0),ops:hist.length,apps:[...new Set(hist.map(m=>m.app).filter(Boolean))]}})}
 function renewalStatus(next){if(!next)return {key:'aldia',label:'Sin fecha',days:null};const today=localISO(),diff=daysBetween(today,next);if(diff<0)return {key:'vencido',label:`Vencido hace ${Math.abs(diff)} d.`,days:diff};if(diff===0)return {key:'hoy',label:'Vence hoy',days:0};if(diff<=SOON_DAYS)return {key:'proximo',label:`Vence en ${diff} d.`,days:diff};return {key:'aldia',label:'Al día',days:diff}}
 function clientCard(c,renewContext=false){return `<article class="entity-card"><div class="entity-top"><div><div class="entity-name">${esc(c.nombre)}</div><div class="entity-sub">${esc(c.app_ultima||'Sin app')} · ${c.ops} renovación${c.ops===1?'':'es'}</div></div><span class="status ${c.status.key}">${esc(c.status.label)}</span></div><div class="entity-grid"><div class="metric"><span>Última</span><strong>${c.last?esc(dateOnly(c.last.fecha)):'—'}</strong></div><div class="metric"><span>Próxima</span><strong>${c.next?esc(formatISODate(c.next)):'—'}</strong></div><div class="metric"><span>Total</span><strong>${esc(money(c.total))}</strong></div><div class="metric"><span>Meses comprados</span><strong>${c.months}</strong></div></div><div class="entity-actions"><button class="btn btn-secondary" type="button" onclick="openClientProfile('${esc(c.key)}')">Ver ficha</button><button class="btn btn-green" type="button" onclick="quickRenew('${esc(c.key)}')">Renovar $8.000</button></div></article>`}
 function sellerCard(s){return `<article class="entity-card"><div class="entity-top"><div><div class="entity-name">${esc(s.nombre)}</div><div class="entity-sub">${s.ops} carga${s.ops===1?'':'s'} · Última ${s.last?esc(dateOnly(s.last.fecha)):'—'}</div></div><span class="type-chip seller">VENDEDOR</span></div><div class="entity-grid"><div class="metric"><span>Créditos</span><strong>${esc(num(s.credits))}</strong></div><div class="metric"><span>Ingresado</span><strong>${esc(money(s.total))}</strong></div><div class="metric"><span>Última carga</span><strong>${s.last?esc(dateOnly(s.last.fecha)):'—'}</strong></div><div class="metric"><span>Operaciones</span><strong>${s.ops}</strong></div></div><div class="apps-list">${s.apps.map(a=>`<span class="app-chip">${esc(a)}</span>`).join('')||'<span class="entity-sub">Sin apps</span>'}</div><div class="entity-actions"><button class="btn btn-secondary" type="button" onclick="openSellerProfile('${esc(s.key)}')">Ver ficha</button><button class="btn btn-primary" type="button" onclick="prepareSeller('${esc(s.key)}')">Nueva carga</button></div></article>`}
 function formatISODate(iso){if(!iso)return '—';const [y,m,d]=iso.split('-');return `${d}/${m}/${y}`}
+
+
+function appClientList(app){
+ return clientProfiles().filter(c=>c.app_ultima===app);
+}
+function appCard(app){
+ const clients=appClientList(app);
+ const pending=clients.filter(c=>['vencido','hoy','proximo'].includes(c.status.key)).length;
+ return `<article class="app-service-card">
+  <div class="app-service-top">
+   <div>
+    <div class="app-service-name">${esc(app)}</div>
+    <div class="app-service-label">Servicio</div>
+   </div>
+   <div class="app-service-icon">📺</div>
+  </div>
+  <div class="app-service-count">${clients.length}</div>
+  <div class="app-service-label">cliente${clients.length===1?'':'s'}</div>
+  <div class="app-service-renew">${pending?`${pending} para revisar/renovar`:'Todos al día'}</div>
+  <button class="btn btn-primary" type="button" onclick="selectApp('${esc(app)}')">Ver clientes</button>
+ </article>`;
+}
+function selectApp(app){
+ if(!APPS.includes(app))return;
+ selectedApp=app;
+ $('#apps-search').value='';
+ renderApps();
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+function renderApps(){
+ const home=$('#apps-home'),panel=$('#app-client-panel');
+
+ if(!selectedApp){
+  home.classList.remove('hidden');
+  panel.classList.add('hidden');
+  $('#apps-grid').innerHTML=APPS.map(app=>appCard(app)).join('');
+  return;
+ }
+
+ home.classList.add('hidden');
+ panel.classList.remove('hidden');
+
+ const q=norm($('#apps-search').value);
+ const all=appClientList(selectedApp)
+  .sort((a,b)=>(a.status.days??9999)-(b.status.days??9999)||a.nombre.localeCompare(b.nombre,'es'));
+
+ const list=all.filter(c=>!q||c.key.includes(q));
+ const pending=all.filter(c=>['vencido','hoy','proximo'].includes(c.status.key)).length;
+ const ok=all.filter(c=>c.status.key==='aldia').length;
+
+ $('#selected-app-title').textContent=selectedApp;
+ $('#selected-app-count').textContent=`${all.length} cliente${all.length===1?'':'s'} en ${selectedApp}`;
+ $('#app-stat-total').textContent=all.length;
+ $('#app-stat-renew').textContent=pending;
+ $('#app-stat-ok').textContent=ok;
+
+ $('#apps-clients-list').innerHTML=list.map(c=>clientCard(c,true)).join('');
+ $('#apps-empty').classList.toggle('hidden',list.length>0);
+}
 
 function renderRenewals(){const all=clientProfiles();$('#renew-expired').textContent=all.filter(c=>c.status.key==='vencido').length;$('#renew-today').textContent=all.filter(c=>c.status.key==='hoy').length;$('#renew-soon').textContent=all.filter(c=>c.status.key==='proximo').length;$('#renew-ok').textContent=all.filter(c=>c.status.key==='aldia').length;const q=norm($('#renew-search').value);const list=all.filter(c=>(renewStatus==='todos'||c.status.key===renewStatus)&&(!q||c.key.includes(q))).sort((a,b)=>(a.status.days??9999)-(b.status.days??9999)||a.nombre.localeCompare(b.nombre,'es'));$('#renew-list').innerHTML=list.map(c=>clientCard(c,true)).join('');$('#renew-empty').classList.toggle('hidden',list.length>0)}
 function renderClients(){const q=norm($('#clients-search').value);const list=clientProfiles().filter(c=>!q||c.key.includes(q)).sort((a,b)=>a.nombre.localeCompare(b.nombre,'es'));$('#clients-list').innerHTML=list.map(c=>clientCard(c)).join('');$('#clients-empty').classList.toggle('hidden',list.length>0)}
@@ -252,9 +378,9 @@ function periodLimits(){if(historyPeriod==='todo')return{from:null,to:null};if(h
 function filteredHistory(){const {from,to}=periodLimits(),q=norm($('#history-search').value),app=$('#history-app').value,type=$('#history-type').value;return movements.filter(m=>{const day=localISO(new Date(m.fecha));if(from&&day<from)return false;if(to&&day>to)return false;if(app!=='TODAS'&&m.app!==app)return false;if(type!=='TODOS'&&m.tipo!==type)return false;if(q&&!norm(m.nombre).includes(q))return false;return true})}
 function renderHistory(){const list=filteredHistory();$('#stat-money').textContent=money(list.reduce((a,m)=>a+Number(m.precio||0),0));$('#stat-clients').textContent=list.filter(m=>m.tipo==='CLIENTE').length;$('#stat-sellers').textContent=list.filter(m=>m.tipo==='VENDEDOR').length;$('#stat-credits').textContent=num(list.filter(m=>m.tipo==='VENDEDOR').reduce((a,m)=>a+Number(m.creditos||0),0));$('#history-list').innerHTML=list.map(m=>`<article class="movement"><div class="movement-top"><div class="movement-name">${esc(m.nombre)}</div><div class="movement-price">${esc(money(m.precio))}</div></div><div class="movement-meta"><span class="app-chip">${esc(m.app)}</span><span class="type-chip ${m.tipo==='CLIENTE'?'client':'seller'}">${esc(m.tipo)}</span></div><div class="movement-details"><div><span>Fecha</span><strong>${esc(dateTime(m.fecha))}</strong></div><div><span>Créditos</span><strong>${m.tipo==='VENDEDOR'?esc(num(m.creditos)):'No aplica'}</strong></div></div><div class="movement-actions"><button class="btn btn-secondary" type="button" onclick="editMovementById('${m.id}')">Editar</button><button class="btn btn-danger" type="button" onclick="deleteMovement('${m.id}')">Eliminar</button></div></article>`).join('');$('#history-empty').classList.toggle('hidden',list.length>0)}
 function exportExcel(){const list=filteredHistory();if(!list.length)return toast('No hay datos para exportar.',true);const rows=list.map(m=>({'Fecha y hora':dateTime(m.fecha),'Aplicación':m.app,'Tipo':m.tipo,'Nombre':m.nombre,'Créditos':m.tipo==='VENDEDOR'?Number(m.creditos||0):'','Precio':Number(m.precio||0)}));const ws=XLSX.utils.json_to_sheet(rows),wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Movimientos');XLSX.writeFile(wb,`Control_ingresos_${historyPeriod}_${localISO()}.xlsx`)}
-function renderAll(){renderRenewals();renderClients();renderSellers();renderHistory()}
+function renderAll(){renderRenewals();renderApps();renderClients();renderSellers();renderHistory()}
 
-window.openClientProfile=openClientProfile;window.openSellerProfile=openSellerProfile;window.quickRenew=quickRenew;window.prepareSeller=prepareSeller;window.closeProfile=closeProfile;window.editMovementById=editMovementById;window.deleteMovement=deleteMovement;
+window.selectApp=selectApp;window.openClientProfile=openClientProfile;window.openSellerProfile=openSellerProfile;window.quickRenew=quickRenew;window.prepareSeller=prepareSeller;window.closeProfile=closeProfile;window.editMovementById=editMovementById;window.deleteMovement=deleteMovement;
 init();
 </script>
 </body>
