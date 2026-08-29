@@ -974,6 +974,55 @@
             .apps-permissions-grid { grid-template-columns: 1fr; }
         }
 
+    
+
+        /* ─── MODO CLARO GRIS + MOBILE V2 ─── */
+        html.light-mode {
+            --bg-primary: #cfd3d8;
+            --bg-card: #e1e4e8;
+            --bg-card-hover: #d7dbe0;
+            --bg-surface: #c4c9cf;
+            --border: rgba(15,23,42,0.12);
+            --border-hover: rgba(59,127,245,0.28);
+            --text-primary: #1f2937;
+            --text-secondary: #4b5563;
+            --text-muted: #747d8a;
+        }
+        html.light-mode .input-modern { background: #d8dce0; color: #1f2937; }
+        html.light-mode .input-modern:focus { background: #e7e9ec; }
+        html.light-mode .modal-box { background: #d6dade; }
+        html.light-mode .users-directory,
+        html.light-mode .users-directory-toolbar,
+        html.light-mode .user-row,
+        html.light-mode .users-pagination { background: #e1e4e8; }
+        html.light-mode .users-directory-summary { background: #d5d9de; }
+        html.light-mode .user-row:hover { background: #d7dbe0; }
+
+        @media (max-width: 768px) {
+            .nav-inner { height: auto; min-height: 58px; padding: 8px 12px; flex-wrap: wrap; gap: 7px; }
+            .nav-links { order: 2; width: 100%; overflow-x: auto; padding: 2px 0; scrollbar-width: none; }
+            .nav-links::-webkit-scrollbar { display: none; }
+            .nav-links a { white-space: nowrap; min-height: 36px; display: inline-flex; align-items: center; padding: 7px 10px; }
+            .nav-right { order: 1; margin-left: auto; gap: 7px; }
+            .btn-password, .btn-logout { min-height: 36px; }
+            .container { padding: 18px 12px 72px; }
+            .page-header h1 { font-size: 23px; }
+            .form-grid-5 { grid-template-columns: 1fr; }
+            .input-modern, select.input-modern, input.input-modern { min-height: 46px; font-size: 16px; }
+            .users-directory-toolbar { grid-template-columns: 1fr; }
+            .team-search-wrapper { grid-column: auto; }
+            .user-row-actions .btn-card { width: 40px; min-height: 40px; }
+            .apps-permissions-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+            .apps-permissions-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+            .apps-permissions-actions .btn-mini { min-height: 42px; }
+        }
+        @media (max-width: 480px) {
+            .page-header h1 { font-size: 21px; }
+            .apps-permissions-grid { grid-template-columns: 1fr; }
+            .apps-permissions-actions { grid-template-columns: 1fr; }
+            .card-cliente { align-items: flex-start; }
+        }
+
     </style>
 </head>
 <body>
@@ -1352,7 +1401,7 @@
             'TV PLUS 2':       { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/tvplus2.png' },
             'TV':              { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/tv.png' },
             'FUTURE':          { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/future.png' },
-            'ON PLAY':         { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/onplay.png' },
+            'MAR TV':          { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/martv.png' },
             'TV (EX LUMIX)':   { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/tvlumix.png' },
             'KRATEN':          { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/kraken.png' },
             'TRY PLAY':        { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/tryplay.png' },
@@ -1361,13 +1410,16 @@
             'FEMON PLUS':      { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/femon.png' },
             'VEXA TV':         { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/vexa.png' },
             'MUNDO INFINITO':  { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/mundo.png' },
-            'SUFFIXED':        { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/suffixed.png' }
+            'SUFFIXED':        { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/suffixed.png' },
+            'INTERNET PERSONAL':{ logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/internetpersonal.png' },
+            'INTERNET CLARO':   { logo: 'https://raw.githubusercontent.com/tvdigitalesquel-cmd/clientestv/main/img/internetclaro.png' }
         };
 
         const TODAS_LAS_APPS = Object.keys(configApps);
 
         function normalizarNombreApp(nombre) {
-            return String(nombre || '').trim().toUpperCase();
+            const normalizado = String(nombre || '').trim().toUpperCase();
+            return normalizado === 'ON PLAY' ? 'MAR TV' : normalizado;
         }
 
         function normalizarListaApps(lista, usarTodasSiVacia = false) {
@@ -1994,7 +2046,7 @@
                 .in('creado_por', usuarioIds);
 
             if (error) throw error;
-            todosLosClientes = data || [];
+            todosLosClientes = (data || []).map(c => ({ ...c, app_instalada: normalizarNombreApp(c.app_instalada) }));
         }
 
         async function cargarUsuariosSistema() {
@@ -2424,7 +2476,8 @@
             const d = tieneVencimiento
                 ? Math.ceil((new Date(c.fecha_vencimiento) - hoy) / (1000 * 60 * 60 * 24))
                 : null;
-            const config = configApps[String(c.app_instalada || '').trim().toUpperCase()];
+            const appNormalizada = normalizarNombreApp(c.app_instalada);
+            const config = configApps[appNormalizada];
 
             let estadoBadge = 'estado-activo';
             if (d !== null && d <= 0) estadoBadge = 'estado-vencido';
@@ -2438,7 +2491,7 @@
                 ? `$${parseFloat(c.precio || 0).toFixed(2)}`
                 : 'Sin precio';
             const ciudadTexto = c.ciudad || 'Sin ciudad';
-            const appTexto = c.app_instalada || 'Sin app';
+            const appTexto = appNormalizada || 'Sin app';
             const diasTexto = d === null ? '—' : d;
             const badgeTexto = d === null ? 'Sin fecha' : (d <= 0 ? 'Venc' : d + 'd');
             const logo = config ? config.logo : LOGO_GENERICO;
