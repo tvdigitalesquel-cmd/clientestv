@@ -133,9 +133,10 @@ input,select{font-size:16px}
      <div><label class="input-label" for="nombre">Nombre</label><div class="autocomplete"><input id="nombre" class="input" type="text" autocomplete="off" required placeholder="Escribí las primeras letras"><div id="suggestions" class="suggestions hidden"></div></div><div id="name-helper" class="helper">Busca automáticamente entre tus clientes guardados.</div></div>
      <div id="credits-wrap" class="hidden"><label class="input-label" for="creditos">Créditos</label><input id="creditos" class="input" type="number" min="0" step="1" inputmode="numeric" placeholder="Ej: 100"></div>
      <div><label class="input-label" for="precio">Precio cobrado</label><input id="precio" class="input" type="number" min="0" step="0.01" inputmode="decimal" value="8000" required></div>
+     <div><label class="input-label" for="fecha-manual">Fecha <span style="font-weight:500;color:var(--muted2)">(opcional)</span></label><input id="fecha-manual" class="input" type="date"><div class="helper">Si queda vacío, se usa la fecha y hora actual automáticamente.</div></div>
      <div class="form-actions"><button id="save-btn" class="btn btn-primary" type="submit">Guardar</button><button id="cancel-edit-btn" class="btn btn-secondary hidden" type="button">Cancelar</button></div>
     </form>
-    <div class="auto-date">🕒 La fecha y hora se guardan automáticamente.</div>
+    <div class="auto-date">🕒 Fecha vacía = fecha/hora actual. También podés elegir una fecha manualmente.</div>
    </div>
   </section>
 
@@ -234,6 +235,12 @@ function num(v){return new Intl.NumberFormat('es-AR',{maximumFractionDigits:2}).
 function dateTime(v){return v?new Intl.DateTimeFormat('es-AR',{timeZone:'America/Argentina/Buenos_Aires',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(v)):'—'}
 function dateOnly(v){return v?new Intl.DateTimeFormat('es-AR',{timeZone:'America/Argentina/Buenos_Aires',day:'2-digit',month:'2-digit',year:'numeric'}).format(new Date(v)):'—'}
 function localISO(d=new Date()){const p=Object.fromEntries(new Intl.DateTimeFormat('en-CA',{timeZone:'America/Argentina/Buenos_Aires',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(d).map(x=>[x.type,x.value]));return `${p.year}-${p.month}-${p.day}`}
+function manualDateToTimestamp(isoDate){
+ if(!isoDate)return null;
+ if(!/^\d{4}-\d{2}-\d{2}$/.test(isoDate))return null;
+ // Mediodía de Argentina evita corrimientos de día por zona horaria.
+ return `${isoDate}T12:00:00-03:00`;
+}
 function isoNextMonth(iso){
  const [y,m,d]=iso.split('-').map(Number);
  const nextMonth=m===12?1:m+1;
@@ -290,9 +297,82 @@ function showSuggestions(){const box=$('#suggestions'),q=norm($('#nombre').value
 function selectSuggestion(key){const catalog=typeSelected()==='CLIENTE'?clientCatalog:sellerCatalog,x=catalog.find(y=>y.key===key);if(!x)return;$('#nombre').value=x.nombre;if(APPS.includes(x.app_ultima))$('#app').value=x.app_ultima;if(typeSelected()==='CLIENTE')$('#precio').value=String(CLIENT_PRICE);hideSuggestions()}
 function hideSuggestions(){$('#suggestions').classList.add('hidden')}
 
-async function saveMovement(e){e.preventDefault();if(!user)return;const tipo=typeSelected(),app=$('#app').value,nombre=cleanName($('#nombre').value),precio=Number($('#precio').value),creditos=tipo==='VENDEDOR'?Number($('#creditos').value):null;if(!APPS.includes(app))return toast('Seleccioná una aplicación.',true);if(!nombre)return toast('Ingresá el nombre.',true);if(!Number.isFinite(precio)||precio<0)return toast('Ingresá un precio válido.',true);if(tipo==='VENDEDOR'&&(!Number.isFinite(creditos)||creditos<0))return toast('Ingresá los créditos.',true);const payload={app,tipo,nombre,precio,creditos};const btn=$('#save-btn');btn.disabled=true;btn.textContent='Guardando...';let error;if(editMovement)({error}=await db.from('control_movimientos').update(payload).eq('id',editMovement.id));else({error}=await db.from('control_movimientos').insert({...payload,user_id:user.id}));btn.disabled=false;btn.textContent=editMovement?'Guardar cambios':'Guardar';if(error)return toast(`No se pudo guardar: ${error.message}`,true);await savePerson(tipo,nombre,app);toast(editMovement?'Movimiento actualizado.':'Movimiento guardado.');cancelEdit();await loadMovements();rebuildCatalogs();renderAll()}
-function editMovementById(id){const m=movements.find(x=>String(x.id)===String(id));if(!m)return;editMovement=m;$('#app').value=m.app;$(m.tipo==='VENDEDOR'?'#tipo-vendedor':'#tipo-cliente').checked=true;$('#nombre').value=m.nombre;$('#precio').value=m.precio;$('#creditos').value=m.creditos??'';updateType();$('#save-btn').textContent='Guardar cambios';$('#cancel-edit-btn').classList.remove('hidden');switchView('registrar')}
-function cancelEdit(){editMovement=null;$('#movement-form').reset();$('#tipo-cliente').checked=true;$('#precio').value=String(CLIENT_PRICE);$('#creditos').value='';$('#save-btn').textContent='Guardar';$('#cancel-edit-btn').classList.add('hidden');updateType()}
+async function saveMovement(e){
+ e.preventDefault();
+ if(!user)return;
+ const tipo=typeSelected(),
+       app=$('#app').value,
+       nombre=cleanName($('#nombre').value),
+       precio=Number($('#precio').value),
+       creditos=tipo==='VENDEDOR'?Number($('#creditos').value):null,
+       fechaManual=$('#fecha-manual').value;
+
+ if(!APPS.includes(app))return toast('Seleccioná una aplicación.',true);
+ if(!nombre)return toast('Ingresá el nombre.',true);
+ if(!Number.isFinite(precio)||precio<0)return toast('Ingresá un precio válido.',true);
+ if(tipo==='VENDEDOR'&&(!Number.isFinite(creditos)||creditos<0))return toast('Ingresá los créditos.',true);
+
+ const payload={app,tipo,nombre,precio,creditos};
+ if(fechaManual){
+   const fechaTs=manualDateToTimestamp(fechaManual);
+   if(!fechaTs)return toast('La fecha elegida no es válida.',true);
+   payload.fecha=fechaTs;
+ } else if(editMovement) {
+   // En edición, si se deja vacío usamos la fecha/hora actual.
+   payload.fecha=new Date().toISOString();
+ }
+
+ const btn=$('#save-btn');
+ btn.disabled=true;
+ btn.textContent='Guardando...';
+
+ let error;
+ if(editMovement){
+   ({error}=await db.from('control_movimientos').update(payload).eq('id',editMovement.id));
+ }else{
+   // En alta, si no se eligió fecha NO enviamos "fecha":
+   // Supabase aplica automáticamente el valor por defecto de la tabla.
+   ({error}=await db.from('control_movimientos').insert({...payload,user_id:user.id}));
+ }
+
+ btn.disabled=false;
+ btn.textContent=editMovement?'Guardar cambios':'Guardar';
+
+ if(error)return toast(`No se pudo guardar: ${error.message}`,true);
+
+ await savePerson(tipo,nombre,app);
+ toast(editMovement?'Movimiento actualizado.':'Movimiento guardado.');
+ cancelEdit();
+ await loadMovements();
+ rebuildCatalogs();
+ renderAll();
+}
+function editMovementById(id){
+ const m=movements.find(x=>String(x.id)===String(id));
+ if(!m)return;
+ editMovement=m;
+ $('#app').value=m.app;
+ $(m.tipo==='VENDEDOR'?'#tipo-vendedor':'#tipo-cliente').checked=true;
+ $('#nombre').value=m.nombre;
+ $('#precio').value=m.precio;
+ $('#creditos').value=m.creditos??'';
+ $('#fecha-manual').value=m.fecha?localISO(new Date(m.fecha)):'';
+ updateType();
+ $('#save-btn').textContent='Guardar cambios';
+ $('#cancel-edit-btn').classList.remove('hidden');
+ switchView('registrar');
+}
+function cancelEdit(){
+ editMovement=null;
+ $('#movement-form').reset();
+ $('#tipo-cliente').checked=true;
+ $('#precio').value=String(CLIENT_PRICE);
+ $('#creditos').value='';
+ $('#fecha-manual').value='';
+ $('#save-btn').textContent='Guardar';
+ $('#cancel-edit-btn').classList.add('hidden');
+ updateType();
+}
 async function deleteMovement(id){const m=movements.find(x=>String(x.id)===String(id));if(!m||!confirm(`¿Eliminar el movimiento de ${m.nombre} por ${money(m.precio)}?`))return;const {error}=await db.from('control_movimientos').delete().eq('id',id);if(error)return toast(error.message,true);toast('Movimiento eliminado.');await loadMovements();rebuildCatalogs();renderAll()}
 
 function clientProfiles(){return clientCatalog.map(c=>{const hist=movements.filter(m=>m.tipo==='CLIENTE'&&norm(m.nombre)===c.key).sort((a,b)=>new Date(b.fecha)-new Date(a.fecha));const last=hist[0]||null;const lastISO=last?localISO(new Date(last.fecha)):(c.last_used_at?localISO(new Date(c.last_used_at)):null);const next=lastISO?isoNextMonth(lastISO):null;const status=renewalStatus(next);const months=new Set(hist.map(m=>{const d=new Date(m.fecha);return new Intl.DateTimeFormat('en-CA',{timeZone:'America/Argentina/Buenos_Aires',year:'numeric',month:'2-digit'}).format(d)})).size;return {...c,hist,last,lastISO,next,status,total:hist.reduce((s,m)=>s+Number(m.precio||0),0),ops:hist.length,months,app_ultima:last?.app||c.app_ultima}})}
