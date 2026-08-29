@@ -481,6 +481,29 @@
         @media (max-width: 480px) {
             .reporte-stat .stat-value { font-size: 24px; }
         }
+    
+
+        /* ─── MODO CLARO GRIS + MOBILE V2 ─── */
+        html.light-mode {
+            --bg-primary:#cfd3d8; --bg-card:#e1e4e8; --bg-card-hover:#d7dbe0; --bg-surface:#c4c9cf;
+            --border:rgba(15,23,42,.12); --border-hover:rgba(59,127,245,.28);
+            --text-primary:#1f2937; --text-secondary:#4b5563; --text-muted:#747d8a;
+        }
+        html.light-mode .input-modern { background:#d8dce0; color:#1f2937; }
+        html.light-mode .input-modern:focus { background:#e7e9ec; }
+        @media (max-width:768px) {
+            .nav-inner{height:auto;min-height:58px;padding:8px 12px;flex-wrap:wrap;gap:7px}
+            .nav-links{order:2;width:100%;overflow-x:auto;padding:2px 0;scrollbar-width:none}.nav-links::-webkit-scrollbar{display:none}
+            .nav-links a{white-space:nowrap;min-height:36px;display:inline-flex;align-items:center;padding:7px 10px}
+            .nav-right{order:1;margin-left:auto;gap:7px}.btn-logout{min-height:36px}
+            .container{padding:18px 12px 72px}.page-header h1{font-size:23px}
+            .periodo-btn-container{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+            .periodo-btn{width:100%;min-height:42px}
+            .input-modern,input.input-modern{min-height:46px;font-size:16px}
+            .table-wrapper{-webkit-overflow-scrolling:touch;overflow-x:auto}
+        }
+        @media (max-width:480px){.periodo-btn-container{grid-template-columns:1fr}.page-header h1{font-size:21px}}
+
     </style>
 </head>
 <body>
@@ -591,6 +614,11 @@
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         let todosLosClientes = [];
+
+        function normalizarNombreApp(nombre) {
+            const valor = String(nombre || '').trim().toUpperCase();
+            return valor === 'ON PLAY' ? 'MAR TV' : valor;
+        }
         let periodoReporte = 'semana';
         let currentUser = JSON.parse(localStorage.getItem('session_tvdigital'));
         let fechaDesdePersonalizado = null;
@@ -648,7 +676,7 @@
 
         async function cargarClientes() {
             const { data } = await supabaseClient.from('clientes').select('*').eq('creado_por', currentUser.id).order('fecha_pago', { ascending: false });
-            todosLosClientes = data || [];
+            todosLosClientes = (data || []).map(c => ({ ...c, app_instalada: normalizarNombreApp(c.app_instalada) }));
             actualizarReporte();
         }
 
@@ -751,7 +779,7 @@
 
                     datosReporte.push({
                         nombre: c.nombre_apellido || '—',
-                        app: c.app_instalada || '—',
+                        app: normalizarNombreApp(c.app_instalada) || '—',
                         usuario: c.usuario || '—',
                         ciudad: c.ciudad || '—',
                         telefono: c.celular || '—',
