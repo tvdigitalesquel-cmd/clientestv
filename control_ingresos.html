@@ -2,769 +2,105 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#0a0d14">
-<title>Control Privado de Ingresos</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Actualizar Control de Ingresos</title>
 <style>
-:root{
- --bg:#0a0d14;--nav:#0f1520;--card:#131b28;--surface:#1c2740;--surface2:#202c43;
- --border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.15);--text:#e8edf5;--muted:#8492a6;--muted2:#536176;
- --blue:#3b82f6;--blueSoft:rgba(59,130,246,.13);--green:#22c55e;--greenSoft:rgba(34,197,94,.13);
- --red:#ef4444;--redSoft:rgba(239,68,68,.13);--yellow:#f59e0b;--yellowSoft:rgba(245,158,11,.13);
- --purple:#a855f7;--purpleSoft:rgba(168,85,247,.13);--cyan:#06b6d4;--cyanSoft:rgba(6,182,212,.13);
- --r:16px;--r2:22px;
-}
-html.light-mode{
- --bg:#cfd3d8;--nav:#24282e;--card:#e0e3e6;--surface:#c4c9cf;--surface2:#d3d7db;
- --border:rgba(20,28,38,.13);--border2:rgba(20,28,38,.22);--text:#18212e;--muted:#4e5a69;--muted2:#737d8b;
- --blueSoft:rgba(59,130,246,.11);--greenSoft:rgba(34,197,94,.11);--redSoft:rgba(239,68,68,.11);--yellowSoft:rgba(245,158,11,.12);--purpleSoft:rgba(168,85,247,.10);--cyanSoft:rgba(6,182,212,.10)
-}
-*{box-sizing:border-box;margin:0;padding:0}html{color-scheme:dark}html.light-mode{color-scheme:light}
-body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:84px}
-button,input,select{font:inherit}button{touch-action:manipulation}.hidden{display:none!important}
-input,select{font-size:16px}
-::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:10px}
-@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}@keyframes spin{to{transform:rotate(360deg)}}
-
-/* Login */
-.login-screen{min-height:100vh;display:grid;place-items:center;padding:18px}.login-card{width:min(430px,100%);background:var(--card);border:1px solid var(--border);border-radius:28px;padding:28px 22px;animation:fade .25s ease}.login-logo{width:58px;height:58px;border-radius:18px;display:grid;place-items:center;background:var(--blueSoft);color:var(--blue);font-size:28px;margin-bottom:18px}.login-card h1{font-size:27px;letter-spacing:-.04em}.login-card p{font-size:13px;color:var(--muted);line-height:1.55;margin:8px 0 22px}.login-error{margin-top:12px;padding:11px;border-radius:12px;background:var(--redSoft);color:#fca5a5;font-size:12px;border:1px solid rgba(239,68,68,.25)}
-
-/* Header */
-.topbar{position:sticky;top:0;z-index:50;background:var(--nav);border-bottom:1px solid rgba(255,255,255,.06)}.topbar-inner{height:60px;max-width:1180px;margin:auto;padding:0 14px;display:flex;align-items:center;justify-content:space-between;gap:10px}.brand{display:flex;align-items:center;gap:10px;min-width:0}.brand-icon{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:rgba(59,130,246,.16);font-size:19px}.brand strong{display:block;color:#fff;font-size:14px}.brand span{display:block;color:rgba(255,255,255,.42);font-size:10px}.top-actions{display:flex;gap:7px;align-items:center}.icon-btn,.logout-btn{height:40px;border-radius:12px;border:1px solid rgba(255,255,255,.11);background:rgba(255,255,255,.06);color:#fff;cursor:pointer}.icon-btn{width:42px}.logout-btn{padding:0 12px;color:#fca5a5}
-
-.main{max-width:1180px;margin:auto;padding:14px 12px 28px}.view{display:none;animation:fade .2s ease}.view.active{display:block}.view-title{margin:4px 2px 14px}.view-title h1{font-size:22px;letter-spacing:-.035em}.view-title p{color:var(--muted);font-size:12px;margin-top:4px;line-height:1.45}
-.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r2)}.section-label{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted2);font-weight:800;margin-bottom:12px}
-.input-label{display:block;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:7px}.input{width:100%;height:52px;border-radius:14px;border:1px solid var(--border);background:var(--surface);color:var(--text);padding:0 14px;outline:none}.input:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blueSoft)}.input::placeholder{color:var(--muted2)}
-.btn{min-height:48px;border:0;border-radius:14px;padding:0 16px;font-weight:800;cursor:pointer;transition:.18s}.btn-primary{background:var(--blue);color:#fff}.btn-secondary{background:var(--surface);color:var(--text);border:1px solid var(--border)}.btn-green{background:var(--greenSoft);color:var(--green);border:1px solid rgba(34,197,94,.24)}.btn-danger{background:var(--redSoft);color:var(--red);border:1px solid rgba(239,68,68,.22)}.btn:disabled{opacity:.55;cursor:wait}
-
-/* Bottom tabs */
-.bottom-nav{position:fixed;left:0;right:0;bottom:0;z-index:60;background:rgba(15,21,32,.97);border-top:1px solid rgba(255,255,255,.08);padding:7px max(6px,env(safe-area-inset-right)) calc(7px + env(safe-area-inset-bottom)) max(6px,env(safe-area-inset-left));display:grid;grid-template-columns:repeat(6,1fr);gap:3px}.nav-tab{border:0;background:transparent;color:#77849a;border-radius:12px;min-height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:9px;font-weight:700;cursor:pointer}.nav-tab .ico{font-size:19px;line-height:1}.nav-tab.active{background:rgba(59,130,246,.14);color:#76a7ff}
-
-/* Register */
-.register-card{padding:14px}.form-grid{display:grid;grid-template-columns:1fr;gap:12px}.type-selector{display:grid;grid-template-columns:1fr 1fr;gap:8px}.type-option{position:relative}.type-option input{position:absolute;opacity:0}.type-option label{min-height:52px;border-radius:14px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;gap:7px;font-weight:800;color:var(--muted);cursor:pointer}.type-option input:checked+label{color:var(--blue);border-color:var(--blue);background:var(--blueSoft)}.dot{width:17px;height:17px;border-radius:5px;border:1.5px solid currentColor;display:grid;place-items:center;font-size:10px}.type-option input:checked+label .dot:after{content:'✓'}
-.autocomplete{position:relative}.suggestions{position:absolute;top:calc(100% + 5px);left:0;right:0;z-index:80;background:var(--card);border:1px solid var(--border2);border-radius:16px;padding:6px;max-height:310px;overflow:auto;box-shadow:0 20px 55px rgba(0,0,0,.38)}.suggestion{width:100%;min-height:58px;border:0;border-radius:12px;background:transparent;color:var(--text);display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 10px;text-align:left;cursor:pointer}.suggestion:hover{background:var(--blueSoft)}.suggestion-main{min-width:0}.suggestion-main strong{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.suggestion-main span{display:block;font-size:10px;color:var(--muted);margin-top:3px}.suggestion-meta{font-size:9px;font-weight:800;color:var(--purple);background:var(--purpleSoft);padding:5px 7px;border-radius:999px;white-space:nowrap}.helper{font-size:10px;color:var(--muted2);margin-top:6px;line-height:1.4}.form-actions{display:grid;grid-template-columns:1fr;gap:8px}.auto-date{text-align:center;font-size:10px;color:var(--muted2);margin-top:10px}
-
-/* Status and renewal */
-.renewal-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:12px}.summary-card{border-radius:18px;background:var(--card);border:1px solid var(--border);padding:13px}.summary-card span{display:block;font-size:9px;text-transform:uppercase;letter-spacing:.07em;font-weight:800;color:var(--muted2);margin-bottom:6px}.summary-card strong{font-size:22px}.summary-card.red strong{color:var(--red)}.summary-card.yellow strong{color:var(--yellow)}.summary-card.blue strong{color:var(--blue)}.summary-card.green strong{color:var(--green)}
-.toolbar-card{padding:12px;margin-bottom:12px}.toolbar-grid{display:grid;grid-template-columns:1fr;gap:8px}.chip-row{display:flex;gap:6px;overflow:auto;padding-bottom:1px}.filter-chip{border:1px solid var(--border);background:var(--surface);color:var(--muted);min-height:38px;padding:0 12px;border-radius:999px;white-space:nowrap;font-size:11px;font-weight:800;cursor:pointer}.filter-chip.active{background:var(--blueSoft);border-color:var(--blue);color:var(--blue)}
-.list{display:grid;gap:9px}.entity-card{background:var(--card);border:1px solid var(--border);border-radius:19px;padding:13px}.entity-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}.entity-name{font-size:16px;font-weight:800;line-height:1.2;overflow-wrap:anywhere}.entity-sub{font-size:10px;color:var(--muted);margin-top:4px}.status{display:inline-flex;align-items:center;padding:5px 8px;border-radius:999px;font-size:9px;font-weight:800;white-space:nowrap}.status.vencido{color:var(--red);background:var(--redSoft)}.status.hoy{color:var(--yellow);background:var(--yellowSoft)}.status.proximo{color:var(--blue);background:var(--blueSoft)}.status.aldia{color:var(--green);background:var(--greenSoft)}
-.entity-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:11px;padding-top:10px;border-top:1px solid var(--border)}.metric{background:var(--surface);border-radius:12px;padding:9px;min-width:0}.metric span{display:block;font-size:8px;color:var(--muted2);text-transform:uppercase;font-weight:800;letter-spacing:.06em;margin-bottom:3px}.metric strong{font-size:11px;display:block;overflow-wrap:anywhere}.entity-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}.entity-actions .btn{min-height:42px;font-size:11px;padding:0 9px}.apps-list{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}.app-chip,.type-chip{display:inline-flex;padding:5px 7px;border-radius:8px;font-size:9px;font-weight:800}.app-chip{background:var(--blueSoft);color:var(--blue)}.type-chip.client{background:var(--greenSoft);color:var(--green)}.type-chip.seller{background:var(--purpleSoft);color:var(--purple)}
-
-
-/* Logos de aplicaciones */
-.app-logo-wrap{
- width:48px;height:48px;border-radius:14px;background:var(--surface);
- border:1px solid var(--border);display:grid;place-items:center;overflow:hidden;
- flex:0 0 auto;
-}
-.app-logo{
- width:100%;height:100%;object-fit:contain;padding:6px;display:block;
-}
-.app-logo-fallback{
- width:100%;height:100%;display:grid;place-items:center;font-size:20px;
- color:var(--muted);
-}
-.entity-app-row{display:flex;align-items:center;gap:9px;min-width:0}
-.entity-app-row .app-logo-wrap{width:34px;height:34px;border-radius:10px}
-.entity-app-row .app-logo{padding:4px}
-.client-admin-actions{
- display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;
-}
-.client-admin-actions .btn{min-height:42px}
-.client-edit-grid{display:grid;gap:12px}
-.client-edit-grid .input{width:100%}
-.modal-note{
- margin-top:10px;padding:10px 12px;border-radius:12px;
- background:var(--surface);border:1px solid var(--border);
- color:var(--muted);font-size:11px;line-height:1.45;
-}
-@media(max-width:420px){
- .client-admin-actions{grid-template-columns:1fr}
- .app-logo-wrap{width:44px;height:44px}
-}
-
-/* Apps */
-.apps-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
-.app-service-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:14px;min-width:0}
-.app-service-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
-.app-service-icon{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:var(--blueSoft);color:var(--blue);font-size:21px;flex:0 0 auto}
-.app-service-name{font-size:14px;font-weight:800;line-height:1.2;overflow-wrap:anywhere}
-.app-service-count{font-size:25px;font-weight:800;margin-top:13px}
-.app-service-label{font-size:9px;color:var(--muted2);font-weight:800;text-transform:uppercase;letter-spacing:.06em;margin-top:2px}
-.app-service-renew{font-size:10px;color:var(--muted);margin-top:8px;min-height:16px}
-.app-service-card .btn{width:100%;margin-top:11px;min-height:42px;font-size:11px}
-.app-client-panel{margin-top:12px}
-.app-client-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
-.app-client-head .btn{min-height:42px;padding:0 12px;flex:0 0 auto}
-.app-client-head-text{min-width:0}
-.app-client-head h2{font-size:18px;letter-spacing:-.025em;overflow-wrap:anywhere}
-.app-client-head p{font-size:10px;color:var(--muted);margin-top:3px}
-.app-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-bottom:12px}
-.app-mini-stat{background:var(--card);border:1px solid var(--border);border-radius:15px;padding:10px;min-width:0}
-.app-mini-stat span{display:block;font-size:8px;color:var(--muted2);font-weight:800;text-transform:uppercase;letter-spacing:.05em}
-.app-mini-stat strong{display:block;font-size:17px;margin-top:4px;overflow-wrap:anywhere}
-@media(min-width:760px){.apps-grid{grid-template-columns:repeat(5,minmax(0,1fr))}}
-@media(max-width:360px){.nav-tab{font-size:8px}.nav-tab .ico{font-size:17px}.apps-grid{grid-template-columns:1fr 1fr}.app-service-card{padding:11px}.app-service-name{font-size:12px}}
-
-/* History */
-.period-card{padding:12px;margin-bottom:12px}.period-row{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.period-btn{min-height:40px;border:1px solid var(--border);border-radius:11px;background:var(--surface);color:var(--muted);font-size:10px;font-weight:800;cursor:pointer}.period-btn.active{background:var(--blue);border-color:var(--blue);color:#fff}.custom-range{display:grid;grid-template-columns:1fr;gap:8px;margin-top:9px;padding:10px;border-radius:14px;background:var(--surface)}.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px}.stat{background:var(--card);border:1px solid var(--border);border-radius:17px;padding:12px;min-height:84px}.stat span{display:block;color:var(--muted2);font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px}.stat strong{font-size:19px;overflow-wrap:anywhere}.stat.money strong{color:var(--green)}.history-card{padding:12px}.history-toolbar{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:11px}.history-toolbar .wide{grid-column:1/-1}.history-list{display:grid;gap:8px}.movement{background:var(--surface);border:1px solid var(--border);border-radius:17px;padding:12px}.movement-top{display:flex;justify-content:space-between;gap:10px}.movement-name{font-size:15px;font-weight:800}.movement-price{font-size:16px;font-weight:800;color:var(--green);white-space:nowrap}.movement-meta{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}.movement-details{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:9px;padding-top:9px;border-top:1px solid var(--border)}.movement-details span{display:block;font-size:8px;color:var(--muted2);text-transform:uppercase;font-weight:800}.movement-details strong{display:block;font-size:10px;margin-top:3px}.movement-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:9px}.movement-actions .btn{min-height:40px;font-size:11px}
-.empty{padding:34px 14px;text-align:center;color:var(--muted2)}.empty .emoji{font-size:30px;margin-bottom:7px}.empty p{font-size:12px}.loading{padding:28px;text-align:center;color:var(--muted)}.spinner{display:inline-block;width:17px;height:17px;border:2px solid var(--border2);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite;margin-right:7px;vertical-align:middle}
-
-/* Modal profile */
-.modal{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.62);display:flex;align-items:flex-end;justify-content:center;padding:0}.modal-panel{width:100%;max-width:650px;max-height:88vh;overflow:auto;background:var(--card);border:1px solid var(--border2);border-radius:24px 24px 0 0;padding:15px 13px calc(18px + env(safe-area-inset-bottom));animation:fade .2s ease}.modal-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:12px}.modal-head h2{font-size:20px}.modal-head p{font-size:11px;color:var(--muted);margin-top:3px}.close-btn{width:42px;height:42px;border-radius:13px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:18px}.profile-history{display:grid;gap:7px;margin-top:12px}.profile-row{display:flex;justify-content:space-between;gap:12px;background:var(--surface);border-radius:13px;padding:10px}.profile-row div:first-child{min-width:0}.profile-row strong{display:block;font-size:12px}.profile-row span{font-size:9px;color:var(--muted)}.profile-row .amount{color:var(--green);font-size:12px;white-space:nowrap}
-.toast{position:fixed;left:10px;right:10px;bottom:88px;z-index:130;background:#151a22;color:#fff;border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:12px;text-align:center;font-size:12px;font-weight:800;box-shadow:0 18px 50px rgba(0,0,0,.3)}.toast.error{background:#2b1518;color:#fecaca;border-color:rgba(239,68,68,.3)}
-
-@media(min-width:760px){
- body{padding-bottom:28px}.bottom-nav{position:sticky;top:60px;bottom:auto;max-width:1180px;margin:0 auto 12px;border:1px solid var(--border);border-radius:0 0 18px 18px;padding:7px;background:var(--nav)}.nav-tab{flex-direction:row;font-size:11px;min-height:44px}.nav-tab .ico{font-size:16px}.main{padding:18px 20px 50px}.view-title h1{font-size:28px}.register-card{padding:20px}.form-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.form-actions{grid-column:1/-1;grid-template-columns:1fr 1fr}.renewal-summary{grid-template-columns:repeat(4,1fr)}.toolbar-grid{grid-template-columns:minmax(260px,1fr) auto}.list{grid-template-columns:repeat(2,minmax(0,1fr))}.entity-grid{grid-template-columns:repeat(4,1fr)}.period-row{grid-template-columns:repeat(6,1fr)}.custom-range{grid-template-columns:1fr 1fr auto}.stats{grid-template-columns:repeat(4,1fr)}.history-toolbar{grid-template-columns:2fr 1fr 1fr auto}.history-toolbar .wide{grid-column:auto}.history-list{grid-template-columns:repeat(2,minmax(0,1fr))}.modal{align-items:center;padding:18px}.modal-panel{border-radius:24px;max-height:85vh;padding:20px}.toast{left:auto;right:18px;bottom:18px;width:auto;max-width:420px}.brand span{display:block}
-}
-@media(min-width:1050px){.form-grid{grid-template-columns:1fr 1fr 1.25fr .8fr .8fr auto}.form-actions{grid-column:auto;display:flex}.list{grid-template-columns:repeat(3,minmax(0,1fr))}.history-list{grid-template-columns:repeat(3,minmax(0,1fr))}}
+:root{color-scheme:dark;--bg:#0a0d14;--card:#131b28;--surface:#1c2740;--text:#e8edf5;--muted:#8492a6;--blue:#3b82f6;--green:#22c55e;--red:#ef4444;--border:rgba(255,255,255,.1)}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:var(--bg);color:var(--text);font-family:Arial,sans-serif;padding:20px}.card{width:min(640px,100%);background:var(--card);border:1px solid var(--border);border-radius:22px;padding:24px}h1{margin:0 0 8px;font-size:25px}p{color:var(--muted);line-height:1.5}.box{margin:18px 0;padding:14px;border-radius:14px;background:var(--surface);border:1px solid var(--border)}input{width:100%;padding:14px;border-radius:12px;border:1px solid var(--border);background:#0f1520;color:var(--text)}button{width:100%;margin-top:12px;padding:14px;border:0;border-radius:12px;background:var(--blue);color:#fff;font-weight:700;cursor:pointer}button:disabled{opacity:.5;cursor:not-allowed}.status{margin-top:14px;padding:12px;border-radius:12px;background:var(--surface);font-size:14px;white-space:pre-wrap}.ok{color:#86efac}.error{color:#fca5a5}.small{font-size:12px}
 </style>
 </head>
 <body>
-<section id="login-screen" class="login-screen">
- <div class="login-card">
-  <div class="login-logo">💰</div>
-  <h1>Control privado</h1>
-  <p>Ingresá con tu cuenta para registrar movimientos, renovar clientes y controlar vendedores.</p>
-  <form id="login-form">
-   <label class="input-label" for="login-email">Email</label><input id="login-email" class="input" type="email" autocomplete="username" required placeholder="tu@email.com">
-   <div style="height:12px"></div>
-   <label class="input-label" for="login-pass">Contraseña</label><input id="login-pass" class="input" type="password" autocomplete="current-password" required placeholder="••••••••">
-   <button id="login-btn" class="btn btn-primary" type="submit" style="width:100%;margin-top:14px">Ingresar</button>
-   <div id="login-error" class="login-error hidden"></div>
-  </form>
- </div>
-</section>
-
-<div id="app-screen" class="hidden">
- <header class="topbar"><div class="topbar-inner">
-  <div class="brand"><div class="brand-icon">💰</div><div><strong>Control de Ingresos</strong><span id="user-email">Panel privado</span></div></div>
-  <div class="top-actions"><button class="icon-btn" id="theme-btn" type="button" title="Cambiar tema">☀️</button><button class="logout-btn" id="logout-btn" type="button">Salir</button></div>
- </div></header>
-
- <nav class="bottom-nav" aria-label="Secciones">
-  <button class="nav-tab active" data-view="registrar" type="button"><span class="ico">＋</span><span>Cargar</span></button>
-  <button class="nav-tab" data-view="renovaciones" type="button"><span class="ico">🔄</span><span>Renovar</span></button>
-  <button class="nav-tab" data-view="apps" type="button"><span class="ico">📺</span><span>Apps</span></button>
-  <button class="nav-tab" data-view="clientes" type="button"><span class="ico">👤</span><span>Clientes</span></button>
-  <button class="nav-tab" data-view="vendedores" type="button"><span class="ico">👥</span><span>Vendedores</span></button>
-  <button class="nav-tab" data-view="historial" type="button"><span class="ico">🧾</span><span>Historial</span></button>
- </nav>
-
- <main class="main">
-  <section id="view-registrar" class="view active">
-   <div class="view-title"><h1>Nuevo movimiento</h1><p>Cliente: $8.000 por defecto. Vendedor: cargás créditos y precio.</p></div>
-   <div class="card register-card">
-    <form id="movement-form" class="form-grid">
-     <div><label class="input-label" for="app">Aplicación</label><select id="app" class="input" required><option value="">Seleccionar app</option><option>TV</option><option>FUTURE</option><option>TV PLUS 2</option><option>FLUJO TV</option><option>MAR TV</option></select></div>
-     <div><label class="input-label">Tipo</label><div class="type-selector"><div class="type-option"><input id="tipo-cliente" type="radio" name="tipo" value="CLIENTE" checked><label for="tipo-cliente"><span class="dot"></span>Cliente</label></div><div class="type-option"><input id="tipo-vendedor" type="radio" name="tipo" value="VENDEDOR"><label for="tipo-vendedor"><span class="dot"></span>Vendedor</label></div></div></div>
-     <div><label class="input-label" for="nombre">Nombre</label><div class="autocomplete"><input id="nombre" class="input" type="text" autocomplete="off" required placeholder="Escribí las primeras letras"><div id="suggestions" class="suggestions hidden"></div></div><div id="name-helper" class="helper">Busca automáticamente entre tus clientes guardados.</div></div>
-     <div id="credits-wrap" class="hidden"><label class="input-label" for="creditos">Créditos</label><input id="creditos" class="input" type="number" min="0" step="1" inputmode="numeric" placeholder="Ej: 100"></div>
-     <div><label class="input-label" for="precio">Precio cobrado</label><input id="precio" class="input" type="number" min="0" step="0.01" inputmode="decimal" value="8000" required></div>
-     <div><label class="input-label" for="fecha-manual">Fecha <span style="font-weight:500;color:var(--muted2)">(opcional)</span></label><input id="fecha-manual" class="input" type="date"><div class="helper">Si queda vacío, se usa la fecha y hora actual automáticamente.</div></div>
-     <div class="form-actions"><button id="save-btn" class="btn btn-primary" type="submit">Guardar</button><button id="cancel-edit-btn" class="btn btn-secondary hidden" type="button">Cancelar</button></div>
-    </form>
-    <div class="auto-date">🕒 Fecha vacía = fecha/hora actual. También podés elegir una fecha manualmente.</div>
-   </div>
-  </section>
-
-  <section id="view-renovaciones" class="view">
-   <div class="view-title"><h1>Renovaciones</h1><p>La próxima renovación mantiene el mismo día en el mes siguiente. Ej.: 29/08 → 29/09.</p></div>
-   <div class="renewal-summary">
-    <div class="summary-card red"><span>Vencidos</span><strong id="renew-expired">0</strong></div>
-    <div class="summary-card yellow"><span>Vencen hoy</span><strong id="renew-today">0</strong></div>
-    <div class="summary-card blue"><span>Próximos 5 días</span><strong id="renew-soon">0</strong></div>
-    <div class="summary-card green"><span>Al día</span><strong id="renew-ok">0</strong></div>
-   </div>
-   <div class="card toolbar-card"><div class="toolbar-grid"><input id="renew-search" class="input" type="search" placeholder="Buscar cliente..."><div class="chip-row" id="renew-filters"><button class="filter-chip active" data-status="todos" type="button">Todos</button><button class="filter-chip" data-status="vencido" type="button">Vencidos</button><button class="filter-chip" data-status="hoy" type="button">Hoy</button><button class="filter-chip" data-status="proximo" type="button">Próximos</button><button class="filter-chip" data-status="aldia" type="button">Al día</button></div></div></div>
-   <div id="renew-list" class="list"></div><div id="renew-empty" class="empty hidden"><div class="emoji">🔄</div><p>No hay clientes para este filtro.</p></div>
-  </section>
-
-  <section id="view-apps" class="view">
-   <div class="view-title"><h1>Aplicaciones</h1><p>Elegí una app para ver todos los clientes que actualmente tienen ese servicio y renovarlos desde acá.</p></div>
-
-   <div id="apps-home">
-    <div id="apps-grid" class="apps-grid"></div>
-   </div>
-
-   <div id="app-client-panel" class="app-client-panel hidden">
-    <div class="app-client-head">
-     <button id="apps-back" class="btn btn-secondary" type="button">← Apps</button>
-     <div class="app-client-head-text">
-      <h2 id="selected-app-title">Aplicación</h2>
-      <p id="selected-app-count">0 clientes</p>
-     </div>
-    </div>
-
-    <div class="app-summary">
-     <div class="app-mini-stat"><span>Clientes</span><strong id="app-stat-total">0</strong></div>
-     <div class="app-mini-stat"><span>Por renovar</span><strong id="app-stat-renew">0</strong></div>
-     <div class="app-mini-stat"><span>Al día</span><strong id="app-stat-ok">0</strong></div>
-    </div>
-
-    <div class="card toolbar-card">
-     <input id="apps-search" class="input" type="search" placeholder="Buscar dentro de esta app...">
-    </div>
-
-    <div id="apps-clients-list" class="list"></div>
-    <div id="apps-empty" class="empty hidden">
-     <div class="emoji">📺</div>
-     <p>No hay clientes para mostrar en esta aplicación.</p>
-    </div>
-   </div>
-  </section>
-
-  <section id="view-clientes" class="view">
-   <div class="view-title"><h1>Clientes</h1><p>Agenda permanente de clientes. Borrar movimientos del historial no elimina estas fichas.</p></div>
-   <div class="card toolbar-card"><input id="clients-search" class="input" type="search" placeholder="Buscar cliente por nombre..."></div>
-   <div id="clients-list" class="list"></div><div id="clients-empty" class="empty hidden"><div class="emoji">👤</div><p>No encontré clientes.</p></div>
-  </section>
-
-  <section id="view-vendedores" class="view">
-   <div class="view-title"><h1>Vendedores</h1><p>Créditos cargados, dinero ingresado, última carga y aplicaciones usadas.</p></div>
-   <div class="card toolbar-card"><input id="sellers-search" class="input" type="search" placeholder="Buscar vendedor por nombre..."></div>
-   <div id="sellers-list" class="list"></div><div id="sellers-empty" class="empty hidden"><div class="emoji">👥</div><p>No encontré vendedores.</p></div>
-  </section>
-
-  <section id="view-historial" class="view">
-   <div class="view-title"><h1>Historial</h1><p>Filtrá y revisá todos los movimientos cargados.</p></div>
-   <div class="card period-card">
-    <div class="period-row"><button class="period-btn active" data-period="hoy" type="button">Hoy</button><button class="period-btn" data-period="semana" type="button">Semana</button><button class="period-btn" data-period="mes" type="button">Mes</button><button class="period-btn" data-period="anio" type="button">Año</button><button class="period-btn" data-period="todo" type="button">Todo</button><button class="period-btn" data-period="personalizado" type="button">Personalizado</button></div>
-    <div id="custom-range" class="custom-range hidden"><input id="date-from" class="input" type="date"><input id="date-to" class="input" type="date"><button id="apply-range" class="btn btn-primary" type="button">Aplicar</button></div>
-   </div>
-   <div class="stats"><div class="stat money"><span>Dinero ingresado</span><strong id="stat-money">$ 0</strong></div><div class="stat"><span>Clientes</span><strong id="stat-clients">0</strong></div><div class="stat"><span>Vendedores</span><strong id="stat-sellers">0</strong></div><div class="stat"><span>Créditos</span><strong id="stat-credits">0</strong></div></div>
-   <div class="card history-card">
-    <div class="history-toolbar"><input id="history-search" class="input wide" type="search" placeholder="Buscar nombre..."><select id="history-app" class="input"><option value="TODAS">Todas las apps</option><option>TV</option><option>FUTURE</option><option>TV PLUS 2</option><option>FLUJO TV</option><option>MAR TV</option></select><select id="history-type" class="input"><option value="TODOS">Todos</option><option value="CLIENTE">Clientes</option><option value="VENDEDOR">Vendedores</option></select><button id="export-btn" class="btn btn-green" type="button">Excel</button></div>
-    <div id="history-loading" class="loading"><span class="spinner"></span>Cargando...</div><div id="history-list" class="history-list"></div><div id="history-empty" class="empty hidden"><div class="emoji">🧾</div><p>No hay movimientos para mostrar.</p></div>
-   </div>
-  </section>
- </main>
+<div class="card">
+<h1>Agregar alta manual de clientes</h1>
+<p>Seleccioná tu archivo <strong>control_ingresos(1).html</strong>. Este actualizador genera una copia nueva con el botón <strong>“+ Nuevo cliente”</strong>, sin registrar cobros.</p>
+<div class="box">
+<input id="file" type="file" accept=".html,text/html">
+<button id="run" disabled>Generar archivo actualizado</button>
 </div>
-
-<div id="client-edit-modal" class="modal hidden">
- <div class="modal-panel">
-  <div class="modal-head">
-   <div><h2>Editar cliente</h2><p>Esta ficha es independiente del historial.</p></div>
-   <button id="client-edit-close" class="close-btn" type="button">×</button>
-  </div>
-  <form id="client-edit-form" class="client-edit-grid">
-   <input id="client-edit-id" type="hidden">
-   <div>
-    <label class="input-label" for="client-edit-name">Nombre</label>
-    <input id="client-edit-name" class="input" type="text" autocomplete="off" required>
-   </div>
-   <div>
-    <label class="input-label" for="client-edit-app">Aplicación</label>
-    <select id="client-edit-app" class="input" required>
-     <option>TV</option><option>FUTURE</option><option>TV PLUS 2</option><option>FLUJO TV</option><option>MAR TV</option>
-    </select>
-   </div>
-   <div>
-    <label class="input-label" for="client-edit-date">Última renovación</label>
-    <input id="client-edit-date" class="input" type="date" required>
-   </div>
-   <button id="client-edit-save" class="btn btn-primary" type="submit">Guardar cambios</button>
-   <div class="modal-note">Editar esta ficha no modifica los movimientos históricos. La fecha indicada es la que se usará para calcular el próximo vencimiento.</div>
-  </form>
- </div>
+<div id="status" class="status">Esperando archivo…</div>
+<p class="small">El archivo original no se modifica. Se descargará una copia llamada <strong>control_ingresos_clientes_manual.html</strong>.</p>
 </div>
-
-<div id="profile-modal" class="modal hidden"><div class="modal-panel"><div class="modal-head"><div><h2 id="profile-title">Ficha</h2><p id="profile-subtitle"></p></div><button id="profile-close" class="close-btn" type="button">×</button></div><div id="profile-body"></div></div></div>
-<div id="toast" class="toast hidden"></div>
-
 <script>
-const SUPABASE_URL='https://vjbdhbbxbvoigbidquya.supabase.co';
-const SUPABASE_KEY='sb_publishable_4ogrbtxBrBWBFj-NRJOrbg_XnpmO4pS';
-const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-const APPS=['TV','FUTURE','TV PLUS 2','FLUJO TV','MAR TV'];
-const APP_LOGOS={
- 'TV':'img/tv.png',
- 'FUTURE':'img/future.png',
- 'TV PLUS 2':'img/tvplus2.png',
- 'FLUJO TV':'img/flujo.png',
- 'MAR TV':'img/martv.png'
-};
-const CLIENT_PRICE=8000, SOON_DAYS=5;
-let selectedApp=null;
-let user=null,movements=[],savedClients=[],savedSellers=[],clientCatalog=[],sellerCatalog=[],editMovement=null;
-let currentView='registrar',renewStatus='todos',historyPeriod='hoy',customRange={from:null,to:null};
+const fileInput=document.getElementById('file');
+const runBtn=document.getElementById('run');
+const statusBox=document.getElementById('status');
+fileInput.addEventListener('change',()=>{runBtn.disabled=!fileInput.files?.length;statusBox.textContent=fileInput.files?.length?'Archivo listo para actualizar.':'Esperando archivo…';statusBox.className='status'});
 
-const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
-function esc(v){return String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;')}
-function appLogoHTML(app,extraClass=''){
- const src=APP_LOGOS[app]||'';
- const safeApp=esc(app||'App');
- if(!src)return `<span class="app-logo-wrap ${extraClass}"><span class="app-logo-fallback">📺</span></span>`;
- return `<span class="app-logo-wrap ${extraClass}">
-  <img class="app-logo" src="${esc(src)}" alt="Logo ${safeApp}" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">
-  <span class="app-logo-fallback" style="display:none">📺</span>
- </span>`;
+function replaceOnce(text,from,to,label){
+ if(!text.includes(from))throw new Error('No pude encontrar el bloque: '+label+'. Verificá que seleccionaste la versión correcta del archivo.');
+ return text.replace(from,to);
 }
-function norm(v){return String(v||'').trim().replace(/\s+/g,' ').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase()}
-function cleanName(v){return String(v||'').trim().replace(/\s+/g,' ')}
-function money(v){return new Intl.NumberFormat('es-AR',{style:'currency',currency:'ARS',maximumFractionDigits:0}).format(Number(v)||0)}
-function num(v){return new Intl.NumberFormat('es-AR',{maximumFractionDigits:2}).format(Number(v)||0)}
-function dateTime(v){return v?new Intl.DateTimeFormat('es-AR',{timeZone:'America/Argentina/Buenos_Aires',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(v)):'—'}
-function dateOnly(v){return v?new Intl.DateTimeFormat('es-AR',{timeZone:'America/Argentina/Buenos_Aires',day:'2-digit',month:'2-digit',year:'numeric'}).format(new Date(v)):'—'}
-function localISO(d=new Date()){const p=Object.fromEntries(new Intl.DateTimeFormat('en-CA',{timeZone:'America/Argentina/Buenos_Aires',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(d).map(x=>[x.type,x.value]));return `${p.year}-${p.month}-${p.day}`}
-function manualDateToTimestamp(isoDate){
- if(!isoDate)return null;
- if(!/^\d{4}-\d{2}-\d{2}$/.test(isoDate))return null;
- // Mediodía de Argentina evita corrimientos de día por zona horaria.
- return `${isoDate}T12:00:00-03:00`;
-}
-function isoNextMonth(iso){
- const [y,m,d]=iso.split('-').map(Number);
- const nextMonth=m===12?1:m+1;
- const nextYear=m===12?y+1:y;
- const lastDay=new Date(Date.UTC(nextYear,nextMonth,0,12)).getUTCDate();
- const day=Math.min(d,lastDay);
- return `${nextYear}-${String(nextMonth).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-}
-function daysBetween(a,b){const parse=s=>{const [y,m,d]=s.split('-').map(Number);return Date.UTC(y,m-1,d)};return Math.round((parse(b)-parse(a))/86400000)}
-function toast(msg,error=false){const t=$('#toast');t.textContent=msg;t.className='toast'+(error?' error':'');clearTimeout(toast.timer);toast.timer=setTimeout(()=>t.classList.add('hidden'),2800)}
 
-function loadTheme(){const light=localStorage.getItem('control_ingresos_tema')==='light';document.documentElement.classList.toggle('light-mode',light);$('#theme-btn').textContent=light?'🌙':'☀️'}
-function toggleTheme(){const light=document.documentElement.classList.toggle('light-mode');localStorage.setItem('control_ingresos_tema',light?'light':'dark');$('#theme-btn').textContent=light?'🌙':'☀️'}
+runBtn.addEventListener('click',async()=>{
+ try{
+  runBtn.disabled=true;runBtn.textContent='Procesando…';
+  let html=await fileInput.files[0].text();
 
-async function init(){loadTheme();bindUI();const {data:{session}}=await db.auth.getSession();if(session?.user)await showApp(session.user);else showLogin();db.auth.onAuthStateChange(async(_e,s)=>{if(s?.user)await showApp(s.user);else showLogin()})}
-function showLogin(){user=null;$('#login-screen').classList.remove('hidden');$('#app-screen').classList.add('hidden')}
-async function showApp(u){user=u;$('#login-screen').classList.add('hidden');$('#app-screen').classList.remove('hidden');$('#user-email').textContent=u.email||'Panel privado';await loadAll();updateType();switchView(currentView)}
-async function loadAll(){
- setLoading(true);
- await Promise.all([loadMovements(),loadClients(),loadSellers()]);
- rebuildCatalogs();
- renderAll();
- setLoading(false);
-}
-function setLoading(on){$('#history-loading').classList.toggle('hidden',!on)}
+  html=replaceOnce(html,
+`.client-edit-grid{display:grid;gap:12px}\n.client-edit-grid .input{width:100%}\n.modal-note{`,
+`.client-edit-grid{display:grid;gap:12px}\n.client-edit-grid .input{width:100%}\n.clients-toolbar{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center}\n.clients-toolbar .btn{min-height:52px;white-space:nowrap}\n.modal-note{`,
+'CSS de clientes');
 
-function bindUI(){
- $('#login-form').addEventListener('submit',login);$('#logout-btn').addEventListener('click',()=>db.auth.signOut());$('#theme-btn').addEventListener('click',toggleTheme);
- $$('.nav-tab').forEach(b=>b.addEventListener('click',()=>switchView(b.dataset.view)));
- $$('input[name="tipo"]').forEach(r=>r.addEventListener('change',updateType));
- $('#nombre').addEventListener('input',showSuggestions);$('#nombre').addEventListener('focus',showSuggestions);document.addEventListener('click',e=>{if(!e.target.closest('.autocomplete'))hideSuggestions()});
- $('#movement-form').addEventListener('submit',saveMovement);$('#cancel-edit-btn').addEventListener('click',cancelEdit);
- $('#renew-search').addEventListener('input',renderRenewals);$('#clients-search').addEventListener('input',renderClients);$('#sellers-search').addEventListener('input',renderSellers);
- $('#apps-search').addEventListener('input',renderApps);$('#apps-back').addEventListener('click',()=>{selectedApp=null;$('#apps-search').value='';renderApps()});
- $$('#renew-filters .filter-chip').forEach(b=>b.addEventListener('click',()=>{renewStatus=b.dataset.status;$$('#renew-filters .filter-chip').forEach(x=>x.classList.toggle('active',x===b));renderRenewals()}));
- $$('.period-btn').forEach(b=>b.addEventListener('click',()=>changePeriod(b.dataset.period,b)));$('#apply-range').addEventListener('click',applyCustomRange);
- $('#history-search').addEventListener('input',renderHistory);$('#history-app').addEventListener('change',renderHistory);$('#history-type').addEventListener('change',renderHistory);$('#export-btn').addEventListener('click',exportExcel);
- $('#profile-close').addEventListener('click',closeProfile);$('#profile-modal').addEventListener('click',e=>{if(e.target.id==='profile-modal')closeProfile()});
- $('#client-edit-close').addEventListener('click',closeClientEdit);
- $('#client-edit-modal').addEventListener('click',e=>{if(e.target.id==='client-edit-modal')closeClientEdit()});
- $('#client-edit-form').addEventListener('submit',saveClientEdit);
-}
-async function login(e){e.preventDefault();const btn=$('#login-btn'),err=$('#login-error');err.classList.add('hidden');btn.disabled=true;btn.textContent='Ingresando...';const {error}=await db.auth.signInWithPassword({email:$('#login-email').value.trim(),password:$('#login-pass').value});btn.disabled=false;btn.textContent='Ingresar';if(error){err.textContent=error.message==='Invalid login credentials'?'Email o contraseña incorrectos.':error.message;err.classList.remove('hidden')}}
-function switchView(v){currentView=v;$$('.view').forEach(x=>x.classList.toggle('active',x.id===`view-${v}`));$$('.nav-tab').forEach(x=>x.classList.toggle('active',x.dataset.view===v));if(v==='renovaciones')renderRenewals();if(v==='apps')renderApps();if(v==='clientes')renderClients();if(v==='vendedores')renderSellers();if(v==='historial')renderHistory();window.scrollTo({top:0,behavior:'smooth'})}
+  html=replaceOnce(html,
+`@media(max-width:420px){\n .client-admin-actions{grid-template-columns:1fr}\n .app-logo-wrap{width:44px;height:44px}\n}`,
+`@media(max-width:420px){\n .client-admin-actions{grid-template-columns:1fr}\n .clients-toolbar{grid-template-columns:1fr}\n .app-logo-wrap{width:44px;height:44px}\n}`,
+'CSS móvil');
 
-function typeSelected(){return $('input[name="tipo"]:checked')?.value||'CLIENTE'}
-function updateType(){const seller=typeSelected()==='VENDEDOR';$('#credits-wrap').classList.toggle('hidden',!seller);$('#creditos').required=seller;$('#name-helper').textContent=seller?'Busca automáticamente entre tus vendedores guardados.':'Busca automáticamente entre tus clientes guardados.';if(!editMovement){if(seller&&$('#precio').value==='8000')$('#precio').value='';if(!seller){$('#precio').value=String(CLIENT_PRICE);$('#creditos').value=''}}hideSuggestions()}
+  html=replaceOnce(html,
+`  <section id="view-clientes" class="view">\n   <div class="view-title"><h1>Clientes</h1><p>Agenda permanente de clientes. Borrar movimientos del historial no elimina estas fichas.</p></div>\n   <div class="card toolbar-card"><input id="clients-search" class="input" type="search" placeholder="Buscar cliente por nombre..."></div>\n   <div id="clients-list" class="list"></div><div id="clients-empty" class="empty hidden"><div class="emoji">👤</div><p>No encontré clientes.</p></div>\n  </section>`,
+`  <section id="view-clientes" class="view">\n   <div class="view-title"><h1>Clientes</h1><p>Agenda permanente de clientes. Podés cargar una ficha aunque todavía no haya abonado.</p></div>\n   <div class="card toolbar-card">\n    <div class="clients-toolbar">\n     <input id="clients-search" class="input" type="search" placeholder="Buscar cliente por nombre...">\n     <button id="new-client-btn" class="btn btn-primary" type="button">＋ Nuevo cliente</button>\n    </div>\n   </div>\n   <div id="clients-list" class="list"></div><div id="clients-empty" class="empty hidden"><div class="emoji">👤</div><p>No encontré clientes.</p></div>\n  </section>`,
+'vista Clientes');
 
-async function loadMovements(){const {data,error}=await db.from('control_movimientos').select('*').order('fecha',{ascending:false});if(error){movements=[];toast(`Error al cargar movimientos: ${error.message}`,true)}else movements=data||[]}
-async function loadClients(){const {data,error}=await db.from('control_clientes').select('*').order('last_used_at',{ascending:false});if(error){savedClients=[];console.warn('Agenda clientes no disponible',error)}else savedClients=data||[]}
-async function loadSellers(){const {data,error}=await db.from('control_vendedores').select('*').order('last_used_at',{ascending:false});if(error){savedSellers=[];console.warn('Agenda vendedores no disponible',error)}else savedSellers=data||[]}
+  html=replaceOnce(html,
+`<div id="client-edit-modal" class="modal hidden">`,
+`<div id="client-new-modal" class="modal hidden">\n <div class="modal-panel">\n  <div class="modal-head">\n   <div><h2>Nuevo cliente</h2><p>Creá la ficha sin registrar ningún cobro.</p></div>\n   <button id="client-new-close" class="close-btn" type="button">×</button>\n  </div>\n  <form id="client-new-form" class="client-edit-grid">\n   <div>\n    <label class="input-label" for="client-new-name">Nombre</label>\n    <input id="client-new-name" class="input" type="text" autocomplete="off" required placeholder="Nombre del cliente">\n   </div>\n   <div>\n    <label class="input-label" for="client-new-app">Aplicación</label>\n    <select id="client-new-app" class="input" required>\n     <option value="">Seleccionar app</option>\n     <option>TV</option><option>FUTURE</option><option>TV PLUS 2</option><option>FLUJO TV</option><option>MAR TV</option>\n    </select>\n   </div>\n   <div>\n    <label class="input-label" for="client-new-date">Última renovación <span style="font-weight:500;color:var(--muted2)">(opcional)</span></label>\n    <input id="client-new-date" class="input" type="date">\n    <div class="helper">Dejala vacía si todavía no abonó. La ficha quedará como “Sin fecha”.</div>\n   </div>\n   <button id="client-new-save" class="btn btn-primary" type="submit">Guardar cliente</button>\n   <div class="modal-note">Esta acción solo crea el cliente en la agenda. No genera movimientos, no suma ingresos y no registra ningún pago.</div>\n  </form>\n </div>\n</div>\n\n<div id="client-edit-modal" class="modal hidden">`,
+'modal de cliente');
 
-function rebuildCatalogs(){
- const buildSaved=(saved,type)=>{
-  return saved.map(x=>{
-   const nombre=cleanName(x.nombre);
-   const key=norm(x.nombre_normalizado||nombre);
-   const hist=movements.filter(m=>m.tipo===type&&norm(m.nombre)===key);
-   return {
-    ...x,
-    key,
-    nombre,
-    app_ultima:x.app_ultima||null,
-    last_used_at:x.last_used_at||null,
-    ops:hist.length,
-    total:hist.reduce((s,m)=>s+Number(m.precio||0),0),
-    credits:type==='VENDEDOR'?hist.reduce((s,m)=>s+Number(m.creditos||0),0):0,
-    apps:new Set(hist.map(m=>m.app).filter(Boolean))
-   };
-  }).filter(x=>x.key).sort((a,b)=>
-   (new Date(b.last_used_at||0))-(new Date(a.last_used_at||0))
-   ||a.nombre.localeCompare(b.nombre,'es')
-  );
- };
- clientCatalog=buildSaved(savedClients,'CLIENTE');
- sellerCatalog=buildSaved(savedSellers,'VENDEDOR');
-}
-async function savePerson(type,name,app,fecha=null){
- if(!user)return;
- const table=type==='CLIENTE'?'control_clientes':'control_vendedores';
- const n=cleanName(name);
- const when=fecha||new Date().toISOString();
- const payload={
-  user_id:user.id,
-  nombre:n,
-  nombre_normalizado:norm(n),
-  app_ultima:app,
-  last_used_at:when,
-  updated_at:new Date().toISOString()
- };
- const {error}=await db.from(table).upsert(payload,{onConflict:'user_id,nombre_normalizado'});
- if(error){
-  console.warn(`No se pudo actualizar ${table}`,error);
-  toast(`No se pudo guardar la ficha permanente: ${error.message}`,true);
- }else if(type==='CLIENTE'){
-  await loadClients();
- }else{
-  await loadSellers();
+  html=replaceOnce(html,
+`    <label class="input-label" for="client-edit-date">Última renovación</label>\n    <input id="client-edit-date" class="input" type="date" required>`,
+`    <label class="input-label" for="client-edit-date">Última renovación <span style="font-weight:500;color:var(--muted2)">(opcional)</span></label>\n    <input id="client-edit-date" class="input" type="date">\n    <div class="helper">Si queda vacía, el cliente figurará como “Sin fecha”.</div>`,
+'fecha de edición');
+
+  html=replaceOnce(html,
+`   <div class="modal-note">Editar esta ficha no modifica los movimientos históricos. La fecha indicada es la que se usará para calcular el próximo vencimiento.</div>`,
+`   <div class="modal-note">Editar esta ficha no modifica los importes del historial. Si indicás una fecha, se usará para calcular el próximo vencimiento; si la dejás vacía, quedará como “Sin fecha”.</div>`,
+'nota de edición');
+
+  html=replaceOnce(html,
+` $('#profile-close').addEventListener('click',closeProfile);$('#profile-modal').addEventListener('click',e=>{if(e.target.id==='profile-modal')closeProfile()});\n $('#client-edit-close').addEventListener('click',closeClientEdit);`,
+` $('#profile-close').addEventListener('click',closeProfile);$('#profile-modal').addEventListener('click',e=>{if(e.target.id==='profile-modal')closeProfile()});\n $('#new-client-btn').addEventListener('click',openNewClient);\n $('#client-new-close').addEventListener('click',closeNewClient);\n $('#client-new-modal').addEventListener('click',e=>{if(e.target.id==='client-new-modal')closeNewClient()});\n $('#client-new-form').addEventListener('submit',saveNewClient);\n $('#client-edit-close').addEventListener('click',closeClientEdit);`,
+'eventos de interfaz');
+
+  html=replaceOnce(html,
+`function editClient(id){`,
+`function openNewClient(){\n $('#client-new-form').reset();\n $('#client-new-modal').classList.remove('hidden');\n setTimeout(()=>$('#client-new-name').focus(),100);\n}\nfunction closeNewClient(){\n $('#client-new-modal').classList.add('hidden');\n $('#client-new-form').reset();\n}\nasync function saveNewClient(e){\n e.preventDefault();\n if(!user)return;\n\n const nombre=cleanName($('#client-new-name').value);\n const app=$('#client-new-app').value;\n const fecha=$('#client-new-date').value;\n\n if(!nombre)return toast('Ingresá el nombre.',true);\n if(!APPS.includes(app))return toast('Seleccioná una aplicación.',true);\n\n const key=norm(nombre);\n if(savedClients.some(c=>norm(c.nombre_normalizado||c.nombre)===key)){\n  return toast('Ya existe un cliente con ese nombre.',true);\n }\n\n let fechaTs=null;\n if(fecha){\n  fechaTs=manualDateToTimestamp(fecha);\n  if(!fechaTs)return toast('La fecha elegida no es válida.',true);\n }\n\n const payload={\n  user_id:user.id,\n  nombre,\n  nombre_normalizado:key,\n  app_ultima:app,\n  last_used_at:fechaTs,\n  updated_at:new Date().toISOString()\n };\n\n const btn=$('#client-new-save');\n btn.disabled=true;\n btn.textContent='Guardando...';\n\n const {error}=await db.from('control_clientes').insert(payload);\n\n btn.disabled=false;\n btn.textContent='Guardar cliente';\n\n if(error){\n  const msg=String(error.message||'');\n  if(msg.toLowerCase().includes('duplicate')||msg.toLowerCase().includes('unique')){\n   return toast('Ya existe un cliente con ese nombre.',true);\n  }\n  return toast('No se pudo guardar el cliente: '+msg,true);\n }\n\n await loadClients();\n rebuildCatalogs();\n renderAll();\n closeNewClient();\n toast('Cliente guardado sin registrar ningún cobro.');\n}\n\nfunction editClient(id){`,
+'funciones de alta manual');
+
+  html=replaceOnce(html,
+` $('#client-edit-date').value=c.last_used_at?localISO(new Date(c.last_used_at)):localISO();`,
+` $('#client-edit-date').value=c.last_used_at?localISO(new Date(c.last_used_at)):'';`,
+'fecha al abrir edición');
+
+  html=replaceOnce(html,
+` const fechaTs=manualDateToTimestamp(fecha);\n if(!fechaTs)return toast('Ingresá una fecha válida.',true);\n\n const payload={\n  nombre,\n  nombre_normalizado:norm(nombre),\n  app_ultima:app,\n  last_used_at:fechaTs,\n  updated_at:new Date().toISOString()\n };`,
+` const fechaTs=fecha?manualDateToTimestamp(fecha):null;\n if(fecha&&!fechaTs)return toast('Ingresá una fecha válida.',true);\n\n const payload={\n  nombre,\n  nombre_normalizado:norm(nombre),\n  app_ultima:app,\n  last_used_at:fechaTs,\n  updated_at:new Date().toISOString()\n };`,
+'guardado de edición');
+
+  const blob=new Blob([html],{type:'text/html;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download='control_ingresos_clientes_manual.html';
+  document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+  statusBox.textContent='✓ Listo. Se generó control_ingresos_clientes_manual.html';
+  statusBox.className='status ok';
+ }catch(err){
+  console.error(err);
+  statusBox.textContent='Error: '+err.message;
+  statusBox.className='status error';
+ }finally{
+  runBtn.disabled=false;runBtn.textContent='Generar archivo actualizado';
  }
-}
-async function syncHistoricalClients(){await syncHistorical('CLIENTE','control_clientes',savedClients)}
-async function syncHistoricalSellers(){await syncHistorical('VENDEDOR','control_vendedores',savedSellers)}
-async function syncHistorical(type,table,saved){if(!user)return;const exists=new Set(saved.map(x=>norm(x.nombre_normalizado||x.nombre))),seen=new Set(),rows=[];for(const m of movements){if(m.tipo!==type)continue;const n=cleanName(m.nombre),k=norm(n);if(!k||exists.has(k)||seen.has(k))continue;seen.add(k);rows.push({user_id:user.id,nombre:n,nombre_normalizado:k,app_ultima:m.app,last_used_at:m.fecha||new Date().toISOString(),updated_at:new Date().toISOString()})}if(rows.length){const {error}=await db.from(table).upsert(rows,{onConflict:'user_id,nombre_normalizado'});if(!error){if(type==='CLIENTE')await loadClients();else await loadSellers()}else console.warn(`No se pudo sincronizar ${table}`,error)}}
-
-function showSuggestions(){const box=$('#suggestions'),q=norm($('#nombre').value),catalog=typeSelected()==='CLIENTE'?clientCatalog:sellerCatalog;let list=catalog.filter(x=>!q||x.key.includes(q));if(q)list.sort((a,b)=>(a.key.startsWith(q)?0:1)-(b.key.startsWith(q)?0:1)||(b.ops-a.ops));list=list.slice(0,10);if(!list.length){box.innerHTML=q?'<div class="empty" style="padding:14px">No encontré coincidencias.</div>':'';box.classList.toggle('hidden',!q);return}box.innerHTML=list.map(x=>`<button class="suggestion" type="button" data-key="${esc(x.key)}"><span class="suggestion-main"><strong>${esc(x.nombre)}</strong><span>${esc(x.app_ultima||'Sin app')} · ${x.ops} movimiento${x.ops===1?'':'s'}</span></span><span class="suggestion-meta">${typeSelected()==='CLIENTE'?money(x.total):num(x.credits)+' créd.'}</span></button>`).join('');box.querySelectorAll('[data-key]').forEach(b=>b.addEventListener('click',()=>selectSuggestion(b.dataset.key)));box.classList.remove('hidden')}
-function selectSuggestion(key){const catalog=typeSelected()==='CLIENTE'?clientCatalog:sellerCatalog,x=catalog.find(y=>y.key===key);if(!x)return;$('#nombre').value=x.nombre;if(APPS.includes(x.app_ultima))$('#app').value=x.app_ultima;if(typeSelected()==='CLIENTE')$('#precio').value=String(CLIENT_PRICE);hideSuggestions()}
-function hideSuggestions(){$('#suggestions').classList.add('hidden')}
-
-async function saveMovement(e){
- e.preventDefault();
- if(!user)return;
- const tipo=typeSelected(),
-       app=$('#app').value,
-       nombre=cleanName($('#nombre').value),
-       precio=Number($('#precio').value),
-       creditos=tipo==='VENDEDOR'?Number($('#creditos').value):null,
-       fechaManual=$('#fecha-manual').value;
-
- if(!APPS.includes(app))return toast('Seleccioná una aplicación.',true);
- if(!nombre)return toast('Ingresá el nombre.',true);
- if(!Number.isFinite(precio)||precio<0)return toast('Ingresá un precio válido.',true);
- if(tipo==='VENDEDOR'&&(!Number.isFinite(creditos)||creditos<0))return toast('Ingresá los créditos.',true);
-
- const payload={app,tipo,nombre,precio,creditos};
- if(fechaManual){
-   const fechaTs=manualDateToTimestamp(fechaManual);
-   if(!fechaTs)return toast('La fecha elegida no es válida.',true);
-   payload.fecha=fechaTs;
- } else if(editMovement) {
-   // En edición, si se deja vacío usamos la fecha/hora actual.
-   payload.fecha=new Date().toISOString();
- }
-
- const btn=$('#save-btn');
- btn.disabled=true;
- btn.textContent='Guardando...';
-
- let error;
- if(editMovement){
-   ({error}=await db.from('control_movimientos').update(payload).eq('id',editMovement.id));
- }else{
-   // En alta, si no se eligió fecha NO enviamos "fecha":
-   // Supabase aplica automáticamente el valor por defecto de la tabla.
-   ({error}=await db.from('control_movimientos').insert({...payload,user_id:user.id}));
- }
-
- btn.disabled=false;
- btn.textContent=editMovement?'Guardar cambios':'Guardar';
-
- if(error)return toast(`No se pudo guardar: ${error.message}`,true);
-
- const fechaFicha=payload.fecha||new Date().toISOString();
- await savePerson(tipo,nombre,app,fechaFicha);
- toast(editMovement?'Movimiento actualizado.':'Movimiento guardado.');
- cancelEdit();
- await loadMovements();
- rebuildCatalogs();
- renderAll();
-}
-function editMovementById(id){
- const m=movements.find(x=>String(x.id)===String(id));
- if(!m)return;
- editMovement=m;
- $('#app').value=m.app;
- $(m.tipo==='VENDEDOR'?'#tipo-vendedor':'#tipo-cliente').checked=true;
- $('#nombre').value=m.nombre;
- $('#precio').value=m.precio;
- $('#creditos').value=m.creditos??'';
- $('#fecha-manual').value=m.fecha?localISO(new Date(m.fecha)):'';
- updateType();
- $('#save-btn').textContent='Guardar cambios';
- $('#cancel-edit-btn').classList.remove('hidden');
- switchView('registrar');
-}
-function cancelEdit(){
- editMovement=null;
- $('#movement-form').reset();
- $('#tipo-cliente').checked=true;
- $('#precio').value=String(CLIENT_PRICE);
- $('#creditos').value='';
- $('#fecha-manual').value='';
- $('#save-btn').textContent='Guardar';
- $('#cancel-edit-btn').classList.add('hidden');
- updateType();
-}
-async function deleteMovement(id){const m=movements.find(x=>String(x.id)===String(id));if(!m||!confirm(`¿Eliminar el movimiento de ${m.nombre} por ${money(m.precio)}?`))return;const {error}=await db.from('control_movimientos').delete().eq('id',id);if(error)return toast(error.message,true);toast('Movimiento eliminado.');await loadMovements();rebuildCatalogs();renderAll()}
-
-function clientProfiles(){
- return clientCatalog.map(c=>{
-  const hist=movements
-   .filter(m=>m.tipo==='CLIENTE'&&norm(m.nombre)===c.key)
-   .sort((a,b)=>new Date(b.fecha)-new Date(a.fecha));
-  const last=hist[0]||null;
-  const lastISO=c.last_used_at?localISO(new Date(c.last_used_at)):(last?localISO(new Date(last.fecha)):null);
-  const next=lastISO?isoNextMonth(lastISO):null;
-  const status=renewalStatus(next);
-  const months=new Set(hist.map(m=>{
-   const d=new Date(m.fecha);
-   return new Intl.DateTimeFormat('en-CA',{
-    timeZone:'America/Argentina/Buenos_Aires',year:'numeric',month:'2-digit'
-   }).format(d);
-  })).size;
-  return {
-   ...c,
-   hist,
-   last,
-   lastISO,
-   next,
-   status,
-   total:hist.reduce((s,m)=>s+Number(m.precio||0),0),
-   ops:hist.length,
-   months,
-   app_ultima:c.app_ultima||last?.app||null
-  };
- });
-}
-function sellerProfiles(){return sellerCatalog.map(s=>{const hist=movements.filter(m=>m.tipo==='VENDEDOR'&&norm(m.nombre)===s.key).sort((a,b)=>new Date(b.fecha)-new Date(a.fecha));return {...s,hist,last:hist[0]||null,total:hist.reduce((a,m)=>a+Number(m.precio||0),0),credits:hist.reduce((a,m)=>a+Number(m.creditos||0),0),ops:hist.length,apps:[...new Set(hist.map(m=>m.app).filter(Boolean))]}})}
-function renewalStatus(next){if(!next)return {key:'aldia',label:'Sin fecha',days:null};const today=localISO(),diff=daysBetween(today,next);if(diff<0)return {key:'vencido',label:`Vencido hace ${Math.abs(diff)} d.`,days:diff};if(diff===0)return {key:'hoy',label:'Vence hoy',days:0};if(diff<=SOON_DAYS)return {key:'proximo',label:`Vence en ${diff} d.`,days:diff};return {key:'aldia',label:'Al día',days:diff}}
-function clientCard(c,renewContext=false){
- return `<article class="entity-card">
-  <div class="entity-top">
-   <div class="entity-app-row">
-    ${appLogoHTML(c.app_ultima)}
-    <div>
-     <div class="entity-name">${esc(c.nombre)}</div>
-     <div class="entity-sub">${esc(c.app_ultima||'Sin app')} · ${c.ops} movimiento${c.ops===1?'':'s'}</div>
-    </div>
-   </div>
-   <span class="status ${c.status.key}">${esc(c.status.label)}</span>
-  </div>
-  <div class="entity-grid">
-   <div class="metric"><span>Última</span><strong>${c.lastISO?esc(formatISODate(c.lastISO)):'—'}</strong></div>
-   <div class="metric"><span>Próxima</span><strong>${c.next?esc(formatISODate(c.next)):'—'}</strong></div>
-   <div class="metric"><span>Total histórico</span><strong>${esc(money(c.total))}</strong></div>
-   <div class="metric"><span>Meses con movimientos</span><strong>${c.months}</strong></div>
-  </div>
-  <div class="entity-actions">
-   <button class="btn btn-secondary" type="button" onclick="openClientProfile('${esc(c.key)}')">Ver ficha</button>
-   <button class="btn btn-green" type="button" onclick="quickRenew('${esc(c.key)}')">Renovar $8.000</button>
-  </div>
-  <div class="client-admin-actions">
-   <button class="btn btn-secondary" type="button" onclick="editClient('${esc(c.id)}')">Editar cliente</button>
-   <button class="btn btn-danger" type="button" onclick="deleteClient('${esc(c.id)}')">Eliminar cliente</button>
-  </div>
- </article>`;
-}
-function sellerCard(s){return `<article class="entity-card"><div class="entity-top"><div><div class="entity-name">${esc(s.nombre)}</div><div class="entity-sub">${s.ops} carga${s.ops===1?'':'s'} · Última ${s.last?esc(dateOnly(s.last.fecha)):'—'}</div></div><span class="type-chip seller">VENDEDOR</span></div><div class="entity-grid"><div class="metric"><span>Créditos</span><strong>${esc(num(s.credits))}</strong></div><div class="metric"><span>Ingresado</span><strong>${esc(money(s.total))}</strong></div><div class="metric"><span>Última carga</span><strong>${s.last?esc(dateOnly(s.last.fecha)):'—'}</strong></div><div class="metric"><span>Operaciones</span><strong>${s.ops}</strong></div></div><div class="apps-list">${s.apps.map(a=>`<span class="app-chip">${esc(a)}</span>`).join('')||'<span class="entity-sub">Sin apps</span>'}</div><div class="entity-actions"><button class="btn btn-secondary" type="button" onclick="openSellerProfile('${esc(s.key)}')">Ver ficha</button><button class="btn btn-primary" type="button" onclick="prepareSeller('${esc(s.key)}')">Nueva carga</button></div></article>`}
-function formatISODate(iso){if(!iso)return '—';const [y,m,d]=iso.split('-');return `${d}/${m}/${y}`}
-
-
-function appClientList(app){
- return clientProfiles().filter(c=>c.app_ultima===app);
-}
-function appCard(app){
- const clients=appClientList(app);
- const pending=clients.filter(c=>['vencido','hoy','proximo'].includes(c.status.key)).length;
- return `<article class="app-service-card">
-  <div class="app-service-top">
-   <div>
-    <div class="app-service-name">${esc(app)}</div>
-    <div class="app-service-label">Servicio</div>
-   </div>
-   ${appLogoHTML(app)}
-  </div>
-  <div class="app-service-count">${clients.length}</div>
-  <div class="app-service-label">cliente${clients.length===1?'':'s'}</div>
-  <div class="app-service-renew">${pending?`${pending} para revisar/renovar`:'Todos al día'}</div>
-  <button class="btn btn-primary" type="button" onclick="selectApp('${esc(app)}')">Ver clientes</button>
- </article>`;
-}
-function selectApp(app){
- if(!APPS.includes(app))return;
- selectedApp=app;
- $('#apps-search').value='';
- renderApps();
- window.scrollTo({top:0,behavior:'smooth'});
-}
-function renderApps(){
- const home=$('#apps-home'),panel=$('#app-client-panel');
-
- if(!selectedApp){
-  home.classList.remove('hidden');
-  panel.classList.add('hidden');
-  $('#apps-grid').innerHTML=APPS.map(app=>appCard(app)).join('');
-  return;
- }
-
- home.classList.add('hidden');
- panel.classList.remove('hidden');
-
- const q=norm($('#apps-search').value);
- const all=appClientList(selectedApp)
-  .sort((a,b)=>(a.status.days??9999)-(b.status.days??9999)||a.nombre.localeCompare(b.nombre,'es'));
-
- const list=all.filter(c=>!q||c.key.includes(q));
- const pending=all.filter(c=>['vencido','hoy','proximo'].includes(c.status.key)).length;
- const ok=all.filter(c=>c.status.key==='aldia').length;
-
- $('#selected-app-title').textContent=selectedApp;
- $('#selected-app-count').textContent=`${all.length} cliente${all.length===1?'':'s'} en ${selectedApp}`;
- $('#app-stat-total').textContent=all.length;
- $('#app-stat-renew').textContent=pending;
- $('#app-stat-ok').textContent=ok;
-
- $('#apps-clients-list').innerHTML=list.map(c=>clientCard(c,true)).join('');
- $('#apps-empty').classList.toggle('hidden',list.length>0);
-}
-
-function renderRenewals(){const all=clientProfiles();$('#renew-expired').textContent=all.filter(c=>c.status.key==='vencido').length;$('#renew-today').textContent=all.filter(c=>c.status.key==='hoy').length;$('#renew-soon').textContent=all.filter(c=>c.status.key==='proximo').length;$('#renew-ok').textContent=all.filter(c=>c.status.key==='aldia').length;const q=norm($('#renew-search').value);const list=all.filter(c=>(renewStatus==='todos'||c.status.key===renewStatus)&&(!q||c.key.includes(q))).sort((a,b)=>(a.status.days??9999)-(b.status.days??9999)||a.nombre.localeCompare(b.nombre,'es'));$('#renew-list').innerHTML=list.map(c=>clientCard(c,true)).join('');$('#renew-empty').classList.toggle('hidden',list.length>0)}
-
-function editClient(id){
- const c=savedClients.find(x=>String(x.id)===String(id));
- if(!c)return toast('No encontré la ficha del cliente.',true);
- $('#client-edit-id').value=c.id;
- $('#client-edit-name').value=c.nombre||'';
- $('#client-edit-app').value=APPS.includes(c.app_ultima)?c.app_ultima:'TV';
- $('#client-edit-date').value=c.last_used_at?localISO(new Date(c.last_used_at)):localISO();
- $('#client-edit-modal').classList.remove('hidden');
- setTimeout(()=>$('#client-edit-name').focus(),100);
-}
-function closeClientEdit(){
- $('#client-edit-modal').classList.add('hidden');
- $('#client-edit-form').reset();
- $('#client-edit-id').value='';
-}
-async function saveClientEdit(e){
- e.preventDefault();
- if(!user)return;
- const id=$('#client-edit-id').value;
- const current=savedClients.find(x=>String(x.id)===String(id));
- if(!current)return toast('No encontré la ficha del cliente.',true);
-
- const nombre=cleanName($('#client-edit-name').value);
- const app=$('#client-edit-app').value;
- const fecha=$('#client-edit-date').value;
- if(!nombre)return toast('Ingresá el nombre.',true);
- if(!APPS.includes(app))return toast('Seleccioná una aplicación.',true);
- const fechaTs=manualDateToTimestamp(fecha);
- if(!fechaTs)return toast('Ingresá una fecha válida.',true);
-
- const payload={
-  nombre,
-  nombre_normalizado:norm(nombre),
-  app_ultima:app,
-  last_used_at:fechaTs,
-  updated_at:new Date().toISOString()
- };
-
- const btn=$('#client-edit-save');
- btn.disabled=true;btn.textContent='Guardando...';
-
- const {error}=await db.from('control_clientes').update(payload).eq('id',id);
-
- if(error){
-  btn.disabled=false;btn.textContent='Guardar cambios';
-  if(String(error.message||'').toLowerCase().includes('duplicate')){
-   return toast('Ya existe otro cliente con ese nombre.',true);
-  }
-  return toast(`No se pudo editar: ${error.message}`,true);
- }
-
- // Si corregiste el nombre, conservamos unido su historial.
- const oldKey=norm(current.nombre_normalizado||current.nombre);
- const newKey=norm(nombre);
- if(oldKey!==newKey){
-  const ids=movements
-   .filter(m=>m.tipo==='CLIENTE'&&norm(m.nombre)===oldKey)
-   .map(m=>m.id);
-  if(ids.length){
-   const {error:histError}=await db.from('control_movimientos')
-    .update({nombre,updated_at:new Date().toISOString()})
-    .in('id',ids);
-   if(histError){
-    console.warn('La ficha se editó, pero no se pudo renombrar todo el historial',histError);
-   }
-  }
- }
-
- btn.disabled=false;btn.textContent='Guardar cambios';
-
- await Promise.all([loadClients(),loadMovements()]);
- rebuildCatalogs();
- renderAll();
- closeClientEdit();
- closeProfile();
- toast('Cliente actualizado.');
-}
-async function deleteClient(id){
- const c=savedClients.find(x=>String(x.id)===String(id));
- if(!c)return;
- const ok=confirm(`¿Eliminar la ficha de ${c.nombre}?\n\nEl historial de movimientos NO se va a borrar.`);
- if(!ok)return;
-
- const {error}=await db.from('control_clientes').delete().eq('id',id);
- if(error)return toast(`No se pudo eliminar: ${error.message}`,true);
-
- await loadClients();
- rebuildCatalogs();
- renderAll();
- closeProfile();
- toast('Cliente eliminado de la agenda. El historial se conserva.');
-}
-
-function renderClients(){const q=norm($('#clients-search').value);const list=clientProfiles().filter(c=>!q||c.key.includes(q)).sort((a,b)=>a.nombre.localeCompare(b.nombre,'es'));$('#clients-list').innerHTML=list.map(c=>clientCard(c)).join('');$('#clients-empty').classList.toggle('hidden',list.length>0)}
-function renderSellers(){const q=norm($('#sellers-search').value);const list=sellerProfiles().filter(s=>!q||s.key.includes(q)).sort((a,b)=>a.nombre.localeCompare(b.nombre,'es'));$('#sellers-list').innerHTML=list.map(s=>sellerCard(s)).join('');$('#sellers-empty').classList.toggle('hidden',list.length>0)}
-async function quickRenew(key){const c=clientProfiles().find(x=>x.key===key);if(!c)return;if(!c.app_ultima)return toast('Este cliente no tiene una app asociada.',true);if(!confirm(`Renovar a ${c.nombre} en ${c.app_ultima} por ${money(CLIENT_PRICE)}?`))return;const {error}=await db.from('control_movimientos').insert({user_id:user.id,app:c.app_ultima,tipo:'CLIENTE',nombre:c.nombre,creditos:null,precio:CLIENT_PRICE});if(error)return toast(`No se pudo renovar: ${error.message}`,true);await savePerson('CLIENTE',c.nombre,c.app_ultima,new Date().toISOString());await loadMovements();rebuildCatalogs();renderAll();toast(`${c.nombre} renovado por ${money(CLIENT_PRICE)}.`)}
-function prepareSeller(key){const s=sellerProfiles().find(x=>x.key===key);if(!s)return;$('#tipo-vendedor').checked=true;updateType();$('#nombre').value=s.nombre;if(s.app_ultima&&APPS.includes(s.app_ultima))$('#app').value=s.app_ultima;$('#creditos').value='';$('#precio').value='';switchView('registrar');setTimeout(()=>$('#creditos').focus(),150)}
-
-function openClientProfile(key){
- const c=clientProfiles().find(x=>x.key===key);
- if(!c)return;
- $('#profile-title').textContent=c.nombre;
- $('#profile-subtitle').textContent=`Cliente · ${c.app_ultima||'Sin app'}`;
- $('#profile-body').innerHTML=`
-  <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-   ${appLogoHTML(c.app_ultima)}
-   <div><strong>${esc(c.app_ultima||'Sin app')}</strong><div class="entity-sub">Aplicación actual</div></div>
-  </div>
-  <div class="entity-grid">
-   <div class="metric"><span>Última renovación</span><strong>${c.lastISO?esc(formatISODate(c.lastISO)):'—'}</strong></div>
-   <div class="metric"><span>Próxima renovación</span><strong>${c.next?esc(formatISODate(c.next)):'—'}</strong></div>
-   <div class="metric"><span>Total histórico</span><strong>${esc(money(c.total))}</strong></div>
-   <div class="metric"><span>Movimientos</span><strong>${c.ops}</strong></div>
-  </div>
-  <button class="btn btn-green" style="width:100%;margin-top:10px" type="button" onclick="quickRenew('${esc(c.key)}');closeProfile()">Renovar ahora · $8.000</button>
-  <div class="client-admin-actions">
-   <button class="btn btn-secondary" type="button" onclick="editClient('${esc(c.id)}')">Editar cliente</button>
-   <button class="btn btn-danger" type="button" onclick="deleteClient('${esc(c.id)}')">Eliminar cliente</button>
-  </div>
-  <div class="section-label" style="margin-top:16px">Historial</div>
-  <div class="profile-history">${c.hist.map(m=>profileRow(m)).join('')||'<div class="empty">Sin movimientos. La ficha del cliente sigue guardada.</div>'}</div>`;
- $('#profile-modal').classList.remove('hidden');
-}
-function openSellerProfile(key){const s=sellerProfiles().find(x=>x.key===key);if(!s)return;$('#profile-title').textContent=s.nombre;$('#profile-subtitle').textContent='Vendedor';$('#profile-body').innerHTML=`<div class="entity-grid"><div class="metric"><span>Créditos totales</span><strong>${esc(num(s.credits))}</strong></div><div class="metric"><span>Dinero ingresado</span><strong>${esc(money(s.total))}</strong></div><div class="metric"><span>Última carga</span><strong>${s.last?esc(dateOnly(s.last.fecha)):'—'}</strong></div><div class="metric"><span>Cargas</span><strong>${s.ops}</strong></div></div><div class="apps-list">${s.apps.map(a=>`<span class="app-chip">${esc(a)}</span>`).join('')}</div><button class="btn btn-primary" style="width:100%;margin-top:10px" type="button" onclick="prepareSeller('${esc(s.key)}');closeProfile()">Nueva carga</button><div class="section-label" style="margin-top:16px">Historial</div><div class="profile-history">${s.hist.map(m=>profileRow(m)).join('')||'<div class="empty">Sin movimientos.</div>'}</div>`;$('#profile-modal').classList.remove('hidden')}
-function profileRow(m){return `<div class="profile-row"><div><strong>${esc(m.app)}${m.tipo==='VENDEDOR'?' · '+esc(num(m.creditos))+' créditos':''}</strong><span>${esc(dateTime(m.fecha))}</span></div><div class="amount">${esc(money(m.precio))}</div></div>`}
-function closeProfile(){$('#profile-modal').classList.add('hidden')}
-
-function changePeriod(p,btn){historyPeriod=p;$$('.period-btn').forEach(x=>x.classList.toggle('active',x===btn));$('#custom-range').classList.toggle('hidden',p!=='personalizado');if(p!=='personalizado')renderHistory()}
-function applyCustomRange(){const from=$('#date-from').value,to=$('#date-to').value;if(!from||!to)return toast('Elegí ambas fechas.',true);if(from>to)return toast('La fecha desde no puede ser posterior.',true);customRange={from,to};renderHistory()}
-function periodLimits(){if(historyPeriod==='todo')return{from:null,to:null};if(historyPeriod==='personalizado')return customRange;const today=localISO();if(historyPeriod==='hoy')return{from:today,to:today};const [y,m,d]=today.split('-').map(Number);const base=new Date(y,m-1,d,12);let a,b;if(historyPeriod==='semana'){const day=(base.getDay()+6)%7;a=new Date(base);a.setDate(base.getDate()-day);b=new Date(a);b.setDate(a.getDate()+6)}else if(historyPeriod==='mes'){a=new Date(y,m-1,1,12);b=new Date(y,m,0,12)}else{a=new Date(y,0,1,12);b=new Date(y,11,31,12)}return{from:localISO(a),to:localISO(b)}}
-function filteredHistory(){const {from,to}=periodLimits(),q=norm($('#history-search').value),app=$('#history-app').value,type=$('#history-type').value;return movements.filter(m=>{const day=localISO(new Date(m.fecha));if(from&&day<from)return false;if(to&&day>to)return false;if(app!=='TODAS'&&m.app!==app)return false;if(type!=='TODOS'&&m.tipo!==type)return false;if(q&&!norm(m.nombre).includes(q))return false;return true})}
-function renderHistory(){const list=filteredHistory();$('#stat-money').textContent=money(list.reduce((a,m)=>a+Number(m.precio||0),0));$('#stat-clients').textContent=list.filter(m=>m.tipo==='CLIENTE').length;$('#stat-sellers').textContent=list.filter(m=>m.tipo==='VENDEDOR').length;$('#stat-credits').textContent=num(list.filter(m=>m.tipo==='VENDEDOR').reduce((a,m)=>a+Number(m.creditos||0),0));$('#history-list').innerHTML=list.map(m=>`<article class="movement"><div class="movement-top"><div class="movement-name">${esc(m.nombre)}</div><div class="movement-price">${esc(money(m.precio))}</div></div><div class="movement-meta"><span class="app-chip">${esc(m.app)}</span><span class="type-chip ${m.tipo==='CLIENTE'?'client':'seller'}">${esc(m.tipo)}</span></div><div class="movement-details"><div><span>Fecha</span><strong>${esc(dateTime(m.fecha))}</strong></div><div><span>Créditos</span><strong>${m.tipo==='VENDEDOR'?esc(num(m.creditos)):'No aplica'}</strong></div></div><div class="movement-actions"><button class="btn btn-secondary" type="button" onclick="editMovementById('${m.id}')">Editar</button><button class="btn btn-danger" type="button" onclick="deleteMovement('${m.id}')">Eliminar</button></div></article>`).join('');$('#history-empty').classList.toggle('hidden',list.length>0)}
-function exportExcel(){const list=filteredHistory();if(!list.length)return toast('No hay datos para exportar.',true);const rows=list.map(m=>({'Fecha y hora':dateTime(m.fecha),'Aplicación':m.app,'Tipo':m.tipo,'Nombre':m.nombre,'Créditos':m.tipo==='VENDEDOR'?Number(m.creditos||0):'','Precio':Number(m.precio||0)}));const ws=XLSX.utils.json_to_sheet(rows),wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Movimientos');XLSX.writeFile(wb,`Control_ingresos_${historyPeriod}_${localISO()}.xlsx`)}
-function renderAll(){renderRenewals();renderApps();renderClients();renderSellers();renderHistory()}
-
-window.selectApp=selectApp;window.openClientProfile=openClientProfile;window.editClient=editClient;window.deleteClient=deleteClient;window.openSellerProfile=openSellerProfile;window.quickRenew=quickRenew;window.prepareSeller=prepareSeller;window.closeProfile=closeProfile;window.editMovementById=editMovementById;window.deleteMovement=deleteMovement;
-init();
+});
 </script>
 </body>
 </html>
