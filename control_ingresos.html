@@ -51,7 +51,16 @@ input,select{font-size:16px}
 
 /* Status and renewal */
 .renewal-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:12px}.summary-card{border-radius:18px;background:var(--card);border:1px solid var(--border);padding:13px}.summary-card span{display:block;font-size:9px;text-transform:uppercase;letter-spacing:.07em;font-weight:800;color:var(--muted2);margin-bottom:6px}.summary-card strong{font-size:22px}.summary-card.red strong{color:var(--red)}.summary-card.yellow strong{color:var(--yellow)}.summary-card.blue strong{color:var(--blue)}.summary-card.green strong{color:var(--green)}
-.toolbar-card{padding:12px;margin-bottom:12px}#new-client-btn{width:100%;margin-top:8px}.toolbar-grid{display:grid;grid-template-columns:1fr;gap:8px}.chip-row{display:flex;gap:6px;overflow:auto;padding-bottom:1px}.filter-chip{border:1px solid var(--border);background:var(--surface);color:var(--muted);min-height:38px;padding:0 12px;border-radius:999px;white-space:nowrap;font-size:11px;font-weight:800;cursor:pointer}.filter-chip.active{background:var(--blueSoft);border-color:var(--blue);color:var(--blue)}
+.toolbar-card{padding:12px;margin-bottom:12px}#new-client-btn{width:100%;margin-top:8px}
+.client-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.summary-card{border-radius:16px;padding:11px;min-height:92px;display:flex;flex-direction:column;justify-content:space-between}
+.summary-card .summary-title{font-size:9px;font-weight:800;padding-bottom:7px;border-bottom:1px solid rgba(255,255,255,.3);margin-bottom:7px;line-height:1.25;text-transform:uppercase;letter-spacing:.02em}
+.summary-card .summary-number{font-size:24px;font-weight:800;line-height:1}
+.summary-card .summary-desc{font-size:9px;margin-top:6px;opacity:.92;line-height:1.3}
+.summary-card.green{background:var(--green);color:#fff}
+.summary-card.red{background:var(--red);color:#fff}
+.summary-card.yellow{background:var(--yellow);color:#211900}
+.summary-card.yellow .summary-title{border-color:rgba(0,0,0,.18)}.toolbar-grid{display:grid;grid-template-columns:1fr;gap:8px}.chip-row{display:flex;gap:6px;overflow:auto;padding-bottom:1px}.filter-chip{border:1px solid var(--border);background:var(--surface);color:var(--muted);min-height:38px;padding:0 12px;border-radius:999px;white-space:nowrap;font-size:11px;font-weight:800;cursor:pointer}.filter-chip.active{background:var(--blueSoft);border-color:var(--blue);color:var(--blue)}
 .list{display:grid;gap:9px}.entity-card{background:var(--card);border:1px solid var(--border);border-radius:19px;padding:13px}.entity-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}.entity-name{font-size:16px;font-weight:800;line-height:1.2;overflow-wrap:anywhere}.entity-sub{font-size:10px;color:var(--muted);margin-top:4px}.status{display:inline-flex;align-items:center;padding:5px 8px;border-radius:999px;font-size:9px;font-weight:800;white-space:nowrap}.status.vencido{color:var(--red);background:var(--redSoft)}.status.hoy{color:var(--yellow);background:var(--yellowSoft)}.status.proximo{color:var(--blue);background:var(--blueSoft)}.status.aldia{color:var(--green);background:var(--greenSoft)}
 .entity-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:11px;padding-top:10px;border-top:1px solid var(--border)}.metric{background:var(--surface);border-radius:12px;padding:9px;min-width:0}.metric span{display:block;font-size:8px;color:var(--muted2);text-transform:uppercase;font-weight:800;letter-spacing:.06em;margin-bottom:3px}.metric strong{font-size:11px;display:block;overflow-wrap:anywhere}.entity-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}.entity-actions .btn{min-height:42px;font-size:11px;padding:0 9px}.apps-list{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}.app-chip,.type-chip{display:inline-flex;padding:5px 7px;border-radius:8px;font-size:9px;font-weight:800}.app-chip{background:var(--blueSoft);color:var(--blue)}.type-chip.client{background:var(--greenSoft);color:var(--green)}.type-chip.seller{background:var(--purpleSoft);color:var(--purple)}
 
@@ -120,7 +129,7 @@ input,select{font-size:16px}
 .toast{position:fixed;left:10px;right:10px;bottom:88px;z-index:130;background:#151a22;color:#fff;border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:12px;text-align:center;font-size:12px;font-weight:800;box-shadow:0 18px 50px rgba(0,0,0,.3)}.toast.error{background:#2b1518;color:#fecaca;border-color:rgba(239,68,68,.3)}
 
 @media(min-width:760px){
- body{padding-bottom:28px}.bottom-nav{position:sticky;top:60px;bottom:auto;max-width:1180px;margin:0 auto 12px;border:1px solid var(--border);border-radius:0 0 18px 18px;padding:7px;background:var(--nav)}.nav-tab{flex-direction:row;font-size:11px;min-height:44px}.nav-tab .ico{font-size:16px}.main{padding:18px 20px 50px}.view-title h1{font-size:28px}.register-card{padding:20px}.form-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.form-actions{grid-column:1/-1;grid-template-columns:1fr 1fr}.renewal-summary{grid-template-columns:repeat(4,1fr)}.toolbar-grid{grid-template-columns:minmax(260px,1fr) auto}.list{grid-template-columns:repeat(2,minmax(0,1fr))}.entity-grid{grid-template-columns:repeat(4,1fr)}.period-row{grid-template-columns:repeat(6,1fr)}.custom-range{grid-template-columns:1fr 1fr auto}.stats{grid-template-columns:repeat(4,1fr)}.history-toolbar{grid-template-columns:2fr 1fr 1fr auto}.history-toolbar .wide{grid-column:auto}.history-list{grid-template-columns:repeat(2,minmax(0,1fr))}.modal{align-items:center;padding:18px}.modal-panel{border-radius:24px;max-height:85vh;padding:20px}.toast{left:auto;right:18px;bottom:18px;width:auto;max-width:420px}.brand span{display:block}
+ body{padding-bottom:28px}.bottom-nav{position:sticky;top:60px;bottom:auto;max-width:1180px;margin:0 auto 12px;border:1px solid var(--border);border-radius:0 0 18px 18px;padding:7px;background:var(--nav)}.nav-tab{flex-direction:row;font-size:11px;min-height:44px}.nav-tab .ico{font-size:16px}.main{padding:18px 20px 50px}.view-title h1{font-size:28px}.register-card{padding:20px}.form-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.form-actions{grid-column:1/-1;grid-template-columns:1fr 1fr}.renewal-summary{grid-template-columns:repeat(4,1fr)}.toolbar-grid{grid-template-columns:minmax(260px,1fr) auto}.list{grid-template-columns:repeat(2,minmax(0,1fr))}.entity-grid{grid-template-columns:repeat(4,1fr)}.period-row{grid-template-columns:repeat(6,1fr)}.custom-range{grid-template-columns:1fr 1fr auto}.stats{grid-template-columns:repeat(4,1fr)}.history-toolbar{grid-template-columns:2fr 1fr 1fr auto}.history-toolbar .wide{grid-column:auto}.history-list{grid-template-columns:repeat(2,minmax(0,1fr))}.modal{align-items:center;padding:18px}.modal-panel{border-radius:24px;max-height:85vh;padding:20px}.toast{left:auto;right:18px;bottom:18px;width:auto;max-width:420px}.brand span{display:block}.summary-card{min-height:118px;padding:16px}.summary-card .summary-title{font-size:11px}.summary-card .summary-number{font-size:32px}.summary-card .summary-desc{font-size:11px}
 }
 @media(min-width:1050px){.form-grid{grid-template-columns:1fr 1fr 1.25fr .8fr .8fr auto}.form-actions{grid-column:auto;display:flex}.list{grid-template-columns:repeat(3,minmax(0,1fr))}.history-list{grid-template-columns:repeat(3,minmax(0,1fr))}}
 </style>
@@ -222,6 +231,7 @@ input,select{font-size:16px}
   <section id="view-clientes" class="view">
    <div class="view-title"><h1>Clientes</h1><p>Agenda permanente de clientes. Borrar movimientos del historial no elimina estas fichas.</p></div>
    <div class="card toolbar-card"><input id="clients-search" class="input" type="search" placeholder="Buscar cliente por nombre..."><button id="new-client-btn" class="btn btn-primary" type="button" onclick="openNewClient()">+ Nuevo cliente</button></div>
+   <div id="client-summary" class="client-summary"></div>
    <div id="clients-list" class="list"></div><div id="clients-empty" class="empty hidden"><div class="emoji">👤</div><p>No encontré clientes.</p></div>
   </section>
 
@@ -766,7 +776,29 @@ async function deleteClient(id){
  toast('Cliente eliminado de la agenda. El historial se conserva.');
 }
 
-function renderClients(){const q=norm($('#clients-search').value);const list=clientProfiles().filter(c=>!q||c.key.includes(q)).sort((a,b)=>a.nombre.localeCompare(b.nombre,'es'));$('#clients-list').innerHTML=list.map(c=>clientCard(c)).join('');$('#clients-empty').classList.toggle('hidden',list.length>0)}
+function clientSummary(profiles){
+ let activos=0,vencidos=0,pronto=0;
+ profiles.forEach(c=>{
+  const k=c.status.key;
+  if(k==='vencido')vencidos++;
+  else if(k==='aldia')activos++;
+  else pronto++; // 'hoy' o 'proximo'
+ });
+ return {activos,vencidos,pronto};
+}
+function renderClients(){
+ const q=norm($('#clients-search').value);
+ const profiles=clientProfiles();
+ const list=profiles.filter(c=>!q||c.key.includes(q)).sort((a,b)=>a.nombre.localeCompare(b.nombre,'es'));
+ $('#clients-list').innerHTML=list.map(c=>clientCard(c)).join('');
+ $('#clients-empty').classList.toggle('hidden',list.length>0);
+ const s=clientSummary(profiles);
+ $('#client-summary').innerHTML=`
+  <div class="summary-card green"><div class="summary-title">Usuarios activos</div><div class="summary-number">${s.activos}</div><div class="summary-desc">Clientes con servicio activo.</div></div>
+  <div class="summary-card red"><div class="summary-title">Usuarios vencidos</div><div class="summary-number">${s.vencidos}</div><div class="summary-desc">Clientes que requieren renovación.</div></div>
+  <div class="summary-card yellow"><div class="summary-title">Vencen pronto (${SOON_DAYS} días)</div><div class="summary-number">${s.pronto}</div><div class="summary-desc">Atención requerida pronto.</div></div>
+ `;
+}
 function renderSellers(){const q=norm($('#sellers-search').value);const list=sellerProfiles().filter(s=>!q||s.key.includes(q)).sort((a,b)=>a.nombre.localeCompare(b.nombre,'es'));$('#sellers-list').innerHTML=list.map(s=>sellerCard(s)).join('');$('#sellers-empty').classList.toggle('hidden',list.length>0)}
 async function quickRenew(key){const c=clientProfiles().find(x=>x.key===key);if(!c)return;if(!c.app_ultima)return toast('Este cliente no tiene una app asociada.',true);if(!confirm(`Renovar a ${c.nombre} en ${c.app_ultima} por ${money(CLIENT_PRICE)}?`))return;const {error}=await db.from('control_movimientos').insert({user_id:user.id,app:c.app_ultima,tipo:'CLIENTE',nombre:c.nombre,creditos:null,precio:CLIENT_PRICE});if(error)return toast(`No se pudo renovar: ${error.message}`,true);await savePerson('CLIENTE',c.nombre,c.app_ultima,new Date().toISOString());await loadMovements();rebuildCatalogs();renderAll();toast(`${c.nombre} renovado por ${money(CLIENT_PRICE)}.`)}
 function prepareSeller(key){const s=sellerProfiles().find(x=>x.key===key);if(!s)return;$('#tipo-vendedor').checked=true;updateType();$('#nombre').value=s.nombre;if(s.app_ultima&&APPS.includes(s.app_ultima))$('#app').value=s.app_ultima;$('#creditos').value='';$('#precio').value='';switchView('registrar');setTimeout(()=>$('#creditos').focus(),150)}
