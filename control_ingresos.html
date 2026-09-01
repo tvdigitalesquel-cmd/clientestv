@@ -137,11 +137,305 @@ input,select{font-size:16px}
 }
 @media(min-width:1050px){.form-grid{grid-template-columns:1fr 1fr 1.25fr .8fr .8fr auto}.form-actions{grid-column:auto;display:flex}.list{grid-template-columns:repeat(3,minmax(0,1fr))}.history-list{grid-template-columns:repeat(3,minmax(0,1fr))}}
 </style>
+
+<style id="professional-v7">
+/* =========================================================
+   V7 · Professional admin interface
+   Visual-only layer: preserves existing IDs and JS behavior.
+   ========================================================= */
+:root{
+ --bg:#0b1020;
+ --nav:#0a1020;
+ --card:#111827;
+ --surface:#172033;
+ --surface2:#1d293d;
+ --border:rgba(148,163,184,.14);
+ --border2:rgba(148,163,184,.24);
+ --text:#f3f6fb;
+ --muted:#94a3b8;
+ --muted2:#66758a;
+ --blue:#3b82f6;
+ --blueSoft:rgba(59,130,246,.12);
+ --green:#22c55e;
+ --greenSoft:rgba(34,197,94,.11);
+ --red:#ef4444;
+ --redSoft:rgba(239,68,68,.10);
+ --yellow:#f59e0b;
+ --yellowSoft:rgba(245,158,11,.11);
+ --purple:#8b5cf6;
+ --purpleSoft:rgba(139,92,246,.11);
+ --cyan:#06b6d4;
+ --cyanSoft:rgba(6,182,212,.11);
+ --shadow:0 1px 2px rgba(0,0,0,.14),0 10px 30px rgba(0,0,0,.10);
+ --shadow-lg:0 24px 70px rgba(0,0,0,.28);
+ --r:14px;
+ --r2:18px;
+}
+html.light-mode{
+ --bg:#f5f7fb;
+ --nav:#111827;
+ --card:#ffffff;
+ --surface:#f3f6fa;
+ --surface2:#e9eef5;
+ --border:rgba(15,23,42,.09);
+ --border2:rgba(15,23,42,.16);
+ --text:#162033;
+ --muted:#64748b;
+ --muted2:#8995a6;
+ --blueSoft:rgba(59,130,246,.09);
+ --greenSoft:rgba(34,197,94,.09);
+ --redSoft:rgba(239,68,68,.08);
+ --yellowSoft:rgba(245,158,11,.10);
+ --purpleSoft:rgba(139,92,246,.09);
+ --cyanSoft:rgba(6,182,212,.09);
+ --shadow:0 1px 2px rgba(15,23,42,.04),0 8px 28px rgba(15,23,42,.055);
+ --shadow-lg:0 24px 70px rgba(15,23,42,.16);
+}
+html,body{background:var(--bg)}
+body{letter-spacing:-.005em}
+button{transition:transform .14s ease,box-shadow .14s ease,border-color .14s ease,background .14s ease,color .14s ease}
+button:active{transform:translateY(1px)}
+
+/* Icons */
+.brand-icon svg,.login-logo svg,.nav-tab .ico svg{width:1em;height:1em;display:block;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.nav-tab[data-view="dashboard"] .ico svg path:first-child{fill:currentColor;stroke:none;opacity:.92}
+.brand-icon svg,.login-logo svg{width:25px;height:25px}
+
+/* Authentication */
+.login-screen{background:radial-gradient(circle at 20% 0%,rgba(59,130,246,.16),transparent 34%),var(--bg)}
+.login-card{border-radius:22px;padding:34px 30px;background:var(--card);box-shadow:var(--shadow-lg);border-color:var(--border)}
+.login-logo{width:52px;height:52px;border-radius:14px;margin-bottom:22px;background:var(--blue);color:#fff}
+.login-card h1{font-size:26px;letter-spacing:-.04em}
+.login-card p{font-size:13px;margin-top:9px;margin-bottom:24px}
+
+/* Header / brand */
+.topbar{background:var(--nav);border-bottom:1px solid rgba(255,255,255,.07);box-shadow:none}
+.topbar-inner{height:64px}
+.brand{gap:11px}
+.brand-icon{width:40px;height:40px;border-radius:12px;background:linear-gradient(145deg,#3b82f6,#2563eb);color:#fff}
+.brand strong{font-size:14px;letter-spacing:-.01em}
+.brand span{font-size:10px;color:rgba(255,255,255,.48);margin-top:2px;max-width:155px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.icon-btn,.logout-btn{border-color:rgba(255,255,255,.10);background:rgba(255,255,255,.055);border-radius:10px}
+.icon-btn:hover,.logout-btn:hover{background:rgba(255,255,255,.10)}
+
+/* Navigation */
+.bottom-nav{background:rgba(10,16,32,.96);backdrop-filter:blur(18px);border-color:rgba(255,255,255,.08)}
+.nav-tab{font-weight:700;letter-spacing:.01em;color:#7f8da5}
+.nav-tab .ico{font-size:19px;width:20px;height:20px;display:grid;place-items:center}
+.nav-tab.active{background:rgba(59,130,246,.13);color:#7fb0ff}
+
+/* Main typography */
+.main{max-width:1240px}
+.view-title{margin-bottom:18px}
+.view-title h1{font-size:24px;font-weight:800;letter-spacing:-.045em}
+.view-title p{font-size:12px;color:var(--muted);max-width:720px}
+.section-label{font-size:10px;color:var(--muted);letter-spacing:.12em}
+
+/* Surfaces */
+.card,.entity-card,.dashboard-card,.app-service-card,.stat,.summary-card{box-shadow:var(--shadow)}
+.card,.entity-card,.dashboard-card,.app-service-card,.stat{border-color:var(--border)}
+.card{border-radius:18px}
+.input{height:48px;border-radius:12px;background:var(--surface);border-color:var(--border);padding:0 14px;font-size:14px}
+.input:hover{border-color:var(--border2)}
+.input:focus{border-color:rgba(59,130,246,.7);box-shadow:0 0 0 3px rgba(59,130,246,.10)}
+.input-label{font-size:11px;color:var(--muted);margin-bottom:7px}
+.helper{font-size:10px;color:var(--muted2)}
+
+/* Buttons */
+.btn{min-height:44px;border-radius:11px;font-size:12px;font-weight:750;padding:0 14px}
+.btn-primary{background:linear-gradient(180deg,#4388f7,#3478e8);box-shadow:0 5px 14px rgba(59,130,246,.18)}
+.btn-primary:hover{box-shadow:0 7px 18px rgba(59,130,246,.25);transform:translateY(-1px)}
+.btn-secondary{background:var(--card);border-color:var(--border2);color:var(--text)}
+.btn-secondary:hover{background:var(--surface)}
+.btn-green{background:var(--greenSoft);color:var(--green);border-color:rgba(34,197,94,.20)}
+.btn-green:hover{background:rgba(34,197,94,.16)}
+.btn-danger{background:transparent;color:var(--red);border-color:rgba(239,68,68,.20)}
+.btn-danger:hover{background:var(--redSoft)}
+
+/* Dashboard */
+.dashboard-grid{gap:12px;margin-bottom:16px}
+.dashboard-card{position:relative;overflow:hidden;min-height:118px;padding:17px;border-radius:17px;background:var(--card)}
+.dashboard-card:before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--blue)}
+.dashboard-card:nth-child(3):before{background:var(--green)}
+.dashboard-card:nth-child(4):before{background:var(--yellow)}
+.dashboard-card span{font-size:10px;color:var(--muted);letter-spacing:.075em}
+.dashboard-card strong{font-size:26px;margin-top:10px;letter-spacing:-.04em}
+.dashboard-card small{font-size:10px;margin-top:7px;color:var(--muted)}
+.dashboard-columns{gap:16px}
+.dashboard-panel{padding:18px}
+.breakdown-row,.dashboard-alert{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:11px 12px}
+.breakdown-row strong,.dashboard-alert strong{font-size:12px}
+.breakdown-value{font-size:13px}
+
+/* Summary / status cards */
+.renewal-summary,.client-summary{gap:10px;margin-bottom:16px}
+.renewal-summary .summary-card,.client-summary .summary-card{background:var(--card)!important;color:var(--text)!important;border:1px solid var(--border)!important;min-height:104px;border-radius:16px;padding:14px 15px;position:relative;overflow:hidden}
+.renewal-summary .summary-card:before,.client-summary .summary-card:before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--blue)}
+.renewal-summary .summary-card.red:before,.client-summary .summary-card.red:before{background:var(--red)}
+.renewal-summary .summary-card.yellow:before,.client-summary .summary-card.yellow:before{background:var(--yellow)}
+.renewal-summary .summary-card.green:before,.client-summary .summary-card.green:before{background:var(--green)}
+.renewal-summary .summary-card.blue:before{background:var(--blue)}
+.summary-card .summary-title{border:0!important;padding:0;margin:0 0 9px;font-size:10px;color:var(--muted);letter-spacing:.06em}
+.summary-card .summary-number{font-size:28px;letter-spacing:-.04em;color:var(--text)}
+.summary-card.red .summary-number,.renewal-summary .summary-card.red strong{color:var(--red)}
+.summary-card.yellow .summary-number,.renewal-summary .summary-card.yellow strong{color:var(--yellow)}
+.summary-card.green .summary-number,.renewal-summary .summary-card.green strong{color:var(--green)}
+.renewal-summary .summary-card.blue strong{color:var(--blue)}
+.summary-card .summary-desc{font-size:9px;color:var(--muted);opacity:1}
+.client-summary .summary-card:hover{transform:translateY(-2px);border-color:var(--border2)!important}
+.client-summary .summary-card.active-filter{box-shadow:0 0 0 2px rgba(59,130,246,.22),var(--shadow);border-color:rgba(59,130,246,.45)!important}
+.client-summary .summary-card.active-filter:after{right:12px;bottom:10px;color:var(--blue);font-size:7px}
+
+/* Toolbars */
+.toolbar-card{padding:11px;background:var(--card);border-radius:16px}
+#view-clientes>.toolbar-card{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:9px;align-items:center}
+#new-client-btn{width:auto;margin:0;min-width:150px}
+.filter-chip{min-height:36px;border-radius:10px;background:var(--surface);border-color:var(--border);font-size:10px;padding:0 11px}
+.filter-chip.active{background:var(--blue);border-color:var(--blue);color:white;box-shadow:0 4px 12px rgba(59,130,246,.15)}
+
+/* Client / seller cards */
+.list{gap:12px}
+.entity-card{border-radius:17px;padding:16px;background:var(--card);transition:transform .15s ease,border-color .15s ease,box-shadow .15s ease}
+.entity-card:hover{border-color:var(--border2);transform:translateY(-1px)}
+.entity-name{font-size:15px;letter-spacing:-.02em}
+.entity-sub{font-size:9px;color:var(--muted);margin-top:5px}
+.phone-link{font-size:10px;color:var(--muted);font-weight:650}
+.status{padding:5px 8px;font-size:8px;border:1px solid transparent}
+.status.aldia{border-color:rgba(34,197,94,.14)}
+.status.vencido{border-color:rgba(239,68,68,.14)}
+.status.hoy{border-color:rgba(245,158,11,.16)}
+.status.proximo{border-color:rgba(59,130,246,.14)}
+.apps-list{margin-top:9px;gap:5px}
+.apps-list .app-logo-wrap{width:30px;height:30px;border-radius:8px;background:var(--surface);border-color:var(--border)}
+.entity-grid{margin-top:13px;padding-top:12px;gap:7px}
+.metric{background:transparent;border:1px solid var(--border);border-radius:10px;padding:9px 10px}
+.metric span{font-size:7.5px;color:var(--muted2)}
+.metric strong{font-size:10.5px;margin-top:1px}
+.entity-actions{margin-top:11px;gap:7px}
+.entity-actions .btn{min-height:39px;font-size:10px}
+.client-admin-actions{margin-top:7px;gap:7px}
+.client-admin-actions .btn{min-height:36px;font-size:10px;font-weight:650}
+.client-admin-actions .btn-secondary{background:transparent}
+
+/* App cards */
+.apps-grid{gap:11px}
+.app-service-card{border-radius:16px;padding:15px;background:var(--card)}
+.app-service-icon{background:var(--surface);border:1px solid var(--border)}
+.app-service-name{font-size:13px}
+.app-service-count{font-size:25px;letter-spacing:-.04em}
+.app-service-label,.app-service-renew{color:var(--muted)}
+
+/* Register / selectors */
+.register-card{padding:18px}
+.type-option label,.multi-app-option label,.client-app-option label{background:var(--surface);border-color:var(--border);border-radius:11px}
+.type-option input:checked+label,.multi-app-option input:checked+label,.client-app-option input:checked+label{background:var(--blueSoft);border-color:rgba(59,130,246,.55);box-shadow:none}
+.multi-price-row,.service-row{background:var(--surface);border-color:var(--border);border-radius:11px}
+.client-app-option label{min-height:58px}
+.client-app-option .app-logo-wrap{border:1px solid var(--border)}
+
+/* History */
+.period-card,.history-card{border-radius:16px}
+.period-btn{border-radius:9px;background:var(--surface);border-color:var(--border);font-size:9px}
+.period-btn.active{box-shadow:0 4px 12px rgba(59,130,246,.15)}
+.stat{border-radius:14px;padding:13px;background:var(--card);min-height:88px}
+.stat span{font-size:8px;color:var(--muted)}
+.stat strong{font-size:20px;letter-spacing:-.03em}
+.movement{border-radius:13px;background:var(--surface);border-color:var(--border);padding:13px}
+.movement-name{font-size:13px}
+.movement-price{font-size:14px}
+
+/* Modals */
+.modal{background:rgba(7,12,24,.58);backdrop-filter:blur(5px)}
+.modal-panel{background:var(--card);border-color:var(--border2);box-shadow:var(--shadow-lg);border-radius:20px 20px 0 0;padding:18px 16px calc(20px + env(safe-area-inset-bottom))}
+.modal-head{padding-bottom:12px;border-bottom:1px solid var(--border);margin-bottom:16px}
+.modal-head h2{font-size:19px;letter-spacing:-.025em}
+.modal-head p{font-size:10px}
+.close-btn{width:38px;height:38px;border-radius:10px;background:var(--surface);border-color:var(--border);cursor:pointer}
+
+/* Toast */
+.toast{border-radius:12px;font-size:11px;box-shadow:var(--shadow-lg)}
+
+/* Mobile */
+@media(max-width:759px){
+ body{padding-bottom:78px}
+ .topbar-inner{height:58px;padding:0 12px}
+ .brand-icon{width:36px;height:36px}
+ .brand strong{font-size:13px}
+ .brand span{display:none}
+ .logout-btn{display:none}
+ .bottom-nav{padding:6px 5px calc(6px + env(safe-area-inset-bottom));gap:1px}
+ .nav-tab{min-height:50px;font-size:8px;border-radius:9px}
+ .nav-tab .ico{font-size:18px}
+ .main{padding:14px 10px 24px}
+ .view-title{margin-bottom:14px}
+ .view-title h1{font-size:21px}
+ .dashboard-grid{gap:8px}
+ .dashboard-card{min-height:108px;padding:14px}
+ .dashboard-card strong{font-size:21px}
+ #view-clientes>.toolbar-card{grid-template-columns:1fr}
+ #new-client-btn{width:100%;min-width:0}
+ .client-summary{gap:7px}
+ .renewal-summary .summary-card,.client-summary .summary-card{padding:12px;min-height:96px}
+ .summary-card .summary-number{font-size:24px}
+ .entity-card{padding:13px}
+ .entity-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .metric{padding:8px}
+ .modal-panel{max-height:91vh}
+}
+
+/* Tablet / desktop */
+@media(min-width:760px){
+ body{padding-bottom:0}
+ .main{padding:24px 26px 52px}
+ .view-title h1{font-size:27px}
+ .modal-panel{border-radius:20px;padding:22px;max-height:88vh}
+ .client-app-picker{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+
+/* True desktop: fixed admin sidebar */
+@media(min-width:1024px){
+ #app-screen{min-height:100vh}
+ .topbar{position:fixed;left:0;top:0;bottom:0;width:238px;height:100vh;border-right:1px solid rgba(255,255,255,.075);border-bottom:0;z-index:70}
+ .topbar-inner{height:100%;max-width:none;padding:22px 16px 18px;display:block;position:relative}
+ .brand{padding:0 5px;margin-bottom:26px}
+ .brand-icon{width:42px;height:42px}
+ .brand strong{font-size:14px}
+ .brand span{display:block}
+ .top-actions{position:absolute;left:16px;right:16px;bottom:18px;display:grid;grid-template-columns:44px 1fr;gap:8px}
+ .icon-btn,.logout-btn{height:42px}
+ .logout-btn{display:block;width:100%}
+ .bottom-nav{position:fixed;left:0;top:92px;bottom:auto;width:238px;max-width:none;margin:0;padding:0 14px;background:transparent;border:0;display:flex;flex-direction:column;gap:4px;z-index:71}
+ .nav-tab{min-height:44px;width:100%;padding:0 12px;display:flex;flex-direction:row;align-items:center;justify-content:flex-start;gap:11px;border-radius:10px;font-size:12px;color:#8796ad}
+ .nav-tab .ico{font-size:18px}
+ .nav-tab:hover{background:rgba(255,255,255,.045);color:#c8d2e1}
+ .nav-tab.active{background:rgba(59,130,246,.14);color:#88b6ff;box-shadow:inset 0 0 0 1px rgba(59,130,246,.12)}
+ .main{width:calc(100% - 238px);max-width:1480px;margin:0 0 0 238px;padding:34px 36px 64px}
+ .view-title{margin:0 0 22px}
+ .view-title h1{font-size:30px}
+ .view-title p{font-size:12px;margin-top:5px}
+ .dashboard-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+ .dashboard-columns{grid-template-columns:1.15fr .85fr;gap:16px}
+ .renewal-summary{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+ .client-summary{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+ .list{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+ .history-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+ .apps-grid{grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+ .toolbar-card{margin-bottom:16px}
+ .register-card{padding:22px}
+}
+
+@media(min-width:1380px){
+ .main{padding-left:44px;padding-right:44px}
+ .list{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .history-list{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+</style>
+
 </head>
 <body>
 <section id="login-screen" class="login-screen">
  <div class="login-card">
-  <div class="login-logo">💰</div>
+  <div class="login-logo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7.5A2.5 2.5 0 0 1 6.5 5h11A2.5 2.5 0 0 1 20 7.5v9A2.5 2.5 0 0 1 17.5 19h-11A2.5 2.5 0 0 1 4 16.5v-9Z"/><path d="M16 10h4v4h-4a2 2 0 1 1 0-4Z"/><path d="M7 5V4.5A1.5 1.5 0 0 1 8.5 3h7A1.5 1.5 0 0 1 17 4.5V5"/></svg></div>
   <h1>Control privado</h1>
   <p>Ingresá con tu cuenta para registrar movimientos, renovar clientes y controlar vendedores.</p>
   <form id="login-form">
@@ -156,18 +450,18 @@ input,select{font-size:16px}
 
 <div id="app-screen" class="hidden">
  <header class="topbar"><div class="topbar-inner">
-  <div class="brand"><div class="brand-icon">💰</div><div><strong>Control de Ingresos</strong><span id="user-email">Panel privado</span></div></div>
+  <div class="brand"><div class="brand-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7.5A2.5 2.5 0 0 1 6.5 5h11A2.5 2.5 0 0 1 20 7.5v9A2.5 2.5 0 0 1 17.5 19h-11A2.5 2.5 0 0 1 4 16.5v-9Z"/><path d="M16 10h4v4h-4a2 2 0 1 1 0-4Z"/><path d="M7 5V4.5A1.5 1.5 0 0 1 8.5 3h7A1.5 1.5 0 0 1 17 4.5V5"/></svg></div><div><strong>Control de Ingresos</strong><span id="user-email">Panel administrativo</span></div></div>
   <div class="top-actions"><button class="icon-btn" id="theme-btn" type="button" title="Cambiar tema">☀️</button><button class="logout-btn" id="logout-btn" type="button">Salir</button></div>
  </div></header>
 
  <nav class="bottom-nav" aria-label="Secciones">
-  <button class="nav-tab active" data-view="dashboard" type="button"><span class="ico">📊</span><span>Resumen</span></button>
-  <button class="nav-tab" data-view="registrar" type="button"><span class="ico">＋</span><span>Cargar</span></button>
-  <button class="nav-tab" data-view="renovaciones" type="button"><span class="ico">🔄</span><span>Renovar</span></button>
-  <button class="nav-tab" data-view="apps" type="button"><span class="ico">📺</span><span>Apps</span></button>
-  <button class="nav-tab" data-view="clientes" type="button"><span class="ico">👤</span><span>Clientes</span></button>
-  <button class="nav-tab" data-view="vendedores" type="button"><span class="ico">👥</span><span>Vendedores</span></button>
-  <button class="nav-tab" data-view="historial" type="button"><span class="ico">🧾</span><span>Historial</span></button>
+  <button class="nav-tab active" data-view="dashboard" type="button"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10h4v10H4Zm6 0V4h4v16h-4Zm6 0v-7h4v7h-4Z"/></svg></span><span>Resumen</span></button>
+  <button class="nav-tab" data-view="registrar" type="button"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span><span>Cargar</span></button>
+  <button class="nav-tab" data-view="renovaciones" type="button"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M6.1 9a7 7 0 0 1 11.6-2.2L20 9M4 15l2.3 2.2A7 7 0 0 0 17.9 15"/></svg></span><span>Renovar</span></button>
+  <button class="nav-tab" data-view="apps" type="button"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="13" rx="2"/><path d="m9 21 3-3 3 3"/></svg></span><span>Apps</span></button>
+  <button class="nav-tab" data-view="clientes" type="button"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4.5 21a7.5 7.5 0 0 1 15 0"/></svg></span><span>Clientes</span></button>
+  <button class="nav-tab" data-view="vendedores" type="button"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><circle cx="17" cy="9" r="2.5"/><path d="M2.5 21a6.5 6.5 0 0 1 13 0M14 15.2A5.5 5.5 0 0 1 21.5 20"/></svg></span><span>Vendedores</span></button>
+  <button class="nav-tab" data-view="historial" type="button"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2V3Z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg></span><span>Historial</span></button>
  </nav>
 
  <main class="main">
