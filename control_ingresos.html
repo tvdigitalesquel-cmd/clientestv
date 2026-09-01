@@ -48,7 +48,8 @@ input,select{font-size:16px}
 /* Register */
 .register-card{padding:14px}.form-grid{display:grid;grid-template-columns:1fr;gap:12px}.type-selector{display:grid;grid-template-columns:1fr 1fr;gap:8px}.type-option{position:relative}.type-option input{position:absolute;opacity:0}.type-option label{min-height:52px;border-radius:14px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;gap:7px;font-weight:800;color:var(--muted);cursor:pointer}.type-option input:checked+label{color:var(--blue);border-color:var(--blue);background:var(--blueSoft)}.dot{width:17px;height:17px;border-radius:5px;border:1.5px solid currentColor;display:grid;place-items:center;font-size:10px}.type-option input:checked+label .dot:after{content:'✓'}
 .autocomplete{position:relative}.suggestions{position:absolute;top:calc(100% + 5px);left:0;right:0;z-index:80;background:var(--card);border:1px solid var(--border2);border-radius:16px;padding:6px;max-height:310px;overflow:auto;box-shadow:0 20px 55px rgba(0,0,0,.38)}.suggestion{width:100%;min-height:58px;border:0;border-radius:12px;background:transparent;color:var(--text);display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 10px;text-align:left;cursor:pointer}.suggestion:hover{background:var(--blueSoft)}.suggestion-main{min-width:0}.suggestion-main strong{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.suggestion-main span{display:block;font-size:10px;color:var(--muted);margin-top:3px}.suggestion-meta{font-size:9px;font-weight:800;color:var(--purple);background:var(--purpleSoft);padding:5px 7px;border-radius:999px;white-space:nowrap}.helper{font-size:10px;color:var(--muted2);margin-top:6px;line-height:1.4}.form-actions{display:grid;grid-template-columns:1fr;gap:8px}.auto-date{text-align:center;font-size:10px;color:var(--muted2);margin-top:10px}
-.multi-apps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.multi-app-option{position:relative}.multi-app-option input{position:absolute;opacity:0}.multi-app-option label{min-height:48px;border-radius:12px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;gap:8px;padding:0 10px;font-size:11px;font-weight:800;color:var(--muted);cursor:pointer}.multi-app-option input:checked+label{background:var(--blueSoft);border-color:var(--blue);color:var(--blue)}.multi-app-option .check{width:17px;height:17px;border:1.5px solid currentColor;border-radius:5px;display:grid;place-items:center;flex:0 0 auto}.multi-app-option input:checked+label .check:after{content:'✓'}.service-list{display:grid;gap:8px;margin-top:10px}.service-row{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:10px}.service-row-top{display:flex;align-items:center;justify-content:space-between;gap:8px}.service-row-main{display:flex;align-items:center;gap:8px;min-width:0}.service-row .btn{min-height:38px;padding:0 10px;font-size:10px}.service-meta{font-size:9px;color:var(--muted);margin-top:5px}
+.multi-apps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.multi-app-option{position:relative}.multi-app-option input{position:absolute;opacity:0}.multi-app-option label{min-height:48px;border-radius:12px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;gap:8px;padding:0 10px;font-size:11px;font-weight:800;color:var(--muted);cursor:pointer}.multi-app-option input:checked+label{background:var(--blueSoft);border-color:var(--blue);color:var(--blue)}.multi-app-option .check{width:17px;height:17px;border:1.5px solid currentColor;border-radius:5px;display:grid;place-items:center;flex:0 0 auto}.multi-app-option input:checked+label .check:after{content:'✓'}
+.client-app-picker{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.client-app-option{position:relative;min-width:0}.client-app-option input{position:absolute;opacity:0;pointer-events:none}.client-app-option label{min-height:62px;border-radius:14px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;gap:9px;padding:7px 9px;color:var(--muted);cursor:pointer;transition:.16s}.client-app-option label:hover{border-color:var(--border2)}.client-app-option input:checked+label{background:var(--blueSoft);border-color:var(--blue);color:var(--blue);box-shadow:0 0 0 2px rgba(59,130,246,.08)}.client-app-check{width:20px;height:20px;border:1.7px solid currentColor;border-radius:6px;display:grid;place-items:center;flex:0 0 auto;font-size:12px;font-weight:900}.client-app-option input:checked+label .client-app-check:after{content:'✓'}.client-app-option .app-logo-wrap{width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,.04)}.client-app-option .app-logo{padding:4px}.client-app-name{font-size:11px;font-weight:800;line-height:1.15;min-width:0;overflow-wrap:anywhere}.client-app-picker-helper{font-size:10px;color:var(--muted2);margin-top:7px;line-height:1.4}.service-list{display:grid;gap:8px;margin-top:10px}.service-row{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:10px}.service-row-top{display:flex;align-items:center;justify-content:space-between;gap:8px}.service-row-main{display:flex;align-items:center;gap:8px;min-width:0}.service-row .btn{min-height:38px;padding:0 10px;font-size:10px}.service-meta{font-size:9px;color:var(--muted);margin-top:5px}
 .multi-price-list{display:grid;gap:7px;margin-top:10px}.multi-price-row{display:grid;grid-template-columns:minmax(0,1fr) 130px;gap:8px;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:8px 9px}.multi-price-name{font-size:11px;font-weight:800}.multi-price-row .input{height:42px;padding:0 10px}.profile-renew-check{width:19px;height:19px;accent-color:var(--green);flex:0 0 auto}.service-select{display:flex;align-items:center;gap:8px;min-width:0}.renew-selected-bar{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:10px}.renew-selected-bar .btn{min-height:44px}.phone-link{font-size:10px;color:var(--green);font-weight:800;margin-top:5px}.dashboard-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:12px}.dashboard-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:13px;min-height:102px}.dashboard-card span{display:block;font-size:9px;text-transform:uppercase;letter-spacing:.06em;font-weight:800;color:var(--muted2)}.dashboard-card strong{display:block;font-size:23px;margin-top:8px;overflow-wrap:anywhere}.dashboard-card small{display:block;color:var(--muted);font-size:9px;margin-top:6px;line-height:1.35}.dashboard-columns{display:grid;gap:12px}.dashboard-panel{padding:14px}.breakdown-list{display:grid;gap:7px}.breakdown-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;background:var(--surface);border-radius:13px;padding:10px}.breakdown-row strong{font-size:12px}.breakdown-row span{display:block;font-size:9px;color:var(--muted);margin-top:2px}.breakdown-value{text-align:right;font-weight:800;font-size:12px}.dashboard-alert{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--surface);border-radius:13px;padding:10px;margin-bottom:7px}.dashboard-alert:last-child{margin-bottom:0}.dashboard-alert strong{font-size:12px}.dashboard-alert span{font-size:9px;color:var(--muted);display:block;margin-top:2px}
 
 /* Status and renewal */
@@ -96,6 +97,7 @@ input,select{font-size:16px}
 }
 @media(max-width:420px){
  .client-admin-actions{grid-template-columns:1fr}
+ .client-app-picker{grid-template-columns:1fr}
  .app-logo-wrap{width:44px;height:44px}
 }
 
@@ -291,10 +293,9 @@ input,select{font-size:16px}
     <div class="helper">Se guarda en este navegador para no exigir cambios en Supabase.</div>
    </div>
    <div>
-    <label class="input-label" for="client-edit-app">Aplicación</label>
-    <select id="client-edit-app" class="input" required>
-     <option>TV</option><option>FUTURE</option><option>TV PLUS 2</option><option>FLUJO TV</option><option>MAR TV</option>
-    </select>
+    <label class="input-label">Aplicaciones</label>
+    <div id="client-edit-apps" class="client-app-picker" role="group" aria-label="Aplicaciones del cliente"></div>
+    <div class="client-app-picker-helper">Marcá una o varias aplicaciones. Cada servicio tendrá su vencimiento independiente.</div>
    </div>
    <div>
     <label class="input-label" for="client-edit-date">Última renovación</label>
@@ -363,6 +364,12 @@ function toast(msg,error=false){const t=$('#toast');t.textContent=msg;t.classNam
 function phoneKey(key){return `control_ingresos_phone_${user?.id||'anon'}_${norm(key)}`}
 function getClientPhone(key){return localStorage.getItem(phoneKey(key))||''}
 function saveClientPhone(key,phone){const k=phoneKey(key);const v=String(phone||'').trim();if(v)localStorage.setItem(k,v);else localStorage.removeItem(k)}
+function clientAppsKey(key){return `control_ingresos_client_apps_${user?.id||'anon'}_${norm(key)}`}
+function getClientInitialApps(key){try{const raw=localStorage.getItem(clientAppsKey(key));const arr=raw?JSON.parse(raw):[];return Array.isArray(arr)?arr.filter(x=>x&&APPS.includes(x.app)):[]}catch(_e){return []}}
+function saveClientInitialApps(key,apps,date,price=CLIENT_PRICE){const clean=[...new Set((apps||[]).filter(a=>APPS.includes(a)))].map(app=>({app,date:date||localISO(),price:Number(price||CLIENT_PRICE)}));const k=clientAppsKey(key);if(clean.length)localStorage.setItem(k,JSON.stringify(clean));else localStorage.removeItem(k)}
+function moveClientInitialApps(oldKey,newKey){const rows=getClientInitialApps(oldKey);if(rows.length)localStorage.setItem(clientAppsKey(newKey),JSON.stringify(rows));localStorage.removeItem(clientAppsKey(oldKey))}
+function renderClientEditApps(selected=[]){const chosen=new Set((selected||[]).filter(a=>APPS.includes(a)));const box=$('#client-edit-apps');if(!box)return;box.innerHTML=APPS.map((app,i)=>`<div class="client-app-option"><input id="client-app-${i}" class="client-edit-app-check" type="checkbox" value="${esc(app)}" ${chosen.has(app)?'checked':''}><label for="client-app-${i}"><span class="client-app-check"></span>${appLogoHTML(app)}<span class="client-app-name">${esc(app)}</span></label></div>`).join('')}
+function selectedClientEditApps(){return $$('#client-edit-apps .client-edit-app-check:checked').map(x=>x.value).filter(a=>APPS.includes(a))}
 function whatsappNumber(phone){let n=String(phone||'').replace(/\D/g,'');if(!n)return '';if(n.startsWith('0'))n=n.slice(1);if(!n.startsWith('54'))n='54'+n;return n}
 function openWhatsApp(key){const c=clientProfiles().find(x=>x.key===key);if(!c)return;const phone=getClientPhone(c.key);const n=whatsappNumber(phone);if(!n)return toast('Este cliente no tiene teléfono cargado.',true);const pending=c.services.filter(s=>['vencido','hoy','proximo'].includes(s.status.key));const detail=(pending.length?pending:c.services).map(s=>`${s.app}: ${s.status.label}${s.next?' ('+formatISODate(s.next)+')':''}`).join(' · ');const text=encodeURIComponent(`Hola ${c.nombre}, te escribo por tus servicios. ${detail}`);window.open(`https://wa.me/${n}?text=${text}`,'_blank','noopener')}
 
@@ -544,6 +551,19 @@ function clientProfiles(){
    const last=ah[0],lastISO=localISO(new Date(last.fecha)),next=isoNextMonth(lastISO),status=renewalStatus(next);
    byApp[app]={app,hist:ah,last,lastISO,next,status,price:Number(last.precio||0)};
   }
+  // Apps asignadas desde la ficha, incluso si todavía no tienen movimientos.
+  for(const row of getClientInitialApps(c.key)){
+   if(byApp[row.app])continue;
+   const lastISO=/^\d{4}-\d{2}-\d{2}$/.test(String(row.date||''))?row.date:(c.last_used_at?localISO(new Date(c.last_used_at)):localISO());
+   const next=isoNextMonth(lastISO),status=renewalStatus(next);
+   byApp[row.app]={app:row.app,hist:[],last:null,lastISO,next,status,price:Number(row.price||CLIENT_PRICE),assignedOnly:true};
+  }
+  // Compatibilidad con clientes antiguos que solo tenían app_ultima.
+  if(!Object.keys(byApp).length&&APPS.includes(c.app_ultima)){
+   const lastISO=c.last_used_at?localISO(new Date(c.last_used_at)):localISO();
+   const next=isoNextMonth(lastISO);
+   byApp[c.app_ultima]={app:c.app_ultima,hist:[],last:null,lastISO,next,status:renewalStatus(next),price:CLIENT_PRICE,assignedOnly:true};
+  }
   const services=Object.values(byApp);
   const worst=services.slice().sort((a,b)=>(a.status.days??9999)-(b.status.days??9999))[0]||null;
   const last=hist[0]||null;
@@ -633,7 +653,8 @@ function editClient(id){
  $('#client-edit-id').value=c.id;
  $('#client-edit-name').value=c.nombre||'';
  $('#client-edit-phone').value=getClientPhone(norm(c.nombre_normalizado||c.nombre));
- $('#client-edit-app').value=APPS.includes(c.app_ultima)?c.app_ultima:'TV';
+ const profile=clientProfiles().find(x=>String(x.id)===String(c.id));
+ renderClientEditApps(profile?.apps?.length?profile.apps:(APPS.includes(c.app_ultima)?[c.app_ultima]:[]));
  $('#client-edit-date').value=c.last_used_at?localISO(new Date(c.last_used_at)):localISO();
  $('#client-edit-modal').classList.remove('hidden');
  setTimeout(()=>$('#client-edit-name').focus(),100);
@@ -646,7 +667,7 @@ function openNewClient(){
  $('#client-edit-id').value='';
  $('#client-edit-name').value='';
  $('#client-edit-phone').value='';
- $('#client-edit-app').value='TV';
+ renderClientEditApps([]);
  $('#client-edit-date').value=localISO();
  $('#client-edit-modal').classList.remove('hidden');
  setTimeout(()=>$('#client-edit-name').focus(),100);
@@ -666,10 +687,11 @@ async function saveClientEdit(e){
 
  const nombre=cleanName($('#client-edit-name').value);
  const phone=$('#client-edit-phone').value.trim();
- const app=$('#client-edit-app').value;
+ const apps=selectedClientEditApps();
+ const app=apps[apps.length-1]||null;
  const fecha=$('#client-edit-date').value;
  if(!nombre)return toast('Ingresá el nombre.',true);
- if(!APPS.includes(app))return toast('Seleccioná una aplicación.',true);
+ if(!apps.length)return toast('Marcá al menos una aplicación.',true);
  const fechaTs=manualDateToTimestamp(fecha);
  if(!fechaTs)return toast('Ingresá una fecha válida.',true);
 
@@ -696,10 +718,11 @@ async function saveClientEdit(e){
    }
    return toast(`No se pudo crear el cliente: ${error.message}`,true);
   }
+  saveClientPhone(norm(nombre),phone);
+  saveClientInitialApps(norm(nombre),apps,fecha,CLIENT_PRICE);
   await loadClients();
   rebuildCatalogs();
   renderAll();
-  saveClientPhone(norm(nombre),phone);
   closeClientEdit();
   toast('Cliente cargado sin necesidad de abonar.');
   return;
@@ -730,6 +753,7 @@ async function saveClientEdit(e){
   const oldPhone=getClientPhone(oldKey);
   if(oldPhone&&!phone)saveClientPhone(newKey,oldPhone);
   localStorage.removeItem(phoneKey(oldKey));
+  moveClientInitialApps(oldKey,newKey);
   const ids=movements
    .filter(m=>m.tipo==='CLIENTE'&&norm(m.nombre)===oldKey)
    .map(m=>m.id);
@@ -745,6 +769,7 @@ async function saveClientEdit(e){
 
  btn.disabled=false;btn.textContent=idleLabel;
  saveClientPhone(newKey,phone||getClientPhone(newKey));
+ saveClientInitialApps(newKey,apps,fecha,CLIENT_PRICE);
 
  await Promise.all([loadClients(),loadMovements()]);
  rebuildCatalogs();
@@ -761,6 +786,8 @@ async function deleteClient(id){
 
  const {error}=await db.from('control_clientes').delete().eq('id',id);
  if(error)return toast(`No se pudo eliminar: ${error.message}`,true);
+ localStorage.removeItem(phoneKey(norm(c.nombre_normalizado||c.nombre)));
+ localStorage.removeItem(clientAppsKey(norm(c.nombre_normalizado||c.nombre)));
 
  await loadClients();
  rebuildCatalogs();
@@ -795,13 +822,13 @@ function renderClients(){
 function renderSellers(){const q=norm($('#sellers-search').value);const list=sellerProfiles().filter(s=>!q||s.key.includes(q)).sort((a,b)=>a.nombre.localeCompare(b.nombre,'es'));$('#sellers-list').innerHTML=list.map(s=>sellerCard(s)).join('');$('#sellers-empty').classList.toggle('hidden',list.length>0)}
 async function quickRenewApp(key,app){const c=clientProfiles().find(x=>x.key===key);if(!c||!APPS.includes(app))return;const svc=c.services.find(s=>s.app===app);const price=Number(svc?.price??CLIENT_PRICE);if(!confirm(`Renovar a ${c.nombre} en ${app} por ${money(price)}?`))return;const {error}=await db.from('control_movimientos').insert({user_id:user.id,app,tipo:'CLIENTE',nombre:c.nombre,creditos:null,precio:price});if(error)return toast(`No se pudo renovar: ${error.message}`,true);await savePerson('CLIENTE',c.nombre,app,new Date().toISOString());await loadMovements();rebuildCatalogs();renderAll();toast(`${c.nombre} · ${app} renovado por ${money(price)}.`)}
 async function renewSelectedApps(key){const c=clientProfiles().find(x=>x.key===key);if(!c)return;const checked=$$('#profile-body .profile-renew-check:checked').map(x=>x.value).filter(a=>APPS.includes(a));if(!checked.length)return toast('Marcá al menos una app para renovar.',true);const rows=checked.map(app=>{const svc=c.services.find(s=>s.app===app);return {user_id:user.id,app,tipo:'CLIENTE',nombre:c.nombre,creditos:null,precio:Number(svc?.price??CLIENT_PRICE)}});const total=rows.reduce((s,r)=>s+r.precio,0);if(!confirm(`Renovar ${checked.length} servicio${checked.length===1?'':'s'} de ${c.nombre} por ${money(total)}?`))return;const {error}=await db.from('control_movimientos').insert(rows);if(error)return toast(`No se pudo renovar: ${error.message}`,true);await savePerson('CLIENTE',c.nombre,checked[checked.length-1],new Date().toISOString());await loadMovements();rebuildCatalogs();renderAll();closeProfile();toast(`${checked.length} servicio${checked.length===1?'':'s'} renovado${checked.length===1?'':'s'} · ${money(total)}.`)}
-function quickRenew(key){const c=clientProfiles().find(x=>x.key===key);if(!c)return;if(!c.services.length)return toast('Este cliente no tiene apps con movimientos.',true);if(c.services.length===1)return quickRenewApp(key,c.services[0].app);openClientProfile(key)}
+function quickRenew(key){const c=clientProfiles().find(x=>x.key===key);if(!c)return;if(!c.services.length)return toast('Este cliente no tiene aplicaciones asociadas.',true);if(c.services.length===1)return quickRenewApp(key,c.services[0].app);openClientProfile(key)}
 function prepareSeller(key){const s=sellerProfiles().find(x=>x.key===key);if(!s)return;$('#tipo-vendedor').checked=true;updateType();$('#nombre').value=s.nombre;if(s.app_ultima&&APPS.includes(s.app_ultima))$('#app').value=s.app_ultima;$('#creditos').value='';$('#precio').value='';switchView('registrar');setTimeout(()=>$('#creditos').focus(),150)}
 
 function openClientProfile(key){
  const c=clientProfiles().find(x=>x.key===key);if(!c)return;
  $('#profile-title').textContent=c.nombre;$('#profile-subtitle').textContent=`Cliente · ${c.services.length} app${c.services.length===1?'':'s'}`;
- const services=c.services.length?c.services.map(s=>`<div class="service-row"><div class="service-row-top"><div class="service-select"><input class="profile-renew-check" type="checkbox" value="${esc(s.app)}"><div class="service-row-main">${appLogoHTML(s.app)}<div><strong>${esc(s.app)} · ${esc(money(s.price))}</strong><div class="service-meta">Última: ${esc(formatISODate(s.lastISO))} · Próxima: ${esc(formatISODate(s.next))}</div></div></div></div><span class="status ${s.status.key}">${esc(s.status.label)}</span></div><button class="btn btn-green" style="width:100%;margin-top:8px" type="button" onclick="quickRenewApp('${esc(c.key)}','${esc(s.app)}');closeProfile()">Renovar ${esc(s.app)} · ${esc(money(s.price))}</button></div>`).join(''):'<div class="empty">Sin aplicaciones con movimientos.</div>';
+ const services=c.services.length?c.services.map(s=>`<div class="service-row"><div class="service-row-top"><div class="service-select"><input class="profile-renew-check" type="checkbox" value="${esc(s.app)}"><div class="service-row-main">${appLogoHTML(s.app)}<div><strong>${esc(s.app)} · ${esc(money(s.price))}</strong><div class="service-meta">Última: ${esc(formatISODate(s.lastISO))} · Próxima: ${esc(formatISODate(s.next))}</div></div></div></div><span class="status ${s.status.key}">${esc(s.status.label)}</span></div><button class="btn btn-green" style="width:100%;margin-top:8px" type="button" onclick="quickRenewApp('${esc(c.key)}','${esc(s.app)}');closeProfile()">Renovar ${esc(s.app)} · ${esc(money(s.price))}</button></div>`).join(''):'<div class="empty">Sin aplicaciones asociadas.</div>';
  const phone=c.phone?`<button class="btn btn-green" style="width:100%;margin-bottom:10px" type="button" onclick="openWhatsApp('${esc(c.key)}')">WhatsApp · ${esc(c.phone)}</button>`:'';
  const multi=c.services.length>1?`<div class="renew-selected-bar"><span class="helper">Marcá las apps que pagó.</span><button class="btn btn-primary" type="button" onclick="renewSelectedApps('${esc(c.key)}')">Renovar seleccionadas</button></div>`:'';
  $('#profile-body').innerHTML=`${phone}<div class="section-label">Servicios</div><div class="service-list">${services}</div>${multi}<div class="entity-grid" style="margin-top:12px"><div class="metric"><span>Apps</span><strong>${c.services.length}</strong></div><div class="metric"><span>Abono actual</span><strong>${esc(money(c.monthlyTotal))}</strong></div><div class="metric"><span>Total histórico</span><strong>${esc(money(c.total))}</strong></div><div class="metric"><span>Movimientos</span><strong>${c.ops}</strong></div></div><div class="client-admin-actions"><button class="btn btn-secondary" type="button" onclick="editClient('${esc(c.id)}')">Editar cliente</button><button class="btn btn-danger" type="button" onclick="deleteClient('${esc(c.id)}')">Eliminar cliente</button></div><div class="section-label" style="margin-top:16px">Historial</div><div class="profile-history">${c.hist.map(m=>profileRow(m)).join('')||'<div class="empty">Sin movimientos.</div>'}</div>`;
