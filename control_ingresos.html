@@ -298,11 +298,11 @@ input,select{font-size:16px}
     <div class="client-app-picker-helper">Marcá una o varias aplicaciones. Cada servicio tendrá su vencimiento independiente.</div>
    </div>
    <div>
-    <label class="input-label" for="client-edit-date">Última renovación</label>
-    <input id="client-edit-date" class="input" type="date" required>
+    <label class="input-label" for="client-edit-date">Fecha de vencimiento</label>
+    <input id="client-edit-date" class="input" type="date" required><div class="helper">Para un cliente nuevo, esta fecha se toma directamente como vencimiento. No se le suma un mes.</div>
    </div>
    <button id="client-edit-save" class="btn btn-primary" type="submit">Guardar cambios</button>
-   <div id="client-edit-note" class="modal-note">Editar esta ficha no modifica los movimientos históricos. La fecha indicada es la que se usará para calcular el próximo vencimiento.</div>
+   <div id="client-edit-note" class="modal-note">La fecha indicada se toma como vencimiento para servicios que todavía no tienen movimientos.</div>
   </form>
  </div>
 </div>
@@ -552,17 +552,19 @@ function clientProfiles(){
    byApp[app]={app,hist:ah,last,lastISO,next,status,price:Number(last.precio||0)};
   }
   // Apps asignadas desde la ficha, incluso si todavía no tienen movimientos.
+  // IMPORTANTE: en una ficha sin movimientos, la fecha cargada es el VENCIMIENTO,
+  // no una última renovación. Por eso NO se suma un mes. Esto corrige también
+  // los clientes ya cargados que aparecían un mes adelantados.
   for(const row of getClientInitialApps(c.key)){
    if(byApp[row.app])continue;
-   const lastISO=/^\d{4}-\d{2}-\d{2}$/.test(String(row.date||''))?row.date:(c.last_used_at?localISO(new Date(c.last_used_at)):localISO());
-   const next=isoNextMonth(lastISO),status=renewalStatus(next);
-   byApp[row.app]={app:row.app,hist:[],last:null,lastISO,next,status,price:Number(row.price||CLIENT_PRICE),assignedOnly:true};
+   const dueISO=/^\d{4}-\d{2}-\d{2}$/.test(String(row.date||''))?row.date:(c.last_used_at?localISO(new Date(c.last_used_at)):localISO());
+   byApp[row.app]={app:row.app,hist:[],last:null,lastISO:null,next:dueISO,status:renewalStatus(dueISO),price:Number(row.price||CLIENT_PRICE),assignedOnly:true};
   }
-  // Compatibilidad con clientes antiguos que solo tenían app_ultima.
+  // Compatibilidad con clientes antiguos que solo tenían app_ultima y ningún movimiento.
+  // Su last_used_at se interpreta como vencimiento inicial, que era la intención al cargarlos.
   if(!Object.keys(byApp).length&&APPS.includes(c.app_ultima)){
-   const lastISO=c.last_used_at?localISO(new Date(c.last_used_at)):localISO();
-   const next=isoNextMonth(lastISO);
-   byApp[c.app_ultima]={app:c.app_ultima,hist:[],last:null,lastISO,next,status:renewalStatus(next),price:CLIENT_PRICE,assignedOnly:true};
+   const dueISO=c.last_used_at?localISO(new Date(c.last_used_at)):localISO();
+   byApp[c.app_ultima]={app:c.app_ultima,hist:[],last:null,lastISO:null,next:dueISO,status:renewalStatus(dueISO),price:CLIENT_PRICE,assignedOnly:true};
   }
   const services=Object.values(byApp);
   const worst=services.slice().sort((a,b)=>(a.status.days??9999)-(b.status.days??9999))[0]||null;
@@ -648,21 +650,21 @@ function editClient(id){
  if(!c)return toast('No encontré la ficha del cliente.',true);
  $('#client-edit-title').textContent='Editar cliente';
  $('#client-edit-desc').textContent='Esta ficha es independiente del historial.';
- $('#client-edit-note').textContent='Editar esta ficha no modifica los movimientos históricos. La fecha indicada es la que se usará para calcular el próximo vencimiento.';
+ $('#client-edit-note').textContent='Editar esta ficha no modifica los movimientos históricos. Para servicios sin movimientos, la fecha indicada se toma directamente como fecha de vencimiento.';
  $('#client-edit-save').textContent='Guardar cambios';
  $('#client-edit-id').value=c.id;
  $('#client-edit-name').value=c.nombre||'';
  $('#client-edit-phone').value=getClientPhone(norm(c.nombre_normalizado||c.nombre));
  const profile=clientProfiles().find(x=>String(x.id)===String(c.id));
  renderClientEditApps(profile?.apps?.length?profile.apps:(APPS.includes(c.app_ultima)?[c.app_ultima]:[]));
- $('#client-edit-date').value=c.last_used_at?localISO(new Date(c.last_used_at)):localISO();
+ $('#client-edit-date').value=profile?.next||(c.last_used_at?localISO(new Date(c.last_used_at)):localISO());
  $('#client-edit-modal').classList.remove('hidden');
  setTimeout(()=>$('#client-edit-name').focus(),100);
 }
 function openNewClient(){
  $('#client-edit-title').textContent='Nuevo cliente';
  $('#client-edit-desc').textContent='Cargalo a la agenda sin registrar un pago.';
- $('#client-edit-note').textContent='Se crea solo la ficha del cliente, sin ningún movimiento ni cobro. La fecha indicada se usará para calcular el próximo vencimiento.';
+ $('#client-edit-note').textContent='Se crea solo la ficha del cliente, sin ningún movimiento ni cobro. La fecha indicada es la fecha de vencimiento inicial.';
  $('#client-edit-save').textContent='Crear cliente';
  $('#client-edit-id').value='';
  $('#client-edit-name').value='';
@@ -828,7 +830,7 @@ function prepareSeller(key){const s=sellerProfiles().find(x=>x.key===key);if(!s)
 function openClientProfile(key){
  const c=clientProfiles().find(x=>x.key===key);if(!c)return;
  $('#profile-title').textContent=c.nombre;$('#profile-subtitle').textContent=`Cliente · ${c.services.length} app${c.services.length===1?'':'s'}`;
- const services=c.services.length?c.services.map(s=>`<div class="service-row"><div class="service-row-top"><div class="service-select"><input class="profile-renew-check" type="checkbox" value="${esc(s.app)}"><div class="service-row-main">${appLogoHTML(s.app)}<div><strong>${esc(s.app)} · ${esc(money(s.price))}</strong><div class="service-meta">Última: ${esc(formatISODate(s.lastISO))} · Próxima: ${esc(formatISODate(s.next))}</div></div></div></div><span class="status ${s.status.key}">${esc(s.status.label)}</span></div><button class="btn btn-green" style="width:100%;margin-top:8px" type="button" onclick="quickRenewApp('${esc(c.key)}','${esc(s.app)}');closeProfile()">Renovar ${esc(s.app)} · ${esc(money(s.price))}</button></div>`).join(''):'<div class="empty">Sin aplicaciones asociadas.</div>';
+ const services=c.services.length?c.services.map(s=>`<div class="service-row"><div class="service-row-top"><div class="service-select"><input class="profile-renew-check" type="checkbox" value="${esc(s.app)}"><div class="service-row-main">${appLogoHTML(s.app)}<div><strong>${esc(s.app)} · ${esc(money(s.price))}</strong><div class="service-meta">${s.assignedOnly?`Vencimiento: ${esc(formatISODate(s.next))}`:`Última: ${esc(formatISODate(s.lastISO))} · Próxima: ${esc(formatISODate(s.next))}`}</div></div></div></div><span class="status ${s.status.key}">${esc(s.status.label)}</span></div><button class="btn btn-green" style="width:100%;margin-top:8px" type="button" onclick="quickRenewApp('${esc(c.key)}','${esc(s.app)}');closeProfile()">Renovar ${esc(s.app)} · ${esc(money(s.price))}</button></div>`).join(''):'<div class="empty">Sin aplicaciones asociadas.</div>';
  const phone=c.phone?`<button class="btn btn-green" style="width:100%;margin-bottom:10px" type="button" onclick="openWhatsApp('${esc(c.key)}')">WhatsApp · ${esc(c.phone)}</button>`:'';
  const multi=c.services.length>1?`<div class="renew-selected-bar"><span class="helper">Marcá las apps que pagó.</span><button class="btn btn-primary" type="button" onclick="renewSelectedApps('${esc(c.key)}')">Renovar seleccionadas</button></div>`:'';
  $('#profile-body').innerHTML=`${phone}<div class="section-label">Servicios</div><div class="service-list">${services}</div>${multi}<div class="entity-grid" style="margin-top:12px"><div class="metric"><span>Apps</span><strong>${c.services.length}</strong></div><div class="metric"><span>Abono actual</span><strong>${esc(money(c.monthlyTotal))}</strong></div><div class="metric"><span>Total histórico</span><strong>${esc(money(c.total))}</strong></div><div class="metric"><span>Movimientos</span><strong>${c.ops}</strong></div></div><div class="client-admin-actions"><button class="btn btn-secondary" type="button" onclick="editClient('${esc(c.id)}')">Editar cliente</button><button class="btn btn-danger" type="button" onclick="deleteClient('${esc(c.id)}')">Eliminar cliente</button></div><div class="section-label" style="margin-top:16px">Historial</div><div class="profile-history">${c.hist.map(m=>profileRow(m)).join('')||'<div class="empty">Sin movimientos.</div>'}</div>`;
