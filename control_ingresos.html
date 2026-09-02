@@ -691,6 +691,56 @@ textarea.input{padding-top:12px;min-height:90px;resize:vertical}
   min-height:34px;border-radius:9px;border:1px solid var(--border);
   background:var(--surface);color:var(--muted);font-size:9px;font-weight:800;cursor:pointer
 }
+
+.client-due-list{display:grid;gap:9px}
+.client-due-row{
+  display:grid;
+  grid-template-columns:minmax(0,1fr);
+  gap:9px;
+  padding:10px;
+  border:1px solid var(--border);
+  background:var(--surface);
+  border-radius:13px;
+}
+.client-due-app{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  min-width:0;
+}
+.client-due-app .app-logo-wrap{
+  width:38px;
+  height:38px;
+  border-radius:9px;
+}
+.client-due-app strong{
+  display:block;
+  font-size:11px;
+}
+.client-due-app small{
+  display:block;
+  margin-top:2px;
+  color:var(--muted);
+  font-size:9px;
+}
+.client-due-controls{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto auto;
+  gap:6px;
+  align-items:center;
+}
+.client-due-controls .input{min-height:42px}
+.client-due-controls button{
+  min-height:38px;
+  padding:0 9px;
+  border-radius:9px;
+  border:1px solid var(--border);
+  background:var(--card);
+  color:var(--muted);
+  font-size:9px;
+  font-weight:800;
+  cursor:pointer;
+}
 .client-preview{
   background:var(--surface);border:1px solid var(--border);
   border-radius:13px;padding:12px
@@ -741,6 +791,10 @@ textarea.input{padding-top:12px;min-height:90px;resize:vertical}
 }
 
 @media(min-width:760px){
+  .client-due-row{
+    grid-template-columns:minmax(170px,.75fr) minmax(0,1.25fr);
+    align-items:center;
+  }
   body{padding-bottom:0}
   .bottom-nav{
     position:sticky;top:60px;bottom:auto;
@@ -1297,18 +1351,13 @@ textarea.input{padding-top:12px;min-height:90px;resize:vertical}
       <div>
         <label class="input-label">Aplicaciones</label>
         <div id="client-apps" class="client-app-picker"></div>
-        <div class="helper">Marcá una o varias aplicaciones. Cada servicio tendrá su vencimiento independiente.</div>
+        <div class="helper">Marcá una o varias aplicaciones. Al seleccionarlas vas a poder indicar un vencimiento diferente para cada una.</div>
       </div>
 
       <div>
-        <label class="input-label" for="client-due-date">Fecha de vencimiento</label>
-        <input id="client-due-date" class="input" type="date" required>
-        <div class="date-quick">
-          <button type="button" data-client-date="today">Hoy</button>
-          <button type="button" data-client-date="1m">＋1 mes</button>
-          <button type="button" data-client-date="2m">＋2 meses</button>
-        </div>
-        <div class="helper"><strong>Importante:</strong> esta fecha es el vencimiento. No se suma un mes al crear un cliente nuevo.</div>
+        <label class="input-label">Vencimiento de cada aplicación</label>
+        <div id="client-due-list" class="client-due-list"></div>
+        <div id="client-due-helper" class="helper">Primero marcá una o varias aplicaciones. Cada app tendrá su propia fecha de vencimiento.</div>
       </div>
 
       <div id="client-preview" class="client-preview"></div>
@@ -1499,14 +1548,39 @@ function getClientInitialApps(key){
     return [];
   }
 }
+function normalizeClientServiceRows(rows=[]){
+  const byApp=new Map();
+  for(const row of rows||[]){
+    if(!row||!APPS.includes(row.app))continue;
+    const date=/^\d{4}-\d{2}-\d{2}$/.test(String(row.date||''))?row.date:localISO();
+    byApp.set(row.app,{
+      app:row.app,
+      date,
+      price:Number(row.price||CLIENT_PRICE)
+    });
+  }
+  return [...byApp.values()];
+}
+function saveClientServiceRows(key,rows,{merge=false}={}){
+  const incoming=normalizeClientServiceRows(rows);
+  let finalRows=incoming;
+
+  if(merge){
+    const map=new Map(getClientInitialApps(key).map(r=>[r.app,r]));
+    incoming.forEach(r=>map.set(r.app,r));
+    finalRows=normalizeClientServiceRows([...map.values()]);
+  }
+
+  const k=clientAppsKey(key);
+  if(finalRows.length)localStorage.setItem(k,JSON.stringify(finalRows));
+  else localStorage.removeItem(k);
+}
 function saveClientInitialApps(key,apps,date,price=CLIENT_PRICE){
-  const rows=[...new Set((apps||[]).filter(a=>APPS.includes(a)))].map(app=>({
-    app,
-    date:date||localISO(),
-    price:Number(price||CLIENT_PRICE)
-  }));
-  if(rows.length)localStorage.setItem(clientAppsKey(key),JSON.stringify(rows));
-  else localStorage.removeItem(clientAppsKey(key));
+  saveClientServiceRows(
+    key,
+    [...new Set((apps||[]).filter(a=>APPS.includes(a)))].map(app=>({app,date:date||localISO(),price})),
+    {merge:false}
+  );
 }
 function moveClientInitialApps(oldKey,newKey){
   const rows=getClientInitialApps(oldKey);
@@ -1700,15 +1774,6 @@ function bindUI(){
   $('#client-form').addEventListener('submit',saveClient);
   $('#client-name').addEventListener('input',updateClientPreview);
   $('#client-phone').addEventListener('input',updateClientPreview);
-  $('#client-due-date').addEventListener('change',updateClientPreview);
-
-  $$('[data-client-date]').forEach(b=>b.addEventListener('click',()=>{
-    const today=localISO();
-    if(b.dataset.clientDate==='today')$('#client-due-date').value=today;
-    if(b.dataset.clientDate==='1m')$('#client-due-date').value=addMonthsISO(today,1);
-    if(b.dataset.clientDate==='2m')$('#client-due-date').value=addMonthsISO(today,2);
-    updateClientPreview();
-  }));
 
   $('#sellers-search').addEventListener('input',renderSellers);
 
@@ -2249,8 +2314,64 @@ function clientProfiles(){
     };
   });
 }
+function currentClientDueDates(){
+  const out={};
+  $$('[data-client-due-app]').forEach(i=>{
+    out[i.dataset.clientDueApp]=i.value;
+  });
+  return out;
+}
+function renderClientDueRows(prefillDates={}){
+  const box=$('#client-due-list');
+  if(!box)return;
+
+  const current=currentClientDueDates();
+  const selected=selectedClientApps();
+
+  if(!selected.length){
+    box.innerHTML='';
+    $('#client-due-helper').textContent='Primero marcá una o varias aplicaciones. Cada app tendrá su propia fecha de vencimiento.';
+    updateClientPreview();
+    return;
+  }
+
+  box.innerHTML=selected.map(app=>{
+    const date=current[app]||prefillDates[app]||localISO();
+    return `<div class="client-due-row">
+      <div class="client-due-app">
+        ${appLogoHTML(app)}
+        <div>
+          <strong>${esc(app)}</strong>
+          <small>Vencimiento independiente</small>
+        </div>
+      </div>
+      <div class="client-due-controls">
+        <input class="input" type="date" required data-client-due-app="${esc(app)}" value="${esc(date)}">
+        <button type="button" data-due-action="today" data-due-app="${esc(app)}">Hoy</button>
+        <button type="button" data-due-action="1m" data-due-app="${esc(app)}">＋1 mes</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  $$('[data-client-due-app]').forEach(i=>i.addEventListener('change',updateClientPreview));
+  $$('[data-due-action]').forEach(b=>b.addEventListener('click',()=>{
+    const input=$(`[data-client-due-app="${CSS.escape(b.dataset.dueApp)}"]`);
+    if(!input)return;
+    const today=localISO();
+    input.value=b.dataset.dueAction==='1m'?addMonthsISO(today,1):today;
+    updateClientPreview();
+  }));
+
+  $('#client-due-helper').textContent='Cada aplicación se guarda con su propia fecha. Podés tener, por ejemplo, TV 05/09 y FUTURE 18/09.';
+  updateClientPreview();
+}
 function renderClientAppPicker(selected=[]){
-  const chosen=new Set(selected.filter(a=>APPS.includes(a)));
+  const rows=Array.isArray(selected)
+    ? selected.map(x=>typeof x==='string'?{app:x,date:localISO()}:x).filter(x=>x&&APPS.includes(x.app))
+    : [];
+  const chosen=new Set(rows.map(x=>x.app));
+  const prefill=Object.fromEntries(rows.map(x=>[x.app,x.date||localISO()]));
+
   $('#client-apps').innerHTML=APPS.map((app,i)=>`
     <div class="app-option">
       <input id="client-app-${i}" class="client-app-check" type="checkbox"
@@ -2263,10 +2384,34 @@ function renderClientAppPicker(selected=[]){
     </div>
   `).join('');
 
-  $$('.client-app-check').forEach(x=>x.addEventListener('change',updateClientPreview));
+  $$('.client-app-check').forEach(x=>x.addEventListener('change',()=>{
+    renderClientDueRows(prefill);
+  }));
+
+  renderClientDueRows(prefill);
 }
 function selectedClientApps(){
   return $$('.client-app-check:checked').map(x=>x.value).filter(a=>APPS.includes(a));
+}
+function selectedClientServiceRows(){
+  return selectedClientApps().map(app=>{
+    const input=$(`[data-client-due-app="${CSS.escape(app)}"]`);
+    return {
+      app,
+      date:input?.value||'',
+      price:CLIENT_PRICE
+    };
+  });
+}
+function profileRowsForClientKey(key){
+  const profile=clientProfiles().find(x=>x.key===key);
+  if(!profile)return getClientInitialApps(key);
+
+  return profile.services.map(s=>({
+    app:s.app,
+    date:s.next||localISO(),
+    price:Number(s.price||CLIENT_PRICE)
+  }));
 }
 function openClientModal(id=null,prefillName=''){
   const isNew=!id;
@@ -2274,8 +2419,8 @@ function openClientModal(id=null,prefillName=''){
 
   $('#client-modal-title').textContent=isNew?'Nuevo cliente':'Editar cliente';
   $('#client-modal-desc').textContent=isNew
-    ? 'Creá la ficha sin registrar un pago.'
-    : 'Actualizá los datos de la ficha. El historial se conserva.';
+    ? 'Podés asignarle varias aplicaciones, cada una con su vencimiento.'
+    : 'Cada aplicación puede tener una fecha de vencimiento diferente.';
   $('#client-save-btn').textContent=isNew?'Crear cliente':'Guardar cambios';
 
   $('#client-id').value=isNew?'':c.id;
@@ -2284,17 +2429,16 @@ function openClientModal(id=null,prefillName=''){
 
   if(isNew){
     renderClientAppPicker([]);
-    $('#client-due-date').value=localISO();
   }else{
-    const profile=clientProfiles().find(x=>String(x.id)===String(c.id));
+    const key=norm(c.nombre_normalizado||c.nombre);
+    const rows=profileRowsForClientKey(key);
     renderClientAppPicker(
-      profile?.apps?.length
-        ? profile.apps
-        : (APPS.includes(c.app_ultima)?[c.app_ultima]:[])
+      rows.length
+        ? rows
+        : (APPS.includes(c.app_ultima)
+            ? [{app:c.app_ultima,date:c.last_used_at?localISO(new Date(c.last_used_at)):localISO(),price:CLIENT_PRICE}]
+            : [])
     );
-    $('#client-due-date').value=
-      profile?.next||
-      (c.last_used_at?localISO(new Date(c.last_used_at)):localISO());
   }
 
   updateClientPreview();
@@ -2311,13 +2455,16 @@ function closeClientModal(){
 function updateClientPreview(){
   const name=cleanName($('#client-name')?.value||'');
   const phone=$('#client-phone')?.value.trim()||'';
-  const apps=selectedClientApps();
-  const due=$('#client-due-date')?.value||'';
+  const rows=selectedClientServiceRows();
+
+  const services=rows.length
+    ? rows.map(r=>`${r.app}: ${r.date?formatISODate(r.date):'sin fecha'}`).join(' · ')
+    : 'Sin seleccionar';
 
   $('#client-preview').innerHTML=`
     <div class="client-preview-line"><span>Cliente</span><strong>${esc(name||'Sin completar')}</strong></div>
-    <div class="client-preview-line"><span>Aplicaciones</span><strong>${esc(apps.length?apps.join(' · '):'Sin seleccionar')}</strong></div>
-    <div class="client-preview-line"><span>Vencimiento</span><strong>${esc(due?formatISODate(due):'Sin fecha')}</strong></div>
+    <div class="client-preview-line"><span>Servicios</span><strong>${esc(services)}</strong></div>
+    <div class="client-preview-line"><span>Cantidad de apps</span><strong>${rows.length}</strong></div>
     <div class="client-preview-line"><span>WhatsApp</span><strong>${esc(phone||'Sin cargar')}</strong></div>
   `;
 }
@@ -2331,38 +2478,52 @@ async function saveClient(e){
 
   const nombre=cleanName($('#client-name').value);
   const phone=$('#client-phone').value.trim();
-  const apps=selectedClientApps();
-  const fecha=$('#client-due-date').value;
+  const serviceRows=selectedClientServiceRows();
 
   if(!nombre)return toast('Ingresá el nombre.',true);
-  if(!apps.length)return toast('Marcá al menos una aplicación.',true);
+  if(!serviceRows.length)return toast('Marcá al menos una aplicación.',true);
 
-  const fechaTs=manualDateToTimestamp(fecha);
-  if(!fechaTs)return toast('Ingresá una fecha de vencimiento válida.',true);
+  for(const row of serviceRows){
+    if(!manualDateToTimestamp(row.date)){
+      return toast(`Ingresá un vencimiento válido para ${row.app}.`,true);
+    }
+  }
+
+  const newKey=norm(nombre);
+  const existingByName=savedClients.find(x=>norm(x.nombre_normalizado||x.nombre)===newKey);
+  const targetExisting=!isNew?current:existingByName;
+  const mergingExisting=isNew&&!!existingByName;
+
+  const effectiveRows=mergingExisting
+    ? normalizeClientServiceRows([...profileRowsForClientKey(newKey),...serviceRows])
+    : serviceRows;
+
+  const earliestDate=effectiveRows
+    .map(r=>r.date)
+    .filter(Boolean)
+    .sort()[0]||localISO();
 
   const payload={
     user_id:user.id,
     nombre,
-    nombre_normalizado:norm(nombre),
-    app_ultima:apps[apps.length-1],
-    last_used_at:fechaTs,
+    nombre_normalizado:newKey,
+    app_ultima:serviceRows[serviceRows.length-1].app,
+    last_used_at:manualDateToTimestamp(earliestDate),
     updated_at:new Date().toISOString()
   };
 
   const btn=$('#client-save-btn');
   btn.disabled=true;
-  btn.textContent=isNew?'Creando...':'Guardando...';
+  btn.textContent=mergingExisting?'Agregando apps...':(isNew?'Creando...':'Guardando...');
 
   let error=null;
 
-  if(isNew){
-    ({error}=await db.from('control_clientes').upsert(payload,{
-      onConflict:'user_id,nombre_normalizado'
-    }));
-  }else{
+  if(targetExisting){
     const updatePayload={...payload};
     delete updatePayload.user_id;
-    ({error}=await db.from('control_clientes').update(updatePayload).eq('id',id));
+    ({error}=await db.from('control_clientes').update(updatePayload).eq('id',targetExisting.id));
+  }else{
+    ({error}=await db.from('control_clientes').insert(payload));
   }
 
   if(error){
@@ -2371,12 +2532,15 @@ async function saveClient(e){
     return toast(`No se pudo guardar el cliente: ${error.message}`,true);
   }
 
-  if(isNew){
-    saveClientPhone(norm(nombre),phone);
-    saveClientInitialApps(norm(nombre),apps,fecha,CLIENT_PRICE);
+  if(mergingExisting){
+    const existingKey=norm(existingByName.nombre_normalizado||existingByName.nombre);
+    saveClientPhone(existingKey,phone||getClientPhone(existingKey));
+    saveClientServiceRows(existingKey,effectiveRows,{merge:false});
+  }else if(isNew){
+    saveClientPhone(newKey,phone);
+    saveClientServiceRows(newKey,serviceRows,{merge:false});
   }else{
     const oldKey=norm(current.nombre_normalizado||current.nombre);
-    const newKey=norm(nombre);
 
     if(oldKey!==newKey){
       const oldPhone=getClientPhone(oldKey);
@@ -2397,7 +2561,7 @@ async function saveClient(e){
     }
 
     saveClientPhone(newKey,phone||getClientPhone(newKey));
-    saveClientInitialApps(newKey,apps,fecha,CLIENT_PRICE);
+    saveClientServiceRows(newKey,serviceRows,{merge:false});
   }
 
   await Promise.all([loadClients(),loadMovements()]);
@@ -2407,7 +2571,11 @@ async function saveClient(e){
   closeProfile();
 
   btn.disabled=false;
-  toast(isNew?'Cliente creado.':'Cliente actualizado.');
+  toast(
+    mergingExisting
+      ? 'Cliente existente actualizado. Las apps anteriores se conservaron y se agregaron/actualizaron los nuevos vencimientos.'
+      : (isNew?'Cliente creado con vencimientos independientes.':'Cliente actualizado.')
+  );
 }
 async function deleteClient(id){
   const c=savedClients.find(x=>String(x.id)===String(id));
