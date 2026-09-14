@@ -126,10 +126,10 @@ html.light-mode .btn-danger{color:#b42318;background:rgba(239,68,68,.08)}
     </section>
 
     <div id="apps-home-view">
-      <section class="overview" aria-label="Resumen">
-        <article class="overview-card"><span>Clientes registrados</span><strong id="total-clients">0</strong><small>Clientes únicos guardados.</small></article>
-        <article class="overview-card"><span>Servicios asignados</span><strong id="total-services">0</strong><small>Suma de clientes entre todas las apps.</small></article>
-        <article class="overview-card"><span>Promedio de apps por cliente</span><strong id="avg-apps">0</strong><small>Relación entre servicios y clientes.</small></article>
+      <section class="status-overview home-status-overview" aria-label="Estado general de clientes">
+        <article class="status-card"><span>Al día</span><strong id="home-ok-count">0</strong><small>Clientes cuyo vencimiento más próximo supera los próximos 3 días.</small></article>
+        <article class="status-card soon"><span>Por vencer</span><strong id="home-soon-count">0</strong><small>Clientes que vencen hoy o dentro de los próximos 3 días.</small></article>
+        <article class="status-card expired"><span>Vencidos</span><strong id="home-expired-count">0</strong><small>Clientes con al menos un servicio vencido.</small></article>
       </section>
       <div class="section-head">
         <h2>Clientes por plataforma</h2>
@@ -258,10 +258,46 @@ function renderAppDetail(){
   updateSelectionUI(list);
 }
 function render(){
-  const profiles=clientProfiles(),counts=appCounts(),totalClients=profiles.length,totalServices=counts.reduce((s,x)=>s+x.count,0),avg=totalClients?totalServices/totalClients:0,max=Math.max(1,...counts.map(x=>x.count)),sorted=[...counts].sort((a,b)=>b.count-a.count||APPS.indexOf(a.app)-APPS.indexOf(b.app));
-  $('#total-clients').textContent=new Intl.NumberFormat('es-AR').format(totalClients);$('#total-services').textContent=new Intl.NumberFormat('es-AR').format(totalServices);$('#avg-apps').textContent=avg.toLocaleString('es-AR',{minimumFractionDigits:0,maximumFractionDigits:1});$('#ranking-note').textContent=totalClients?`Mayor cantidad: ${sorted[0].app} (${sorted[0].count})`:'5 aplicaciones';
-  $('#apps-grid').innerHTML=counts.map(({app,count})=>{const pct=Math.round((count/max)*100),share=totalServices?Math.round((count/totalServices)*100):0;return `<article class="app-card" role="button" tabindex="0" data-app="${esc(app)}" aria-label="Ver clientes de ${esc(app)}"><div class="app-top">${appLogoHTML(app)}<span class="status-dot"></span></div><div class="app-name">${esc(app)}</div><div class="app-count"><strong>${new Intl.NumberFormat('es-AR').format(count)}</strong><span>cliente${count===1?'':'s'}</span></div><div class="progress-track"><div class="progress-bar" style="width:${pct}%"></div></div><div class="app-foot"><span>Tocar para administrar</span><strong>${share}% de servicios</strong></div></article>`}).join('');
-  $$('[data-app]').forEach(card=>{card.addEventListener('click',()=>openApp(card.dataset.app));card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openApp(card.dataset.app)}})});if(selectedApp)renderAppDetail();$('#sync-note').textContent=`Actualizado ${new Intl.DateTimeFormat('es-AR',{hour:'2-digit',minute:'2-digit'}).format(new Date())}`;
+  const profiles=clientProfiles();
+  const counts=appCounts();
+  const visibleCounts=counts.filter(x=>x.count>0);
+  const totalServices=visibleCounts.reduce((s,x)=>s+x.count,0);
+  const max=Math.max(1,...visibleCounts.map(x=>x.count));
+  const sorted=[...visibleCounts].sort((a,b)=>b.count-a.count||APPS.indexOf(a.app)-APPS.indexOf(b.app));
+
+  const overall=profiles.map(c=>{
+    const services=Object.values(c.services||{});
+    if(!services.length)return {key:'ok'};
+    if(services.some(s=>s.status.key==='expired'))return {key:'expired'};
+    if(services.some(s=>s.status.key==='soon'))return {key:'soon'};
+    return {key:'ok'};
+  });
+
+  $('#home-ok-count').textContent=overall.filter(x=>x.key==='ok').length;
+  $('#home-soon-count').textContent=overall.filter(x=>x.key==='soon').length;
+  $('#home-expired-count').textContent=overall.filter(x=>x.key==='expired').length;
+  $('#ranking-note').textContent=visibleCounts.length
+    ? `${visibleCounts.length} aplicación${visibleCounts.length===1?'':'es'} con clientes · Mayor cantidad: ${sorted[0].app} (${sorted[0].count})`
+    : 'No hay aplicaciones con clientes';
+
+  $('#apps-grid').innerHTML=visibleCounts.length
+    ? visibleCounts.map(({app,count})=>{
+        const pct=Math.round((count/max)*100);
+        const share=totalServices?Math.round((count/totalServices)*100):0;
+        return `<article class="app-card" role="button" tabindex="0" data-app="${esc(app)}" aria-label="Ver clientes de ${esc(app)}"><div class="app-top">${appLogoHTML(app)}<span class="status-dot"></span></div><div class="app-name">${esc(app)}</div><div class="app-count"><strong>${new Intl.NumberFormat('es-AR').format(count)}</strong><span>cliente${count===1?'':'s'}</span></div><div class="progress-track"><div class="progress-bar" style="width:${pct}%"></div></div><div class="app-foot"><span>Tocar para administrar</span><strong>${share}% de servicios</strong></div></article>`;
+      }).join('')
+    : '<div class="empty-card">Todavía no hay clientes asignados a ninguna aplicación.</div>';
+
+  $$('[data-app]').forEach(card=>{
+    card.addEventListener('click',()=>openApp(card.dataset.app));
+    card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openApp(card.dataset.app)}});
+  });
+  if(selectedApp){
+    const selectedStillExists=visibleCounts.some(x=>x.app===selectedApp);
+    if(selectedStillExists)renderAppDetail();
+    else closeApp();
+  }
+  $('#sync-note').textContent=`Actualizado ${new Intl.DateTimeFormat('es-AR',{hour:'2-digit',minute:'2-digit'}).format(new Date())}`;
 }
 
 function renderClientAppPicker(selectedRows=[]){const rows=normalizeRows(selectedRows);const chosen=new Set(rows.map(r=>r.app));modalPrefillDates=Object.fromEntries(rows.map(r=>[r.app,r.date]));$('#client-apps-picker').innerHTML=APPS.map((app,i)=>`<div class="app-option"><input id="modal-app-${i}" class="modal-app-check" type="checkbox" value="${esc(app)}" ${chosen.has(app)?'checked':''}><label for="modal-app-${i}"><span class="mini-check"></span>${miniLogoHTML(app)}<strong>${esc(app)}</strong></label></div>`).join('');$$('.modal-app-check').forEach(x=>x.addEventListener('change',renderClientDueRows));renderClientDueRows()}
