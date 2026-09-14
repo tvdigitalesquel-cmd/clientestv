@@ -3,1385 +3,253 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#0b1020">
-<title>Control Privado de Ingresos</title>
-
+<meta name="theme-color" content="#07111f">
+<title>Clientes por Aplicación</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0b1020;
-  --nav:#0a1020;
-  --card:#111827;
-  --surface:#172033;
-  --surface2:#1d293d;
-  --border:rgba(148,163,184,.14);
-  --border2:rgba(148,163,184,.25);
-  --text:#f3f6fb;
-  --muted:#94a3b8;
-  --muted2:#66758a;
-  --blue:#3b82f6;
-  --blue2:#2563eb;
+  --bg:#07111f;
+  --bg2:#0b1627;
+  --panel:rgba(17,30,49,.88);
+  --panel-solid:#111e31;
+  --panel-2:#172640;
+  --line:rgba(148,163,184,.14);
+  --line-strong:rgba(148,163,184,.26);
+  --text:#f8fafc;
+  --muted:#91a3b8;
+  --muted-2:#64748b;
+  --accent:#4f8cff;
+  --accent-2:#2f6fe8;
   --green:#22c55e;
-  --red:#ef4444;
-  --yellow:#f59e0b;
-  --purple:#8b5cf6;
-  --cyan:#06b6d4;
-  --blueSoft:rgba(59,130,246,.12);
-  --greenSoft:rgba(34,197,94,.11);
-  --redSoft:rgba(239,68,68,.10);
-  --yellowSoft:rgba(245,158,11,.11);
-  --purpleSoft:rgba(139,92,246,.11);
-  --shadow:0 1px 2px rgba(0,0,0,.14),0 10px 30px rgba(0,0,0,.10);
-  --shadow-lg:0 24px 70px rgba(0,0,0,.30);
-}
-html.light-mode{
-  --bg:#cfd3d8;
-  --nav:#24282e;
-  --card:#e0e3e6;
-  --surface:#c4c9cf;
-  --surface2:#d3d7db;
-  --border:rgba(20,28,38,.13);
-  --border2:rgba(20,28,38,.22);
-  --text:#18212e;
-  --muted:#4e5a69;
-  --muted2:#737d8b;
-  --blueSoft:rgba(59,130,246,.11);
-  --greenSoft:rgba(34,197,94,.11);
-  --redSoft:rgba(239,68,68,.10);
-  --yellowSoft:rgba(245,158,11,.12);
-  --purpleSoft:rgba(139,92,246,.10);
-  --shadow:0 1px 2px rgba(15,23,42,.06),0 8px 24px rgba(15,23,42,.08);
-  --shadow-lg:0 20px 55px rgba(15,23,42,.18);
+  --shadow:0 24px 70px rgba(0,0,0,.25);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{color-scheme:dark}
-html.light-mode{color-scheme:light}
 body{
   min-height:100vh;
-  background:var(--bg);
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
   color:var(--text);
-  font-family:'DM Sans',sans-serif;
-  letter-spacing:-.005em;
-  padding-bottom:84px;
+  background:
+    radial-gradient(circle at 12% 0%,rgba(79,140,255,.16),transparent 28%),
+    radial-gradient(circle at 88% 8%,rgba(34,197,94,.08),transparent 20%),
+    linear-gradient(180deg,#07111f 0%,#091523 52%,#07111f 100%);
 }
-button,input,select,textarea{font:inherit}
-button{touch-action:manipulation}
+button,input{font:inherit}
+button{cursor:pointer}
 .hidden{display:none!important}
-::-webkit-scrollbar{width:6px;height:6px}
-::-webkit-scrollbar-thumb{background:var(--border2);border-radius:999px}
-@keyframes fade{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
-@keyframes spin{to{transform:rotate(360deg)}}
 
-.card{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:18px;
-  box-shadow:var(--shadow);
-}
-.input{
-  width:100%;
-  min-height:48px;
-  border-radius:12px;
-  border:1px solid var(--border);
-  background:var(--surface);
-  color:var(--text);
-  padding:0 14px;
-  outline:none;
-  font-size:14px;
-}
-.input:hover{border-color:var(--border2)}
-.input:focus{
-  border-color:rgba(59,130,246,.75);
-  box-shadow:0 0 0 3px rgba(59,130,246,.10);
-}
-.input::placeholder{color:var(--muted2)}
-textarea.input{padding-top:12px;min-height:90px;resize:vertical}
-.input-label{
-  display:block;
-  font-size:11px;
-  font-weight:700;
-  color:var(--muted);
-  margin-bottom:7px;
-}
-.helper{
-  font-size:10px;
-  color:var(--muted2);
-  line-height:1.45;
-  margin-top:6px;
-}
-.section-label{
-  font-size:10px;
-  letter-spacing:.12em;
-  text-transform:uppercase;
-  color:var(--muted);
-  font-weight:800;
-  margin-bottom:12px;
-}
-.btn{
-  min-height:44px;
-  border-radius:11px;
-  border:0;
-  padding:0 14px;
-  font-size:12px;
-  font-weight:800;
-  cursor:pointer;
-  transition:.16s ease;
-}
-.btn:hover{transform:translateY(-1px)}
-.btn:disabled{opacity:.55;cursor:wait;transform:none}
-.btn-primary{
-  background:linear-gradient(180deg,#4388f7,#3478e8);
-  color:#fff;
-  box-shadow:0 5px 14px rgba(59,130,246,.18);
-}
-.btn-secondary{
-  color:var(--text);
-  background:var(--card);
-  border:1px solid var(--border2);
-}
-.btn-green{
-  color:var(--green);
-  background:var(--greenSoft);
-  border:1px solid rgba(34,197,94,.20);
-}
-.btn-danger{
-  color:var(--red);
-  background:transparent;
-  border:1px solid rgba(239,68,68,.22);
-}
-.btn-soft{
-  color:var(--blue);
-  background:var(--blueSoft);
-  border:1px solid rgba(59,130,246,.22);
-}
-
-/* Login */
-.login-screen{
-  min-height:100vh;
-  display:grid;
-  place-items:center;
-  padding:18px;
-  background:radial-gradient(circle at 20% 0%,rgba(59,130,246,.16),transparent 34%),var(--bg);
-}
+/* LOGIN */
+.login-screen{min-height:100vh;display:grid;place-items:center;padding:24px}
 .login-card{
   width:min(430px,100%);
-  border-radius:22px;
-  padding:34px 30px;
-  background:var(--card);
-  border:1px solid var(--border);
-  box-shadow:var(--shadow-lg);
+  padding:34px;
+  border:1px solid var(--line);
+  border-radius:28px;
+  background:linear-gradient(180deg,rgba(20,35,57,.96),rgba(13,25,42,.96));
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(18px);
 }
-.login-logo{
-  width:52px;height:52px;border-radius:14px;
-  display:grid;place-items:center;
-  background:var(--blue);color:#fff;
-  font-size:25px;margin-bottom:22px;
+.login-mark{
+  width:54px;height:54px;border-radius:16px;display:grid;place-items:center;
+  background:linear-gradient(145deg,#5a98ff,#2f6fe8);font-size:24px;
+  box-shadow:0 16px 32px rgba(47,111,232,.25);margin-bottom:22px
 }
-.login-card h1{font-size:26px;letter-spacing:-.04em}
-.login-card p{font-size:13px;color:var(--muted);line-height:1.55;margin:9px 0 24px}
-.login-error{
-  margin-top:12px;
-  padding:11px;
-  border-radius:12px;
-  background:var(--redSoft);
-  color:#fca5a5;
-  font-size:12px;
-  border:1px solid rgba(239,68,68,.25);
+.login-card h1{font-size:27px;letter-spacing:-.04em}
+.login-card p{color:var(--muted);font-size:13px;line-height:1.6;margin:10px 0 24px}
+.label{display:block;font-size:11px;font-weight:800;color:#b9c5d4;margin:0 0 8px}
+.input{
+  width:100%;height:50px;border-radius:14px;border:1px solid var(--line);
+  background:#0d1a2b;color:var(--text);padding:0 14px;outline:none;font-size:14px
 }
+.input:focus{border-color:rgba(79,140,255,.8);box-shadow:0 0 0 4px rgba(79,140,255,.10)}
+.login-btn{
+  width:100%;height:50px;border:0;border-radius:14px;margin-top:16px;
+  color:#fff;font-weight:800;background:linear-gradient(180deg,#558fff,#3475e7);
+  box-shadow:0 14px 26px rgba(47,111,232,.20)
+}
+.login-btn:disabled{opacity:.6;cursor:wait}
+.login-error{margin-top:12px;padding:11px 12px;border:1px solid rgba(239,68,68,.25);border-radius:12px;background:rgba(239,68,68,.08);color:#fecaca;font-size:12px}
 
-/* Header / nav */
+/* APP */
+.app-shell{min-height:100vh}
 .topbar{
-  position:sticky;top:0;z-index:50;
-  background:var(--nav);
-  border-bottom:1px solid rgba(255,255,255,.07);
+  position:sticky;top:0;z-index:20;
+  border-bottom:1px solid var(--line);
+  background:rgba(7,17,31,.82);
+  backdrop-filter:blur(18px)
 }
 .topbar-inner{
-  height:60px;
-  max-width:1240px;
-  margin:auto;
-  padding:0 14px;
-  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  width:min(1320px,calc(100% - 32px));height:74px;margin:auto;
+  display:flex;align-items:center;justify-content:space-between;gap:18px
 }
-.brand{display:flex;align-items:center;gap:11px;min-width:0}
-.brand-icon{
-  width:40px;height:40px;border-radius:12px;
-  display:grid;place-items:center;
-  background:linear-gradient(145deg,#3b82f6,#2563eb);
-  color:#fff;font-size:20px;
+.brand{display:flex;align-items:center;gap:13px;min-width:0}
+.brand-mark{
+  width:42px;height:42px;border-radius:13px;display:grid;place-items:center;
+  background:linear-gradient(145deg,#5a98ff,#2f6fe8);font-size:19px;box-shadow:0 10px 24px rgba(47,111,232,.22)
 }
-.brand strong{display:block;color:#fff;font-size:14px}
-.brand span{
-  display:block;color:rgba(255,255,255,.48);
-  font-size:10px;margin-top:2px;
-  max-width:170px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+.brand strong{display:block;font-size:14px}
+.brand small{display:block;color:var(--muted);font-size:10px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:240px}
+.top-actions{display:flex;align-items:center;gap:8px}
+.action-btn{
+  height:40px;padding:0 13px;border-radius:11px;border:1px solid var(--line);
+  background:rgba(255,255,255,.035);color:#dbe6f4;font-size:11px;font-weight:800
 }
-.top-actions{display:flex;gap:7px;align-items:center}
-.icon-btn,.logout-btn{
-  height:40px;border-radius:10px;
-  border:1px solid rgba(255,255,255,.10);
-  background:rgba(255,255,255,.055);
-  color:#fff;cursor:pointer;
-}
-.icon-btn{width:42px}
-.logout-btn{padding:0 12px;color:#fca5a5}
-.bottom-nav{
-  position:fixed;left:0;right:0;bottom:0;z-index:60;
-  background:rgba(10,16,32,.97);
-  backdrop-filter:blur(18px);
-  border-top:1px solid rgba(255,255,255,.08);
-  padding:6px 5px calc(6px + env(safe-area-inset-bottom));
-  display:flex;gap:1px;overflow-x:auto;
-  scrollbar-width:none;
-}
-.bottom-nav::-webkit-scrollbar{display:none}
-.nav-tab{
-  min-height:50px;min-width:62px;flex:1 0 62px;
-  border:0;border-radius:9px;
-  background:transparent;color:#7f8da5;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
-  font-size:8px;font-weight:700;cursor:pointer
-}
-.nav-tab .ico{font-size:18px;line-height:1}
-.nav-tab.active{background:rgba(59,130,246,.13);color:#7fb0ff}
+.action-btn:hover{border-color:var(--line-strong);background:rgba(255,255,255,.06)}
 
-.main{max-width:1240px;margin:auto;padding:14px 10px 24px}
-.view{display:none;animation:fade .18s ease}
-.view.active{display:block}
-.view-title{margin-bottom:16px}
-.view-title h1{font-size:22px;letter-spacing:-.04em}
-.view-title p{font-size:12px;color:var(--muted);line-height:1.45;margin-top:5px;max-width:760px}
+.main{width:min(1320px,calc(100% - 32px));margin:0 auto;padding:46px 0 70px}
+.hero{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:26px}
+.eyebrow{font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#6ea2ff;margin-bottom:10px}
+.hero h1{font-size:clamp(30px,4vw,46px);letter-spacing:-.055em;line-height:1}
+.hero p{max-width:650px;margin-top:12px;color:var(--muted);font-size:13px;line-height:1.6}
+.sync-note{font-size:10px;color:var(--muted-2);text-align:right;white-space:nowrap}
 
-/* Dashboard */
-.dashboard-grid{
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:8px;
-  margin-bottom:12px
+.overview{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:18px
 }
-.dashboard-card{
-  position:relative;overflow:hidden;
-  min-height:108px;padding:14px;
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:17px;
-  box-shadow:var(--shadow)
+.overview-card{
+  min-height:116px;padding:17px 18px;border:1px solid var(--line);border-radius:20px;
+  background:linear-gradient(180deg,rgba(19,34,55,.92),rgba(14,27,45,.92));
+  box-shadow:0 10px 36px rgba(0,0,0,.10)
 }
-.dashboard-card:before{
-  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--blue)
-}
-.dashboard-card:nth-child(3):before{background:var(--green)}
-.dashboard-card:nth-child(4):before{background:var(--yellow)}
-.dashboard-card span{
-  display:block;font-size:9px;text-transform:uppercase;letter-spacing:.07em;
-  font-weight:800;color:var(--muted)
-}
-.dashboard-card strong{display:block;font-size:21px;margin-top:9px;letter-spacing:-.04em}
-.dashboard-card small{display:block;color:var(--muted);font-size:9px;margin-top:7px;line-height:1.35}
-.dashboard-columns{display:grid;gap:12px}
-.dashboard-panel{padding:16px}
-.breakdown-list{display:grid;gap:7px}
-.breakdown-row,.dashboard-alert{
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:12px;padding:11px 12px
-}
-.breakdown-row{
-  display:grid;grid-template-columns:minmax(0,1fr) auto;
-  gap:10px;align-items:center
-}
-.breakdown-row strong,.dashboard-alert strong{font-size:12px}
-.breakdown-row span,.dashboard-alert span{display:block;font-size:9px;color:var(--muted);margin-top:3px}
-.breakdown-value{text-align:right;font-weight:800;font-size:13px}
-.dashboard-alert{
-  display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:7px
-}
-.dashboard-alert:last-child{margin-bottom:0}
+.overview-card span{font-size:9px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.overview-card strong{display:block;margin-top:12px;font-size:30px;letter-spacing:-.045em}
+.overview-card small{display:block;margin-top:7px;color:var(--muted-2);font-size:9px}
 
-/* Nuevo movimiento */
-.movement-layout{
-  display:grid;
-  gap:14px;
+.section-head{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:28px 0 14px}
+.section-head h2{font-size:18px;letter-spacing:-.025em}
+.section-head span{font-size:10px;color:var(--muted)}
+.apps-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:13px}
+.app-card{
+  position:relative;overflow:hidden;min-height:248px;padding:18px;border:1px solid var(--line);
+  border-radius:23px;background:
+    linear-gradient(180deg,rgba(20,35,57,.96),rgba(12,24,41,.98));
+  box-shadow:0 14px 40px rgba(0,0,0,.14);
+  transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease
 }
-.flow-card{padding:16px}
-.flow-head{
-  display:flex;align-items:center;gap:10px;
-  margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border)
+.app-card:hover{transform:translateY(-3px);border-color:rgba(79,140,255,.38);box-shadow:0 22px 55px rgba(0,0,0,.20)}
+.app-card::after{
+  content:"";position:absolute;inset:auto -30% -45% 25%;height:150px;
+  background:radial-gradient(circle,rgba(79,140,255,.13),transparent 62%);pointer-events:none
 }
-.flow-step{
-  width:30px;height:30px;border-radius:9px;
-  display:grid;place-items:center;
-  background:var(--blueSoft);
-  color:var(--blue);
-  font-size:12px;font-weight:900;flex:0 0 auto
+.app-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.logo-wrap{
+  width:58px;height:58px;border-radius:18px;border:1px solid var(--line);
+  background:rgba(255,255,255,.045);display:grid;place-items:center;overflow:hidden
 }
-.flow-head strong{font-size:14px}
-.flow-head span{display:block;font-size:10px;color:var(--muted);margin-top:2px}
-.type-selector{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.type-option{position:relative}
-.type-option input{position:absolute;opacity:0}
-.type-option label{
-  min-height:52px;border-radius:12px;
-  background:var(--surface);border:1px solid var(--border);
-  display:flex;align-items:center;justify-content:center;gap:8px;
-  font-size:12px;font-weight:800;color:var(--muted);cursor:pointer
-}
-.type-option input:checked+label{
-  color:var(--blue);border-color:rgba(59,130,246,.55);background:var(--blueSoft)
-}
-.dot{
-  width:18px;height:18px;border-radius:6px;border:1.5px solid currentColor;
-  display:grid;place-items:center;font-size:10px
-}
-.type-option input:checked+label .dot:after{content:'✓'}
-.autocomplete{position:relative}
-.suggestions{
-  position:absolute;left:0;right:0;top:calc(100% + 5px);z-index:90;
-  max-height:300px;overflow:auto;
-  background:var(--card);border:1px solid var(--border2);
-  border-radius:14px;padding:6px;box-shadow:var(--shadow-lg)
-}
-.suggestion{
-  width:100%;min-height:56px;border:0;border-radius:10px;
-  background:transparent;color:var(--text);
-  display:flex;align-items:center;justify-content:space-between;gap:10px;
-  padding:9px 10px;text-align:left;cursor:pointer
-}
-.suggestion:hover{background:var(--blueSoft)}
-.suggestion strong{display:block;font-size:13px}
-.suggestion small{display:block;color:var(--muted);font-size:9px;margin-top:3px}
-.suggestion-badge{
-  font-size:9px;font-weight:800;color:var(--purple);
-  background:var(--purpleSoft);padding:5px 7px;border-radius:999px;white-space:nowrap
-}
-.apps-picker{
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:8px
-}
-.app-option{position:relative;min-width:0}
-.app-option input{position:absolute;opacity:0;pointer-events:none}
-.app-option label{
-  min-height:64px;border-radius:12px;
-  background:var(--surface);border:1px solid var(--border);
-  display:flex;align-items:center;gap:9px;
-  padding:8px 9px;color:var(--muted);cursor:pointer
-}
-.app-option input:checked+label{
-  background:var(--blueSoft);
-  border-color:rgba(59,130,246,.60);
-  color:var(--blue)
-}
-.app-check-ui{
-  width:20px;height:20px;border:1.7px solid currentColor;border-radius:6px;
-  display:grid;place-items:center;flex:0 0 auto;font-size:12px;font-weight:900
-}
-.app-option input:checked+label .app-check-ui:after{content:'✓'}
-.app-option-name{font-size:11px;font-weight:800;line-height:1.2;overflow-wrap:anywhere}
-.app-logo-wrap{
-  width:42px;height:42px;border-radius:11px;
-  background:var(--surface2);
-  border:1px solid var(--border);
-  display:grid;place-items:center;overflow:hidden;flex:0 0 auto
-}
-.app-logo{width:100%;height:100%;object-fit:contain;padding:5px;display:block}
-.app-logo-fallback{font-size:20px;color:var(--muted)}
-.price-list{display:grid;gap:8px;margin-top:11px}
-.price-row{
-  display:grid;grid-template-columns:minmax(0,1fr) 130px;
-  gap:8px;align-items:center;
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:12px;padding:8px 9px
-}
-.price-row-main{display:flex;align-items:center;gap:8px;min-width:0}
-.price-row-main .app-logo-wrap{width:34px;height:34px;border-radius:9px}
-.price-row strong{font-size:11px}
-.price-row small{display:block;color:var(--muted);font-size:9px;margin-top:2px}
-.price-row .input{min-height:42px}
-.form-stack{display:grid;gap:12px}
-.inline-grid{display:grid;grid-template-columns:1fr;gap:10px}
-.movement-summary{
-  display:grid;gap:10px
-}
-.summary-preview{
-  border:1px solid var(--border);
-  background:var(--surface);
-  border-radius:14px;
-  padding:13px;
-}
-.summary-preview-row{
-  display:flex;justify-content:space-between;gap:12px;
-  padding:7px 0;border-bottom:1px solid var(--border)
-}
-.summary-preview-row:last-child{border-bottom:0}
-.summary-preview-row span{font-size:10px;color:var(--muted)}
-.summary-preview-row strong{font-size:11px;text-align:right;overflow-wrap:anywhere}
-.summary-preview-total strong{font-size:17px;color:var(--green)}
-.form-actions{display:grid;grid-template-columns:1fr;gap:8px}
-.quick-action-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}
-.quick-action{
-  min-height:34px;border-radius:9px;padding:0 10px;
-  border:1px solid var(--border);background:var(--surface);
-  color:var(--muted);font-size:10px;font-weight:800;cursor:pointer
-}
-.new-from-movement{
-  display:none;
-  margin-top:8px;
-}
-.new-from-movement.show{display:block}
+.logo-wrap img{width:100%;height:100%;object-fit:contain;padding:7px}
+.logo-fallback{font-size:22px;color:#9fb4ce;font-weight:800}
+.status-dot{width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 0 5px rgba(34,197,94,.10);margin-top:8px}
+.app-name{font-size:13px;font-weight:800;margin-top:18px;color:#dfe8f4}
+.app-count{display:flex;align-items:flex-end;gap:8px;margin-top:9px}
+.app-count strong{font-size:46px;line-height:.95;letter-spacing:-.07em}
+.app-count span{font-size:11px;color:var(--muted);font-weight:700;padding-bottom:4px}
+.progress-track{height:6px;border-radius:999px;background:rgba(148,163,184,.12);overflow:hidden;margin-top:20px}
+.progress-bar{height:100%;border-radius:inherit;background:linear-gradient(90deg,#4f8cff,#73a7ff);width:0;transition:width .4s ease}
+.app-foot{display:flex;justify-content:space-between;gap:8px;margin-top:10px;font-size:9px;color:var(--muted-2)}
+.app-foot strong{color:#aebed1;font-size:9px}
 
-/* Stats / lists */
-.summary-grid{
-  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:12px
-}
-.summary-box{
-  min-height:96px;padding:12px 13px;
-  background:var(--card);border:1px solid var(--border);
-  border-radius:16px;box-shadow:var(--shadow);
-  position:relative;overflow:hidden
-}
-.summary-box:before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--blue)}
-.summary-box.red:before{background:var(--red)}
-.summary-box.yellow:before{background:var(--yellow)}
-.summary-box.green:before{background:var(--green)}
-.summary-box span{display:block;font-size:9px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.06em}
-.summary-box strong{display:block;font-size:24px;margin-top:10px;letter-spacing:-.04em}
-.summary-box.red strong{color:var(--red)}
-.summary-box.yellow strong{color:var(--yellow)}
-.summary-box.green strong{color:var(--green)}
-.toolbar-card{padding:11px;margin-bottom:12px}
-.toolbar-grid{display:grid;grid-template-columns:1fr;gap:8px}
-.chip-row{display:flex;gap:6px;overflow:auto;padding-bottom:1px}
-.filter-chip{
-  min-height:36px;padding:0 11px;border-radius:10px;
-  border:1px solid var(--border);background:var(--surface);
-  color:var(--muted);font-size:10px;font-weight:800;white-space:nowrap;cursor:pointer
-}
-.filter-chip.active{background:var(--blue);border-color:var(--blue);color:#fff}
-.list{display:grid;gap:10px}
-.entity-card{
-  background:var(--card);border:1px solid var(--border);
-  border-radius:17px;padding:14px;box-shadow:var(--shadow)
-}
-.entity-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
-.entity-name{font-size:15px;font-weight:800;line-height:1.2;overflow-wrap:anywhere}
-.entity-sub{font-size:9px;color:var(--muted);margin-top:5px;line-height:1.4}
-.status{
-  display:inline-flex;align-items:center;padding:5px 8px;
-  border-radius:999px;font-size:8px;font-weight:800;white-space:nowrap
-}
-.status.vencido{color:var(--red);background:var(--redSoft)}
-.status.hoy{color:var(--yellow);background:var(--yellowSoft)}
-.status.proximo{color:var(--blue);background:var(--blueSoft)}
-.status.aldia{color:var(--green);background:var(--greenSoft)}
-.entity-grid{
-  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:7px;margin-top:12px;padding-top:11px;border-top:1px solid var(--border)
-}
-.metric{
-  border:1px solid var(--border);border-radius:10px;padding:9px 10px;min-width:0
-}
-.metric span{
-  display:block;font-size:7.5px;color:var(--muted2);
-  text-transform:uppercase;font-weight:800;letter-spacing:.06em
-}
-.metric strong{display:block;font-size:10.5px;margin-top:3px;overflow-wrap:anywhere}
-.entity-actions,.admin-actions{
-  display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px
-}
-.entity-actions .btn,.admin-actions .btn{min-height:39px;font-size:10px}
-.apps-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;align-items:center}
-.apps-list .app-logo-wrap{
-  width:44px;
-  height:44px;
-  border-radius:11px;
-  background:var(--surface);
-  border:1px solid var(--border2);
-}
-.apps-list .app-logo{padding:4px}
-.seller-apps-list{
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
-  margin-top:11px;
-  align-items:center;
-}
-.seller-apps-list .app-logo-wrap{
-  width:46px;
-  height:46px;
-  border-radius:11px;
-  background:var(--surface);
-  border:1px solid var(--border2);
-}
-.seller-apps-list .app-logo{padding:4px}
-.phone-link{font-size:10px;color:var(--green);font-weight:700;margin-top:5px}
-.type-chip,.app-chip{
-  display:inline-flex;padding:5px 7px;border-radius:8px;
-  font-size:9px;font-weight:800
-}
-.type-chip.client{background:var(--greenSoft);color:var(--green)}
-.type-chip.seller{background:var(--purpleSoft);color:var(--purple)}
-.app-chip{background:var(--blueSoft);color:var(--blue)}
-.empty{padding:30px 14px;text-align:center;color:var(--muted2)}
-.empty .emoji{font-size:28px;margin-bottom:7px}
-.empty p{font-size:12px}
-.loading{padding:25px;text-align:center;color:var(--muted)}
-.spinner{
-  display:inline-block;width:17px;height:17px;
-  border:2px solid var(--border2);border-top-color:var(--blue);
-  border-radius:50%;animation:spin .7s linear infinite;
-  vertical-align:middle;margin-right:7px
-}
+.empty-card{grid-column:1/-1;padding:42px 20px;text-align:center;border:1px dashed var(--line-strong);border-radius:22px;color:var(--muted);font-size:12px}
+.loading-wrap{grid-column:1/-1;padding:48px 20px;text-align:center;color:var(--muted);font-size:12px}
+.spinner{display:inline-block;width:18px;height:18px;border:2px solid var(--line-strong);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:8px}
+@keyframes spin{to{transform:rotate(360deg)}}
 
-/* Clients */
-.clients-topbar{
-  display:grid;grid-template-columns:1fr;gap:8px
-}
-.client-summary{
-  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:8px;margin-bottom:12px
-}
-.client-filter-card{
-  min-height:92px;padding:11px;
-  border:1px solid var(--border);
-  background:var(--card);border-radius:16px;
-  text-align:left;color:var(--text);font:inherit;cursor:pointer;position:relative
-}
-.client-filter-card:before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--green)}
-.client-filter-card.red:before{background:var(--red)}
-.client-filter-card.yellow:before{background:var(--yellow)}
-.client-filter-card.active{box-shadow:0 0 0 2px rgba(59,130,246,.25),var(--shadow)}
-.client-filter-card span{display:block;font-size:8px;text-transform:uppercase;color:var(--muted);font-weight:800}
-.client-filter-card strong{display:block;font-size:24px;margin-top:8px}
-.client-filter-card small{display:block;font-size:8px;color:var(--muted);margin-top:5px;line-height:1.25}
+.footer-note{margin-top:18px;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.025);font-size:10px;color:var(--muted-2);line-height:1.55}
 
-/* Apps */
-.apps-grid{
-  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px
+@media(max-width:1100px){.apps-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:760px){
+  .main{padding-top:30px}.hero{align-items:flex-start;flex-direction:column}.sync-note{text-align:left}
+  .overview{grid-template-columns:1fr}.apps-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .app-card{min-height:220px}.app-count strong{font-size:40px}
+  .action-btn.refresh span{display:none}.topbar-inner{width:min(100% - 22px,1320px)}
 }
-.app-service-card{
-  background:var(--card);border:1px solid var(--border);
-  border-radius:16px;padding:14px;box-shadow:var(--shadow)
-}
-.app-service-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
-.app-service-name{font-size:13px;font-weight:800}
-.app-service-count{font-size:25px;font-weight:800;margin-top:12px}
-.app-service-label{font-size:8px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.06em}
-.app-service-renew{font-size:9px;color:var(--muted);margin-top:8px;min-height:15px}
-.app-service-card .btn{width:100%;margin-top:10px;min-height:40px;font-size:10px}
-.app-client-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
-.app-client-head h2{font-size:18px}
-.app-client-head p{font-size:10px;color:var(--muted);margin-top:3px}
-
-/* Purchases */
-.purchase-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:12px}
-.purchase-stat{
-  padding:13px;background:var(--card);border:1px solid var(--border);
-  border-radius:16px;box-shadow:var(--shadow)
-}
-.purchase-stat span{display:block;font-size:8px;color:var(--muted);font-weight:800;text-transform:uppercase}
-.purchase-stat strong{display:block;font-size:19px;margin-top:8px}
-.purchase-stat small{display:block;font-size:8px;color:var(--muted);margin-top:5px}
-.purchase-layout{display:grid;gap:12px}
-.purchase-form-card{padding:16px}
-.purchase-form{display:grid;gap:12px}
-.purchase-unit-preview{
-  padding:11px 12px;border-radius:12px;
-  background:var(--blueSoft);color:var(--blue);font-size:11px;font-weight:800
-}
-.purchase-list{display:grid;gap:9px}
-.purchase-card{
-  background:var(--card);border:1px solid var(--border);
-  border-radius:16px;padding:13px;box-shadow:var(--shadow)
-}
-.purchase-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
-.purchase-app-main{display:flex;align-items:center;gap:9px}
-.purchase-app-main .app-logo-wrap{width:36px;height:36px;border-radius:9px}
-.purchase-app-main strong{display:block;font-size:13px}
-.purchase-app-main span{display:block;font-size:9px;color:var(--muted);margin-top:3px}
-.purchase-amount{font-size:15px;font-weight:800}
-.purchase-metrics{
-  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:7px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)
-}
-.purchase-metric{background:var(--surface);border-radius:10px;padding:8px}
-.purchase-metric span{display:block;font-size:7px;color:var(--muted2);font-weight:800;text-transform:uppercase}
-.purchase-metric strong{display:block;font-size:10px;margin-top:3px}
-.purchase-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:9px}
-
-/* History */
-.period-card{padding:11px;margin-bottom:12px}
-.period-row{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
-.period-btn{
-  min-height:38px;border:1px solid var(--border);border-radius:9px;
-  background:var(--surface);color:var(--muted);font-size:9px;font-weight:800;cursor:pointer
-}
-.period-btn.active{background:var(--blue);border-color:var(--blue);color:#fff}
-.custom-range{
-  display:grid;grid-template-columns:1fr;gap:8px;
-  margin-top:9px;padding:10px;border-radius:12px;background:var(--surface)
-}
-.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:12px}
-.stat{
-  background:var(--card);border:1px solid var(--border);
-  border-radius:14px;padding:13px;box-shadow:var(--shadow)
-}
-.stat span{display:block;font-size:8px;color:var(--muted);text-transform:uppercase;font-weight:800}
-.stat strong{display:block;font-size:19px;margin-top:7px}
-.stat.money strong{color:var(--green)}
-.history-card{padding:11px}
-.history-toolbar{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:11px}
-.history-toolbar .wide{grid-column:1/-1}
-.history-list{display:grid;gap:8px}
-.movement{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:13px;padding:12px
-}
-.movement-top{display:flex;justify-content:space-between;gap:10px}
-.movement-name{font-size:13px;font-weight:800}
-.movement-price{font-size:14px;font-weight:800;color:var(--green);white-space:nowrap}
-.movement-meta{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
-.movement-details{
-  display:grid;grid-template-columns:1fr 1fr;gap:7px;
-  margin-top:9px;padding-top:9px;border-top:1px solid var(--border)
-}
-.movement-details span{display:block;font-size:7px;color:var(--muted2);text-transform:uppercase;font-weight:800}
-.movement-details strong{display:block;font-size:10px;margin-top:3px}
-.movement-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:9px}
-
-/* Modals */
-.modal{
-  position:fixed;inset:0;z-index:120;
-  background:rgba(7,12,24,.62);
-  backdrop-filter:blur(5px);
-  display:flex;align-items:flex-end;justify-content:center
-}
-.modal-panel{
-  width:100%;max-width:680px;max-height:92vh;overflow:auto;
-  background:var(--card);border:1px solid var(--border2);
-  border-radius:20px 20px 0 0;
-  padding:18px 16px calc(20px + env(safe-area-inset-bottom));
-  box-shadow:var(--shadow-lg);
-  animation:fade .18s ease
-}
-.modal-head{
-  display:flex;align-items:flex-start;justify-content:space-between;gap:10px;
-  padding-bottom:12px;border-bottom:1px solid var(--border);margin-bottom:15px
-}
-.modal-head h2{font-size:19px}
-.modal-head p{font-size:10px;color:var(--muted);margin-top:3px}
-.close-btn{
-  width:38px;height:38px;border-radius:10px;
-  border:1px solid var(--border);background:var(--surface);
-  color:var(--text);font-size:18px;cursor:pointer
-}
-.client-form{display:grid;gap:14px}
-.client-app-picker{
-  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px
-}
-.date-quick{
-  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:8px
-}
-.date-quick button{
-  min-height:34px;border-radius:9px;border:1px solid var(--border);
-  background:var(--surface);color:var(--muted);font-size:9px;font-weight:800;cursor:pointer
-}
-
-.client-due-list{display:grid;gap:9px}
-.client-due-row{
-  display:grid;
-  grid-template-columns:minmax(0,1fr);
-  gap:9px;
-  padding:10px;
-  border:1px solid var(--border);
-  background:var(--surface);
-  border-radius:13px;
-}
-.client-due-app{
-  display:flex;
-  align-items:center;
-  gap:9px;
-  min-width:0;
-}
-.client-due-app .app-logo-wrap{
-  width:38px;
-  height:38px;
-  border-radius:9px;
-}
-.client-due-app strong{
-  display:block;
-  font-size:11px;
-}
-.client-due-app small{
-  display:block;
-  margin-top:2px;
-  color:var(--muted);
-  font-size:9px;
-}
-.client-due-controls{
-  display:grid;
-  grid-template-columns:minmax(0,1fr) auto auto;
-  gap:6px;
-  align-items:center;
-}
-.client-due-controls .input{min-height:42px}
-.client-due-controls button{
-  min-height:38px;
-  padding:0 9px;
-  border-radius:9px;
-  border:1px solid var(--border);
-  background:var(--card);
-  color:var(--muted);
-  font-size:9px;
-  font-weight:800;
-  cursor:pointer;
-}
-.client-preview{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:13px;padding:12px
-}
-.client-preview-line{
-  display:flex;justify-content:space-between;gap:12px;padding:5px 0
-}
-.client-preview-line span{font-size:9px;color:var(--muted)}
-.client-preview-line strong{font-size:10px;text-align:right}
-.service-list{display:grid;gap:8px}
-.service-row{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:12px;padding:10px
-}
-.service-row-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.service-main{display:flex;align-items:center;gap:8px;min-width:0}
-.service-main .app-logo-wrap{width:34px;height:34px;border-radius:9px}
-.service-main strong{font-size:11px}
-.service-main small{display:block;color:var(--muted);font-size:9px;margin-top:3px}
-.service-row .btn{width:100%;margin-top:8px;min-height:38px;font-size:10px}
-.profile-history{display:grid;gap:7px}
-.profile-row{
-  display:flex;justify-content:space-between;gap:12px;
-  background:var(--surface);border-radius:12px;padding:10px
-}
-.profile-row strong{display:block;font-size:11px}
-.profile-row span{font-size:9px;color:var(--muted)}
-.profile-row .amount{font-size:11px;color:var(--green);white-space:nowrap}
-.toast{
-  position:fixed;left:10px;right:10px;bottom:88px;z-index:150;
-  background:#151a22;color:#fff;border:1px solid rgba(255,255,255,.12);
-  border-radius:12px;padding:12px;text-align:center;font-size:11px;font-weight:800;
-  box-shadow:var(--shadow-lg)
-}
-.toast.error{background:#2b1518;color:#fecaca;border-color:rgba(239,68,68,.3)}
-
-/* Evita zoom automático al tocar inputs en Safari/iPhone.
-   Se mantiene el zoom manual del usuario. */
-@media(max-width:1023px){
-  input,select,textarea,.input{
-    font-size:16px!important;
-  }
-}
-
-@media(max-width:420px){
-  .client-app-picker,.apps-picker{grid-template-columns:1fr}
-  .admin-actions{grid-template-columns:1fr}
-}
-
-@media(min-width:760px){
-  .client-due-row{
-    grid-template-columns:minmax(170px,.75fr) minmax(0,1.25fr);
-    align-items:center;
-  }
-  body{padding-bottom:0}
-  .bottom-nav{
-    position:sticky;top:60px;bottom:auto;
-    max-width:1240px;margin:0 auto 12px;
-    border:1px solid var(--border);border-radius:0 0 18px 18px;
-    padding:7px;background:var(--nav)
-  }
-  .nav-tab{
-    flex-direction:row;font-size:11px;min-height:44px;gap:7px
-  }
-  .main{padding:22px 24px 52px}
-  .view-title h1{font-size:27px}
-  .dashboard-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
-  .dashboard-columns{grid-template-columns:1.1fr .9fr;gap:14px}
-  .movement-layout{grid-template-columns:1fr 1fr}
-  .movement-layout .movement-summary{grid-column:1/-1}
-  .inline-grid{grid-template-columns:1fr 1fr}
-  .form-actions{grid-template-columns:1fr 1fr}
-  .summary-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
-  .toolbar-grid{grid-template-columns:minmax(260px,1fr) auto}
-  .clients-topbar{grid-template-columns:minmax(0,1fr) auto}
-  .client-summary{gap:10px}
-  .list{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .entity-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
-  .apps-grid{grid-template-columns:repeat(5,minmax(0,1fr))}
-  .purchase-stats{grid-template-columns:repeat(4,minmax(0,1fr))}
-  .purchase-layout{grid-template-columns:minmax(280px,.72fr) minmax(0,1.28fr);align-items:start}
-  .purchase-form-card{position:sticky;top:128px}
-  .purchase-list{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .period-row{grid-template-columns:repeat(6,1fr)}
-  .custom-range{grid-template-columns:1fr 1fr auto}
-  .stats{grid-template-columns:repeat(4,minmax(0,1fr))}
-  .history-toolbar{grid-template-columns:2fr 1fr 1fr auto}
-  .history-toolbar .wide{grid-column:auto}
-  .history-list{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .modal{align-items:center;padding:18px}
-  .modal-panel{border-radius:20px;max-height:88vh;padding:22px}
-  .client-app-picker{grid-template-columns:repeat(3,minmax(0,1fr))}
-  .toast{left:auto;right:18px;bottom:18px;width:auto;max-width:420px}
-}
-
-@media(min-width:1024px){
-  .apps-list .app-logo-wrap{
-    width:50px;
-    height:50px;
-    border-radius:12px;
-  }
-  .seller-apps-list .app-logo-wrap{
-    width:52px;
-    height:52px;
-    border-radius:12px;
-  }
-  #app-screen{min-height:100vh}
-  .topbar{
-    position:fixed;left:0;top:0;bottom:0;
-    width:238px;height:100vh;
-    border-right:1px solid rgba(255,255,255,.075);
-    border-bottom:0;z-index:70
-  }
-  .topbar-inner{
-    height:100%;max-width:none;padding:22px 16px 18px;display:block;position:relative
-  }
-  .brand{padding:0 5px;margin-bottom:26px}
-  .brand-icon{width:42px;height:42px}
-  .top-actions{
-    position:absolute;left:16px;right:16px;bottom:18px;
-    display:grid;grid-template-columns:44px 1fr;gap:8px
-  }
-  .icon-btn,.logout-btn{height:42px}
-  .logout-btn{width:100%}
-  .bottom-nav{
-    position:fixed;left:0;top:92px;bottom:auto;
-    width:238px;max-width:none;margin:0;padding:0 14px;
-    background:transparent;border:0;
-    display:flex;flex-direction:column;gap:4px;z-index:71
-  }
-  .nav-tab{
-    min-height:44px;width:100%;min-width:0;flex:0 0 auto;
-    padding:0 12px;display:flex;flex-direction:row;
-    align-items:center;justify-content:flex-start;gap:11px;
-    border-radius:10px;font-size:12px
-  }
-  .nav-tab:hover{background:rgba(255,255,255,.045);color:#c8d2e1}
-  .main{
-    width:calc(100% - 238px);
-    max-width:1480px;
-    margin:0 0 0 238px;
-    padding:34px 36px 64px
-  }
-  .view-title{margin-bottom:22px}
-  .view-title h1{font-size:30px}
-  .movement-layout{
-    grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr) minmax(280px,.75fr);
-    align-items:start
-  }
-  .movement-layout .movement-summary{grid-column:auto;position:sticky;top:28px}
-  .list{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-  .history-list{grid-template-columns:repeat(2,minmax(0,1fr))}
-}
-
-@media(min-width:1380px){
-  .main{padding-left:44px;padding-right:44px}
-  .list{grid-template-columns:repeat(3,minmax(0,1fr))}
-  .history-list{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media(max-width:470px){
+  .apps-grid{grid-template-columns:1fr}.main{width:calc(100% - 22px)}
+  .topbar-inner{width:calc(100% - 20px)}.brand small{max-width:150px}
+  .login-card{padding:28px 22px}.hero h1{font-size:34px}
 }
 </style>
 </head>
-
 <body>
+
 <section id="login-screen" class="login-screen">
   <div class="login-card">
-    <div class="login-logo">💳</div>
-    <h1>Control privado</h1>
-    <p>Ingresá con tu cuenta para administrar clientes, movimientos, renovaciones, vendedores y compras.</p>
-
+    <div class="login-mark">▦</div>
+    <h1>Panel de aplicaciones</h1>
+    <p>Ingresá para ver cuántos clientes tiene actualmente cada servicio.</p>
     <form id="login-form">
-      <label class="input-label" for="login-email">Email</label>
+      <label class="label" for="login-email">Email</label>
       <input id="login-email" class="input" type="email" autocomplete="username" required placeholder="tu@email.com">
-
       <div style="height:12px"></div>
-
-      <label class="input-label" for="login-pass">Contraseña</label>
+      <label class="label" for="login-pass">Contraseña</label>
       <input id="login-pass" class="input" type="password" autocomplete="current-password" required placeholder="••••••••">
-
-      <button id="login-btn" class="btn btn-primary" type="submit" style="width:100%;margin-top:14px">Ingresar</button>
+      <button id="login-btn" class="login-btn" type="submit">Ingresar</button>
       <div id="login-error" class="login-error hidden"></div>
     </form>
   </div>
 </section>
 
-<div id="app-screen" class="hidden">
+<div id="app-screen" class="app-shell hidden">
   <header class="topbar">
     <div class="topbar-inner">
       <div class="brand">
-        <div class="brand-icon">💳</div>
+        <div class="brand-mark">▦</div>
         <div>
-          <strong>Control de Ingresos</strong>
-          <span id="user-email">Panel administrativo</span>
+          <strong>Clientes por aplicación</strong>
+          <small id="user-email">Panel administrativo</small>
         </div>
       </div>
-
       <div class="top-actions">
-        <button class="icon-btn" id="theme-btn" type="button" title="Cambiar tema">☀️</button>
-        <button class="logout-btn" id="logout-btn" type="button">Salir</button>
+        <button id="refresh-btn" class="action-btn refresh" type="button">↻ <span>Actualizar</span></button>
+        <button id="logout-btn" class="action-btn" type="button">Salir</button>
       </div>
     </div>
   </header>
 
-  <nav class="bottom-nav" aria-label="Secciones">
-    <button class="nav-tab active" data-view="dashboard" type="button"><span class="ico">▦</span><span>Resumen</span></button>
-    <button class="nav-tab" data-view="registrar" type="button"><span class="ico">＋</span><span>Cargar</span></button>
-    <button class="nav-tab" data-view="renovaciones" type="button"><span class="ico">↻</span><span>Renovar</span></button>
-    <button class="nav-tab" data-view="apps" type="button"><span class="ico">▣</span><span>Apps</span></button>
-    <button class="nav-tab" data-view="clientes" type="button"><span class="ico">♙</span><span>Clientes</span></button>
-    <button class="nav-tab" data-view="vendedores" type="button"><span class="ico">♟</span><span>Vendedores</span></button>
-    <button class="nav-tab" data-view="compras" type="button"><span class="ico">🛒</span><span>Compras</span></button>
-    <button class="nav-tab" data-view="historial" type="button"><span class="ico">▤</span><span>Historial</span></button>
-  </nav>
-
   <main class="main">
-
-    <!-- RESUMEN -->
-    <section id="view-dashboard" class="view active">
-      <div class="view-title">
-        <h1>Resumen</h1>
-        <p>Una vista rápida del negocio: ingresos, servicios activos y renovaciones que requieren atención.</p>
-      </div>
-
-      <div class="dashboard-grid">
-        <div class="dashboard-card"><span>Ingresos hoy</span><strong id="dash-income-today">$ 0</strong><small>Movimientos cargados hoy.</small></div>
-        <div class="dashboard-card"><span>Ingresos del mes</span><strong id="dash-income-month">$ 0</strong><small>Acumulado del mes actual.</small></div>
-        <div class="dashboard-card"><span>Servicios activos</span><strong id="dash-active-services">0</strong><small>Aplicaciones actualmente al día.</small></div>
-        <div class="dashboard-card"><span>Por cobrar / revisar</span><strong id="dash-pending-money">$ 0</strong><small>Servicios vencidos, de hoy o próximos.</small></div>
-      </div>
-
-      <div class="dashboard-columns">
-        <div class="card dashboard-panel">
-          <div class="section-label">Ingresos del mes por app</div>
-          <div id="dash-app-breakdown" class="breakdown-list"></div>
-        </div>
-
-        <div class="card dashboard-panel">
-          <div class="section-label">Renovaciones que requieren atención</div>
-          <div id="dash-alerts"></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- NUEVO MOVIMIENTO -->
-    <section id="view-registrar" class="view">
-      <div class="view-title">
-        <h1>Nuevo movimiento</h1>
-        <p>Primero elegí la persona, después el servicio y el importe. Antes de guardar vas a ver un resumen del movimiento.</p>
-      </div>
-
-      <form id="movement-form" class="movement-layout">
-        <div class="card flow-card">
-          <div class="flow-head">
-            <div class="flow-step">1</div>
-            <div><strong>Persona</strong><span>Cliente o vendedor y nombre.</span></div>
-          </div>
-
-          <div class="form-stack">
-            <div>
-              <label class="input-label">Tipo de movimiento</label>
-              <div class="type-selector">
-                <div class="type-option">
-                  <input id="tipo-cliente" type="radio" name="tipo" value="CLIENTE" checked>
-                  <label for="tipo-cliente"><span class="dot"></span>Cliente</label>
-                </div>
-                <div class="type-option">
-                  <input id="tipo-vendedor" type="radio" name="tipo" value="VENDEDOR">
-                  <label for="tipo-vendedor"><span class="dot"></span>Vendedor</label>
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <label class="input-label" for="nombre">Nombre</label>
-              <div class="autocomplete">
-                <input id="nombre" class="input" type="text" autocomplete="off" required placeholder="Escribí las primeras letras">
-                <div id="suggestions" class="suggestions hidden"></div>
-              </div>
-              <div id="name-helper" class="helper">Buscamos automáticamente entre tus clientes guardados.</div>
-              <button id="new-client-inline" class="btn btn-soft new-from-movement" type="button">＋ Crear este cliente</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="card flow-card">
-          <div class="flow-head">
-            <div class="flow-step">2</div>
-            <div><strong>Servicio e importe</strong><span>Aplicaciones, precio, créditos y fecha.</span></div>
-          </div>
-
-          <div class="form-stack">
-            <div id="client-app-area">
-              <label class="input-label">Aplicaciones</label>
-              <div id="movement-apps" class="apps-picker"></div>
-              <div class="helper">Podés marcar una o varias. Cada app se guarda como movimiento independiente.</div>
-              <div id="movement-prices" class="price-list"></div>
-            </div>
-
-            <div id="seller-app-area" class="hidden">
-              <label class="input-label" for="single-app">Aplicación</label>
-              <select id="single-app" class="input">
-                <option value="">Seleccionar app</option>
-                <option>TV</option>
-                <option>FUTURE</option>
-                <option>TV PLUS 2</option>
-                <option>FLUJO TV</option>
-                <option>MAR TV</option>
-              </select>
-            </div>
-
-            <div id="seller-fields" class="hidden inline-grid">
-              <div>
-                <label class="input-label" for="creditos">Créditos</label>
-                <input id="creditos" class="input" type="number" min="0" step="1" inputmode="numeric" placeholder="Ej: 100">
-              </div>
-              <div>
-                <label class="input-label" for="precio">Precio cobrado</label>
-                <input id="precio" class="input" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Ej: 30000">
-              </div>
-            </div>
-
-            <div>
-              <label class="input-label" for="fecha-manual">Fecha del movimiento <span style="font-weight:500;color:var(--muted2)">(opcional)</span></label>
-              <input id="fecha-manual" class="input" type="date">
-              <div class="helper">Si la dejás vacía se usa la fecha y hora actual.</div>
-              <div class="quick-action-row">
-                <button class="quick-action" type="button" data-movement-date="today">Hoy</button>
-                <button class="quick-action" type="button" data-movement-date="clear">Usar ahora</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="card flow-card movement-summary">
-          <div class="flow-head">
-            <div class="flow-step">3</div>
-            <div><strong>Revisar y guardar</strong><span>Confirmá los datos antes de registrar.</span></div>
-          </div>
-
-          <div id="movement-preview" class="summary-preview"></div>
-
-          <div class="form-actions" style="margin-top:12px">
-            <button id="save-btn" class="btn btn-primary" type="submit">Guardar movimiento</button>
-            <button id="clear-movement-btn" class="btn btn-secondary" type="button">Limpiar</button>
-          </div>
-
-          <button id="cancel-edit-btn" class="btn btn-danger hidden" type="button" style="width:100%;margin-top:8px">Cancelar edición</button>
-        </div>
-      </form>
-    </section>
-
-    <!-- RENOVACIONES -->
-    <section id="view-renovaciones" class="view">
-      <div class="view-title">
-        <h1>Renovaciones</h1>
-        <p>Cada aplicación tiene su propio vencimiento. Al renovar, el próximo vencimiento se calcula un mes después del movimiento.</p>
-      </div>
-
-      <div class="summary-grid">
-        <div class="summary-box red"><span>Vencidos</span><strong id="renew-expired">0</strong></div>
-        <div class="summary-box yellow"><span>Vencen hoy</span><strong id="renew-today">0</strong></div>
-        <div class="summary-box"><span>Próximos 5 días</span><strong id="renew-soon">0</strong></div>
-        <div class="summary-box green"><span>Al día</span><strong id="renew-ok">0</strong></div>
-      </div>
-
-      <div class="card toolbar-card">
-        <div class="toolbar-grid">
-          <input id="renew-search" class="input" type="search" placeholder="Buscar cliente...">
-          <div class="chip-row" id="renew-filters">
-            <button class="filter-chip active" data-status="todos" type="button">Todos</button>
-            <button class="filter-chip" data-status="vencido" type="button">Vencidos</button>
-            <button class="filter-chip" data-status="hoy" type="button">Hoy</button>
-            <button class="filter-chip" data-status="proximo" type="button">Próximos</button>
-            <button class="filter-chip" data-status="aldia" type="button">Al día</button>
-          </div>
-        </div>
-      </div>
-
-      <div id="renew-list" class="list"></div>
-      <div id="renew-empty" class="empty hidden"><div class="emoji">↻</div><p>No hay clientes para este filtro.</p></div>
-    </section>
-
-    <!-- APPS -->
-    <section id="view-apps" class="view">
-      <div class="view-title">
+    <section class="hero">
+      <div>
+        <div class="eyebrow">Control de clientes</div>
         <h1>Aplicaciones</h1>
-        <p>Entrá a una aplicación para ver únicamente los clientes que tienen ese servicio.</p>
+        <p>Vista simplificada para saber, de un vistazo, cuántos clientes están asociados a cada plataforma.</p>
       </div>
-
-      <div id="apps-home">
-        <div id="apps-grid" class="apps-grid"></div>
-      </div>
-
-      <div id="app-client-panel" class="hidden">
-        <div class="app-client-head">
-          <button id="apps-back" class="btn btn-secondary" type="button">← Apps</button>
-          <div>
-            <h2 id="selected-app-title">Aplicación</h2>
-            <p id="selected-app-count">0 clientes</p>
-          </div>
-        </div>
-
-        <div class="card toolbar-card">
-          <input id="apps-search" class="input" type="search" placeholder="Buscar dentro de esta app...">
-        </div>
-
-        <div id="apps-clients-list" class="list"></div>
-        <div id="apps-empty" class="empty hidden"><div class="emoji">▣</div><p>No hay clientes para mostrar.</p></div>
-      </div>
+      <div id="sync-note" class="sync-note">Sincronizando datos...</div>
     </section>
 
-    <!-- CLIENTES -->
-    <section id="view-clientes" class="view">
-      <div class="view-title">
-        <h1>Clientes</h1>
-        <p>Agenda permanente de clientes. Crear o editar una ficha no registra automáticamente un pago.</p>
-      </div>
-
-      <div class="card toolbar-card">
-        <div class="clients-topbar">
-          <input id="clients-search" class="input" type="search" placeholder="Buscar cliente por nombre...">
-          <button id="new-client-btn" class="btn btn-primary" type="button">＋ Nuevo cliente</button>
-        </div>
-      </div>
-
-      <div id="client-summary" class="client-summary"></div>
-
-      <div id="clients-list" class="list"></div>
-      <div id="clients-empty" class="empty hidden"><div class="emoji">♙</div><p>No encontré clientes.</p></div>
+    <section class="overview" aria-label="Resumen">
+      <article class="overview-card">
+        <span>Clientes registrados</span>
+        <strong id="total-clients">0</strong>
+        <small>Clientes únicos guardados.</small>
+      </article>
+      <article class="overview-card">
+        <span>Servicios asignados</span>
+        <strong id="total-services">0</strong>
+        <small>Suma de clientes entre todas las apps.</small>
+      </article>
+      <article class="overview-card">
+        <span>Promedio de apps por cliente</span>
+        <strong id="avg-apps">0</strong>
+        <small>Relación entre servicios y clientes.</small>
+      </article>
     </section>
 
-    <!-- VENDEDORES -->
-    <section id="view-vendedores" class="view">
-      <div class="view-title">
-        <h1>Vendedores</h1>
-        <p>Control de créditos cargados, dinero ingresado, última carga y aplicaciones utilizadas.</p>
-      </div>
+    <div class="section-head">
+      <h2>Clientes por plataforma</h2>
+      <span id="ranking-note">5 aplicaciones</span>
+    </div>
 
-      <div class="card toolbar-card">
-        <input id="sellers-search" class="input" type="search" placeholder="Buscar vendedor por nombre...">
-      </div>
-
-      <div id="sellers-list" class="list"></div>
-      <div id="sellers-empty" class="empty hidden"><div class="emoji">♟</div><p>No encontré vendedores.</p></div>
+    <section id="apps-grid" class="apps-grid">
+      <div class="loading-wrap"><span class="spinner"></span>Cargando aplicaciones...</div>
     </section>
 
-    <!-- COMPRAS -->
-    <section id="view-compras" class="view">
-      <div class="view-title">
-        <h1>Compras de créditos</h1>
-        <p>Registrá créditos comprados, aplicación, importe gastado y fecha.</p>
-      </div>
-
-      <div class="purchase-stats">
-        <div class="purchase-stat"><span>Gasto total</span><strong id="purchase-stat-spent">$ 0</strong><small>Todas las compras.</small></div>
-        <div class="purchase-stat"><span>Créditos comprados</span><strong id="purchase-stat-credits">0</strong><small>Total acumulado.</small></div>
-        <div class="purchase-stat"><span>Costo promedio</span><strong id="purchase-stat-average">$ 0</strong><small>Promedio por crédito.</small></div>
-        <div class="purchase-stat"><span>Gasto este mes</span><strong id="purchase-stat-month">$ 0</strong><small>Mes actual.</small></div>
-      </div>
-
-      <div class="purchase-layout">
-        <div class="card purchase-form-card">
-          <div class="section-label" id="purchase-form-title">Nueva compra</div>
-
-          <form id="purchase-form" class="purchase-form">
-            <div>
-              <label class="input-label" for="purchase-app">Aplicación</label>
-              <select id="purchase-app" class="input" required>
-                <option value="">Seleccionar app</option>
-                <option>TV</option>
-                <option>FUTURE</option>
-                <option>TV PLUS 2</option>
-                <option>FLUJO TV</option>
-                <option>MAR TV</option>
-              </select>
-            </div>
-
-            <div>
-              <label class="input-label" for="purchase-credits">Créditos comprados</label>
-              <input id="purchase-credits" class="input" type="number" min="1" step="1" inputmode="numeric" placeholder="Ej: 100" required>
-            </div>
-
-            <div>
-              <label class="input-label" for="purchase-spent">Total gastado</label>
-              <input id="purchase-spent" class="input" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Ej: 50000" required>
-            </div>
-
-            <div>
-              <label class="input-label" for="purchase-date">Fecha</label>
-              <input id="purchase-date" class="input" type="date" required>
-            </div>
-
-            <div id="purchase-unit-preview" class="purchase-unit-preview">Costo por crédito: —</div>
-
-            <div class="form-actions">
-              <button id="purchase-save-btn" class="btn btn-primary" type="submit">Guardar compra</button>
-              <button id="purchase-cancel-btn" class="btn btn-secondary hidden" type="button">Cancelar edición</button>
-            </div>
-          </form>
-
-          <div class="helper" style="margin-top:12px">Las compras se guardan en este navegador y no modifican tus movimientos de clientes o vendedores.</div>
-        </div>
-
-        <div>
-          <div class="card toolbar-card">
-            <div class="toolbar-grid">
-              <select id="purchase-filter-app" class="input">
-                <option value="TODAS">Todas las apps</option>
-                <option>TV</option>
-                <option>FUTURE</option>
-                <option>TV PLUS 2</option>
-                <option>FLUJO TV</option>
-                <option>MAR TV</option>
-              </select>
-              <button id="purchase-export-btn" class="btn btn-green" type="button">Excel</button>
-            </div>
-          </div>
-
-          <div id="purchase-list" class="purchase-list"></div>
-          <div id="purchase-empty" class="empty hidden"><div class="emoji">🛒</div><p>No hay compras registradas para este filtro.</p></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- HISTORIAL -->
-    <section id="view-historial" class="view">
-      <div class="view-title">
-        <h1>Historial</h1>
-        <p>Filtrá, revisá, editá y exportá los movimientos cargados.</p>
-      </div>
-
-      <div class="card period-card">
-        <div class="period-row">
-          <button class="period-btn active" data-period="hoy" type="button">Hoy</button>
-          <button class="period-btn" data-period="semana" type="button">Semana</button>
-          <button class="period-btn" data-period="mes" type="button">Mes</button>
-          <button class="period-btn" data-period="anio" type="button">Año</button>
-          <button class="period-btn" data-period="todo" type="button">Todo</button>
-          <button class="period-btn" data-period="personalizado" type="button">Personalizado</button>
-        </div>
-
-        <div id="custom-range" class="custom-range hidden">
-          <input id="date-from" class="input" type="date">
-          <input id="date-to" class="input" type="date">
-          <button id="apply-range" class="btn btn-primary" type="button">Aplicar</button>
-        </div>
-      </div>
-
-      <div class="stats">
-        <div class="stat money"><span>Dinero ingresado</span><strong id="stat-money">$ 0</strong></div>
-        <div class="stat"><span>Clientes</span><strong id="stat-clients">0</strong></div>
-        <div class="stat"><span>Vendedores</span><strong id="stat-sellers">0</strong></div>
-        <div class="stat"><span>Créditos</span><strong id="stat-credits">0</strong></div>
-      </div>
-
-      <div class="card history-card">
-        <div class="history-toolbar">
-          <input id="history-search" class="input wide" type="search" placeholder="Buscar nombre...">
-          <select id="history-app" class="input">
-            <option value="TODAS">Todas las apps</option>
-            <option>TV</option>
-            <option>FUTURE</option>
-            <option>TV PLUS 2</option>
-            <option>FLUJO TV</option>
-            <option>MAR TV</option>
-          </select>
-          <select id="history-type" class="input">
-            <option value="TODOS">Todos</option>
-            <option value="CLIENTE">Clientes</option>
-            <option value="VENDEDOR">Vendedores</option>
-          </select>
-          <button id="export-btn" class="btn btn-green" type="button">Excel</button>
-        </div>
-
-        <div id="history-loading" class="loading"><span class="spinner"></span>Cargando...</div>
-        <div id="history-list" class="history-list"></div>
-        <div id="history-empty" class="empty hidden"><div class="emoji">▤</div><p>No hay movimientos para mostrar.</p></div>
-      </div>
-    </section>
-
+    <div class="footer-note">
+      El conteo es por <strong>cliente único</strong> dentro de cada aplicación. Si una misma persona tiene dos o más aplicaciones, se contabiliza una vez en cada servicio correspondiente.
+    </div>
   </main>
 </div>
-
-<!-- CLIENTE NUEVO / EDITAR -->
-<div id="client-modal" class="modal hidden">
-  <div class="modal-panel">
-    <div class="modal-head">
-      <div>
-        <h2 id="client-modal-title">Nuevo cliente</h2>
-        <p id="client-modal-desc">Creá la ficha sin registrar un pago.</p>
-      </div>
-      <button id="client-modal-close" class="close-btn" type="button">×</button>
-    </div>
-
-    <form id="client-form" class="client-form">
-      <input id="client-id" type="hidden">
-
-      <div class="inline-grid">
-        <div>
-          <label class="input-label" for="client-name">Nombre</label>
-          <input id="client-name" class="input" type="text" autocomplete="off" required placeholder="Nombre y apellido">
-        </div>
-        <div>
-          <label class="input-label" for="client-phone">Teléfono / WhatsApp</label>
-          <input id="client-phone" class="input" type="tel" inputmode="tel" placeholder="Ej: 351 555 1234">
-        </div>
-      </div>
-
-      <div>
-        <label class="input-label">Aplicaciones</label>
-        <div id="client-apps" class="client-app-picker"></div>
-        <div class="helper">Marcá una o varias aplicaciones. Al seleccionarlas vas a poder indicar un vencimiento diferente para cada una.</div>
-      </div>
-
-      <div>
-        <label class="input-label">Vencimiento de cada aplicación</label>
-        <div id="client-due-list" class="client-due-list"></div>
-        <div id="client-due-helper" class="helper">Primero marcá una o varias aplicaciones. Cada app tendrá su propia fecha de vencimiento.</div>
-      </div>
-
-      <div id="client-preview" class="client-preview"></div>
-
-      <button id="client-save-btn" class="btn btn-primary" type="submit">Crear cliente</button>
-    </form>
-  </div>
-</div>
-
-<!-- PERFIL -->
-<div id="profile-modal" class="modal hidden">
-  <div class="modal-panel">
-    <div class="modal-head">
-      <div>
-        <h2 id="profile-title">Ficha</h2>
-        <p id="profile-subtitle"></p>
-      </div>
-      <button id="profile-close" class="close-btn" type="button">×</button>
-    </div>
-    <div id="profile-body"></div>
-  </div>
-</div>
-
-<div id="toast" class="toast hidden"></div>
 
 <script>
 const SUPABASE_URL='https://vjbdhbbxbvoigbidquya.supabase.co';
@@ -1397,228 +265,136 @@ const APP_LOGOS={
   'MAR TV':'img/martv.png'
 };
 
-const CLIENT_PRICE=8000;
-const SOON_DAYS=5;
-
 let user=null;
 let movements=[];
 let savedClients=[];
-let savedSellers=[];
-let clientCatalog=[];
-let sellerCatalog=[];
-let purchases=[];
-
-let currentView='dashboard';
-let renewStatus='todos';
-let clientFilter='todos';
-let selectedApp=null;
-let historyPeriod='hoy';
-let customRange={from:null,to:null};
-
-let editMovement=null;
-let editPurchaseId=null;
 
 const $=s=>document.querySelector(s);
-const $$=s=>[...document.querySelectorAll(s)];
-
-function esc(v){
-  return String(v??'')
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;')
-    .replace(/'/g,'&#039;');
-}
+function cleanName(v){return String(v||'').trim().replace(/\s+/g,' ')}
 function norm(v){
-  return String(v||'')
-    .trim()
-    .replace(/\s+/g,' ')
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g,'')
-    .toLowerCase();
+  return String(v||'').trim().replace(/\s+/g,' ').normalize('NFD')
+    .replace(/[\u0300-\u036f]/g,'').toLowerCase();
 }
-function cleanName(v){
-  return String(v||'').trim().replace(/\s+/g,' ');
+function esc(v){
+  return String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#039;');
 }
-function money(v){
-  return new Intl.NumberFormat('es-AR',{
-    style:'currency',
-    currency:'ARS',
-    maximumFractionDigits:0
-  }).format(Number(v)||0);
-}
-function num(v){
-  return new Intl.NumberFormat('es-AR',{maximumFractionDigits:2}).format(Number(v)||0);
-}
-function dateTime(v){
-  return v
-    ? new Intl.DateTimeFormat('es-AR',{
-        timeZone:'America/Argentina/Buenos_Aires',
-        day:'2-digit',month:'2-digit',year:'numeric',
-        hour:'2-digit',minute:'2-digit'
-      }).format(new Date(v))
-    : '—';
-}
-function localISO(d=new Date()){
-  const parts=Object.fromEntries(
-    new Intl.DateTimeFormat('en-CA',{
-      timeZone:'America/Argentina/Buenos_Aires',
-      year:'numeric',month:'2-digit',day:'2-digit'
-    }).formatToParts(d).map(x=>[x.type,x.value])
-  );
-  return `${parts.year}-${parts.month}-${parts.day}`;
-}
-function formatISODate(iso){
-  if(!iso)return '—';
-  const [y,m,d]=iso.split('-');
-  return `${d}/${m}/${y}`;
-}
-function manualDateToTimestamp(isoDate){
-  if(!/^\d{4}-\d{2}-\d{2}$/.test(String(isoDate||'')))return null;
-  return `${isoDate}T12:00:00-03:00`;
-}
-function isoNextMonth(iso){
-  if(!iso)return null;
-  const [y,m,d]=iso.split('-').map(Number);
-  const nextMonth=m===12?1:m+1;
-  const nextYear=m===12?y+1:y;
-  const lastDay=new Date(Date.UTC(nextYear,nextMonth,0,12)).getUTCDate();
-  const day=Math.min(d,lastDay);
-  return `${nextYear}-${String(nextMonth).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-}
-function addMonthsISO(iso,count){
-  const [y,m,d]=iso.split('-').map(Number);
-  const base=new Date(Date.UTC(y,m-1,d,12));
-  const targetMonth=base.getUTCMonth()+count;
-  const targetYear=base.getUTCFullYear()+Math.floor(targetMonth/12);
-  const normalizedMonth=((targetMonth%12)+12)%12;
-  const lastDay=new Date(Date.UTC(targetYear,normalizedMonth+1,0,12)).getUTCDate();
-  return `${targetYear}-${String(normalizedMonth+1).padStart(2,'0')}-${String(Math.min(d,lastDay)).padStart(2,'0')}`;
-}
-function daysBetween(a,b){
-  const parse=s=>{
-    const [y,m,d]=s.split('-').map(Number);
-    return Date.UTC(y,m-1,d);
-  };
-  return Math.round((parse(b)-parse(a))/86400000);
-}
-function toast(msg,error=false){
-  const t=$('#toast');
-  t.textContent=msg;
-  t.className='toast'+(error?' error':'');
-  clearTimeout(toast.timer);
-  toast.timer=setTimeout(()=>t.classList.add('hidden'),3000);
-}
-function appLogoHTML(app){
-  const src=APP_LOGOS[app]||'';
-  if(!src){
-    return `<span class="app-logo-wrap"><span class="app-logo-fallback">▣</span></span>`;
-  }
-  return `<span class="app-logo-wrap">
-    <img class="app-logo" src="${esc(src)}" alt="Logo ${esc(app)}"
-      onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">
-    <span class="app-logo-fallback" style="display:none">▣</span>
-  </span>`;
-}
-
-/* localStorage cliente */
-function phoneKey(key){
-  return `control_ingresos_phone_${user?.id||'anon'}_${norm(key)}`;
-}
-function getClientPhone(key){
-  return localStorage.getItem(phoneKey(key))||'';
-}
-function saveClientPhone(key,phone){
-  const k=phoneKey(key);
-  const v=String(phone||'').trim();
-  if(v)localStorage.setItem(k,v);
-  else localStorage.removeItem(k);
-}
-function clientAppsKey(key){
-  return `control_ingresos_client_apps_${user?.id||'anon'}_${norm(key)}`;
-}
+function clientAppsKey(key){return `control_ingresos_client_apps_${user?.id||'anon'}_${norm(key)}`}
 function getClientInitialApps(key){
   try{
     const raw=localStorage.getItem(clientAppsKey(key));
     const arr=raw?JSON.parse(raw):[];
-    return Array.isArray(arr)
-      ? arr.filter(x=>x&&APPS.includes(x.app))
-      : [];
-  }catch(_e){
-    return [];
+    return Array.isArray(arr)?arr.filter(x=>x&&APPS.includes(x.app)):[];
+  }catch(_e){return []}
+}
+function appLogoHTML(app){
+  const src=APP_LOGOS[app]||'';
+  return `<div class="logo-wrap">
+    ${src?`<img src="${esc(src)}" alt="${esc(app)}" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">`:''}
+    <span class="logo-fallback" style="${src?'display:none':''}">${esc(app.slice(0,2))}</span>
+  </div>`;
+}
+
+function clientProfiles(){
+  return savedClients.map(c=>{
+    const nombre=cleanName(c.nombre);
+    const key=norm(c.nombre_normalizado||nombre);
+    const hist=movements.filter(m=>m.tipo==='CLIENTE'&&norm(m.nombre)===key);
+    const apps=new Set(hist.map(m=>m.app).filter(a=>APPS.includes(a)));
+    getClientInitialApps(key).forEach(row=>apps.add(row.app));
+    if(!apps.size&&APPS.includes(c.app_ultima))apps.add(c.app_ultima);
+    return {nombre,key,apps:[...apps]};
+  }).filter(c=>c.key);
+}
+
+function appCounts(){
+  const profiles=clientProfiles();
+  return APPS.map(app=>({
+    app,
+    count:profiles.filter(c=>c.apps.includes(app)).length
+  }));
+}
+
+function render(){
+  const profiles=clientProfiles();
+  const counts=appCounts();
+  const totalClients=profiles.length;
+  const totalServices=counts.reduce((s,x)=>s+x.count,0);
+  const avg=totalClients?totalServices/totalClients:0;
+  const max=Math.max(1,...counts.map(x=>x.count));
+  const sorted=[...counts].sort((a,b)=>b.count-a.count||APPS.indexOf(a.app)-APPS.indexOf(b.app));
+
+  $('#total-clients').textContent=new Intl.NumberFormat('es-AR').format(totalClients);
+  $('#total-services').textContent=new Intl.NumberFormat('es-AR').format(totalServices);
+  $('#avg-apps').textContent=avg.toLocaleString('es-AR',{minimumFractionDigits:0,maximumFractionDigits:1});
+  $('#ranking-note').textContent=totalClients
+    ? `Mayor cantidad: ${sorted[0].app} (${sorted[0].count})`
+    : '5 aplicaciones';
+
+  $('#apps-grid').innerHTML=counts.map(({app,count})=>{
+    const pct=Math.round((count/max)*100);
+    const share=totalServices?Math.round((count/totalServices)*100):0;
+    return `<article class="app-card">
+      <div class="app-top">
+        ${appLogoHTML(app)}
+        <span class="status-dot" title="Disponible"></span>
+      </div>
+      <div class="app-name">${esc(app)}</div>
+      <div class="app-count">
+        <strong>${new Intl.NumberFormat('es-AR').format(count)}</strong>
+        <span>cliente${count===1?'':'s'}</span>
+      </div>
+      <div class="progress-track"><div class="progress-bar" style="width:${pct}%"></div></div>
+      <div class="app-foot">
+        <span>Participación</span>
+        <strong>${share}% de servicios</strong>
+      </div>
+    </article>`;
+  }).join('');
+
+  $('#sync-note').textContent=`Actualizado ${new Intl.DateTimeFormat('es-AR',{hour:'2-digit',minute:'2-digit'}).format(new Date())}`;
+}
+
+async function loadData(){
+  $('#refresh-btn').disabled=true;
+  $('#refresh-btn').textContent='↻ Actualizando';
+  const [{data:mov,error:movError},{data:clients,error:clientsError}]=await Promise.all([
+    db.from('control_movimientos').select('*').order('fecha',{ascending:false}),
+    db.from('control_clientes').select('*').order('last_used_at',{ascending:false})
+  ]);
+  $('#refresh-btn').disabled=false;
+  $('#refresh-btn').innerHTML='↻ <span>Actualizar</span>';
+
+  if(movError||clientsError){
+    console.error(movError||clientsError);
+    $('#apps-grid').innerHTML='<div class="empty-card">No se pudieron cargar los datos. Revisá la conexión o los permisos de Supabase.</div>';
+    $('#sync-note').textContent='Error de sincronización';
+    return;
   }
-}
-function normalizeClientServiceRows(rows=[]){
-  const byApp=new Map();
-  for(const row of rows||[]){
-    if(!row||!APPS.includes(row.app))continue;
-    const date=/^\d{4}-\d{2}-\d{2}$/.test(String(row.date||''))?row.date:localISO();
-    byApp.set(row.app,{
-      app:row.app,
-      date,
-      price:Number(row.price||CLIENT_PRICE)
-    });
-  }
-  return [...byApp.values()];
-}
-function saveClientServiceRows(key,rows,{merge=false}={}){
-  const incoming=normalizeClientServiceRows(rows);
-  let finalRows=incoming;
-
-  if(merge){
-    const map=new Map(getClientInitialApps(key).map(r=>[r.app,r]));
-    incoming.forEach(r=>map.set(r.app,r));
-    finalRows=normalizeClientServiceRows([...map.values()]);
-  }
-
-  const k=clientAppsKey(key);
-  if(finalRows.length)localStorage.setItem(k,JSON.stringify(finalRows));
-  else localStorage.removeItem(k);
-}
-function saveClientInitialApps(key,apps,date,price=CLIENT_PRICE){
-  saveClientServiceRows(
-    key,
-    [...new Set((apps||[]).filter(a=>APPS.includes(a)))].map(app=>({app,date:date||localISO(),price})),
-    {merge:false}
-  );
-}
-function moveClientInitialApps(oldKey,newKey){
-  const rows=getClientInitialApps(oldKey);
-  if(rows.length)localStorage.setItem(clientAppsKey(newKey),JSON.stringify(rows));
-  localStorage.removeItem(clientAppsKey(oldKey));
+  movements=mov||[];
+  savedClients=clients||[];
+  render();
 }
 
-/* Theme */
-function loadTheme(){
-  const light=localStorage.getItem('control_ingresos_tema')==='light';
-  document.documentElement.classList.toggle('light-mode',light);
-  $('#theme-btn').textContent=light?'🌙':'☀️';
-}
-function toggleTheme(){
-  const light=document.documentElement.classList.toggle('light-mode');
-  localStorage.setItem('control_ingresos_tema',light?'light':'dark');
-  $('#theme-btn').textContent=light?'🌙':'☀️';
-}
-
-/* Init */
-async function init(){
-  loadTheme();
-  renderMovementAppPicker();
-  renderClientAppPicker([]);
-  bindUI();
-  updateMovementType();
-  updateMovementPreview();
-  updateClientPreview();
-
-  const {data:{session}}=await db.auth.getSession();
-  if(session?.user)await showApp(session.user);
-  else showLogin();
-
-  db.auth.onAuthStateChange(async(_event,session)=>{
-    if(session?.user)await showApp(session.user);
-    else showLogin();
+async function login(e){
+  e.preventDefault();
+  const btn=$('#login-btn');
+  const err=$('#login-error');
+  err.classList.add('hidden');
+  btn.disabled=true;
+  btn.textContent='Ingresando...';
+  const {error}=await db.auth.signInWithPassword({
+    email:$('#login-email').value.trim(),
+    password:$('#login-pass').value
   });
+  btn.disabled=false;
+  btn.textContent='Ingresar';
+  if(error){
+    err.textContent=error.message==='Invalid login credentials'?'Email o contraseña incorrectos.':error.message;
+    err.classList.remove('hidden');
+  }
 }
+
 function showLogin(){
   user=null;
   $('#login-screen').classList.remove('hidden');
@@ -1629,1758 +405,23 @@ async function showApp(u){
   $('#login-screen').classList.add('hidden');
   $('#app-screen').classList.remove('hidden');
   $('#user-email').textContent=u.email||'Panel administrativo';
-  await loadAll();
-  switchView(currentView);
+  await loadData();
 }
-async function login(e){
-  e.preventDefault();
-  const btn=$('#login-btn');
-  const err=$('#login-error');
-  err.classList.add('hidden');
-  btn.disabled=true;
-  btn.textContent='Ingresando...';
 
-  const {error}=await db.auth.signInWithPassword({
-    email:$('#login-email').value.trim(),
-    password:$('#login-pass').value
+$('#login-form').addEventListener('submit',login);
+$('#logout-btn').addEventListener('click',()=>db.auth.signOut());
+$('#refresh-btn').addEventListener('click',loadData);
+
+(async function init(){
+  const {data:{session}}=await db.auth.getSession();
+  if(session?.user)await showApp(session.user);
+  else showLogin();
+
+  db.auth.onAuthStateChange(async(_event,session)=>{
+    if(session?.user)await showApp(session.user);
+    else showLogin();
   });
-
-  btn.disabled=false;
-  btn.textContent='Ingresar';
-
-  if(error){
-    err.textContent=error.message==='Invalid login credentials'
-      ? 'Email o contraseña incorrectos.'
-      : error.message;
-    err.classList.remove('hidden');
-  }
-}
-async function loadAll(){
-  $('#history-loading').classList.remove('hidden');
-  await Promise.all([loadMovements(),loadClients(),loadSellers()]);
-  loadPurchases();
-  rebuildCatalogs();
-  renderAll();
-  $('#history-loading').classList.add('hidden');
-}
-async function loadMovements(){
-  const {data,error}=await db.from('control_movimientos').select('*').order('fecha',{ascending:false});
-  if(error){
-    movements=[];
-    toast(`Error al cargar movimientos: ${error.message}`,true);
-  }else{
-    movements=data||[];
-  }
-}
-async function loadClients(){
-  const {data,error}=await db.from('control_clientes').select('*').order('last_used_at',{ascending:false});
-  if(error){
-    savedClients=[];
-    console.warn(error);
-  }else savedClients=data||[];
-}
-async function loadSellers(){
-  const {data,error}=await db.from('control_vendedores').select('*').order('last_used_at',{ascending:false});
-  if(error){
-    savedSellers=[];
-    console.warn(error);
-  }else savedSellers=data||[];
-}
-function rebuildCatalogs(){
-  const build=(saved,type)=>saved.map(x=>{
-    const nombre=cleanName(x.nombre);
-    const key=norm(x.nombre_normalizado||nombre);
-    const hist=movements.filter(m=>m.tipo===type&&norm(m.nombre)===key);
-    return {
-      ...x,
-      nombre,
-      key,
-      ops:hist.length,
-      total:hist.reduce((s,m)=>s+Number(m.precio||0),0),
-      credits:type==='VENDEDOR'
-        ? hist.reduce((s,m)=>s+Number(m.creditos||0),0)
-        : 0,
-      apps:new Set(hist.map(m=>m.app).filter(Boolean))
-    };
-  }).filter(x=>x.key);
-
-  clientCatalog=build(savedClients,'CLIENTE');
-  sellerCatalog=build(savedSellers,'VENDEDOR');
-}
-
-/* UI bindings */
-function bindUI(){
-  $('#login-form').addEventListener('submit',login);
-  $('#logout-btn').addEventListener('click',()=>db.auth.signOut());
-  $('#theme-btn').addEventListener('click',toggleTheme);
-
-  $$('.nav-tab').forEach(b=>b.addEventListener('click',()=>switchView(b.dataset.view)));
-
-  $$('input[name="tipo"]').forEach(r=>r.addEventListener('change',()=>{
-    updateMovementType();
-    updateMovementPreview();
-  }));
-
-  $('#nombre').addEventListener('input',()=>{
-    showSuggestions();
-    renderMovementPrices();
-    updateMovementPreview();
-  });
-  $('#nombre').addEventListener('focus',showSuggestions);
-
-  document.addEventListener('click',e=>{
-    if(!e.target.closest('.autocomplete'))hideSuggestions();
-  });
-
-  $('#single-app').addEventListener('change',updateMovementPreview);
-  $('#creditos').addEventListener('input',updateMovementPreview);
-  $('#precio').addEventListener('input',updateMovementPreview);
-  $('#fecha-manual').addEventListener('change',updateMovementPreview);
-
-  $$('[data-movement-date]').forEach(b=>b.addEventListener('click',()=>{
-    if(b.dataset.movementDate==='today')$('#fecha-manual').value=localISO();
-    else $('#fecha-manual').value='';
-    updateMovementPreview();
-  }));
-
-  $('#movement-form').addEventListener('submit',saveMovement);
-  $('#clear-movement-btn').addEventListener('click',clearMovementForm);
-  $('#cancel-edit-btn').addEventListener('click',clearMovementForm);
-  $('#new-client-inline').addEventListener('click',()=>{
-    openClientModal(null,$('#nombre').value.trim());
-  });
-
-  $('#renew-search').addEventListener('input',renderRenewals);
-  $$('#renew-filters .filter-chip').forEach(b=>b.addEventListener('click',()=>{
-    renewStatus=b.dataset.status;
-    $$('#renew-filters .filter-chip').forEach(x=>x.classList.toggle('active',x===b));
-    renderRenewals();
-  }));
-
-  $('#apps-search').addEventListener('input',renderApps);
-  $('#apps-back').addEventListener('click',()=>{
-    selectedApp=null;
-    $('#apps-search').value='';
-    renderApps();
-  });
-
-  $('#clients-search').addEventListener('input',renderClients);
-  $('#new-client-btn').addEventListener('click',()=>openClientModal());
-
-  $('#client-modal-close').addEventListener('click',closeClientModal);
-  $('#client-modal').addEventListener('click',e=>{
-    if(e.target.id==='client-modal')closeClientModal();
-  });
-  $('#client-form').addEventListener('submit',saveClient);
-  $('#client-name').addEventListener('input',updateClientPreview);
-  $('#client-phone').addEventListener('input',updateClientPreview);
-
-  $('#sellers-search').addEventListener('input',renderSellers);
-
-  $('#purchase-form').addEventListener('submit',savePurchase);
-  $('#purchase-cancel-btn').addEventListener('click',cancelPurchaseEdit);
-  $('#purchase-filter-app').addEventListener('change',renderPurchases);
-  $('#purchase-export-btn').addEventListener('click',exportPurchasesExcel);
-  $('#purchase-credits').addEventListener('input',updatePurchaseUnitPreview);
-  $('#purchase-spent').addEventListener('input',updatePurchaseUnitPreview);
-
-  $$('.period-btn').forEach(b=>b.addEventListener('click',()=>changePeriod(b.dataset.period,b)));
-  $('#apply-range').addEventListener('click',applyCustomRange);
-  $('#history-search').addEventListener('input',renderHistory);
-  $('#history-app').addEventListener('change',renderHistory);
-  $('#history-type').addEventListener('change',renderHistory);
-  $('#export-btn').addEventListener('click',exportExcel);
-
-  $('#profile-close').addEventListener('click',closeProfile);
-  $('#profile-modal').addEventListener('click',e=>{
-    if(e.target.id==='profile-modal')closeProfile();
-  });
-}
-function switchView(v){
-  currentView=v;
-  $$('.view').forEach(x=>x.classList.toggle('active',x.id===`view-${v}`));
-  $$('.nav-tab').forEach(x=>x.classList.toggle('active',x.dataset.view===v));
-
-  if(v==='dashboard')renderDashboard();
-  if(v==='registrar')updateMovementPreview();
-  if(v==='renovaciones')renderRenewals();
-  if(v==='apps')renderApps();
-  if(v==='clientes')renderClients();
-  if(v==='vendedores')renderSellers();
-  if(v==='compras')renderPurchases();
-  if(v==='historial')renderHistory();
-
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-/* Persona permanente */
-async function savePerson(type,name,app,fecha=null){
-  if(!user)return;
-  const table=type==='CLIENTE'?'control_clientes':'control_vendedores';
-  const n=cleanName(name);
-  const when=fecha||new Date().toISOString();
-
-  const payload={
-    user_id:user.id,
-    nombre:n,
-    nombre_normalizado:norm(n),
-    app_ultima:app,
-    last_used_at:when,
-    updated_at:new Date().toISOString()
-  };
-
-  const {error}=await db.from(table).upsert(payload,{
-    onConflict:'user_id,nombre_normalizado'
-  });
-
-  if(error){
-    console.warn(error);
-    toast(`No se pudo actualizar la ficha permanente: ${error.message}`,true);
-  }else{
-    if(type==='CLIENTE')await loadClients();
-    else await loadSellers();
-  }
-}
-
-/* Nuevo movimiento */
-function movementType(){
-  return $('input[name="tipo"]:checked')?.value||'CLIENTE';
-}
-function renderMovementAppPicker(){
-  const box=$('#movement-apps');
-  box.innerHTML=APPS.map((app,i)=>`
-    <div class="app-option">
-      <input id="movement-app-${i}" class="movement-app-check" type="checkbox" value="${esc(app)}">
-      <label for="movement-app-${i}">
-        <span class="app-check-ui"></span>
-        ${appLogoHTML(app)}
-        <span class="app-option-name">${esc(app)}</span>
-      </label>
-    </div>
-  `).join('');
-
-  $$('.movement-app-check').forEach(x=>x.addEventListener('change',()=>{
-    renderMovementPrices();
-    updateMovementPreview();
-  }));
-}
-function selectedMovementApps(){
-  return $$('.movement-app-check:checked').map(x=>x.value).filter(a=>APPS.includes(a));
-}
-function setSelectedMovementApps(apps=[]){
-  $$('.movement-app-check').forEach(x=>x.checked=apps.includes(x.value));
-  renderMovementPrices();
-  updateMovementPreview();
-}
-function latestServicePriceForName(name,app){
-  const key=norm(name);
-  const list=movements
-    .filter(m=>m.tipo==='CLIENTE'&&norm(m.nombre)===key&&m.app===app)
-    .sort((a,b)=>new Date(b.fecha)-new Date(a.fecha));
-  return Number(list[0]?.precio??CLIENT_PRICE);
-}
-function currentMovementPrices(){
-  const out={};
-  $$('[data-movement-price]').forEach(i=>{
-    out[i.dataset.movementPrice]=i.value;
-  });
-  return out;
-}
-function renderMovementPrices(){
-  const box=$('#movement-prices');
-  const old=currentMovementPrices();
-  const name=cleanName($('#nombre').value);
-  const apps=selectedMovementApps();
-
-  box.innerHTML=apps.map(app=>{
-    const value=old[app]??latestServicePriceForName(name,app)??CLIENT_PRICE;
-    return `<div class="price-row">
-      <div class="price-row-main">
-        ${appLogoHTML(app)}
-        <div>
-          <strong>${esc(app)}</strong>
-          <small>Precio de esta app</small>
-        </div>
-      </div>
-      <input class="input" data-movement-price="${esc(app)}"
-        type="number" min="0" step="0.01" inputmode="decimal"
-        value="${Number(value)||0}">
-    </div>`;
-  }).join('');
-
-  $$('[data-movement-price]').forEach(i=>i.addEventListener('input',updateMovementPreview));
-}
-function updateMovementType(){
-  const seller=movementType()==='VENDEDOR';
-  $('#client-app-area').classList.toggle('hidden',seller);
-  $('#seller-app-area').classList.toggle('hidden',!seller);
-  $('#seller-fields').classList.toggle('hidden',!seller);
-
-  $('#single-app').required=seller;
-  $('#creditos').required=seller;
-  $('#precio').required=seller;
-
-  $('#name-helper').textContent=seller
-    ? 'Buscamos automáticamente entre tus vendedores guardados.'
-    : 'Buscamos automáticamente entre tus clientes guardados.';
-
-  if(!seller)renderMovementPrices();
-  hideSuggestions();
-  showInlineNewClientButton();
-}
-function movementSummaryData(){
-  const tipo=movementType();
-  const nombre=cleanName($('#nombre').value);
-  const fecha=$('#fecha-manual').value;
-  const fechaText=fecha?formatISODate(fecha):'Ahora';
-
-  if(tipo==='CLIENTE'){
-    const apps=selectedMovementApps();
-    const prices=currentMovementPrices();
-    const total=apps.reduce((s,a)=>s+(Number(prices[a])||0),0);
-    return {
-      tipo,nombre,apps,total,fechaText,
-      detalle:apps.length?apps.map(a=>`${a}: ${money(Number(prices[a])||0)}`).join(' · '):'Sin aplicaciones'
-    };
-  }
-
-  return {
-    tipo,nombre,
-    apps:[$('#single-app').value].filter(Boolean),
-    total:Number($('#precio').value)||0,
-    creditos:Number($('#creditos').value)||0,
-    fechaText,
-    detalle:$('#single-app').value||'Sin aplicación'
-  };
-}
-function updateMovementPreview(){
-  const d=movementSummaryData();
-  const tipoLabel=d.tipo==='CLIENTE'?'Cliente':'Vendedor';
-
-  $('#movement-preview').innerHTML=`
-    <div class="summary-preview-row">
-      <span>Tipo</span><strong>${tipoLabel}</strong>
-    </div>
-    <div class="summary-preview-row">
-      <span>Nombre</span><strong>${esc(d.nombre||'Sin completar')}</strong>
-    </div>
-    <div class="summary-preview-row">
-      <span>Servicio</span><strong>${esc(d.detalle)}</strong>
-    </div>
-    ${d.tipo==='VENDEDOR'?`
-    <div class="summary-preview-row">
-      <span>Créditos</span><strong>${esc(num(d.creditos||0))}</strong>
-    </div>`:''}
-    <div class="summary-preview-row">
-      <span>Fecha</span><strong>${esc(d.fechaText)}</strong>
-    </div>
-    <div class="summary-preview-row summary-preview-total">
-      <span>Total</span><strong>${esc(money(d.total))}</strong>
-    </div>
-  `;
-
-  showInlineNewClientButton();
-}
-function showInlineNewClientButton(){
-  const btn=$('#new-client-inline');
-  if(movementType()!=='CLIENTE'){
-    btn.classList.remove('show');
-    return;
-  }
-  const name=cleanName($('#nombre').value);
-  if(!name){
-    btn.classList.remove('show');
-    return;
-  }
-  const exists=clientCatalog.some(c=>c.key===norm(name));
-  btn.classList.toggle('show',!exists);
-}
-function showSuggestions(){
-  const tipo=movementType();
-  const catalog=tipo==='CLIENTE'?clientCatalog:sellerCatalog;
-  const q=norm($('#nombre').value);
-  const box=$('#suggestions');
-
-  let list=catalog.filter(x=>!q||x.key.includes(q));
-  if(q){
-    list.sort((a,b)=>
-      (a.key.startsWith(q)?0:1)-(b.key.startsWith(q)?0:1)
-      ||(b.ops-a.ops)
-    );
-  }
-  list=list.slice(0,10);
-
-  if(!list.length){
-    box.innerHTML=q?'<div class="empty" style="padding:14px"><p>No encontré coincidencias.</p></div>':'';
-    box.classList.toggle('hidden',!q);
-    showInlineNewClientButton();
-    return;
-  }
-
-  box.innerHTML=list.map(x=>`
-    <button class="suggestion" type="button" data-person-key="${esc(x.key)}">
-      <span>
-        <strong>${esc(x.nombre)}</strong>
-        <small>${esc(x.app_ultima||'Sin app')} · ${x.ops} movimiento${x.ops===1?'':'s'}</small>
-      </span>
-      <span class="suggestion-badge">${tipo==='CLIENTE'?money(x.total):num(x.credits)+' créd.'}</span>
-    </button>
-  `).join('');
-
-  box.querySelectorAll('[data-person-key]').forEach(b=>b.addEventListener('click',()=>{
-    selectSuggestion(b.dataset.personKey);
-  }));
-
-  box.classList.remove('hidden');
-}
-function selectSuggestion(key){
-  const tipo=movementType();
-  const catalog=tipo==='CLIENTE'?clientCatalog:sellerCatalog;
-  const x=catalog.find(y=>y.key===key);
-  if(!x)return;
-
-  $('#nombre').value=x.nombre;
-
-  if(tipo==='CLIENTE'){
-    const profile=clientProfiles().find(c=>c.key===x.key);
-    const apps=profile?.apps?.length
-      ? profile.apps
-      : (APPS.includes(x.app_ultima)?[x.app_ultima]:[]);
-    setSelectedMovementApps(apps);
-  }else{
-    if(APPS.includes(x.app_ultima))$('#single-app').value=x.app_ultima;
-  }
-
-  hideSuggestions();
-  updateMovementPreview();
-}
-function hideSuggestions(){
-  $('#suggestions').classList.add('hidden');
-}
-async function saveMovement(e){
-  e.preventDefault();
-  if(!user)return;
-
-  const tipo=movementType();
-  const nombre=cleanName($('#nombre').value);
-  const fechaManual=$('#fecha-manual').value;
-
-  if(!nombre)return toast('Ingresá el nombre.',true);
-
-  const fechaTs=fechaManual?manualDateToTimestamp(fechaManual):null;
-  if(fechaManual&&!fechaTs)return toast('La fecha elegida no es válida.',true);
-
-  let rows=[];
-  let appUltima='';
-
-  if(tipo==='CLIENTE'){
-    const apps=editMovement?[editMovement.app]:selectedMovementApps();
-    if(!apps.length)return toast('Seleccioná al menos una aplicación.',true);
-
-    let prices={};
-    if(editMovement){
-      const p=Number($('#precio').value||editMovement.precio||0);
-      if(!Number.isFinite(p)||p<0)return toast('Ingresá un precio válido.',true);
-      prices[apps[0]]=p;
-    }else{
-      prices=currentMovementPrices();
-      for(const app of apps){
-        const p=Number(prices[app]);
-        if(!Number.isFinite(p)||p<0)return toast(`Ingresá un precio válido para ${app}.`,true);
-      }
-    }
-
-    rows=apps.map(app=>{
-      const row={
-        user_id:user.id,
-        app,
-        tipo:'CLIENTE',
-        nombre,
-        precio:Number(prices[app]),
-        creditos:null
-      };
-      if(fechaTs)row.fecha=fechaTs;
-      return row;
-    });
-
-    appUltima=apps[apps.length-1];
-  }else{
-    const app=$('#single-app').value;
-    const creditos=Number($('#creditos').value);
-    const precio=Number($('#precio').value);
-
-    if(!APPS.includes(app))return toast('Seleccioná una aplicación.',true);
-    if(!Number.isFinite(creditos)||creditos<0)return toast('Ingresá los créditos.',true);
-    if(!Number.isFinite(precio)||precio<0)return toast('Ingresá un precio válido.',true);
-
-    const row={
-      user_id:user.id,
-      app,
-      tipo:'VENDEDOR',
-      nombre,
-      precio,
-      creditos
-    };
-    if(fechaTs)row.fecha=fechaTs;
-    rows=[row];
-    appUltima=app;
-  }
-
-  const btn=$('#save-btn');
-  btn.disabled=true;
-  btn.textContent='Guardando...';
-
-  let error=null;
-
-  if(editMovement){
-    const row=rows[0];
-    const payload={
-      app:row.app,
-      tipo:row.tipo,
-      nombre:row.nombre,
-      precio:row.precio,
-      creditos:row.creditos,
-      fecha:row.fecha||new Date().toISOString()
-    };
-    ({error}=await db.from('control_movimientos').update(payload).eq('id',editMovement.id));
-  }else{
-    ({error}=await db.from('control_movimientos').insert(rows));
-  }
-
-  btn.disabled=false;
-  btn.textContent=editMovement?'Guardar cambios':'Guardar movimiento';
-
-  if(error)return toast(`No se pudo guardar: ${error.message}`,true);
-
-  const fechaFicha=fechaTs||new Date().toISOString();
-  await savePerson(tipo,nombre,appUltima,fechaFicha);
-
-  toast(editMovement
-    ? 'Movimiento actualizado.'
-    : rows.length>1
-      ? `${rows.length} movimientos guardados para ${nombre}.`
-      : 'Movimiento guardado.'
-  );
-
-  clearMovementForm();
-  await loadMovements();
-  rebuildCatalogs();
-  renderAll();
-}
-function clearMovementForm(){
-  editMovement=null;
-  $('#movement-form').reset();
-  $('#tipo-cliente').checked=true;
-  $('#single-app').value='';
-  $('#creditos').value='';
-  $('#precio').value='';
-  $('#fecha-manual').value='';
-  setSelectedMovementApps([]);
-  $('#cancel-edit-btn').classList.add('hidden');
-  $('#save-btn').textContent='Guardar movimiento';
-  updateMovementType();
-  updateMovementPreview();
-}
-function editMovementById(id){
-  const m=movements.find(x=>String(x.id)===String(id));
-  if(!m)return;
-
-  editMovement=m;
-  $(m.tipo==='VENDEDOR'?'#tipo-vendedor':'#tipo-cliente').checked=true;
-  $('#nombre').value=m.nombre;
-  $('#fecha-manual').value=m.fecha?localISO(new Date(m.fecha)):'';
-
-  if(m.tipo==='VENDEDOR'){
-    $('#single-app').value=m.app;
-    $('#creditos').value=m.creditos??'';
-    $('#precio').value=m.precio??'';
-  }else{
-    setSelectedMovementApps([m.app]);
-    renderMovementPrices();
-    setTimeout(()=>{
-      const i=$(`[data-movement-price="${CSS.escape(m.app)}"]`);
-      if(i)i.value=m.precio??CLIENT_PRICE;
-      updateMovementPreview();
-    },0);
-  }
-
-  updateMovementType();
-  $('#cancel-edit-btn').classList.remove('hidden');
-  $('#save-btn').textContent='Guardar cambios';
-  switchView('registrar');
-}
-async function deleteMovement(id){
-  const m=movements.find(x=>String(x.id)===String(id));
-  if(!m)return;
-
-  if(!confirm(`¿Eliminar el movimiento de ${m.nombre} por ${money(m.precio)}?`))return;
-
-  const {error}=await db.from('control_movimientos').delete().eq('id',id);
-  if(error)return toast(error.message,true);
-
-  toast('Movimiento eliminado.');
-  await loadMovements();
-  rebuildCatalogs();
-  renderAll();
-}
-
-/* Clientes */
-function renewalStatus(next){
-  if(!next)return {key:'aldia',label:'Sin fecha',days:null};
-  const diff=daysBetween(localISO(),next);
-  if(diff<0)return {key:'vencido',label:`Vencido hace ${Math.abs(diff)} d.`,days:diff};
-  if(diff===0)return {key:'hoy',label:'Vence hoy',days:0};
-  if(diff<=SOON_DAYS)return {key:'proximo',label:`Vence en ${diff} d.`,days:diff};
-  return {key:'aldia',label:'Al día',days:diff};
-}
-function clientProfiles(){
-  return clientCatalog.map(c=>{
-    const hist=movements
-      .filter(m=>m.tipo==='CLIENTE'&&norm(m.nombre)===c.key)
-      .sort((a,b)=>new Date(b.fecha)-new Date(a.fecha));
-
-    const byApp={};
-
-    for(const app of APPS){
-      const ah=hist.filter(m=>m.app===app);
-      if(!ah.length)continue;
-
-      const last=ah[0];
-      const lastISO=localISO(new Date(last.fecha));
-      const next=isoNextMonth(lastISO);
-
-      byApp[app]={
-        app,
-        hist:ah,
-        last,
-        lastISO,
-        next,
-        status:renewalStatus(next),
-        price:Number(last.precio||0)
-      };
-    }
-
-    for(const row of getClientInitialApps(c.key)){
-      if(byApp[row.app])continue;
-
-      const dueISO=/^\d{4}-\d{2}-\d{2}$/.test(String(row.date||''))
-        ? row.date
-        : (c.last_used_at?localISO(new Date(c.last_used_at)):localISO());
-
-      byApp[row.app]={
-        app:row.app,
-        hist:[],
-        last:null,
-        lastISO:null,
-        next:dueISO,
-        status:renewalStatus(dueISO),
-        price:Number(row.price||CLIENT_PRICE),
-        assignedOnly:true
-      };
-    }
-
-    if(!Object.keys(byApp).length&&APPS.includes(c.app_ultima)){
-      const dueISO=c.last_used_at?localISO(new Date(c.last_used_at)):localISO();
-
-      byApp[c.app_ultima]={
-        app:c.app_ultima,
-        hist:[],
-        last:null,
-        lastISO:null,
-        next:dueISO,
-        status:renewalStatus(dueISO),
-        price:CLIENT_PRICE,
-        assignedOnly:true
-      };
-    }
-
-    const services=Object.values(byApp);
-    const worst=services.slice().sort((a,b)=>
-      (a.status.days??9999)-(b.status.days??9999)
-    )[0]||null;
-
-    return {
-      ...c,
-      hist,
-      services,
-      apps:services.map(s=>s.app),
-      next:worst?.next||null,
-      status:worst?.status||renewalStatus(null),
-      total:hist.reduce((s,m)=>s+Number(m.precio||0),0),
-      monthlyTotal:services.reduce((s,x)=>s+Number(x.price||0),0),
-      ops:hist.length,
-      phone:getClientPhone(c.key),
-      app_ultima:c.app_ultima||services[0]?.app||null
-    };
-  });
-}
-function currentClientDueDates(){
-  const out={};
-  $$('[data-client-due-app]').forEach(i=>{
-    out[i.dataset.clientDueApp]=i.value;
-  });
-  return out;
-}
-function renderClientDueRows(prefillDates={}){
-  const box=$('#client-due-list');
-  if(!box)return;
-
-  const current=currentClientDueDates();
-  const selected=selectedClientApps();
-
-  if(!selected.length){
-    box.innerHTML='';
-    $('#client-due-helper').textContent='Primero marcá una o varias aplicaciones. Cada app tendrá su propia fecha de vencimiento.';
-    updateClientPreview();
-    return;
-  }
-
-  box.innerHTML=selected.map(app=>{
-    const date=current[app]||prefillDates[app]||localISO();
-    return `<div class="client-due-row">
-      <div class="client-due-app">
-        ${appLogoHTML(app)}
-        <div>
-          <strong>${esc(app)}</strong>
-          <small>Vencimiento independiente</small>
-        </div>
-      </div>
-      <div class="client-due-controls">
-        <input class="input" type="date" required data-client-due-app="${esc(app)}" value="${esc(date)}">
-        <button type="button" data-due-action="today" data-due-app="${esc(app)}">Hoy</button>
-        <button type="button" data-due-action="1m" data-due-app="${esc(app)}">＋1 mes</button>
-      </div>
-    </div>`;
-  }).join('');
-
-  $$('[data-client-due-app]').forEach(i=>i.addEventListener('change',updateClientPreview));
-  $$('[data-due-action]').forEach(b=>b.addEventListener('click',()=>{
-    const input=$(`[data-client-due-app="${CSS.escape(b.dataset.dueApp)}"]`);
-    if(!input)return;
-    const today=localISO();
-    input.value=b.dataset.dueAction==='1m'?addMonthsISO(today,1):today;
-    updateClientPreview();
-  }));
-
-  $('#client-due-helper').textContent='Cada aplicación se guarda con su propia fecha. Podés tener, por ejemplo, TV 05/09 y FUTURE 18/09.';
-  updateClientPreview();
-}
-function renderClientAppPicker(selected=[]){
-  const rows=Array.isArray(selected)
-    ? selected.map(x=>typeof x==='string'?{app:x,date:localISO()}:x).filter(x=>x&&APPS.includes(x.app))
-    : [];
-  const chosen=new Set(rows.map(x=>x.app));
-  const prefill=Object.fromEntries(rows.map(x=>[x.app,x.date||localISO()]));
-
-  $('#client-apps').innerHTML=APPS.map((app,i)=>`
-    <div class="app-option">
-      <input id="client-app-${i}" class="client-app-check" type="checkbox"
-        value="${esc(app)}" ${chosen.has(app)?'checked':''}>
-      <label for="client-app-${i}">
-        <span class="app-check-ui"></span>
-        ${appLogoHTML(app)}
-        <span class="app-option-name">${esc(app)}</span>
-      </label>
-    </div>
-  `).join('');
-
-  $$('.client-app-check').forEach(x=>x.addEventListener('change',()=>{
-    renderClientDueRows(prefill);
-  }));
-
-  renderClientDueRows(prefill);
-}
-function selectedClientApps(){
-  return $$('.client-app-check:checked').map(x=>x.value).filter(a=>APPS.includes(a));
-}
-function selectedClientServiceRows(){
-  return selectedClientApps().map(app=>{
-    const input=$(`[data-client-due-app="${CSS.escape(app)}"]`);
-    return {
-      app,
-      date:input?.value||'',
-      price:CLIENT_PRICE
-    };
-  });
-}
-function profileRowsForClientKey(key){
-  const profile=clientProfiles().find(x=>x.key===key);
-  if(!profile)return getClientInitialApps(key);
-
-  return profile.services.map(s=>({
-    app:s.app,
-    date:s.next||localISO(),
-    price:Number(s.price||CLIENT_PRICE)
-  }));
-}
-function openClientModal(id=null,prefillName=''){
-  const isNew=!id;
-  const c=isNew?null:savedClients.find(x=>String(x.id)===String(id));
-
-  $('#client-modal-title').textContent=isNew?'Nuevo cliente':'Editar cliente';
-  $('#client-modal-desc').textContent=isNew
-    ? 'Podés asignarle varias aplicaciones, cada una con su vencimiento.'
-    : 'Cada aplicación puede tener una fecha de vencimiento diferente.';
-  $('#client-save-btn').textContent=isNew?'Crear cliente':'Guardar cambios';
-
-  $('#client-id').value=isNew?'':c.id;
-  $('#client-name').value=isNew?prefillName:(c.nombre||'');
-  $('#client-phone').value=isNew?'':getClientPhone(norm(c.nombre_normalizado||c.nombre));
-
-  if(isNew){
-    renderClientAppPicker([]);
-  }else{
-    const key=norm(c.nombre_normalizado||c.nombre);
-    const rows=profileRowsForClientKey(key);
-    renderClientAppPicker(
-      rows.length
-        ? rows
-        : (APPS.includes(c.app_ultima)
-            ? [{app:c.app_ultima,date:c.last_used_at?localISO(new Date(c.last_used_at)):localISO(),price:CLIENT_PRICE}]
-            : [])
-    );
-  }
-
-  updateClientPreview();
-  $('#client-modal').classList.remove('hidden');
-  setTimeout(()=>$('#client-name').focus(),80);
-}
-function closeClientModal(){
-  $('#client-modal').classList.add('hidden');
-  $('#client-form').reset();
-  $('#client-id').value='';
-  renderClientAppPicker([]);
-  updateClientPreview();
-}
-function updateClientPreview(){
-  const name=cleanName($('#client-name')?.value||'');
-  const phone=$('#client-phone')?.value.trim()||'';
-  const rows=selectedClientServiceRows();
-
-  const services=rows.length
-    ? rows.map(r=>`${r.app}: ${r.date?formatISODate(r.date):'sin fecha'}`).join(' · ')
-    : 'Sin seleccionar';
-
-  $('#client-preview').innerHTML=`
-    <div class="client-preview-line"><span>Cliente</span><strong>${esc(name||'Sin completar')}</strong></div>
-    <div class="client-preview-line"><span>Servicios</span><strong>${esc(services)}</strong></div>
-    <div class="client-preview-line"><span>Cantidad de apps</span><strong>${rows.length}</strong></div>
-    <div class="client-preview-line"><span>WhatsApp</span><strong>${esc(phone||'Sin cargar')}</strong></div>
-  `;
-}
-async function saveClient(e){
-  e.preventDefault();
-  if(!user)return;
-
-  const id=$('#client-id').value;
-  const isNew=!id;
-  const current=isNew?null:savedClients.find(x=>String(x.id)===String(id));
-
-  const nombre=cleanName($('#client-name').value);
-  const phone=$('#client-phone').value.trim();
-  const serviceRows=selectedClientServiceRows();
-
-  if(!nombre)return toast('Ingresá el nombre.',true);
-  if(!serviceRows.length)return toast('Marcá al menos una aplicación.',true);
-
-  for(const row of serviceRows){
-    if(!manualDateToTimestamp(row.date)){
-      return toast(`Ingresá un vencimiento válido para ${row.app}.`,true);
-    }
-  }
-
-  const newKey=norm(nombre);
-  const existingByName=savedClients.find(x=>norm(x.nombre_normalizado||x.nombre)===newKey);
-  const targetExisting=!isNew?current:existingByName;
-  const mergingExisting=isNew&&!!existingByName;
-
-  const effectiveRows=mergingExisting
-    ? normalizeClientServiceRows([...profileRowsForClientKey(newKey),...serviceRows])
-    : serviceRows;
-
-  const earliestDate=effectiveRows
-    .map(r=>r.date)
-    .filter(Boolean)
-    .sort()[0]||localISO();
-
-  const payload={
-    user_id:user.id,
-    nombre,
-    nombre_normalizado:newKey,
-    app_ultima:serviceRows[serviceRows.length-1].app,
-    last_used_at:manualDateToTimestamp(earliestDate),
-    updated_at:new Date().toISOString()
-  };
-
-  const btn=$('#client-save-btn');
-  btn.disabled=true;
-  btn.textContent=mergingExisting?'Agregando apps...':(isNew?'Creando...':'Guardando...');
-
-  let error=null;
-
-  if(targetExisting){
-    const updatePayload={...payload};
-    delete updatePayload.user_id;
-    ({error}=await db.from('control_clientes').update(updatePayload).eq('id',targetExisting.id));
-  }else{
-    ({error}=await db.from('control_clientes').insert(payload));
-  }
-
-  if(error){
-    btn.disabled=false;
-    btn.textContent=isNew?'Crear cliente':'Guardar cambios';
-    return toast(`No se pudo guardar el cliente: ${error.message}`,true);
-  }
-
-  if(mergingExisting){
-    const existingKey=norm(existingByName.nombre_normalizado||existingByName.nombre);
-    saveClientPhone(existingKey,phone||getClientPhone(existingKey));
-    saveClientServiceRows(existingKey,effectiveRows,{merge:false});
-  }else if(isNew){
-    saveClientPhone(newKey,phone);
-    saveClientServiceRows(newKey,serviceRows,{merge:false});
-  }else{
-    const oldKey=norm(current.nombre_normalizado||current.nombre);
-
-    if(oldKey!==newKey){
-      const oldPhone=getClientPhone(oldKey);
-      if(oldPhone&&!phone)saveClientPhone(newKey,oldPhone);
-      localStorage.removeItem(phoneKey(oldKey));
-      moveClientInitialApps(oldKey,newKey);
-
-      const ids=movements
-        .filter(m=>m.tipo==='CLIENTE'&&norm(m.nombre)===oldKey)
-        .map(m=>m.id);
-
-      if(ids.length){
-        const {error:histError}=await db.from('control_movimientos')
-          .update({nombre})
-          .in('id',ids);
-        if(histError)console.warn(histError);
-      }
-    }
-
-    saveClientPhone(newKey,phone||getClientPhone(newKey));
-    saveClientServiceRows(newKey,serviceRows,{merge:false});
-  }
-
-  await Promise.all([loadClients(),loadMovements()]);
-  rebuildCatalogs();
-  renderAll();
-  closeClientModal();
-  closeProfile();
-
-  btn.disabled=false;
-  toast(
-    mergingExisting
-      ? 'Cliente existente actualizado. Las apps anteriores se conservaron y se agregaron/actualizaron los nuevos vencimientos.'
-      : (isNew?'Cliente creado con vencimientos independientes.':'Cliente actualizado.')
-  );
-}
-async function deleteClient(id){
-  const c=savedClients.find(x=>String(x.id)===String(id));
-  if(!c)return;
-
-  if(!confirm(`¿Eliminar la ficha de ${c.nombre}?\n\nEl historial de movimientos NO se va a borrar.`))return;
-
-  const {error}=await db.from('control_clientes').delete().eq('id',id);
-  if(error)return toast(`No se pudo eliminar: ${error.message}`,true);
-
-  const key=norm(c.nombre_normalizado||c.nombre);
-  localStorage.removeItem(phoneKey(key));
-  localStorage.removeItem(clientAppsKey(key));
-
-  await loadClients();
-  rebuildCatalogs();
-  renderAll();
-  closeProfile();
-  toast('Cliente eliminado de la agenda. El historial se conserva.');
-}
-function clientSummaryData(profiles){
-  let activos=0,vencidos=0,pronto=0;
-  profiles.forEach(c=>{
-    if(c.status.key==='vencido')vencidos++;
-    else if(c.status.key==='aldia')activos++;
-    else pronto++;
-  });
-  return {activos,vencidos,pronto};
-}
-function setClientFilter(filter){
-  clientFilter=clientFilter===filter?'todos':filter;
-  renderClients();
-}
-function clientMatchesFilter(c){
-  if(clientFilter==='activos')return c.status.key==='aldia';
-  if(clientFilter==='vencidos')return c.status.key==='vencido';
-  if(clientFilter==='pronto')return ['hoy','proximo'].includes(c.status.key);
-  return true;
-}
-function renderClients(){
-  const q=norm($('#clients-search').value);
-  const profiles=clientProfiles();
-
-  const list=profiles
-    .filter(c=>clientMatchesFilter(c)&&(!q||c.key.includes(q)))
-    .sort((a,b)=>{
-      if(clientFilter==='vencidos'||clientFilter==='pronto'){
-        return (a.status.days??9999)-(b.status.days??9999)||a.nombre.localeCompare(b.nombre,'es');
-      }
-      return a.nombre.localeCompare(b.nombre,'es');
-    });
-
-  $('#clients-list').innerHTML=list.map(c=>clientCard(c)).join('');
-  $('#clients-empty').classList.toggle('hidden',list.length>0);
-
-  const s=clientSummaryData(profiles);
-
-  $('#client-summary').innerHTML=`
-    <button class="client-filter-card ${clientFilter==='activos'?'active':''}" type="button" onclick="setClientFilter('activos')">
-      <span>Usuarios activos</span><strong>${s.activos}</strong><small>Tocá para filtrar.</small>
-    </button>
-    <button class="client-filter-card red ${clientFilter==='vencidos'?'active':''}" type="button" onclick="setClientFilter('vencidos')">
-      <span>Usuarios vencidos</span><strong>${s.vencidos}</strong><small>Tocá para ver vencidos.</small>
-    </button>
-    <button class="client-filter-card yellow ${clientFilter==='pronto'?'active':''}" type="button" onclick="setClientFilter('pronto')">
-      <span>Vencen pronto</span><strong>${s.pronto}</strong><small>Hoy o próximos ${SOON_DAYS} días.</small>
-    </button>
-  `;
-}
-function clientCard(c,appContext=null){
-  const service=appContext?c.services.find(s=>s.app===appContext):null;
-  const status=service?.status||c.status;
-  const next=service?.next||c.next;
-  const monthly=service?service.price:c.monthlyTotal;
-  const apps=appContext?[appContext]:c.apps;
-
-  return `<article class="entity-card">
-    <div class="entity-top">
-      <div>
-        <div class="entity-name">${esc(c.nombre)}</div>
-        ${c.phone?`<div class="phone-link">📱 ${esc(c.phone)}</div>`:''}
-        <div class="apps-list">${apps.length?apps.map(a=>appLogoHTML(a)).join(''):'<span class="entity-sub">Sin apps</span>'}</div>
-        <div class="entity-sub">${c.ops} movimiento${c.ops===1?'':'s'}</div>
-      </div>
-      <span class="status ${status.key}">${esc(status.label)}</span>
-    </div>
-
-    <div class="entity-grid">
-      <div class="metric"><span>Apps</span><strong>${apps.length}</strong></div>
-      <div class="metric"><span>Abono actual</span><strong>${esc(money(monthly||0))}</strong></div>
-      <div class="metric"><span>Próximo vencimiento</span><strong>${next?esc(formatISODate(next)):'—'}</strong></div>
-      <div class="metric"><span>Total histórico</span><strong>${esc(money(c.total))}</strong></div>
-    </div>
-
-    <div class="entity-actions">
-      <button class="btn btn-secondary" type="button" onclick="openClientProfile('${esc(c.key)}')">Ver ficha</button>
-      <button class="btn btn-green" type="button"
-        onclick="${appContext?`quickRenewApp('${esc(c.key)}','${esc(appContext)}')`:`quickRenew('${esc(c.key)}')`}">
-        ${appContext?`Renovar ${esc(appContext)}`:'Renovar'}
-      </button>
-    </div>
-
-    ${c.phone?`<button class="btn btn-green" style="width:100%;margin-top:8px" type="button" onclick="openWhatsApp('${esc(c.key)}')">WhatsApp</button>`:''}
-
-    <div class="admin-actions">
-      <button class="btn btn-secondary" type="button" onclick="openClientModal('${esc(c.id)}')">Editar cliente</button>
-      <button class="btn btn-danger" type="button" onclick="deleteClient('${esc(c.id)}')">Eliminar cliente</button>
-    </div>
-  </article>`;
-}
-function whatsappNumber(phone){
-  let n=String(phone||'').replace(/\D/g,'');
-  if(!n)return '';
-  if(n.startsWith('0'))n=n.slice(1);
-  if(!n.startsWith('54'))n='54'+n;
-  return n;
-}
-function openWhatsApp(key){
-  const c=clientProfiles().find(x=>x.key===key);
-  if(!c)return;
-
-  const n=whatsappNumber(c.phone);
-  if(!n)return toast('Este cliente no tiene teléfono cargado.',true);
-
-  const pending=c.services.filter(s=>['vencido','hoy','proximo'].includes(s.status.key));
-  const detail=(pending.length?pending:c.services)
-    .map(s=>`${s.app}: ${s.status.label}${s.next?' ('+formatISODate(s.next)+')':''}`)
-    .join(' · ');
-
-  const text=encodeURIComponent(`Hola ${c.nombre}, te escribo por tus servicios. ${detail}`);
-  window.open(`https://wa.me/${n}?text=${text}`,'_blank','noopener');
-}
-
-/* Renovaciones */
-function renewalEntries(){
-  return clientProfiles().flatMap(c=>
-    c.services.map(s=>({
-      ...c,
-      services:[s],
-      apps:[s.app],
-      status:s.status,
-      next:s.next,
-      app_ultima:s.app
-    }))
-  );
-}
-function renderRenewals(){
-  const all=renewalEntries();
-
-  $('#renew-expired').textContent=all.filter(c=>c.status.key==='vencido').length;
-  $('#renew-today').textContent=all.filter(c=>c.status.key==='hoy').length;
-  $('#renew-soon').textContent=all.filter(c=>c.status.key==='proximo').length;
-  $('#renew-ok').textContent=all.filter(c=>c.status.key==='aldia').length;
-
-  const q=norm($('#renew-search').value);
-
-  const list=all
-    .filter(c=>(renewStatus==='todos'||c.status.key===renewStatus)&&(!q||c.key.includes(q)))
-    .sort((a,b)=>(a.status.days??9999)-(b.status.days??9999)||a.nombre.localeCompare(b.nombre,'es'));
-
-  $('#renew-list').innerHTML=list.map(c=>clientCard(c,c.app_ultima)).join('');
-  $('#renew-empty').classList.toggle('hidden',list.length>0);
-}
-async function quickRenewApp(key,app){
-  const c=clientProfiles().find(x=>x.key===key);
-  if(!c||!APPS.includes(app))return;
-
-  const svc=c.services.find(s=>s.app===app);
-  const price=Number(svc?.price??CLIENT_PRICE);
-
-  if(!confirm(`Renovar a ${c.nombre} en ${app} por ${money(price)}?`))return;
-
-  const {error}=await db.from('control_movimientos').insert({
-    user_id:user.id,
-    app,
-    tipo:'CLIENTE',
-    nombre:c.nombre,
-    creditos:null,
-    precio:price
-  });
-
-  if(error)return toast(`No se pudo renovar: ${error.message}`,true);
-
-  await savePerson('CLIENTE',c.nombre,app,new Date().toISOString());
-  await loadMovements();
-  rebuildCatalogs();
-  renderAll();
-  closeProfile();
-
-  toast(`${c.nombre} · ${app} renovado por ${money(price)}.`);
-}
-function quickRenew(key){
-  const c=clientProfiles().find(x=>x.key===key);
-  if(!c)return;
-  if(!c.services.length)return toast('Este cliente no tiene aplicaciones asociadas.',true);
-  if(c.services.length===1)return quickRenewApp(key,c.services[0].app);
-  openClientProfile(key);
-}
-
-/* Perfil cliente */
-function openClientProfile(key){
-  const c=clientProfiles().find(x=>x.key===key);
-  if(!c)return;
-
-  $('#profile-title').textContent=c.nombre;
-  $('#profile-subtitle').textContent=`Cliente · ${c.services.length} app${c.services.length===1?'':'s'}`;
-
-  const services=c.services.length
-    ? c.services.map(s=>`
-      <div class="service-row">
-        <div class="service-row-top">
-          <div class="service-main">
-            ${appLogoHTML(s.app)}
-            <div>
-              <strong>${esc(s.app)} · ${esc(money(s.price))}</strong>
-              <small>${s.assignedOnly
-                ? `Vencimiento: ${esc(formatISODate(s.next))}`
-                : `Última: ${esc(formatISODate(s.lastISO))} · Próxima: ${esc(formatISODate(s.next))}`
-              }</small>
-            </div>
-          </div>
-          <span class="status ${s.status.key}">${esc(s.status.label)}</span>
-        </div>
-        <button class="btn btn-green" type="button" onclick="quickRenewApp('${esc(c.key)}','${esc(s.app)}')">
-          Renovar ${esc(s.app)} · ${esc(money(s.price))}
-        </button>
-      </div>
-    `).join('')
-    : '<div class="empty"><p>Sin aplicaciones asociadas.</p></div>';
-
-  $('#profile-body').innerHTML=`
-    ${c.phone?`<button class="btn btn-green" style="width:100%;margin-bottom:12px" type="button" onclick="openWhatsApp('${esc(c.key)}')">WhatsApp · ${esc(c.phone)}</button>`:''}
-
-    <div class="section-label">Servicios</div>
-    <div class="service-list">${services}</div>
-
-    <div class="entity-grid" style="margin-top:12px">
-      <div class="metric"><span>Apps</span><strong>${c.services.length}</strong></div>
-      <div class="metric"><span>Abono actual</span><strong>${esc(money(c.monthlyTotal))}</strong></div>
-      <div class="metric"><span>Total histórico</span><strong>${esc(money(c.total))}</strong></div>
-      <div class="metric"><span>Movimientos</span><strong>${c.ops}</strong></div>
-    </div>
-
-    <div class="admin-actions">
-      <button class="btn btn-secondary" type="button" onclick="openClientModal('${esc(c.id)}')">Editar cliente</button>
-      <button class="btn btn-danger" type="button" onclick="deleteClient('${esc(c.id)}')">Eliminar cliente</button>
-    </div>
-
-    <div class="section-label" style="margin-top:16px">Historial</div>
-    <div class="profile-history">
-      ${c.hist.map(profileRow).join('')||'<div class="empty"><p>Sin movimientos.</p></div>'}
-    </div>
-  `;
-
-  $('#profile-modal').classList.remove('hidden');
-}
-function profileRow(m){
-  return `<div class="profile-row">
-    <div>
-      <strong>${esc(m.app)}${m.tipo==='VENDEDOR'?' · '+esc(num(m.creditos))+' créditos':''}</strong>
-      <span>${esc(dateTime(m.fecha))}</span>
-    </div>
-    <div class="amount">${esc(money(m.precio))}</div>
-  </div>`;
-}
-function closeProfile(){
-  $('#profile-modal').classList.add('hidden');
-}
-
-/* Apps */
-function appClientList(app){
-  return clientProfiles()
-    .filter(c=>c.services.some(s=>s.app===app))
-    .map(c=>c);
-}
-function selectApp(app){
-  if(!APPS.includes(app))return;
-  selectedApp=app;
-  $('#apps-search').value='';
-  renderApps();
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-function renderApps(){
-  const home=$('#apps-home');
-  const panel=$('#app-client-panel');
-
-  if(!selectedApp){
-    home.classList.remove('hidden');
-    panel.classList.add('hidden');
-
-    $('#apps-grid').innerHTML=APPS.map(app=>{
-      const clients=appClientList(app);
-      const pending=clients.filter(c=>{
-        const s=c.services.find(x=>x.app===app);
-        return ['vencido','hoy','proximo'].includes(s?.status.key);
-      }).length;
-
-      return `<article class="app-service-card">
-        <div class="app-service-top">
-          <div>
-            <div class="app-service-name">${esc(app)}</div>
-            <div class="app-service-label">Servicio</div>
-          </div>
-          ${appLogoHTML(app)}
-        </div>
-        <div class="app-service-count">${clients.length}</div>
-        <div class="app-service-label">cliente${clients.length===1?'':'s'}</div>
-        <div class="app-service-renew">${pending?`${pending} para revisar/renovar`:'Todos al día'}</div>
-        <button class="btn btn-primary" type="button" onclick="selectApp('${esc(app)}')">Ver clientes</button>
-      </article>`;
-    }).join('');
-
-    return;
-  }
-
-  home.classList.add('hidden');
-  panel.classList.remove('hidden');
-
-  const q=norm($('#apps-search').value);
-  const all=appClientList(selectedApp).sort((a,b)=>{
-    const sa=a.services.find(x=>x.app===selectedApp);
-    const sb=b.services.find(x=>x.app===selectedApp);
-    return (sa?.status.days??9999)-(sb?.status.days??9999)||a.nombre.localeCompare(b.nombre,'es');
-  });
-
-  const list=all.filter(c=>!q||c.key.includes(q));
-
-  $('#selected-app-title').textContent=selectedApp;
-  $('#selected-app-count').textContent=`${all.length} cliente${all.length===1?'':'s'} en ${selectedApp}`;
-  $('#apps-clients-list').innerHTML=list.map(c=>clientCard(c,selectedApp)).join('');
-  $('#apps-empty').classList.toggle('hidden',list.length>0);
-}
-
-/* Vendedores */
-function sellerProfiles(){
-  return sellerCatalog.map(s=>{
-    const hist=movements
-      .filter(m=>m.tipo==='VENDEDOR'&&norm(m.nombre)===s.key)
-      .sort((a,b)=>new Date(b.fecha)-new Date(a.fecha));
-
-    return {
-      ...s,
-      hist,
-      last:hist[0]||null,
-      total:hist.reduce((a,m)=>a+Number(m.precio||0),0),
-      credits:hist.reduce((a,m)=>a+Number(m.creditos||0),0),
-      ops:hist.length,
-      apps:[...new Set(hist.map(m=>m.app).filter(Boolean))]
-    };
-  });
-}
-function renderSellers(){
-  const q=norm($('#sellers-search').value);
-
-  const list=sellerProfiles()
-    .filter(s=>!q||s.key.includes(q))
-    .sort((a,b)=>a.nombre.localeCompare(b.nombre,'es'));
-
-  $('#sellers-list').innerHTML=list.map(s=>`
-    <article class="entity-card">
-      <div class="entity-top">
-        <div>
-          <div class="entity-name">${esc(s.nombre)}</div>
-          <div class="entity-sub">${s.ops} carga${s.ops===1?'':'s'} · Última ${s.last?esc(dateTime(s.last.fecha)):'—'}</div>
-        </div>
-        <span class="type-chip seller">VENDEDOR</span>
-      </div>
-
-      <div class="entity-grid">
-        <div class="metric"><span>Créditos</span><strong>${esc(num(s.credits))}</strong></div>
-        <div class="metric"><span>Ingresado</span><strong>${esc(money(s.total))}</strong></div>
-        <div class="metric"><span>Última carga</span><strong>${s.last?esc(dateTime(s.last.fecha)):'—'}</strong></div>
-        <div class="metric"><span>Operaciones</span><strong>${s.ops}</strong></div>
-      </div>
-
-      <div class="seller-apps-list">${s.apps.length?s.apps.map(a=>appLogoHTML(a)).join(''):'<span class="entity-sub">Sin apps</span>'}</div>
-
-      <div class="entity-actions">
-        <button class="btn btn-secondary" type="button" onclick="openSellerProfile('${esc(s.key)}')">Ver ficha</button>
-        <button class="btn btn-primary" type="button" onclick="prepareSeller('${esc(s.key)}')">Nueva carga</button>
-      </div>
-    </article>
-  `).join('');
-
-  $('#sellers-empty').classList.toggle('hidden',list.length>0);
-}
-function prepareSeller(key){
-  const s=sellerProfiles().find(x=>x.key===key);
-  if(!s)return;
-
-  $('#tipo-vendedor').checked=true;
-  updateMovementType();
-  $('#nombre').value=s.nombre;
-  if(APPS.includes(s.app_ultima))$('#single-app').value=s.app_ultima;
-  $('#creditos').value='';
-  $('#precio').value='';
-  updateMovementPreview();
-  switchView('registrar');
-}
-function openSellerProfile(key){
-  const s=sellerProfiles().find(x=>x.key===key);
-  if(!s)return;
-
-  $('#profile-title').textContent=s.nombre;
-  $('#profile-subtitle').textContent='Vendedor';
-
-  $('#profile-body').innerHTML=`
-    <div class="entity-grid">
-      <div class="metric"><span>Créditos totales</span><strong>${esc(num(s.credits))}</strong></div>
-      <div class="metric"><span>Dinero ingresado</span><strong>${esc(money(s.total))}</strong></div>
-      <div class="metric"><span>Última carga</span><strong>${s.last?esc(dateTime(s.last.fecha)):'—'}</strong></div>
-      <div class="metric"><span>Cargas</span><strong>${s.ops}</strong></div>
-    </div>
-
-    <div class="seller-apps-list">${s.apps.length?s.apps.map(a=>appLogoHTML(a)).join(''):'<span class="entity-sub">Sin apps</span>'}</div>
-
-    <button class="btn btn-primary" style="width:100%;margin-top:10px" type="button"
-      onclick="prepareSeller('${esc(s.key)}');closeProfile()">Nueva carga</button>
-
-    <div class="section-label" style="margin-top:16px">Historial</div>
-    <div class="profile-history">
-      ${s.hist.map(profileRow).join('')||'<div class="empty"><p>Sin movimientos.</p></div>'}
-    </div>
-  `;
-
-  $('#profile-modal').classList.remove('hidden');
-}
-
-/* Dashboard */
-function renderDashboard(){
-  const profiles=clientProfiles();
-  const services=profiles.flatMap(c=>c.services.map(s=>({...s,client:c.nombre,key:c.key})));
-  const today=localISO();
-  const month=today.slice(0,7);
-
-  const todayMoves=movements.filter(m=>localISO(new Date(m.fecha))===today);
-  const monthMoves=movements.filter(m=>localISO(new Date(m.fecha)).slice(0,7)===month);
-
-  $('#dash-income-today').textContent=money(todayMoves.reduce((a,m)=>a+Number(m.precio||0),0));
-  $('#dash-income-month').textContent=money(monthMoves.reduce((a,m)=>a+Number(m.precio||0),0));
-  $('#dash-active-services').textContent=services.filter(s=>s.status.key==='aldia').length;
-
-  const pending=services.filter(s=>['vencido','hoy','proximo'].includes(s.status.key));
-  $('#dash-pending-money').textContent=money(pending.reduce((a,s)=>a+Number(s.price||0),0));
-
-  const appRows=APPS.map(app=>{
-    const list=monthMoves.filter(m=>m.tipo==='CLIENTE'&&m.app===app);
-    return {
-      app,
-      count:list.length,
-      total:list.reduce((a,m)=>a+Number(m.precio||0),0)
-    };
-  }).sort((a,b)=>b.total-a.total);
-
-  $('#dash-app-breakdown').innerHTML=appRows.map(r=>`
-    <div class="breakdown-row">
-      <div>
-        <strong>${esc(r.app)}</strong>
-        <span>${r.count} movimiento${r.count===1?'':'s'} de clientes este mes</span>
-      </div>
-      <div class="breakdown-value">${esc(money(r.total))}</div>
-    </div>
-  `).join('');
-
-  const alerts=pending
-    .slice()
-    .sort((a,b)=>(a.status.days??9999)-(b.status.days??9999))
-    .slice(0,8);
-
-  $('#dash-alerts').innerHTML=alerts.length
-    ? alerts.map(s=>`
-      <div class="dashboard-alert">
-        <div>
-          <strong>${esc(s.client)} · ${esc(s.app)}</strong>
-          <span>${esc(s.status.label)} · ${esc(money(s.price))}</span>
-        </div>
-        <button class="btn btn-green" style="min-height:36px;padding:0 10px;font-size:10px"
-          type="button" onclick="quickRenewApp('${esc(s.key)}','${esc(s.app)}')">Renovar</button>
-      </div>
-    `).join('')
-    : '<div class="empty" style="padding:20px"><p>No hay renovaciones urgentes.</p></div>';
-}
-
-/* Compras */
-function purchaseStorageKey(){
-  return `control_ingresos_compras_${user?.id||'local'}`;
-}
-function loadPurchases(){
-  try{
-    const raw=localStorage.getItem(purchaseStorageKey());
-    const parsed=raw?JSON.parse(raw):[];
-    purchases=Array.isArray(parsed)?parsed.filter(x=>x&&APPS.includes(x.app)):[];
-  }catch(_e){
-    purchases=[];
-  }
-
-  if($('#purchase-date')&&!$('#purchase-date').value){
-    $('#purchase-date').value=localISO();
-  }
-}
-function savePurchasesLocal(){
-  try{
-    localStorage.setItem(purchaseStorageKey(),JSON.stringify(purchases));
-    return true;
-  }catch(_e){
-    toast('No se pudieron guardar las compras en este navegador.',true);
-    return false;
-  }
-}
-function updatePurchaseUnitPreview(){
-  const credits=Number($('#purchase-credits').value||0);
-  const spent=Number($('#purchase-spent').value||0);
-  $('#purchase-unit-preview').textContent=
-    credits>0&&Number.isFinite(spent)
-      ? `Costo por crédito: ${money(spent/credits)}`
-      : 'Costo por crédito: —';
-}
-function savePurchase(e){
-  e.preventDefault();
-
-  const app=$('#purchase-app').value;
-  const creditos=Number($('#purchase-credits').value);
-  const gasto=Number($('#purchase-spent').value);
-  const fecha=$('#purchase-date').value;
-
-  if(!APPS.includes(app))return toast('Seleccioná una aplicación.',true);
-  if(!Number.isFinite(creditos)||creditos<=0)return toast('Ingresá créditos válidos.',true);
-  if(!Number.isFinite(gasto)||gasto<0)return toast('Ingresá un gasto válido.',true);
-  if(!/^\d{4}-\d{2}-\d{2}$/.test(fecha))return toast('Ingresá una fecha válida.',true);
-
-  const now=new Date().toISOString();
-
-  if(editPurchaseId){
-    const i=purchases.findIndex(x=>String(x.id)===String(editPurchaseId));
-    if(i<0)return toast('No encontré la compra.',true);
-    purchases[i]={...purchases[i],app,creditos,gasto,fecha,updated_at:now};
-  }else{
-    const id=(globalThis.crypto&&typeof crypto.randomUUID==='function')
-      ? crypto.randomUUID()
-      : `p_${Date.now()}_${Math.random().toString(36).slice(2,8)}`;
-
-    purchases.push({id,app,creditos,gasto,fecha,created_at:now,updated_at:now});
-  }
-
-  if(!savePurchasesLocal())return;
-
-  toast(editPurchaseId?'Compra actualizada.':'Compra guardada.');
-  cancelPurchaseEdit();
-  renderPurchases();
-}
-function cancelPurchaseEdit(){
-  editPurchaseId=null;
-  $('#purchase-form').reset();
-  $('#purchase-date').value=localISO();
-  $('#purchase-form-title').textContent='Nueva compra';
-  $('#purchase-save-btn').textContent='Guardar compra';
-  $('#purchase-cancel-btn').classList.add('hidden');
-  updatePurchaseUnitPreview();
-}
-function editPurchase(id){
-  const p=purchases.find(x=>String(x.id)===String(id));
-  if(!p)return;
-
-  editPurchaseId=p.id;
-  $('#purchase-app').value=p.app;
-  $('#purchase-credits').value=p.creditos;
-  $('#purchase-spent').value=p.gasto;
-  $('#purchase-date').value=p.fecha;
-  $('#purchase-form-title').textContent='Editar compra';
-  $('#purchase-save-btn').textContent='Guardar cambios';
-  $('#purchase-cancel-btn').classList.remove('hidden');
-  updatePurchaseUnitPreview();
-  switchView('compras');
-}
-function deletePurchase(id){
-  const p=purchases.find(x=>String(x.id)===String(id));
-  if(!p)return;
-
-  if(!confirm(`¿Eliminar la compra de ${p.creditos} créditos de ${p.app} por ${money(p.gasto)}?`))return;
-
-  purchases=purchases.filter(x=>String(x.id)!==String(id));
-  if(!savePurchasesLocal())return;
-
-  if(String(editPurchaseId)===String(id))cancelPurchaseEdit();
-  renderPurchases();
-  toast('Compra eliminada.');
-}
-function filteredPurchases(){
-  const app=$('#purchase-filter-app').value||'TODAS';
-  return purchases
-    .filter(p=>app==='TODAS'||p.app===app)
-    .sort((a,b)=>String(b.fecha).localeCompare(String(a.fecha))||String(b.created_at||'').localeCompare(String(a.created_at||'')));
-}
-function renderPurchases(){
-  if(!$('#purchase-date').value)$('#purchase-date').value=localISO();
-
-  const totalSpent=purchases.reduce((s,p)=>s+Number(p.gasto||0),0);
-  const totalCredits=purchases.reduce((s,p)=>s+Number(p.creditos||0),0);
-  const month=localISO().slice(0,7);
-  const monthSpent=purchases
-    .filter(p=>String(p.fecha||'').startsWith(month))
-    .reduce((s,p)=>s+Number(p.gasto||0),0);
-
-  $('#purchase-stat-spent').textContent=money(totalSpent);
-  $('#purchase-stat-credits').textContent=num(totalCredits);
-  $('#purchase-stat-average').textContent=totalCredits>0?money(totalSpent/totalCredits):money(0);
-  $('#purchase-stat-month').textContent=money(monthSpent);
-
-  const list=filteredPurchases();
-
-  $('#purchase-list').innerHTML=list.map(p=>{
-    const unit=Number(p.creditos)>0?Number(p.gasto||0)/Number(p.creditos):0;
-
-    return `<article class="purchase-card">
-      <div class="purchase-card-top">
-        <div class="purchase-app-main">
-          ${appLogoHTML(p.app)}
-          <div>
-            <strong>${esc(p.app)}</strong>
-            <span>${esc(formatISODate(p.fecha))}</span>
-          </div>
-        </div>
-        <div class="purchase-amount">${esc(money(p.gasto))}</div>
-      </div>
-
-      <div class="purchase-metrics">
-        <div class="purchase-metric"><span>Créditos</span><strong>${esc(num(p.creditos))}</strong></div>
-        <div class="purchase-metric"><span>Costo / crédito</span><strong>${esc(money(unit))}</strong></div>
-        <div class="purchase-metric"><span>Fecha</span><strong>${esc(formatISODate(p.fecha))}</strong></div>
-      </div>
-
-      <div class="purchase-actions">
-        <button class="btn btn-secondary" type="button" onclick="editPurchase('${esc(p.id)}')">Editar</button>
-        <button class="btn btn-danger" type="button" onclick="deletePurchase('${esc(p.id)}')">Eliminar</button>
-      </div>
-    </article>`;
-  }).join('');
-
-  $('#purchase-empty').classList.toggle('hidden',list.length>0);
-  updatePurchaseUnitPreview();
-}
-function exportPurchasesExcel(){
-  const list=filteredPurchases();
-  if(!list.length)return toast('No hay compras para exportar.',true);
-
-  const rows=list.map(p=>({
-    'Fecha':formatISODate(p.fecha),
-    'Aplicación':p.app,
-    'Créditos comprados':Number(p.creditos||0),
-    'Total gastado':Number(p.gasto||0),
-    'Costo por crédito':Number(p.creditos)>0?Number(p.gasto||0)/Number(p.creditos):0
-  }));
-
-  const ws=XLSX.utils.json_to_sheet(rows);
-  const wb=XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb,ws,'Compras');
-  XLSX.writeFile(wb,`Compras_creditos_${localISO()}.xlsx`);
-}
-
-/* Historial */
-function changePeriod(p,btn){
-  historyPeriod=p;
-  $$('.period-btn').forEach(x=>x.classList.toggle('active',x===btn));
-  $('#custom-range').classList.toggle('hidden',p!=='personalizado');
-  if(p!=='personalizado')renderHistory();
-}
-function applyCustomRange(){
-  const from=$('#date-from').value;
-  const to=$('#date-to').value;
-
-  if(!from||!to)return toast('Elegí ambas fechas.',true);
-  if(from>to)return toast('La fecha desde no puede ser posterior.',true);
-
-  customRange={from,to};
-  renderHistory();
-}
-function periodLimits(){
-  if(historyPeriod==='todo')return {from:null,to:null};
-  if(historyPeriod==='personalizado')return customRange;
-
-  const today=localISO();
-
-  if(historyPeriod==='hoy')return {from:today,to:today};
-
-  const [y,m,d]=today.split('-').map(Number);
-  const base=new Date(y,m-1,d,12);
-  let a,b;
-
-  if(historyPeriod==='semana'){
-    const day=(base.getDay()+6)%7;
-    a=new Date(base);
-    a.setDate(base.getDate()-day);
-    b=new Date(a);
-    b.setDate(a.getDate()+6);
-  }else if(historyPeriod==='mes'){
-    a=new Date(y,m-1,1,12);
-    b=new Date(y,m,0,12);
-  }else{
-    a=new Date(y,0,1,12);
-    b=new Date(y,11,31,12);
-  }
-
-  return {from:localISO(a),to:localISO(b)};
-}
-function filteredHistory(){
-  const {from,to}=periodLimits();
-  const q=norm($('#history-search').value);
-  const app=$('#history-app').value;
-  const type=$('#history-type').value;
-
-  return movements.filter(m=>{
-    const day=localISO(new Date(m.fecha));
-    if(from&&day<from)return false;
-    if(to&&day>to)return false;
-    if(app!=='TODAS'&&m.app!==app)return false;
-    if(type!=='TODOS'&&m.tipo!==type)return false;
-    if(q&&!norm(m.nombre).includes(q))return false;
-    return true;
-  });
-}
-function renderHistory(){
-  const list=filteredHistory();
-
-  $('#stat-money').textContent=money(list.reduce((a,m)=>a+Number(m.precio||0),0));
-  $('#stat-clients').textContent=list.filter(m=>m.tipo==='CLIENTE').length;
-  $('#stat-sellers').textContent=list.filter(m=>m.tipo==='VENDEDOR').length;
-  $('#stat-credits').textContent=num(
-    list.filter(m=>m.tipo==='VENDEDOR').reduce((a,m)=>a+Number(m.creditos||0),0)
-  );
-
-  $('#history-list').innerHTML=list.map(m=>`
-    <article class="movement">
-      <div class="movement-top">
-        <div class="movement-name">${esc(m.nombre)}</div>
-        <div class="movement-price">${esc(money(m.precio))}</div>
-      </div>
-
-      <div class="movement-meta">
-        <span class="app-chip">${esc(m.app)}</span>
-        <span class="type-chip ${m.tipo==='CLIENTE'?'client':'seller'}">${esc(m.tipo)}</span>
-      </div>
-
-      <div class="movement-details">
-        <div><span>Fecha</span><strong>${esc(dateTime(m.fecha))}</strong></div>
-        <div><span>Créditos</span><strong>${m.tipo==='VENDEDOR'?esc(num(m.creditos)):'No aplica'}</strong></div>
-      </div>
-
-      <div class="movement-actions">
-        <button class="btn btn-secondary" type="button" onclick="editMovementById('${m.id}')">Editar</button>
-        <button class="btn btn-danger" type="button" onclick="deleteMovement('${m.id}')">Eliminar</button>
-      </div>
-    </article>
-  `).join('');
-
-  $('#history-empty').classList.toggle('hidden',list.length>0);
-}
-function exportExcel(){
-  const list=filteredHistory();
-  if(!list.length)return toast('No hay datos para exportar.',true);
-
-  const rows=list.map(m=>({
-    'Fecha y hora':dateTime(m.fecha),
-    'Aplicación':m.app,
-    'Tipo':m.tipo,
-    'Nombre':m.nombre,
-    'Créditos':m.tipo==='VENDEDOR'?Number(m.creditos||0):'',
-    'Precio':Number(m.precio||0)
-  }));
-
-  const ws=XLSX.utils.json_to_sheet(rows);
-  const wb=XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb,ws,'Movimientos');
-  XLSX.writeFile(wb,`Control_ingresos_${historyPeriod}_${localISO()}.xlsx`);
-}
-
-/* Render general */
-function renderAll(){
-  renderDashboard();
-  renderRenewals();
-  renderApps();
-  renderClients();
-  renderSellers();
-  renderPurchases();
-  renderHistory();
-  updateMovementPreview();
-}
-
-/* Globals para botones renderizados */
-window.selectApp=selectApp;
-window.setClientFilter=setClientFilter;
-window.openClientModal=openClientModal;
-window.deleteClient=deleteClient;
-window.openClientProfile=openClientProfile;
-window.openSellerProfile=openSellerProfile;
-window.quickRenew=quickRenew;
-window.quickRenewApp=quickRenewApp;
-window.openWhatsApp=openWhatsApp;
-window.prepareSeller=prepareSeller;
-window.closeProfile=closeProfile;
-window.editMovementById=editMovementById;
-window.deleteMovement=deleteMovement;
-window.editPurchase=editPurchase;
-window.deletePurchase=deletePurchase;
-
-init();
+})();
 </script>
 </body>
 </html>
