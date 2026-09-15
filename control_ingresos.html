@@ -94,6 +94,309 @@ html.light-mode .btn-danger{color:#b42318;background:rgba(239,68,68,.08)}
   .status-overview{gap:6px}.status-card{min-height:90px;padding:12px 8px 10px}.status-card strong{font-size:25px}.status-card span{font-size:7.5px}.status-card .tap-hint{font-size:6.5px}
 }
 </style>
+
+<style>
+/* === DISEÑO CLIENTES + CONTADOR DE DÍAS === */
+.clients-panel{
+  border-radius:26px;
+  background:linear-gradient(180deg,rgba(17,30,49,.96),rgba(12,24,40,.96));
+  box-shadow:0 24px 70px rgba(0,0,0,.16);
+}
+html.light-mode .clients-panel{
+  background:linear-gradient(180deg,#eef0f2,#e2e5e8);
+}
+.client-list{
+  display:grid;
+  gap:10px;
+  padding:10px;
+}
+.client-row{
+  display:grid;
+  grid-template-columns:30px minmax(0,1.35fr) 125px 104px 96px 68px;
+  gap:12px;
+  align-items:center;
+  padding:13px 14px;
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:linear-gradient(135deg,rgba(255,255,255,.035),rgba(255,255,255,.012));
+  box-shadow:0 8px 22px rgba(0,0,0,.07);
+  transition:transform .16s ease,border-color .16s ease,background .16s ease;
+}
+.client-row:hover{
+  transform:translateY(-1px);
+  border-color:rgba(79,140,255,.30);
+  background:linear-gradient(135deg,rgba(79,140,255,.055),rgba(255,255,255,.018));
+}
+.client-row:last-child{border-bottom:1px solid var(--line)}
+html.light-mode .client-row{
+  background:rgba(255,255,255,.42);
+}
+.client-main{
+  display:flex;
+  align-items:center;
+  gap:11px;
+  min-width:0;
+}
+.client-avatar{
+  width:39px;
+  height:39px;
+  border-radius:13px;
+  flex:0 0 39px;
+  display:grid;
+  place-items:center;
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:.02em;
+  color:#dce9ff;
+  background:linear-gradient(145deg,rgba(79,140,255,.28),rgba(47,111,232,.12));
+  border:1px solid rgba(79,140,255,.24);
+}
+html.light-mode .client-avatar{color:#2457a7}
+.client-name{font-size:13px;font-weight:850;line-height:1.25}
+.client-meta{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  margin-top:5px;
+  font-size:9px;
+}
+.client-meta::before{
+  content:"";
+  width:5px;height:5px;border-radius:50%;
+  background:var(--accent);
+  box-shadow:0 0 0 3px rgba(79,140,255,.10);
+}
+.client-due{
+  padding:8px 10px;
+  border-radius:12px;
+  background:var(--soft-bg);
+  border:1px solid var(--line);
+}
+.client-due span{font-size:7px}
+.client-due strong{font-size:11px}
+
+/* El "morral"/marcador visual de días */
+.days-badge{
+  min-width:94px;
+  min-height:58px;
+  padding:7px 8px;
+  border-radius:15px;
+  border:1px solid var(--line);
+  display:grid;
+  grid-template-columns:auto auto;
+  grid-template-areas:
+    "value unit"
+    "caption caption";
+  align-items:end;
+  justify-content:center;
+  column-gap:4px;
+  background:var(--soft-bg);
+  text-align:center;
+}
+.days-badge .days-value{
+  grid-area:value;
+  font-size:21px;
+  line-height:1;
+  font-weight:900;
+  letter-spacing:-.05em;
+}
+.days-badge .days-unit{
+  grid-area:unit;
+  font-size:9px;
+  font-weight:850;
+  align-self:end;
+  padding-bottom:2px;
+}
+.days-badge .days-caption{
+  grid-area:caption;
+  display:block;
+  margin-top:4px;
+  font-size:7px;
+  line-height:1;
+  font-weight:850;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  opacity:.72;
+}
+.days-badge.ok{
+  color:#86efac;
+  border-color:rgba(34,197,94,.20);
+  background:linear-gradient(145deg,rgba(34,197,94,.12),rgba(34,197,94,.04));
+}
+.days-badge.soon{
+  color:#fcd34d;
+  border-color:rgba(245,158,11,.22);
+  background:linear-gradient(145deg,rgba(245,158,11,.14),rgba(245,158,11,.04));
+}
+.days-badge.expired{
+  color:#fca5a5;
+  border-color:rgba(239,68,68,.22);
+  background:linear-gradient(145deg,rgba(239,68,68,.14),rgba(239,68,68,.04));
+}
+html.light-mode .days-badge.ok{color:#16743a}
+html.light-mode .days-badge.soon{color:#946000}
+html.light-mode .days-badge.expired{color:#b42318}
+
+.state-pill{
+  justify-self:center;
+  font-size:8px;
+  padding:7px 9px;
+}
+.edit-btn{
+  border-radius:11px;
+  transition:background .15s ease,border-color .15s ease;
+}
+.edit-btn:hover{
+  background:rgba(79,140,255,.10);
+  border-color:rgba(79,140,255,.30);
+}
+
+/* Vista general por estado */
+.global-client-row{
+  display:grid;
+  grid-template-columns:minmax(0,1.05fr) minmax(0,1.45fr) 104px 94px;
+  gap:12px;
+  align-items:center;
+  margin:0;
+  padding:13px 14px;
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:linear-gradient(135deg,rgba(255,255,255,.035),rgba(255,255,255,.012));
+}
+.global-client-row:last-child{border-bottom:1px solid var(--line)}
+.global-client-main{
+  display:flex;
+  align-items:center;
+  gap:11px;
+  min-width:0;
+}
+.service-stack{gap:6px}
+.service-chip{
+  position:relative;
+  gap:5px;
+  padding:7px 8px;
+  border-radius:11px;
+}
+.service-chip .service-days{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:38px;
+  padding:3px 5px;
+  border-radius:7px;
+  font-size:7px;
+  font-weight:900;
+  background:rgba(255,255,255,.055);
+}
+.service-chip .service-days.ok{color:#86efac}
+.service-chip .service-days.soon{color:#fcd34d}
+.service-chip .service-days.expired{color:#fca5a5}
+
+/* Un toque más moderno en panel principal */
+.status-card{
+  background:
+    radial-gradient(circle at 90% 10%,rgba(79,140,255,.07),transparent 35%),
+    var(--panel);
+}
+.app-card{
+  background:
+    radial-gradient(circle at 95% 5%,rgba(79,140,255,.08),transparent 34%),
+    var(--panel);
+}
+
+@media(max-width:760px){
+  .clients-panel{
+    border-radius:20px;
+    overflow:hidden;
+  }
+  .client-list{
+    gap:9px;
+    padding:9px;
+  }
+  .client-row{
+    grid-template-columns:24px minmax(0,1fr) auto;
+    gap:10px;
+    padding:12px;
+    border-radius:17px;
+    align-items:center;
+  }
+  .row-check{
+    grid-column:1;
+    grid-row:1;
+    align-self:center;
+  }
+  .client-main{
+    grid-column:2/4;
+    grid-row:1;
+  }
+  .client-avatar{
+    width:37px;height:37px;flex-basis:37px;border-radius:12px;
+  }
+  .client-name{font-size:12px}
+  .client-due{
+    grid-column:2;
+    grid-row:2;
+    padding:8px 9px;
+  }
+  .days-badge{
+    grid-column:3;
+    grid-row:2/4;
+    min-width:86px;
+    min-height:61px;
+    align-self:stretch;
+  }
+  .days-badge .days-value{font-size:22px}
+  .state-pill{
+    grid-column:2;
+    grid-row:3;
+    justify-self:start;
+  }
+  .edit-btn{
+    grid-column:2/4;
+    grid-row:4;
+    width:100%;
+    height:38px;
+    font-size:9px;
+  }
+
+  .global-client-row{
+    grid-template-columns:minmax(0,1fr) auto;
+    gap:10px;
+    padding:12px;
+    border-radius:17px;
+  }
+  .global-client-main{grid-column:1}
+  .global-client-row>.days-badge{
+    grid-column:2;
+    grid-row:1;
+    min-width:86px;
+    min-height:58px;
+  }
+  .global-client-row>.service-stack{
+    grid-column:1/3;
+    grid-row:2;
+  }
+  .global-client-row>.state-pill{
+    grid-column:1;
+    grid-row:3;
+    justify-self:start;
+  }
+  .service-chip{
+    flex:1 1 125px;
+    justify-content:space-between;
+  }
+}
+@media(max-width:470px){
+  .client-list{padding:7px}
+  .client-row{padding:11px 10px}
+  .client-avatar{width:35px;height:35px;flex-basis:35px}
+  .days-badge{min-width:80px;padding:7px 6px}
+  .days-badge .days-value{font-size:20px}
+  .days-badge .days-unit{font-size:8px}
+  .days-badge .days-caption{font-size:6.5px}
+}
+</style>
+
 </head>
 <body>
 <section id="login-screen" class="login-screen">
@@ -265,6 +568,40 @@ function manualDateToTimestamp(iso){return /^\d{4}-\d{2}-\d{2}$/.test(String(iso
 function isoNextMonth(iso){if(!iso)return null;const [y,m,d]=iso.split('-').map(Number);const nm=m===12?1:m+1,ny=m===12?y+1:y;const ld=new Date(Date.UTC(ny,nm,0,12)).getUTCDate();return `${ny}-${String(nm).padStart(2,'0')}-${String(Math.min(d,ld)).padStart(2,'0')}`}
 function daysBetween(a,b){const p=s=>{const [y,m,d]=s.split('-').map(Number);return Date.UTC(y,m-1,d)};return Math.round((p(b)-p(a))/86400000)}
 function serviceStatus(due){if(!due)return {key:'ok',label:'Al día',days:9999};const diff=daysBetween(localISO(),due);if(diff<0)return {key:'expired',label:'Vencido',days:diff};if(diff<=3)return {key:'soon',label:diff===0?'Vence hoy':`Vence en ${diff} día${diff===1?'':'s'}`,days:diff};return {key:'ok',label:'Al día',days:diff}}
+function clientInitials(name){
+  return cleanName(name).split(' ').filter(Boolean).slice(0,2).map(x=>x[0]?.toUpperCase()||'').join('')||'CL';
+}
+function countdownData(status){
+  const days=Number(status?.days);
+  if(!Number.isFinite(days)||days===9999)return {value:'—',unit:'',caption:'sin fecha'};
+  if(days<0){
+    const n=Math.abs(days);
+    return {value:String(n),unit:n===1?'día':'días',caption:'vencido'};
+  }
+  if(days===0)return {value:'HOY',unit:'',caption:'vence'};
+  return {value:String(days),unit:days===1?'día':'días',caption:'restantes'};
+}
+function countdownBadgeHTML(status){
+  const d=countdownData(status);
+  return `<div class="days-badge ${esc(status?.key||'ok')}" aria-label="${esc(d.value)} ${esc(d.unit)} ${esc(d.caption)}"><strong class="days-value">${esc(d.value)}</strong><span class="days-unit">${esc(d.unit)}</span><small class="days-caption">${esc(d.caption)}</small></div>`;
+}
+function compactDaysLabel(status){
+  const days=Number(status?.days);
+  if(!Number.isFinite(days)||days===9999)return '—';
+  if(days<0)return `${Math.abs(days)}d venc.`;
+  if(days===0)return 'hoy';
+  return `${days}d`;
+}
+function mostRelevantService(services=[]){
+  if(!services.length)return null;
+  const order={expired:0,soon:1,ok:2};
+  return [...services].sort((a,b)=>{
+    const ka=order[a.status?.key]??9,kb=order[b.status?.key]??9;
+    if(ka!==kb)return ka-kb;
+    if(ka===0)return (a.status?.days??0)-(b.status?.days??0);
+    return (a.status?.days??9999)-(b.status?.days??9999);
+  })[0];
+}
 function laterDate(a,b){if(!a)return b;if(!b)return a;return a>b?a:b}
 function toast(msg,error=false){const t=$('#toast');t.textContent=msg;t.className='toast'+(error?' error':'');clearTimeout(toast.timer);toast.timer=setTimeout(()=>t.classList.add('hidden'),3000)}
 
@@ -348,8 +685,12 @@ function renderAppDetail(){
   $$('[data-detail-status]').forEach(card=>card.classList.toggle('active-filter',card.dataset.detailStatus===detailStatusFilter));
   $('#detail-client-list').innerHTML=list.length?list.map(c=>`<article class="client-row">
     <input class="row-check" type="checkbox" data-select-key="${esc(c.key)}" ${selectedClientKeys.has(c.key)?'checked':''} aria-label="Seleccionar ${esc(c.nombre)}">
-    <div><div class="client-name">${esc(c.nombre)}</div><div class="client-meta">${esc(selectedApp)}</div></div>
+    <div class="client-main">
+      <div class="client-avatar">${esc(clientInitials(c.nombre))}</div>
+      <div><div class="client-name">${esc(c.nombre)}</div><div class="client-meta">${esc(selectedApp)}</div></div>
+    </div>
     <div class="client-due"><span>Vencimiento</span><strong>${esc(formatISODate(c.service.due))}</strong></div>
+    ${countdownBadgeHTML(c.service.status)}
     <span class="state-pill ${c.service.status.key}">${esc(c.service.status.label)}</span>
     <button class="edit-btn" type="button" data-edit-key="${esc(c.key)}">Editar</button>
   </article>`).join(''):'<div class="client-empty">No hay clientes para mostrar con este filtro.</div>';
@@ -357,6 +698,7 @@ function renderAppDetail(){
   $$('[data-edit-key]').forEach(b=>b.addEventListener('click',()=>openClientModal(b.dataset.editKey)));
   updateSelectionUI(list);
 }
+
 function renderStatusClients(){
   if(!selectedOverallStatus)return;
   const meta=STATUS_META[selectedOverallStatus],q=norm($('#status-search').value);
@@ -368,12 +710,22 @@ function renderStatusClients(){
   $('#status-list-title').textContent=meta.title;$('#status-list-note').textContent=q?`${list.length} de ${all.length} clientes encontrados`:`${all.length} cliente${all.length===1?'':'s'}`;
   $('#status-client-list').innerHTML=list.length?list.map(c=>{
     const st=overallClientStatus(c);
-    const services=Object.values(c.services||{}).sort((a,b)=>a.due.localeCompare(b.due));
-    const chips=services.map(s=>`<button class="service-chip" type="button" data-open-service="${esc(s.app)}"><b>${esc(s.app)}</b><em>${esc(formatISODate(s.due))}</em></button>`).join('');
-    return `<article class="global-client-row"><div><div class="client-name">${esc(c.nombre)}</div><div class="client-meta">${services.length} servicio${services.length===1?'':'s'}</div></div><div class="service-stack">${chips}</div><span class="state-pill ${st.key}">${esc(st.label)}</span></article>`;
+    const services=Object.values(c.services||{}).sort((a,b)=>(a.status?.days??9999)-(b.status?.days??9999));
+    const relevant=mostRelevantService(services);
+    const chips=services.map(s=>`<button class="service-chip" type="button" data-open-service="${esc(s.app)}"><b>${esc(s.app)}</b><em>${esc(formatISODate(s.due))}</em><span class="service-days ${esc(s.status.key)}">${esc(compactDaysLabel(s.status))}</span></button>`).join('');
+    return `<article class="global-client-row">
+      <div class="global-client-main">
+        <div class="client-avatar">${esc(clientInitials(c.nombre))}</div>
+        <div><div class="client-name">${esc(c.nombre)}</div><div class="client-meta">${services.length} servicio${services.length===1?'':'s'}</div></div>
+      </div>
+      <div class="service-stack">${chips}</div>
+      ${relevant?countdownBadgeHTML(relevant.status):countdownBadgeHTML({key:'ok',days:9999})}
+      <span class="state-pill ${st.key}">${esc(st.label)}</span>
+    </article>`;
   }).join(''):'<div class="client-empty">No hay clientes para mostrar con este estado.</div>';
   $$('[data-open-service]').forEach(btn=>btn.addEventListener('click',()=>openApp(btn.dataset.openService)));
 }
+
 function render(){
   const profiles=clientProfiles();
   const counts=appCounts();
