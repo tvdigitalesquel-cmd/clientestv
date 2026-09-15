@@ -67,7 +67,7 @@ html.light-mode .btn-danger{color:#b42318;background:rgba(239,68,68,.08)}
 
 /* DETAIL */
 .detail-toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:24px}.detail-toolbar-actions{display:flex;align-items:center;gap:8px}.detail-title{display:flex;align-items:center;gap:14px;min-width:0}.detail-title .logo-wrap{width:54px;height:54px;border-radius:16px;flex:0 0 auto}.detail-title h2{font-size:24px;letter-spacing:-.04em}.detail-title p{font-size:10px;color:var(--muted);margin-top:4px}.all-count{font-size:11px;color:var(--muted);font-weight:700}
-.status-overview{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:22px 0 18px}.status-card{min-height:122px;padding:17px 18px;border:1px solid var(--line);border-radius:20px;background:var(--panel);box-shadow:0 10px 36px rgba(0,0,0,.08);position:relative;overflow:hidden}.status-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--green)}.status-card.soon::before{background:var(--yellow)}.status-card.expired::before{background:var(--red)}.status-card span{display:block;font-size:9px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}.status-card strong{display:block;margin-top:11px;font-size:32px;letter-spacing:-.05em}.status-card small{display:block;margin-top:7px;color:var(--muted-2);font-size:9px;line-height:1.4}
+.status-overview{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:22px 0 18px}.status-card{min-height:122px;padding:17px 18px;border:1px solid var(--line);border-radius:20px;background:var(--panel);box-shadow:0 10px 36px rgba(0,0,0,.08);position:relative;overflow:hidden}.status-card.clickable{cursor:pointer;transition:transform .18s ease,border-color .18s ease,background .18s ease;touch-action:manipulation}.status-card.clickable:hover{transform:translateY(-2px);border-color:var(--line-strong)}.status-card.clickable:active{transform:scale(.985)}.status-card.clickable:focus-visible{outline:3px solid rgba(79,140,255,.38);outline-offset:3px}.status-card.active-filter{border-color:rgba(79,140,255,.58);box-shadow:0 0 0 3px rgba(79,140,255,.10),0 10px 36px rgba(0,0,0,.08)}.status-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--green)}.status-card.soon::before{background:var(--yellow)}.status-card.expired::before{background:var(--red)}.status-card span{display:block;font-size:9px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}.status-card strong{display:block;margin-top:11px;font-size:32px;letter-spacing:-.05em}.status-card small{display:block;margin-top:7px;color:var(--muted-2);font-size:9px;line-height:1.4}.status-card .tap-hint{margin-top:9px;color:var(--text-soft);font-size:8px;font-weight:800;opacity:.72}.global-status-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin:10px 0 18px}.global-status-head h2{font-size:28px;letter-spacing:-.045em}.global-status-head p{font-size:10px;color:var(--muted);margin-top:6px}.global-status-chip{display:inline-flex;align-items:center;gap:7px;padding:8px 11px;border-radius:999px;border:1px solid var(--line);background:var(--soft-bg);font-size:9px;font-weight:800;color:var(--text-soft)}.global-client-row{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1.6fr) 105px;gap:14px;align-items:center;padding:15px 18px;border-bottom:1px solid var(--line)}.global-client-row:last-child{border-bottom:0}.service-stack{display:flex;flex-wrap:wrap;gap:7px}.service-chip{display:inline-flex;align-items:center;gap:6px;padding:7px 9px;border-radius:10px;border:1px solid var(--line);background:var(--soft-bg);font-size:9px;color:var(--text-soft);cursor:pointer}.service-chip:hover{border-color:rgba(79,140,255,.38)}.service-chip b{font-size:9px}.service-chip em{font-style:normal;color:var(--muted)}
 .clients-panel{border:1px solid var(--line);border-radius:24px;background:var(--panel);overflow:hidden}.clients-panel-head{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:17px 18px;border-bottom:1px solid var(--line)}.clients-panel-head h3{font-size:15px;letter-spacing:-.02em}.clients-panel-head span{display:block;color:var(--muted);font-size:9px;margin-top:4px}.search-wrap{width:min(340px,100%)}
 .selection-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 18px;border-bottom:1px solid var(--line);background:var(--soft-bg)}.selection-left,.selection-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.check-label{display:inline-flex;align-items:center;gap:8px;color:var(--text-soft);font-size:10px;font-weight:800;cursor:pointer}.check-label input,.row-check{width:17px;height:17px;accent-color:var(--accent);cursor:pointer}.selected-note{font-size:9px;color:var(--muted)}
 .client-list{display:grid}.client-row{display:grid;grid-template-columns:34px minmax(0,1.45fr) minmax(130px,.65fr) minmax(112px,.55fr) 82px;gap:14px;align-items:center;padding:15px 18px;border-bottom:1px solid var(--line)}.client-row:last-child{border-bottom:0}.client-name{font-size:13px;font-weight:800;color:var(--text);overflow-wrap:anywhere}.client-meta{font-size:9px;color:var(--muted);margin-top:5px}.client-due span{display:block;font-size:8px;text-transform:uppercase;letter-spacing:.07em;font-weight:800;color:var(--muted-2)}.client-due strong{display:block;font-size:11px;margin-top:4px;color:var(--text-soft)}.state-pill{justify-self:start;display:inline-flex;align-items:center;padding:7px 10px;border-radius:999px;font-size:9px;font-weight:800;white-space:nowrap}.state-pill.ok{color:#86efac;background:rgba(34,197,94,.10);border:1px solid rgba(34,197,94,.18)}html.light-mode .state-pill.ok{color:#16743a}.state-pill.soon{color:#fcd34d;background:rgba(245,158,11,.10);border:1px solid rgba(245,158,11,.18)}html.light-mode .state-pill.soon{color:#9a6700}.state-pill.expired{color:#fca5a5;background:rgba(239,68,68,.10);border:1px solid rgba(239,68,68,.18)}html.light-mode .state-pill.expired{color:#b42318}.edit-btn{height:34px;padding:0 10px;border-radius:10px;border:1px solid var(--line);background:var(--soft-bg);color:var(--text-soft);font-size:9px;font-weight:800}.client-empty{padding:38px 20px;text-align:center;color:var(--muted);font-size:12px}
@@ -78,11 +78,18 @@ html.light-mode .btn-danger{color:#b42318;background:rgba(239,68,68,.08)}
 
 @media(max-width:1100px){.apps-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.client-row{grid-template-columns:34px minmax(0,1fr) 120px 105px 72px}}
 @media(max-width:760px){
-  .main{padding-top:30px}.hero{align-items:flex-start;flex-direction:column}.sync-note{text-align:left}.overview{grid-template-columns:1fr}.apps-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.app-card{min-height:220px}.app-count strong{font-size:40px}.topbar-inner{width:min(100% - 22px,1320px)}
-  .top-actions{gap:5px}.action-btn{padding:0 10px}.action-btn .optional{display:none}.status-overview{grid-template-columns:1fr}.detail-toolbar{align-items:flex-start;flex-direction:column}.detail-toolbar-actions{width:100%;justify-content:space-between}.clients-panel-head{align-items:flex-start;flex-direction:column}.search-wrap{width:100%}.selection-bar{align-items:flex-start;flex-direction:column}.selection-right{width:100%}.selection-right .btn{flex:1}
-  .client-row{grid-template-columns:26px minmax(0,1fr) auto;gap:10px}.client-due{grid-column:2/3}.state-pill{grid-column:3/4;grid-row:1/3;align-self:center}.edit-btn{grid-column:2/4;width:100%}.apps-picker{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .main{padding-top:24px;padding-bottom:92px}.hero{align-items:flex-start;flex-direction:column;gap:10px;margin-bottom:18px}.hero p{font-size:12px}.sync-note{text-align:left}.overview{grid-template-columns:1fr}.apps-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.app-card{min-height:205px;padding:15px;border-radius:19px}.app-count strong{font-size:38px}.topbar-inner{width:min(100% - 20px,1320px);min-height:66px}.brand-mark{width:38px;height:38px}.brand strong{font-size:12px}.brand small{font-size:9px}
+  .top-actions{gap:5px}.action-btn{height:38px;padding:0 10px}.action-btn .optional{display:none}
+  .status-overview{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:16px 0}.status-card{min-height:96px;padding:13px 10px 11px;border-radius:16px}.status-card::before{width:3px}.status-card span{font-size:8px;letter-spacing:.04em;line-height:1.15;min-height:18px}.status-card strong{font-size:27px;margin-top:7px}.status-card small{display:none}.status-card .tap-hint{display:block;font-size:7px;margin-top:5px}
+  .detail-toolbar{align-items:flex-start;flex-direction:column}.detail-toolbar-actions{width:100%;justify-content:space-between}.clients-panel{border-radius:18px}.clients-panel-head{align-items:flex-start;flex-direction:column;padding:14px}.search-wrap{width:100%}.selection-bar{align-items:flex-start;flex-direction:column;padding:10px 14px}.selection-right{width:100%}.selection-right .btn{flex:1}
+  .client-row{grid-template-columns:26px minmax(0,1fr) auto;gap:10px;padding:14px}.client-due{grid-column:2/3}.state-pill{grid-column:3/4;grid-row:1/3;align-self:center}.edit-btn{grid-column:2/4;width:100%}.apps-picker{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .global-status-head{align-items:flex-start;flex-direction:column;gap:10px}.global-status-head h2{font-size:24px}.global-client-row{grid-template-columns:1fr auto;gap:10px;padding:14px}.global-client-row .service-stack{grid-column:1/3}.global-client-row .state-pill{grid-column:2;grid-row:1;align-self:start}.service-chip{padding:8px 9px}
 }
-@media(max-width:470px){.apps-grid{grid-template-columns:1fr}.main{width:calc(100% - 22px)}.topbar-inner{width:calc(100% - 20px)}.brand small{max-width:125px}.login-card{padding:28px 22px}.hero h1{font-size:34px}.apps-picker{grid-template-columns:1fr}.due-row{grid-template-columns:1fr}.form-actions{grid-template-columns:1fr}.modal-card{padding:18px}.action-btn.refresh{display:none}}
+@media(max-width:470px){
+  .main{width:calc(100% - 20px)}.topbar-inner{width:calc(100% - 18px)}.brand small{max-width:118px}.login-card{padding:28px 22px}.hero h1{font-size:32px}.hero p{display:none}.section-head{align-items:flex-start;flex-direction:column;gap:10px}.section-head-right{width:100%;justify-content:space-between}.section-head-right .btn{min-width:132px}
+  .apps-grid{grid-template-columns:1fr}.app-card{min-height:190px}.apps-picker{grid-template-columns:1fr}.due-row{grid-template-columns:1fr}.form-actions{grid-template-columns:1fr}.modal-card{padding:18px}.action-btn.refresh{display:none}
+  .status-overview{gap:6px}.status-card{min-height:90px;padding:12px 8px 10px}.status-card strong{font-size:25px}.status-card span{font-size:7.5px}.status-card .tap-hint{font-size:6.5px}
+}
 </style>
 </head>
 <body>
@@ -127,9 +134,9 @@ html.light-mode .btn-danger{color:#b42318;background:rgba(239,68,68,.08)}
 
     <div id="apps-home-view">
       <section class="status-overview home-status-overview" aria-label="Estado general de clientes">
-        <article class="status-card"><span>Al día</span><strong id="home-ok-count">0</strong><small>Clientes cuyo vencimiento más próximo supera los próximos 3 días.</small></article>
-        <article class="status-card soon"><span>Por vencer</span><strong id="home-soon-count">0</strong><small>Clientes que vencen hoy o dentro de los próximos 3 días.</small></article>
-        <article class="status-card expired"><span>Vencidos</span><strong id="home-expired-count">0</strong><small>Clientes con al menos un servicio vencido.</small></article>
+        <article class="status-card clickable" role="button" tabindex="0" data-home-status="ok" aria-label="Ver clientes al día"><span>Al día</span><strong id="home-ok-count">0</strong><small>Clientes cuyo vencimiento más próximo supera los próximos 3 días.</small><div class="tap-hint">Ver clientes →</div></article>
+        <article class="status-card soon clickable" role="button" tabindex="0" data-home-status="soon" aria-label="Ver clientes por vencer"><span>Por vencer</span><strong id="home-soon-count">0</strong><small>Clientes que vencen hoy o dentro de los próximos 3 días.</small><div class="tap-hint">Ver clientes →</div></article>
+        <article class="status-card expired clickable" role="button" tabindex="0" data-home-status="expired" aria-label="Ver clientes vencidos"><span>Vencidos</span><strong id="home-expired-count">0</strong><small>Clientes con al menos un servicio vencido.</small><div class="tap-hint">Ver clientes →</div></article>
       </section>
       <div class="section-head">
         <h2>Clientes por plataforma</h2>
@@ -146,9 +153,9 @@ html.light-mode .btn-danger{color:#b42318;background:rgba(239,68,68,.08)}
       </div>
       <div class="detail-title"><div id="detail-app-logo"></div><div><div class="eyebrow">Clientes de la aplicación</div><h2 id="detail-app-name">Aplicación</h2><p id="detail-app-subtitle">Todos los clientes y sus vencimientos.</p></div></div>
       <section class="status-overview" aria-label="Estado de clientes">
-        <article class="status-card"><span>Al día</span><strong id="detail-ok-count">0</strong><small>Vencen después de los próximos 3 días.</small></article>
-        <article class="status-card soon"><span>Por vencer</span><strong id="detail-soon-count">0</strong><small>Vencen hoy o dentro de los próximos 3 días.</small></article>
-        <article class="status-card expired"><span>Vencidos</span><strong id="detail-expired-count">0</strong><small>La fecha de vencimiento ya pasó.</small></article>
+        <article class="status-card clickable" role="button" tabindex="0" data-detail-status="ok" aria-label="Filtrar clientes al día"><span>Al día</span><strong id="detail-ok-count">0</strong><small>Vencen después de los próximos 3 días.</small><div class="tap-hint">Filtrar →</div></article>
+        <article class="status-card soon clickable" role="button" tabindex="0" data-detail-status="soon" aria-label="Filtrar clientes por vencer"><span>Por vencer</span><strong id="detail-soon-count">0</strong><small>Vencen hoy o dentro de los próximos 3 días.</small><div class="tap-hint">Filtrar →</div></article>
+        <article class="status-card expired clickable" role="button" tabindex="0" data-detail-status="expired" aria-label="Filtrar clientes vencidos"><span>Vencidos</span><strong id="detail-expired-count">0</strong><small>La fecha de vencimiento ya pasó.</small><div class="tap-hint">Filtrar →</div></article>
       </section>
       <section class="clients-panel">
         <div class="clients-panel-head">
@@ -160,6 +167,28 @@ html.light-mode .btn-danger{color:#b42318;background:rgba(239,68,68,.08)}
           <div class="selection-right"><button id="delete-selected-btn" class="btn btn-danger" type="button" disabled>Eliminar seleccionados</button></div>
         </div>
         <div id="detail-client-list" class="client-list"></div>
+      </section>
+    </section>
+
+    <section id="status-clients-view" class="hidden">
+      <div class="detail-toolbar">
+        <button id="back-status-btn" class="btn" type="button">← Volver a aplicaciones</button>
+        <div class="all-count" id="status-total-note">0 clientes</div>
+      </div>
+      <div class="global-status-head">
+        <div>
+          <div class="eyebrow">Estado general</div>
+          <h2 id="status-view-title">Clientes</h2>
+          <p id="status-view-subtitle">Clientes según el estado de sus vencimientos.</p>
+        </div>
+        <div id="status-view-chip" class="global-status-chip">Estado</div>
+      </div>
+      <section class="clients-panel">
+        <div class="clients-panel-head">
+          <div><h3 id="status-list-title">Clientes</h3><span id="status-list-note">0 clientes</span></div>
+          <div class="search-wrap"><input id="status-search" class="input" type="search" placeholder="Buscar cliente..."></div>
+        </div>
+        <div id="status-client-list" class="client-list"></div>
       </section>
     </section>
   </main>
@@ -188,7 +217,7 @@ const SUPABASE_KEY='sb_publishable_4ogrbtxBrBWBFj-NRJOrbg_XnpmO4pS';
 const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const APPS=['TV','FUTURE','TV PLUS 2','FLUJO TV','MAR TV'];
 const APP_LOGOS={'TV':'img/tv.png','FUTURE':'img/future.png','TV PLUS 2':'img/tvplus2.png','FLUJO TV':'img/flujo.png','MAR TV':'img/martv.png'};
-let user=null,movements=[],savedClients=[],selectedApp=null,selectedClientKeys=new Set(),modalPrefillDates={};
+let user=null,movements=[],savedClients=[],selectedApp=null,selectedClientKeys=new Set(),modalPrefillDates={},selectedOverallStatus=null,detailStatusFilter=null;
 const $=s=>document.querySelector(s);
 const $$=s=>[...document.querySelectorAll(s)];
 function cleanName(v){return String(v||'').trim().replace(/\s+/g,' ')}
@@ -233,29 +262,88 @@ function clientProfiles(){
 }
 function appCounts(){const p=clientProfiles();return APPS.map(app=>({app,count:p.filter(c=>c.services[app]).length}))}
 function appClients(app){return clientProfiles().filter(c=>c.services[app]).map(c=>({...c,service:c.services[app]})).sort((a,b)=>{const order={expired:0,soon:1,ok:2};return (order[a.service.status.key]-order[b.service.status.key])||(a.service.status.days-b.service.status.days)||a.nombre.localeCompare(b.nombre,'es')})}
+function overallClientStatus(c){
+  const services=Object.values(c.services||{});
+  if(!services.length)return {key:'ok',label:'Al día'};
+  if(services.some(s=>s.status.key==='expired'))return {key:'expired',label:'Vencido'};
+  if(services.some(s=>s.status.key==='soon'))return {key:'soon',label:'Por vencer'};
+  return {key:'ok',label:'Al día'};
+}
+const STATUS_META={
+  ok:{title:'Clientes al día',subtitle:'Clientes sin servicios vencidos ni próximos a vencer en 3 días.',chip:'Al día'},
+  soon:{title:'Clientes por vencer',subtitle:'Clientes con al menos un servicio que vence hoy o dentro de 3 días.',chip:'Por vencer'},
+  expired:{title:'Clientes vencidos',subtitle:'Clientes que tienen al menos un servicio con fecha de vencimiento pasada.',chip:'Vencidos'}
+};
 
 function loadTheme(){const light=localStorage.getItem('apps_clientes_tema')==='light';document.documentElement.classList.toggle('light-mode',light);updateThemeButton()}
 function updateThemeButton(){const light=document.documentElement.classList.contains('light-mode');$('#theme-btn').innerHTML=light?'🌙 <span class="optional">Modo oscuro</span>':'☀ <span class="optional">Modo claro</span>';document.querySelector('meta[name="theme-color"]').setAttribute('content',light?'#2f343b':'#07111f')}
 function toggleTheme(){const light=document.documentElement.classList.toggle('light-mode');localStorage.setItem('apps_clientes_tema',light?'light':'dark');updateThemeButton()}
 
-function openApp(app){if(!APPS.includes(app))return;selectedApp=app;selectedClientKeys.clear();$('#detail-search').value='';$('#apps-home-view').classList.add('hidden');$('#app-detail-view').classList.remove('hidden');renderAppDetail();window.scrollTo({top:0,behavior:'smooth'})}
-function closeApp(){selectedApp=null;selectedClientKeys.clear();$('#app-detail-view').classList.add('hidden');$('#apps-home-view').classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'})}
-function updateSelectionUI(displayed=[]){const selected=selectedClientKeys.size;$('#selected-count').textContent=`${selected} seleccionado${selected===1?'':'s'}`;$('#delete-selected-btn').disabled=!selected;const allBox=$('#select-all-clients');const visibleKeys=displayed.map(c=>c.key);const selectedVisible=visibleKeys.filter(k=>selectedClientKeys.has(k)).length;allBox.checked=visibleKeys.length>0&&selectedVisible===visibleKeys.length;allBox.indeterminate=selectedVisible>0&&selectedVisible<visibleKeys.length}
+function openApp(app){
+  if(!APPS.includes(app))return;
+  selectedOverallStatus=null;detailStatusFilter=null;selectedApp=app;selectedClientKeys.clear();
+  $('#detail-search').value='';$('#status-search').value='';
+  $('#apps-home-view').classList.add('hidden');$('#status-clients-view').classList.add('hidden');$('#app-detail-view').classList.remove('hidden');
+  renderAppDetail();window.scrollTo({top:0,behavior:'smooth'});
+}
+function closeApp(){
+  selectedApp=null;detailStatusFilter=null;selectedClientKeys.clear();
+  $('#app-detail-view').classList.add('hidden');$('#status-clients-view').classList.add('hidden');$('#apps-home-view').classList.remove('hidden');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function openStatusView(status){
+  if(!STATUS_META[status])return;
+  selectedOverallStatus=status;selectedApp=null;detailStatusFilter=null;selectedClientKeys.clear();
+  $('#status-search').value='';$('#apps-home-view').classList.add('hidden');$('#app-detail-view').classList.add('hidden');$('#status-clients-view').classList.remove('hidden');
+  renderStatusClients();window.scrollTo({top:0,behavior:'smooth'});
+}
+function closeStatusView(){
+  selectedOverallStatus=null;$('#status-clients-view').classList.add('hidden');$('#app-detail-view').classList.add('hidden');$('#apps-home-view').classList.remove('hidden');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function updateSelectionUI(displayed=[]){
+  const selected=selectedClientKeys.size;$('#selected-count').textContent=`${selected} seleccionado${selected===1?'':'s'}`;$('#delete-selected-btn').disabled=!selected;
+  const allBox=$('#select-all-clients');const visibleKeys=displayed.map(c=>c.key);const selectedVisible=visibleKeys.filter(k=>selectedClientKeys.has(k)).length;
+  allBox.checked=visibleKeys.length>0&&selectedVisible===visibleKeys.length;allBox.indeterminate=selectedVisible>0&&selectedVisible<visibleKeys.length;
+}
 function renderAppDetail(){
-  if(!selectedApp)return;const all=appClients(selectedApp),q=norm($('#detail-search').value),list=all.filter(c=>!q||c.key.includes(q));
+  if(!selectedApp)return;
+  const all=appClients(selectedApp),q=norm($('#detail-search').value);
+  const list=all.filter(c=>(!detailStatusFilter||c.service.status.key===detailStatusFilter)&&(!q||c.key.includes(q)));
   const valid=new Set(all.map(c=>c.key));selectedClientKeys=new Set([...selectedClientKeys].filter(k=>valid.has(k)));
   const ok=all.filter(c=>c.service.status.key==='ok').length,soon=all.filter(c=>c.service.status.key==='soon').length,expired=all.filter(c=>c.service.status.key==='expired').length;
-  $('#detail-app-logo').innerHTML=appLogoHTML(selectedApp);$('#detail-app-name').textContent=selectedApp;$('#detail-app-subtitle').textContent=`Todos los clientes asociados a ${selectedApp} y el estado de su vencimiento.`;$('#detail-total-note').textContent=`${all.length} cliente${all.length===1?'':'s'}`;$('#detail-ok-count').textContent=ok;$('#detail-soon-count').textContent=soon;$('#detail-expired-count').textContent=expired;$('#detail-list-note').textContent=q?`${list.length} de ${all.length} clientes encontrados`:`${all.length} cliente${all.length===1?'':'s'} en ${selectedApp}`;
+  $('#detail-app-logo').innerHTML=appLogoHTML(selectedApp);$('#detail-app-name').textContent=selectedApp;$('#detail-app-subtitle').textContent=`Todos los clientes asociados a ${selectedApp} y el estado de su vencimiento.`;
+  $('#detail-total-note').textContent=`${all.length} cliente${all.length===1?'':'s'}`;$('#detail-ok-count').textContent=ok;$('#detail-soon-count').textContent=soon;$('#detail-expired-count').textContent=expired;
+  const filterLabel=detailStatusFilter?` · ${STATUS_META[detailStatusFilter].chip}`:'';
+  $('#detail-list-note').textContent=q||detailStatusFilter?`${list.length} de ${all.length} clientes${filterLabel}`:`${all.length} cliente${all.length===1?'':'s'} en ${selectedApp}`;
+  $$('[data-detail-status]').forEach(card=>card.classList.toggle('active-filter',card.dataset.detailStatus===detailStatusFilter));
   $('#detail-client-list').innerHTML=list.length?list.map(c=>`<article class="client-row">
     <input class="row-check" type="checkbox" data-select-key="${esc(c.key)}" ${selectedClientKeys.has(c.key)?'checked':''} aria-label="Seleccionar ${esc(c.nombre)}">
     <div><div class="client-name">${esc(c.nombre)}</div><div class="client-meta">${esc(selectedApp)}</div></div>
     <div class="client-due"><span>Vencimiento</span><strong>${esc(formatISODate(c.service.due))}</strong></div>
     <span class="state-pill ${c.service.status.key}">${esc(c.service.status.label)}</span>
     <button class="edit-btn" type="button" data-edit-key="${esc(c.key)}">Editar</button>
-  </article>`).join(''):'<div class="client-empty">No hay clientes para mostrar con esta búsqueda.</div>';
+  </article>`).join(''):'<div class="client-empty">No hay clientes para mostrar con este filtro.</div>';
   $$('[data-select-key]').forEach(cb=>cb.addEventListener('change',()=>{cb.checked?selectedClientKeys.add(cb.dataset.selectKey):selectedClientKeys.delete(cb.dataset.selectKey);updateSelectionUI(list)}));
   $$('[data-edit-key]').forEach(b=>b.addEventListener('click',()=>openClientModal(b.dataset.editKey)));
   updateSelectionUI(list);
+}
+function renderStatusClients(){
+  if(!selectedOverallStatus)return;
+  const meta=STATUS_META[selectedOverallStatus],q=norm($('#status-search').value);
+  const all=clientProfiles().filter(c=>overallClientStatus(c).key===selectedOverallStatus).sort((a,b)=>a.nombre.localeCompare(b.nombre,'es'));
+  const list=all.filter(c=>!q||c.key.includes(q)||c.apps.some(app=>norm(app).includes(q)));
+  $('#status-view-title').textContent=meta.title;$('#status-view-subtitle').textContent=meta.subtitle;$('#status-view-chip').textContent=meta.chip;
+  $('#status-view-chip').className=`global-status-chip state-pill ${selectedOverallStatus}`;
+  $('#status-total-note').textContent=`${all.length} cliente${all.length===1?'':'s'}`;
+  $('#status-list-title').textContent=meta.title;$('#status-list-note').textContent=q?`${list.length} de ${all.length} clientes encontrados`:`${all.length} cliente${all.length===1?'':'s'}`;
+  $('#status-client-list').innerHTML=list.length?list.map(c=>{
+    const st=overallClientStatus(c);
+    const services=Object.values(c.services||{}).sort((a,b)=>a.due.localeCompare(b.due));
+    const chips=services.map(s=>`<button class="service-chip" type="button" data-open-service="${esc(s.app)}"><b>${esc(s.app)}</b><em>${esc(formatISODate(s.due))}</em></button>`).join('');
+    return `<article class="global-client-row"><div><div class="client-name">${esc(c.nombre)}</div><div class="client-meta">${services.length} servicio${services.length===1?'':'s'}</div></div><div class="service-stack">${chips}</div><span class="state-pill ${st.key}">${esc(st.label)}</span></article>`;
+  }).join(''):'<div class="client-empty">No hay clientes para mostrar con este estado.</div>';
+  $$('[data-open-service]').forEach(btn=>btn.addEventListener('click',()=>openApp(btn.dataset.openService)));
 }
 function render(){
   const profiles=clientProfiles();
@@ -265,13 +353,7 @@ function render(){
   const max=Math.max(1,...visibleCounts.map(x=>x.count));
   const sorted=[...visibleCounts].sort((a,b)=>b.count-a.count||APPS.indexOf(a.app)-APPS.indexOf(b.app));
 
-  const overall=profiles.map(c=>{
-    const services=Object.values(c.services||{});
-    if(!services.length)return {key:'ok'};
-    if(services.some(s=>s.status.key==='expired'))return {key:'expired'};
-    if(services.some(s=>s.status.key==='soon'))return {key:'soon'};
-    return {key:'ok'};
-  });
+  const overall=profiles.map(c=>overallClientStatus(c));
 
   $('#home-ok-count').textContent=overall.filter(x=>x.key==='ok').length;
   $('#home-soon-count').textContent=overall.filter(x=>x.key==='soon').length;
@@ -297,6 +379,7 @@ function render(){
     if(selectedStillExists)renderAppDetail();
     else closeApp();
   }
+  if(selectedOverallStatus)renderStatusClients();
   $('#sync-note').textContent=`Actualizado ${new Intl.DateTimeFormat('es-AR',{hour:'2-digit',minute:'2-digit'}).format(new Date())}`;
 }
 
@@ -333,7 +416,38 @@ async function login(e){e.preventDefault();const btn=$('#login-btn'),err=$('#log
 function showLogin(){user=null;$('#login-screen').classList.remove('hidden');$('#app-screen').classList.add('hidden')}
 async function showApp(u){user=u;$('#login-screen').classList.add('hidden');$('#app-screen').classList.remove('hidden');$('#user-email').textContent=u.email||'Panel administrativo';await loadData()}
 
-$('#login-form').addEventListener('submit',login);$('#logout-btn').addEventListener('click',()=>db.auth.signOut());$('#refresh-btn').addEventListener('click',loadData);$('#theme-btn').addEventListener('click',toggleTheme);$('#back-apps-btn').addEventListener('click',closeApp);$('#detail-search').addEventListener('input',renderAppDetail);$('#home-add-client-btn').addEventListener('click',()=>openClientModal());$('#top-add-client-btn').addEventListener('click',()=>openClientModal());$('#detail-add-client-btn').addEventListener('click',()=>openClientModal());$('#client-modal-close').addEventListener('click',closeClientModal);$('#client-cancel-btn').addEventListener('click',closeClientModal);$('#client-modal').addEventListener('click',e=>{if(e.target.id==='client-modal')closeClientModal()});$('#client-form').addEventListener('submit',saveClient);$('#delete-selected-btn').addEventListener('click',deleteSelectedClients);$('#select-all-clients').addEventListener('change',e=>{const q=norm($('#detail-search').value),list=appClients(selectedApp).filter(c=>!q||c.key.includes(q));if(e.target.checked)list.forEach(c=>selectedClientKeys.add(c.key));else list.forEach(c=>selectedClientKeys.delete(c.key));renderAppDetail()});
+$('#login-form').addEventListener('submit',login);
+$('#logout-btn').addEventListener('click',()=>db.auth.signOut());
+$('#refresh-btn').addEventListener('click',loadData);
+$('#theme-btn').addEventListener('click',toggleTheme);
+$('#back-apps-btn').addEventListener('click',closeApp);
+$('#back-status-btn').addEventListener('click',closeStatusView);
+$('#detail-search').addEventListener('input',renderAppDetail);
+$('#status-search').addEventListener('input',renderStatusClients);
+$('#home-add-client-btn').addEventListener('click',()=>openClientModal());
+$('#top-add-client-btn').addEventListener('click',()=>openClientModal());
+$('#detail-add-client-btn').addEventListener('click',()=>openClientModal());
+$('#client-modal-close').addEventListener('click',closeClientModal);
+$('#client-cancel-btn').addEventListener('click',closeClientModal);
+$('#client-modal').addEventListener('click',e=>{if(e.target.id==='client-modal')closeClientModal()});
+$('#client-form').addEventListener('submit',saveClient);
+$('#delete-selected-btn').addEventListener('click',deleteSelectedClients);
+$$('[data-home-status]').forEach(card=>{
+  const go=()=>openStatusView(card.dataset.homeStatus);
+  card.addEventListener('click',go);
+  card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}});
+});
+$$('[data-detail-status]').forEach(card=>{
+  const go=()=>{detailStatusFilter=detailStatusFilter===card.dataset.detailStatus?null:card.dataset.detailStatus;selectedClientKeys.clear();renderAppDetail();document.querySelector('.clients-panel')?.scrollIntoView({behavior:'smooth',block:'start'})};
+  card.addEventListener('click',go);
+  card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}});
+});
+$('#select-all-clients').addEventListener('change',e=>{
+  const q=norm($('#detail-search').value);
+  const list=appClients(selectedApp).filter(c=>(!detailStatusFilter||c.service.status.key===detailStatusFilter)&&(!q||c.key.includes(q)));
+  if(e.target.checked)list.forEach(c=>selectedClientKeys.add(c.key));else list.forEach(c=>selectedClientKeys.delete(c.key));
+  renderAppDetail();
+});
 
 (async function init(){loadTheme();renderClientAppPicker([]);const {data:{session}}=await db.auth.getSession();if(session?.user)await showApp(session.user);else showLogin();db.auth.onAuthStateChange(async(_event,session)=>{if(session?.user)await showApp(session.user);else showLogin()})})();
 </script>
