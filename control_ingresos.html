@@ -74,6 +74,9 @@ html.light-mode .btn-danger{color:#b42318;background:rgba(239,68,68,.08)}
 
 /* MODAL */
 .modal{position:fixed;inset:0;z-index:100;background:rgba(5,10,18,.62);backdrop-filter:blur(5px);display:grid;place-items:center;padding:18px}.modal-card{width:min(690px,100%);max-height:92vh;overflow:auto;border:1px solid var(--line-strong);border-radius:24px;background:var(--panel);box-shadow:var(--shadow);padding:22px}.modal-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding-bottom:15px;border-bottom:1px solid var(--line);margin-bottom:16px}.modal-head h2{font-size:21px;letter-spacing:-.035em}.modal-head p{font-size:10px;color:var(--muted);margin-top:5px}.close-btn{width:38px;height:38px;border-radius:11px;border:1px solid var(--line);background:var(--soft-bg);color:var(--text);font-size:19px}.client-form{display:grid;gap:16px}.apps-picker{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.app-option{position:relative}.app-option input{position:absolute;opacity:0}.app-option label{min-height:62px;border-radius:13px;border:1px solid var(--line);background:var(--soft-bg);display:flex;align-items:center;gap:8px;padding:8px;cursor:pointer;color:var(--muted)}.app-option input:checked+label{border-color:rgba(79,140,255,.62);background:rgba(79,140,255,.11);color:var(--accent)}.app-option .mini-check{width:19px;height:19px;border:1.6px solid currentColor;border-radius:6px;display:grid;place-items:center;flex:0 0 auto}.app-option input:checked+label .mini-check::after{content:'✓';font-size:11px;font-weight:900}.app-option .mini-logo{width:32px;height:32px;border-radius:9px;border:1px solid var(--line);background:var(--panel-2);display:grid;place-items:center;overflow:hidden}.app-option .mini-logo img{width:100%;height:100%;object-fit:contain;padding:4px}.app-option strong{font-size:10px;overflow-wrap:anywhere}.due-list{display:grid;gap:8px}.due-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(155px,.7fr);align-items:center;gap:10px;padding:10px;border:1px solid var(--line);border-radius:13px;background:var(--soft-bg)}.due-row strong{font-size:11px}.due-row small{display:block;font-size:8px;color:var(--muted);margin-top:3px}.form-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.helper{font-size:9px;color:var(--muted-2);line-height:1.5}
+.password-note{padding:11px 12px;border-radius:12px;border:1px solid var(--line);background:var(--soft-bg);color:var(--muted);font-size:10px;line-height:1.55}
+.password-error{padding:11px 12px;border-radius:12px;border:1px solid rgba(239,68,68,.25);background:rgba(239,68,68,.08);color:#fecaca;font-size:10px;line-height:1.45}
+.password-success{padding:11px 12px;border-radius:12px;border:1px solid rgba(34,197,94,.24);background:rgba(34,197,94,.08);color:#86efac;font-size:10px;line-height:1.45}
 .toast{position:fixed;right:18px;bottom:18px;z-index:140;max-width:420px;padding:12px 14px;border-radius:13px;background:#151a22;color:#fff;border:1px solid rgba(255,255,255,.13);box-shadow:var(--shadow);font-size:11px;font-weight:800}.toast.error{background:#321719;color:#fecaca;border-color:rgba(239,68,68,.28)}
 
 @media(max-width:1100px){.apps-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.client-row{grid-template-columns:34px minmax(0,1fr) 120px 105px 72px}}
@@ -121,6 +124,7 @@ html.light-mode .btn-danger{color:#b42318;background:rgba(239,68,68,.08)}
         <button id="top-add-client-btn" class="action-btn" type="button">＋ <span class="optional">Agregar cliente</span></button>
         <button id="theme-btn" class="action-btn" type="button">☀ <span class="optional">Modo claro</span></button>
         <button id="refresh-btn" class="action-btn refresh" type="button">↻ <span>Actualizar</span></button>
+        <button id="change-password-btn" class="action-btn" type="button" title="Cambiar clave" aria-label="Cambiar clave">🔑 <span class="optional">Cambiar clave</span></button>
         <button id="logout-btn" class="action-btn" type="button">Salir</button>
       </div>
     </div>
@@ -206,6 +210,31 @@ html.light-mode .btn-danger{color:#b42318;background:rgba(239,68,68,.08)}
       <div><label class="label">Aplicaciones</label><div id="client-apps-picker" class="apps-picker"></div><div class="helper" style="margin-top:7px">Podés asignar el mismo cliente a una o varias aplicaciones.</div></div>
       <div><label class="label">Vencimiento por aplicación</label><div id="client-due-list" class="due-list"></div><div id="client-due-helper" class="helper">Seleccioná al menos una aplicación.</div></div>
       <div class="form-actions"><button id="client-save-btn" class="btn btn-primary" type="submit">Guardar cliente</button><button id="client-cancel-btn" class="btn" type="button">Cancelar</button></div>
+    </form>
+  </div>
+</div>
+
+<div id="password-modal" class="modal hidden">
+  <div class="modal-card" style="width:min(500px,100%)">
+    <div class="modal-head">
+      <div><h2>Cambiar clave</h2><p id="password-user-note">Actualizá la contraseña de tu cuenta.</p></div>
+      <button id="password-modal-close" class="close-btn" type="button" aria-label="Cerrar">×</button>
+    </div>
+    <form id="password-form" class="client-form">
+      <div class="password-note">Como ya tenés la sesión iniciada, podés crear una clave nueva sin saber la anterior.</div>
+      <div>
+        <label class="label" for="new-password">Nueva clave</label>
+        <input id="new-password" class="input" type="password" autocomplete="new-password" required minlength="8" placeholder="Mínimo 8 caracteres">
+      </div>
+      <div>
+        <label class="label" for="confirm-password">Repetir nueva clave</label>
+        <input id="confirm-password" class="input" type="password" autocomplete="new-password" required minlength="8" placeholder="Repetí la nueva clave">
+      </div>
+      <div id="password-message" class="hidden"></div>
+      <div class="form-actions">
+        <button id="password-save-btn" class="btn btn-primary" type="submit">Guardar nueva clave</button>
+        <button id="password-cancel-btn" class="btn" type="button">Cancelar</button>
+      </div>
     </form>
   </div>
 </div>
@@ -409,6 +438,40 @@ async function deleteSelectedClients(){
   const btn=$('#delete-selected-btn');btn.disabled=true;btn.textContent='Eliminando...';const {error}=await db.from('control_clientes').delete().in('id',ids);btn.textContent='Eliminar seleccionados';if(error){btn.disabled=false;return toast(`No se pudo eliminar: ${error.message}`,true)}profiles.forEach(c=>localStorage.removeItem(clientAppsKey(c.key)));selectedClientKeys.clear();await loadData();toast(`${profiles.length} cliente${profiles.length===1?'':'s'} eliminado${profiles.length===1?'':'s'}.`)
 }
 
+function openPasswordModal(){
+  if(!user)return toast('No hay una sesión iniciada.',true);
+  $('#password-form').reset();
+  const msg=$('#password-message');msg.className='hidden';msg.textContent='';
+  $('#password-user-note').textContent=user.email?`Cuenta: ${user.email}`:'Actualizá la contraseña de tu cuenta.';
+  $('#password-modal').classList.remove('hidden');
+  setTimeout(()=>$('#new-password').focus(),70);
+}
+function closePasswordModal(){
+  $('#password-modal').classList.add('hidden');
+  $('#password-form').reset();
+  const msg=$('#password-message');msg.className='hidden';msg.textContent='';
+}
+async function changePassword(e){
+  e.preventDefault();
+  if(!user)return toast('La sesión ya no está disponible. Volvé a ingresar.',true);
+  const password=$('#new-password').value;
+  const confirm=$('#confirm-password').value;
+  const msg=$('#password-message');
+  msg.className='hidden';msg.textContent='';
+  if(password.length<8){msg.className='password-error';msg.textContent='La nueva clave debe tener al menos 8 caracteres.';return}
+  if(password!==confirm){msg.className='password-error';msg.textContent='Las dos claves no coinciden.';return}
+  const btn=$('#password-save-btn');btn.disabled=true;btn.textContent='Guardando...';
+  const {error}=await db.auth.updateUser({password});
+  btn.disabled=false;btn.textContent='Guardar nueva clave';
+  if(error){
+    msg.className='password-error';
+    msg.textContent=error.message||'No se pudo cambiar la clave.';
+    return;
+  }
+  msg.className='password-success';msg.textContent='Clave cambiada correctamente.';
+  setTimeout(()=>{closePasswordModal();toast('Clave cambiada correctamente.');},700);
+}
+
 async function loadData(){
   $('#refresh-btn').disabled=true;$('#refresh-btn').textContent='↻ Actualizando';const [{data:mov,error:movError},{data:clients,error:clientsError}]=await Promise.all([db.from('control_movimientos').select('*').order('fecha',{ascending:false}),db.from('control_clientes').select('*').order('last_used_at',{ascending:false})]);$('#refresh-btn').disabled=false;$('#refresh-btn').innerHTML='↻ <span>Actualizar</span>';if(movError||clientsError){console.error(movError||clientsError);$('#apps-grid').innerHTML='<div class="empty-card">No se pudieron cargar los datos. Revisá la conexión o los permisos de Supabase.</div>';$('#sync-note').textContent='Error de sincronización';return}movements=mov||[];savedClients=clients||[];render()
 }
@@ -418,6 +481,7 @@ async function showApp(u){user=u;$('#login-screen').classList.add('hidden');$('#
 
 $('#login-form').addEventListener('submit',login);
 $('#logout-btn').addEventListener('click',()=>db.auth.signOut());
+$('#change-password-btn').addEventListener('click',openPasswordModal);
 $('#refresh-btn').addEventListener('click',loadData);
 $('#theme-btn').addEventListener('click',toggleTheme);
 $('#back-apps-btn').addEventListener('click',closeApp);
@@ -431,6 +495,10 @@ $('#client-modal-close').addEventListener('click',closeClientModal);
 $('#client-cancel-btn').addEventListener('click',closeClientModal);
 $('#client-modal').addEventListener('click',e=>{if(e.target.id==='client-modal')closeClientModal()});
 $('#client-form').addEventListener('submit',saveClient);
+$('#password-form').addEventListener('submit',changePassword);
+$('#password-modal-close').addEventListener('click',closePasswordModal);
+$('#password-cancel-btn').addEventListener('click',closePasswordModal);
+$('#password-modal').addEventListener('click',e=>{if(e.target.id==='password-modal')closePasswordModal()});
 $('#delete-selected-btn').addEventListener('click',deleteSelectedClients);
 $$('[data-home-status]').forEach(card=>{
   const go=()=>openStatusView(card.dataset.homeStatus);
